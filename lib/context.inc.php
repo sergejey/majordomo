@@ -96,7 +96,7 @@ function context_clear($user_id=0)
  * @param mixed $history   History (default '')
  * @return void
  */
-function context_activate($id, $no_action = 0, $history = '', $user_id = 0)
+function context_activate($id, $no_action = 0, $history = '', $user_id = 0, $details = 0)
 {
    if (!$user_id) {
       $user_id = context_getuser();
@@ -129,7 +129,7 @@ function context_activate($id, $no_action = 0, $history = '', $user_id = 0)
       {
          include_once(DIR_MODULES . 'patterns/patterns.class.php');
          $pt = new patterns();
-         $pt->runPatternAction((int)$context['ID']);
+         $pt->runPatternAction((int)$context['ID'], array(), '', $details);
       }
    }
    else

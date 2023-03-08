@@ -38,16 +38,16 @@ class patterns extends module
     function saveParams($data = 0)
     {
         $p = array();
-        if (IsSet($this->id)) {
+        if (isset($this->id)) {
             $p["id"] = $this->id;
         }
-        if (IsSet($this->view_mode)) {
+        if (isset($this->view_mode)) {
             $p["view_mode"] = $this->view_mode;
         }
-        if (IsSet($this->edit_mode)) {
+        if (isset($this->edit_mode)) {
             $p["edit_mode"] = $this->edit_mode;
         }
-        if (IsSet($this->tab)) {
+        if (isset($this->tab)) {
             $p["tab"] = $this->tab;
         }
         return parent::saveParams($p);
@@ -100,10 +100,10 @@ class patterns extends module
         } else {
             $this->usual($out);
         }
-        if (IsSet($this->owner->action)) {
+        if (isset($this->owner->action)) {
             $out['PARENT_ACTION'] = $this->owner->action;
         }
-        if (IsSet($this->owner->name)) {
+        if (isset($this->owner->name)) {
             $out['PARENT_NAME'] = $this->owner->name;
         }
         $out['VIEW_MODE'] = $this->view_mode;
@@ -111,7 +111,7 @@ class patterns extends module
         $out['MODE'] = $this->mode;
         $out['ACTION'] = $this->action;
         $out['TAB'] = $this->tab;
-        if (IsSet($this->script_id)) {
+        if (isset($this->script_id)) {
             $out['IS_SET_SCRIPT_ID'] = 1;
         }
         if ($this->single_rec) {
@@ -250,18 +250,18 @@ class patterns extends module
      *
      * @access public
      */
-    function checkAllPatterns($from_user_id = 0)
+    function checkAllPatterns($from_user_id = 0, $details = 0)
     {
         $current_context = context_getcurrent($from_user_id);
         //DebMes("current context:".$current_context);
         if ($from_user_id && preg_match('/^ext(\d+)/', $current_context, $m)) {
-            $res = $this->checkExtPatterns($m[1],$from_user_id);
+            $res = $this->checkExtPatterns($m[1], $from_user_id);
         } else {
             $patterns = SQLSelect("SELECT * FROM patterns WHERE 1 AND PARENT_ID='" . (int)$current_context . "' AND PATTERN_TYPE=0 ORDER BY PRIORITY DESC, TITLE");
             $total = count($patterns);
             $res = 0;
             for ($i = 0; $i < $total; $i++) {
-                $matched = $this->checkPattern($patterns[$i]['ID'], $from_user_id);
+                $matched = $this->checkPattern($patterns[$i]['ID'], $from_user_id, $details);
                 if ($matched) {
                     $res = 1;
                     if ($patterns[$i]['IS_LAST']) {
@@ -313,7 +313,7 @@ class patterns extends module
     }
 
 
-    function checkExtPatterns($ext_context_id, $user_id=0)
+    function checkExtPatterns($ext_context_id, $user_id = 0)
     {
 
         $message = SQLSelectOne("SELECT MESSAGE FROM shouts ORDER BY ID DESC LIMIT 1");
@@ -400,7 +400,7 @@ class patterns extends module
                     playMedia($data['MEDIA_URL']);
                 }
 
-                context_activate_ext($data['NEW_CONTEXT'], (int)$data['TIMEOUT'], $data['TIMEOUT_CODE'], (int)$data['TIMEOUT_CONTEXT_ID'],$user_id);
+                context_activate_ext($data['NEW_CONTEXT'], (int)$data['TIMEOUT'], $data['TIMEOUT_CODE'], (int)$data['TIMEOUT_CONTEXT_ID'], $user_id);
 
                 return $data['MATCHED_CONTEXT'];
 
@@ -476,14 +476,17 @@ class patterns extends module
     }
 
 
-    function runPatternAction($id, $matches = array(), $original = '', $from_user_id = 0)
+    function runPatternAction($id, $matches = array(), $original = '', $from_user_id = 0, $details = 0)
     {
         $rec = SQLSelectOne("SELECT * FROM patterns WHERE ID='" . (int)$id . "'");
 
-        //global $noPatternMode;
-        //$noPatternMode=1;
         if ($rec['SCRIPT_ID']) {
-            runScriptSafe($rec['SCRIPT_ID'], $matches);
+            if (is_array($details)) {
+                $details['MATCHES'] = $matches;
+                runScriptSafe($rec['SCRIPT_ID'], $details);
+            } else {
+                runScriptSafe($rec['SCRIPT_ID'], $matches);
+            }
         } elseif ($rec['SCRIPT']) {
 
             try {
@@ -496,7 +499,6 @@ class patterns extends module
                         $bases[$i] = $form_bases[0];
                     }
                 }
-
                 $code = $rec['SCRIPT'];
                 $success = eval($code);
                 if ($success === false) {
@@ -509,11 +511,9 @@ class patterns extends module
             }
 
         }
-        //$noPatternMode=0;
-
     }
 
-    function runPatternExitAction($id, $script_exit)
+    function runPatternExitAction($id, $script_exit, $details = 0)
     {
 
         if ($script_exit) {
@@ -587,13 +587,10 @@ class patterns extends module
      *
      * @access public
      */
-    function checkPattern($id, $from_user_id = 0)
+    function checkPattern($id, $from_user_id = 0, $details = 0)
     {
-        global $session;
         global $pattern_matched;
 
-
-        $this_pattern_matched = 0;
         $condition_matched = 0;
 
         if (!checkAccess('pattern', $id)) return 0;
@@ -643,7 +640,7 @@ class patterns extends module
                 SQLUpdate('patterns', $rec);
 
                 if ($rec['SCRIPT_EXIT']) {
-                    $this->runPatternExitAction($rec['ID'], $rec['SCRIPT_EXIT']);
+                    $this->runPatternExitAction($rec['ID'], $rec['SCRIPT_EXIT'], $details);
                 }
                 //to-do: state exit script
 
@@ -758,23 +755,17 @@ class patterns extends module
                 $is_common = (int)$parent_rec['IS_COMMON_CONTEXT'];
             }
 
-            /*
-            if (context_getcurrent()) {
-                $history = context_get_history() . ' ' . $history;
-            }
-            */
-
             if ($rec['IS_CONTEXT']) {
-                context_activate($rec['ID'], 1, $history,$from_user_id);
+                context_activate($rec['ID'], 1, $history, $from_user_id, $details);
             } elseif ($rec['MATCHED_CONTEXT_ID']) {
-                context_activate($rec['MATCHED_CONTEXT_ID'], 0, $history,$from_user_id);
+                context_activate($rec['MATCHED_CONTEXT_ID'], 0, $history, $from_user_id, $details);
             } elseif (!$is_common) {
-                context_activate(0,0,'',$from_user_id);
+                context_activate(0, 0, '', $from_user_id, $details);
             }
 
             $rec['LOG'] = date('Y-m-d H:i:s') . ' Pattern matched' . "\n" . $rec['LOG'];
-            if (strlen($rec['LOG'])>65000) {
-                $rec['LOG'] = substr($rec['LOG'],0,65000);
+            if (strlen($rec['LOG']) > 65000) {
+                $rec['LOG'] = substr($rec['LOG'], 0, 65000);
             }
             $rec['EXECUTED'] = time();
             SQLUpdate('patterns', $rec);
@@ -787,7 +778,7 @@ class patterns extends module
                 $sub_patterns = SQLSelect("SELECT ID, IS_LAST FROM patterns WHERE PARENT_ID='" . $rec['ID'] . "' ORDER BY PRIORITY DESC, TITLE");
                 $total = count($sub_patterns);
                 for ($i = 0; $i < $total; $i++) {
-                    if ($this->checkPattern($sub_patterns[$i]['ID'], $from_user_id)) {
+                    if ($this->checkPattern($sub_patterns[$i]['ID'], $from_user_id, $details)) {
                         $sub_patterns_matched = 1;
                         if ($sub_patterns[$i]['IS_LAST']) {
                             break;
@@ -797,7 +788,7 @@ class patterns extends module
             }
 
             if (!$sub_patterns_matched) {
-                $this->runPatternAction($rec['ID'], $matches, $history, $from_user_id);
+                $this->runPatternAction($rec['ID'], $matches, $history, $from_user_id, $details);
             }
 
             if ($rec['ONETIME']) {
@@ -848,7 +839,7 @@ class patterns extends module
             global $context_user_id;
             $context_user_id = $member_id;
 
-            $res = $this->checkAllPatterns($member_id);
+            $res = $this->checkAllPatterns($member_id, $details);
             if ($event == 'COMMAND' && $res) {
                 $details['BREAK'] = true;
                 $details['PROCESSED'] = true;
