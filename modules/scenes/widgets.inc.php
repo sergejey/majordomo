@@ -41,11 +41,14 @@ if ($this->mode == 'edit_widget') {
                 if (is_array($property_data['_CONFIG_OPTIONS'])) {
                     foreach($property_data['_CONFIG_OPTIONS'] as $opt) {
                         if (!isset($opt['TITLE'])) $opt['TITLE']=$opt['VALUE'];
-                        if ($opt['VALUE']==$new_prop['VALUE']) $opt['SELECTED']=1;
                         $options[]=$opt;
                     }
                 } elseif (is_callable($property_data['_CONFIG_OPTIONS'])) {
                     $options = $property_data['_CONFIG_OPTIONS']();
+                }
+                $total = count($options);
+                for($i=0;$i<$total;$i++) {
+                    if ($options[$i]['VALUE']==$new_prop['VALUE']) $options[$i]['SELECTED']=1;
                 }
                 $new_prop['OPTIONS']=$options;
             }

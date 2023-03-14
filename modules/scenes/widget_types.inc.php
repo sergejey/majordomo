@@ -24,6 +24,10 @@ $this->widget_types = array(
                     array('VALUE' => '44'),
                     array('VALUE' => '52'),
                     array('VALUE' => '65'),
+                    array('VALUE' => '72'),
+                    array('VALUE' => '86'),
+                    array('VALUE' => '95'),
+                    array('VALUE' => '112'),
                 )
             ),
             'text_align' => array('DESCRIPTION' => LANG_WIDGET_TEXT_ALIGNMENT,
@@ -79,6 +83,46 @@ $this->widget_types = array(
         'DEFAULT_WIDTH' => 200,
         'DEFAULT_HEIGHT' => 200,
         'TEMPLATE' => 'file:image_block.html'
+    ),
+    'device_scaled' => array(
+        'TITLE' => LANG_DEVICE.' (scaled)',
+        'DESCRIPTION' => LANG_DEVICE,
+        'PROPERTIES' => array(
+            'device_id'=>array(
+                'DESCRIPTION'=>LANG_DEVICE,
+                '_CONFIG_TYPE'=>'select',
+                '_CONFIG_OPTIONS'=>function () {
+                    $options = SQLSelect("SELECT ID as VALUE, TITLE FROM devices ORDER BY TITLE");
+                    return $options;
+                }),
+            'widget_background' => array('DESCRIPTION' => LANG_WIDGET_TEXT_BLOCK_BACKGROUND_COLOR,
+                'DEFAULT_VALUE' => '#000000', '_CONFIG_TYPE' => 'color'),
+            'background_opacity' => array('DESCRIPTION' => LANG_WIDGET_TEXT_BLOCK_BACKGROUND_OPACITY,
+                'DEFAULT_VALUE' => '0.5',
+                '_CONFIG_TYPE' => 'select',
+                '_CONFIG_OPTIONS' => array(
+                    array('VALUE' => '0', 'TITLE' => '0'),
+                    array('VALUE' => '0.1', 'TITLE' => '10'),
+                    array('VALUE' => '0.2', 'TITLE' => '20'),
+                    array('VALUE' => '0.3', 'TITLE' => '30'),
+                    array('VALUE' => '0.4', 'TITLE' => '40'),
+                    array('VALUE' => '0.5', 'TITLE' => '50'),
+                    array('VALUE' => '0.6', 'TITLE' => '60'),
+                    array('VALUE' => '0.7', 'TITLE' => '70'),
+                    array('VALUE' => '0.8', 'TITLE' => '80'),
+                    array('VALUE' => '0.9', 'TITLE' => '90'),
+                    array('VALUE' => '1', 'TITLE' => '100')
+                )
+            ),
+            'widget_background_rgba' => array('FUNCTION' => function ($data) {
+                list($r, $g, $b) = sscanf($data['widget_background'], "#%02x%02x%02x");
+                return "$r, $g, $b, " . $data['background_opacity'];
+            })
+            ),
+        'RESIZABLE' => true,
+        'DEFAULT_WIDTH' => 260,
+        'DEFAULT_HEIGHT' => 60,
+        'TEMPLATE' => 'file:device_block.html'
     )
 );
 
