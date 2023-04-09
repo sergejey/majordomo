@@ -22,8 +22,9 @@ if ($level > 0) {
 
 if ($minWork != $maxWork) {
     $levelWork = round($minWork + round(($maxWork - $minWork) * $level / 100));
-    if ($this->getProperty('levelWork') != $levelWork) {
-        $this->setProperty('levelWork', (int)$levelWork);
+    $diff = abs($this->getProperty('levelWork') - $levelWork);
+    if ($diff >= 5) {
+        $this->setProperty('levelWork', $levelWork);
     }
 }
 
