@@ -1,6 +1,6 @@
 <?php
 
-$out['PARENT_ID'] = gr('$parent_id');
+$out['PARENT_ID'] = gr('parent_id');
 
 if (defined('SETTINGS_CODEEDITOR_TURNONSETTINGS')) {
     $out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = SETTINGS_CODEEDITOR_TURNONSETTINGS;
@@ -115,7 +115,7 @@ if ($this->mode == 'update') {
     }
 
 
-    $rec['PARENT_ID'] = (int)$parent_id;
+    $rec['PARENT_ID'] = gr('parent_id','int');
 
     if ($rec['PATTERN_TYPE'] == 1) {
         $rec['PARENT_ID'] = 0;

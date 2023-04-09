@@ -833,7 +833,7 @@ class patterns extends module
 
     function processSubscription($event, &$details)
     {
-        if ($event == 'SAY' || $event == 'COMMAND') {
+        if ($event == 'SAY' || $event == 'SAYTO' || $event == 'COMMAND' || $event == 'ASK') {
             $member_id = (int)$details['member_id'];
 
             global $context_user_id;
@@ -859,6 +859,8 @@ class patterns extends module
     {
         parent::install();
         subscribeToEvent($this->name, 'SAY');
+        subscribeToEvent($this->name, 'SAYTO');
+        subscribeToEvent($this->name, 'ASK');
         subscribeToEvent($this->name, 'COMMAND');
     }
 
