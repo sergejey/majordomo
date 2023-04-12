@@ -21,6 +21,7 @@ set_time_limit(0);
         &gtype=curve - тип графика (может быть: curve, bar, line -- плавная линия, столбцы, ступенчатый)
         &type=8h - Период (8h = 8 часов, 8d = 8 дней, 8m = 8 месяцев)
         &start=2014/09/25 - дата с которой берется начало графика в формате (гггг/мм/дд)
+        &end=2014/09/25 - дата с которой берется конец графика в формате (гггг/мм/дд)
         &interval= секунд в интервале
         &width=610 - ширина графика в пикселях
         &height=210 - высота графика в пикселях
@@ -41,7 +42,14 @@ $threshold_fontsize = 6;
 $w_delta = 80;
 $px_per_point = 6;
 $unit = "°C";
-$end_time = time();
+
+if (preg_match('/(\d+)\/(\d+)\/(\d+)/', $_GET['end'], $m)) {
+    $end_time = mktime(23, 59, 59, $m[2], $m[3], $m[1]);
+} else {
+    $end_time = time();
+}
+
+
 $approx = 'avg';
 $fil01 = 0;
 
@@ -208,13 +216,13 @@ if ($total > 0) {
                 $data = SQLSelect("SELECT * FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED");
                 //dprint($data);
 
-                $csv = implode("\t", array('ADDED','VALUE')) . PHP_EOL;
+                $csv = implode("\t", array('ADDED', 'VALUE')) . PHP_EOL;
                 foreach ($data as $row) {
-                    $csv .= $row['ADDED']."\t".$row['VALUE'];
+                    $csv .= $row['ADDED'] . "\t" . $row['VALUE'];
                     $csv .= PHP_EOL;
                 }
 
-                $filename = 'data_'.date('Y-m-d-H_i_s').'.txt';
+                $filename = 'data_' . date('Y-m-d-H_i_s') . '.txt';
                 $now = gmdate("D, d M Y H:i:s");
                 //header("Expires: Tue, 03 Jul 2001 06:00:00 GMT");
                 //header("Cache-Control: max-age=0, no-cache, must-revalidate, proxy-revalidate");
@@ -239,6 +247,7 @@ if ($total > 0) {
 
             echo "<html><head>";
             $roothtml = ROOTHTML;
+            $url = str_replace('&end=', '&', $_SERVER['REQUEST_URI']);
             echo <<<FF
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
@@ -248,32 +257,42 @@ if ($total > 0) {
 <script type="text/javascript"  src="{$roothtml}3rdparty/jquery/jquery-migrate-3.0.0.min.js"></script>
 <link rel="stylesheet" href="{$roothtml}3rdparty/bootstrap/css/bootstrap.min.css" type="text/css">
 <script type="text/javascript" src="{$roothtml}3rdparty/bootstrap/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="{$roothtml}3rdparty/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css"/>
+<script type="text/javascript" src="{$roothtml}3rdparty/moment/moment.min.js"></script>
+<script type="text/javascript" src="{$roothtml}3rdparty/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript">
+ $(document).ready(function() {
+    $('.datepicker').datetimepicker({
+    format:'YYYY/MM/DD',
+    }).on('dp.change',function(e) {
+         var formatedValue = e.date.format(e.date._f);
+         dateChanged(formatedValue);
+     }); 
+ });
+ function dateChanged(dt) {
+     let url = "{$url}";
+     window.location.href = url + '&end='+encodeURI(dt);
+ }
+</script>
 FF;
             echo "</head><body><div>";
             //echo "<table width=100%><tr><td width='99%'>";
 
             $_SERVER['REQUEST_URI'] = preg_replace('/&subop=(\w+)/', '', $_SERVER['REQUEST_URI']);
-            echo "<ul class='nav nav-tabs'>";
-            echo '<li'.($_GET['subop']==''?' class="active"':'').'><a href="' . $_SERVER['REQUEST_URI'] . '&subop=">H</a></li>';
-            echo '<li'.($_GET['subop']=='1h'?' class="active"':'').'><a href="' . $_SERVER['REQUEST_URI'] . '&subop=1h">1h</a></li>';
-            echo '<li'.($_GET['subop']=='24h'?' class="active"':'').'><a href="' . $_SERVER['REQUEST_URI'] . '&subop=24h">24h</a></li>';
-            echo '<li'.($_GET['subop']=='7d'?' class="active"':'').'><a href="' . $_SERVER['REQUEST_URI'] . '&subop=7d">7d</a></li>';
-            echo '<li'.($_GET['subop']=='31d'?' class="active"':'').'><a href="' . $_SERVER['REQUEST_URI'] . '&subop=31d">31d</a></li>';
+            echo "<div class='row'><div class='col-md-10'><ul class='nav nav-tabs'>";
+            echo '<li' . ($_GET['subop'] == '' ? ' class="active"' : '') . '><a href="' . $_SERVER['REQUEST_URI'] . '&subop=">H</a></li>';
+            echo '<li' . ($_GET['subop'] == '1h' ? ' class="active"' : '') . '><a href="' . $_SERVER['REQUEST_URI'] . '&subop=1h">1h</a></li>';
+            echo '<li' . ($_GET['subop'] == '24h' ? ' class="active"' : '') . '><a href="' . $_SERVER['REQUEST_URI'] . '&subop=24h">24h</a></li>';
+            echo '<li' . ($_GET['subop'] == '7d' ? ' class="active"' : '') . '><a href="' . $_SERVER['REQUEST_URI'] . '&subop=7d">7d</a></li>';
+            echo '<li' . ($_GET['subop'] == '31d' ? ' class="active"' : '') . '><a href="' . $_SERVER['REQUEST_URI'] . '&subop=31d">31d</a></li>';
             if (!$_GET['minimal']) {
                 echo '<li><a href="' . $_SERVER['REQUEST_URI'] . '&subop=clear" onClick="return confirm(\'' . LANG_ARE_YOU_SURE . '\')">' . LANG_CLEAR_ALL . '</a></li>';
                 echo '<li><a href="' . $_SERVER['REQUEST_URI'] . '&subop=optimize" onClick="return confirm(\'' . LANG_ARE_YOU_SURE . '\')">' . LANG_OPTIMIZE_LOG . '</a></li>';
             }
             echo "</ul>";
-            //echo "</td>";
-            /*
-            if (!$_GET['minimal']) {
-                echo "<td>";
-                echo '<a href="javascript:window.close();">X</a>';
-                echo "</td>";
-            }
-            */
-            //echo "</tr></table>";
-            //echo '<br/>';
+            echo "</div><div class='col-md-2'><form class='form' method='get'>";
+            echo '<input type="text" id="end" name="end" value="' . date('Y-m-d', $end_time) . '" class="form-control datepicker">';
+            echo "</form></div></div>";
 
             if (preg_match('/^\d+\w$/', $_GET['subop'])) {
 
@@ -285,7 +304,7 @@ FF;
                     }
 
                     if (!is_array($_GET['p'])) {
-                        $properties=array($_GET['p']);
+                        $properties = array($_GET['p']);
                     } else {
                         $properties = $_GET['p'];
                         $p_url .= '&height=' . $height;
@@ -293,18 +312,18 @@ FF;
                     $p_url = '';
                     foreach ($properties as $p) {
                         $p_url .= '&properties[]=' . urlencode($p);
-                        if (preg_match('/^(\w+)\.(\w+)$/',$p,$m)) {
+                        if (preg_match('/^(\w+)\.(\w+)$/', $p, $m)) {
                             $object = getObject($m[1]);
                             if ($object->description) {
-                                $p_url .= '&legend[]=' . urlencode($object->description.' ('.$m[2].')');
+                                $p_url .= '&legend[]=' . urlencode($object->description . ' (' . $m[2] . ')');
                             } else {
                                 $p_url .= '&legend[]=' . urlencode($p);
                             }
                         }
                     }
-                    $code = '&nbsp;<iframe allowfullscreen="true" border="0" frameborder="0" src="' . ROOTHTML . 'module/charts.html?id=config&enable_fullscreen=1&period=' . $_GET['subop'] . '&chart_type=' . urlencode($_GET['chart_type']) . '&group=' . $group . $p_url . '&theme=grid-light&frameBorder=0" width=100% height=' . $height . '></iframe>';
+                    $code = '&nbsp;<iframe allowfullscreen="true" border="0" frameborder="0" src="' . ROOTHTML . 'module/charts.html?id=config&enable_fullscreen=1&period=' . $_GET['subop'] . '&end=' . urlencode($_GET['end']) . '&chart_type=' . urlencode($_GET['chart_type']) . '&group=' . $group . $p_url . '&theme=grid-light&frameBorder=0" style="height:80% !important" width=100% ></iframe>';//height=' . $height . '
                 } else {
-                    $code = '&nbsp;<img src="' . ROOTHTML . '3rdparty/jpgraph/?p=' . $p . '&type=' . $_GET['subop'] . '&width=500&"/>';
+                    $code = '&nbsp;<img src="' . ROOTHTML . '3rdparty/jpgraph/?p=' . $p . '&type=' . $_GET['subop'] . '&end=' . urlencode($_GET['end']) . '&width=500&"/>';
                 }
                 echo $code;
                 /*
@@ -325,20 +344,20 @@ FF;
             $total_values = count($history);
         }
         */
-        require(ROOT.'3rdparty/Paginator/Paginator.php');
-        $page=(int)$_GET['page'];
-        if (!$page) $page=1;
+        require(ROOT . '3rdparty/Paginator/Paginator.php');
+        $page = (int)$_GET['page'];
+        if (!$page) $page = 1;
 
-        $on_page=20;
+        $on_page = 20;
         //$limit=(($page-1)*$on_page).','.$on_page;
-        $start_offset = (($page-1)*$on_page);
+        $start_offset = (($page - 1) * $on_page);
         //$urlPattern='?page=(:num)';
         $url = $_SERVER['REQUEST_URI'];
-        $url = preg_replace('/&page=\d+/','',$url);
-        $urlPattern=$url.'&page=(:num)';
+        $url = preg_replace('/&page=\d+/', '', $url);
+        $urlPattern = $url . '&page=(:num)';
         $paginator = new JasonGrimes\Paginator($total_values, $on_page, $page, $urlPattern);
 
-        $history = array_slice($history,$start_offset,$on_page);
+        $history = array_slice($history, $start_offset, $on_page);
         $total_values = count($history);
 
         echo "<div class='row'><div class='col-md-1'>&nbsp;</div>";
@@ -346,12 +365,12 @@ FF;
         echo $paginator;
         echo "</div>";
         echo "<div class='col-md-5 text-right pagination'>";
-        echo "<a href=\"".$_SERVER['REQUEST_URI'] . "&type=1&export=1\" class='btn btn-default'><i class='glyphicon glyphicon-export'></i> ".LANG_EXPORT."</a>";
+        echo "<a href=\"" . $_SERVER['REQUEST_URI'] . "&type=1&export=1\" class='btn btn-default'><i class='glyphicon glyphicon-export'></i> " . LANG_EXPORT . "</a>";
         echo "</div>";
         echo "<div class='col-md-1'>&nbsp;</div></div>";
 
         echo "<table class='table table-striped'>";
-        echo "<thead><tr><th>".LANG_ADDED."</th><th>".LANG_VALUE."</th><th>Src</th><th>&nbsp;</th></tr></thead>";
+        echo "<thead><tr><th>" . LANG_ADDED . "</th><th>" . LANG_VALUE . "</th><th>Src</th><th>&nbsp;</th></tr></thead>";
         for ($i = 0; $i < $total_values; $i++) {
             //echo date('Y-m-d H:i:s', $history[$i]['UNX']);
             echo "<tr><td>";
@@ -361,7 +380,7 @@ FF;
             if ($property['DATA_TYPE'] == 5) {
                 echo "<a href='" . ROOTHTML . "cms/images/" . $history[$i]['VALUE'] . "' target='_blank'><img src='" . ROOTHTML . "cms/images/" . $history[$i]['VALUE'] . "' height=100></a>";
             } else {
-                echo "<b>".htmlspecialchars($history[$i]['VALUE']) . "</b>";
+                echo "<b>" . htmlspecialchars($history[$i]['VALUE']) . "</b>";
             }
             echo "</td>";
             echo "<td>";
@@ -733,7 +752,7 @@ if ($_GET['scale'] == 'zero') {
 
 //������� ��������� �������
 
-if (IsSet($_GET['title'])) {
+if (isset($_GET['title'])) {
     $_GET['title'] = strip_tags($_GET['title']);
 }
 

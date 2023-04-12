@@ -168,8 +168,14 @@ if ($this->tab == 'settings') {
                         }
                         setGlobal($rec['LINKED_OBJECT'] . '.' . $k, $value);
                         if (is_array($apply_others)) {
-                            foreach($apply_others as $other_dev) {
+                            foreach ($apply_others as $other_dev) {
                                 setGlobal($other_dev . '.' . $k, $value);
+                                if ($v['_CONFIG_RESTRICTIONS'] && checkAccessDefined('prop_' . $k, $rec['ID'])) {
+                                    $other_obj = getObject($other_dev);
+                                    if (is_object($other_obj) && $other_obj->device_id) {
+                                        checkAccessCopy('prop_' . $k, $rec['ID'], $other_obj->device_id);
+                                    }
+                                }
                             }
                         }
                     }
@@ -204,6 +210,11 @@ if ($this->tab == 'settings') {
                     $styles = $scene_class->getAllTypes();
                     $v['FOLDERS'] = $styles;
                 }
+
+                if ($v['_CONFIG_RESTRICTIONS'] && checkAccessDefined('prop_' . $v['NAME'], $rec['ID'])) {
+                    $v['_CONFIG_RESTRICTIONS_SET'] = 1;
+                }
+
                 $res_properties[] = $v;
             }
         }
@@ -446,7 +457,8 @@ if ($this->mode == 'update' && $this->tab == '') {
                 $class_2b_changed = 0;
                 break;
             }
-            $tmp_class_id = current(SQLSelectOne("SELECT PARENT_ID FROM classes WHERE ID=" . (int)$tmp_class_id));
+            $tmp = SQLSelectOne("SELECT PARENT_ID FROM classes WHERE ID=" . (int)$tmp_class_id);
+            $tmp_class_id = (int)$tmp['PARENT_ID'];
         }
         if ($class_2b_changed) {
             //move object to new class

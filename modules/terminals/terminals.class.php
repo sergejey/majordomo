@@ -259,7 +259,7 @@ class terminals extends module
     function processSubscription($event, $details = '')
     {
         $this->getConfig();
-        DebMes("Processing $event: " . json_encode($details, JSON_UNESCAPED_UNICODE), 'terminals');
+        //DebMes("Processing $event: " . json_encode($details, JSON_UNESCAPED_UNICODE), 'terminals');
         if ($event == 'SAY') {
             $terminals = SQLSelect("SELECT * FROM terminals WHERE CANTTS=1 AND TTS_TYPE!=''");
             foreach ($terminals as $terminal_rec) {
@@ -273,6 +273,9 @@ class terminals extends module
                 }
             }
             if (!$terminal_rec['ID']) {
+                return false;
+            }
+            if (!$terminal_rec['CANTTS'] || $terminal_rec['TTS_TYPE']=='') {
                 return false;
             }
             if ($event == 'ASK') {

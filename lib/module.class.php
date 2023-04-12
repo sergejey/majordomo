@@ -582,9 +582,11 @@ class module
     public function redirect($url)
     {
         global $session;
-        global $db;
 
-        $url = $this->makeRealURL($url);
+        $new_url = $this->makeRealURL($url);
+        if (isset($this->owner) && $this->owner->name=='panel' && preg_match('/nf\.php/',$new_url)) {
+            $new_url = str_replace('nf.php','admin.php',$new_url);
+        }
 
         $session->save();
 
@@ -592,13 +594,13 @@ class module
             $res = array();
             $res['CONTENT'] = '';
             $res['NEED_RELOAD'] = 1;
-            $res['REDIRECT'] = $url;
+            $res['REDIRECT'] = $new_url;
             echo json_encode($res);
             exit;
         }
 
         if (!headers_sent()) {
-            header("Location: $url\n\n");
+            header("Location: $new_url\n\n");
         } else {
             print "Headers already sent in $filename on line $linenum<br>\n" . "Cannot redirect instead\n";
         }
@@ -711,7 +713,6 @@ class module
             global $PHP_SELF;
             $_SERVER['PHP_SELF'] = $PHP_SELF;
         }
-
         $param_str = '';
 
         if ($md != $this->name) {

@@ -134,16 +134,16 @@ if (!$device1['SYSTEM_DEVICE'] && !$device1['ARCHIVED'] && $this->isHomeBridgeAv
                 } elseif ($open_type == 'door' || $open_type == 'window' || $open_type == 'curtains' || $open_type == 'shutters') {
                     $payload['characteristic'] = 'CurrentPosition';
                     if (gg($device1['LINKED_OBJECT'] . '.status')) {
-                        $payload['value'] = "100";
-                    } else {
                         $payload['value'] = "0";
+                    } else {
+                        $payload['value'] = "100";
                     }
                     if ($debug_sync) {
                         DebMes("MQTT to_set : " . json_encode($payload), 'homebridge');
                     }
                     sg('HomeBridge.to_set', json_encode($payload));
-                    //$payload['characteristic'] = 'TargetPosition';
-                    //sg('HomeBridge.to_set', json_encode($payload));
+                    $payload['characteristic'] = 'TargetPosition';
+                    sg('HomeBridge.to_set', json_encode($payload));
                     unset($payload['service']);
                 }
             }
@@ -234,16 +234,28 @@ if (!$device1['SYSTEM_DEVICE'] && !$device1['ARCHIVED'] && $this->isHomeBridgeAv
         */
     }
     if (isset($payload['service'])) {
-        if ($debug_sync) {
-            DebMes("MQTT to_set : " . json_encode($payload), 'homebridge');
+        $hmName = 'hmb:'.$payload['name'];
+        $payload_encoded = json_encode($payload);
+        $hmValue = md5($payload_encoded);
+        if (checkFromCache($hmName)!=$hmValue) {
+            saveToCache($hmName, $hmValue);
+            if ($debug_sync) {
+                DebMes("MQTT to_set : " . $payload_encoded, 'homebridge');
+            }
+            sg('HomeBridge.to_set', $payload_encoded);
         }
-        sg('HomeBridge.to_set', json_encode($payload));
     }
     if (isset($payload2['service'])) {
-        if ($debug_sync) {
-            DebMes("MQTT to_set : " . json_encode($payload2), 'homebridge');
+        $hmName = 'hmb:'.$payload2['name'];
+        $payload2_encoded = json_encode($payload2);
+        $hmValue = md5($payload2_encoded);
+        if (checkFromCache($hmName)!=$hmValue) {
+            saveToCache($hmName, $hmValue);
+            if ($debug_sync) {
+                DebMes("MQTT to_set : " . $payload2_encoded, 'homebridge');
+            }
+            sg('HomeBridge.to_set', $payload2_encoded);
         }
-        sg('HomeBridge.to_set', json_encode($payload2));
     }
 }
 endMeasure('homebridge_update');
@@ -318,6 +330,19 @@ for ($i = 0; $i < $total; $i++) {
         } elseif ($settings['action_type'] == 'close' && !gg($object . '.status')) {
             $action_string = 'callMethodSafe("' . $object . '.close' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
         }
+
+        if ($settings['source_value_type']!='') {
+            $period = (int)$settings['source_value_time'];
+            if ($period<1) $period=1;
+            if ($settings['source_value_type'] == 'avg') {
+                $value = getHistoryAvg($device1['LINKED_OBJECT'] . '.value',(-1)*$period);
+            } elseif ($settings['source_value_type'] == 'min') {
+                $value = getHistoryMin($device1['LINKED_OBJECT'] . '.value',(-1)*$period);
+            } elseif ($settings['source_value_type'] == 'max') {
+                $value = getHistoryMax($device1['LINKED_OBJECT'] . '.value',(-1)*$period);
+            }
+        }
+
         if ($settings['condition_type'] == 'above' && $value >= (float)$settings['condition_value']) {
             //do the action
         } elseif ($settings['condition_type'] == 'below' && $value < (float)$settings['condition_value']) {

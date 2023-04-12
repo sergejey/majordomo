@@ -25,11 +25,11 @@ foreach ($history_values as $history_value=>$time) {
  if ($val1['ID']) {
   SQLExec("DELETE FROM $table_name WHERE VALUE_ID=$value_id AND ADDED>=('" . $time . "')");
   $set_value = $val1['VALUE'] + ($new_value - $old_value);
-  $set_value = round($set_value, 2);
+  $set_value = round($set_value, 3);
   $this->setProperty($history_value, $set_value);
  } else {
   $set_value = $new_value - $old_value;
-  $set_value = round($set_value, 2);
+  $set_value = round($set_value, 3);
   $this->setProperty($history_value, $set_value);
   //DebMes($history_value . ' ' . $time . ' - id - ' . $value_id .  ' - new - ' . $new_value . ' - old - ' . $old_value, $ot);
  }

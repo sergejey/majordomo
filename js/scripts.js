@@ -53,7 +53,7 @@ function simple_hash(s) {
 
 function inIframe () {
     try {
-        return window.self !== window.top;
+        return (window.location !== window.parent.location);
     } catch (e) {
         return true;
     }

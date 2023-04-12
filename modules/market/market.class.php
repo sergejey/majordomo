@@ -633,14 +633,16 @@ class market extends module
 
         $username = '';
         $password = '';
-        include_once(DIR_MODULES . 'connect/connect.class.php');
-        $connect = new connect();
-        $connect->getConfig();
-        $connect_username = strtolower($connect->config['CONNECT_USERNAME']);
-        $connect_password = $connect->config['CONNECT_PASSWORD'];
-        if ($connect_username != '' && $connect_password != '') {
-            $username = $connect_username;
-            $password = $connect_password;
+        @include_once(DIR_MODULES . 'connect/connect.class.php');
+        if (class_exists('connect')) {
+            $connect = new connect();
+            $connect->getConfig();
+            $connect_username = strtolower($connect->config['CONNECT_USERNAME']);
+            $connect_password = $connect->config['CONNECT_PASSWORD'];
+            if ($connect_username != '' && $connect_password != '') {
+                $username = $connect_username;
+                $password = $connect_password;
+            }
         }
         return getURL($data_url, $cache_timeout, $username, $password);
     }
@@ -715,12 +717,15 @@ class market extends module
 
 
                     if (IsWindowsOS()) {
-                        //DebMes("Running ".DOC_ROOT.'/gunzip ../'.$file);
-                        exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
-                        //DebMes("Running ".DOC_ROOT.'/tar xvf ../'.str_replace('.tgz', '.tar', $file));
-                        exec(DOC_ROOT . '/tar xvf ../' . str_replace('.tgz', '.tar', $file), $output, $res);
+                        $result = exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
+                        $result = exec(DOC_ROOT . '/tar xvf ../' . str_replace('.tgz', '.tar', $file), $output, $res);
                     } else {
-                        exec('tar xzvf ../' . $file, $output, $res);
+                        $result = exec('tar xzvf ../' . $file, $output, $res);
+                    }
+
+                    if (!$result) {
+                        $this->echonow("Unpack failed!", 'red');
+                        return false;
                     }
 
                     $x = 0;
@@ -964,14 +969,16 @@ class market extends module
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_FILE, $f);
 
-        include_once(DIR_MODULES . 'connect/connect.class.php');
-        $connect = new connect();
-        $connect->getConfig();
-        $connect_username = strtolower($connect->config['CONNECT_USERNAME']);
-        $connect_password = $connect->config['CONNECT_PASSWORD'];
-        if ($connect_username != '' && $connect_password != '') {
-            curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-            curl_setopt($ch, CURLOPT_USERPWD, $connect_username . ":" . $connect_password);
+        @include_once(DIR_MODULES . 'connect/connect.class.php');
+        if (class_exists('connect')) {
+            $connect = new connect();
+            $connect->getConfig();
+            $connect_username = strtolower($connect->config['CONNECT_USERNAME']);
+            $connect_password = $connect->config['CONNECT_PASSWORD'];
+            if ($connect_username != '' && $connect_password != '') {
+                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+                curl_setopt($ch, CURLOPT_USERPWD, $connect_username . ":" . $connect_password);
+            }
         }
 
         $incoming = curl_exec($ch);
@@ -1045,12 +1052,18 @@ class market extends module
             }
             if (IsWindowsOS()) {
                 // for windows only
-                exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
-                exec(DOC_ROOT . '/tar xvf ../' . str_replace('.tgz', '.tar', $file), $output, $res);
+                $result = exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
+                $result = exec(DOC_ROOT . '/tar xvf ../' . str_replace('.tgz', '.tar', $file), $output, $res);
                 @unlink('../' . str_replace('.tgz', '.tar', $file));
             } else {
-                exec('tar xzvf ../' . $file, $output, $res);
+                $result = exec('tar xzvf ../' . $file, $output, $res);
             }
+
+            if (!$result) {
+                $this->echonow("Unpack failed!", 'red');
+                return false;
+            }
+
             if ($frame) {
                 $this->echonow(" OK <br/>", 'green');
             }

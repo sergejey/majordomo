@@ -1,0 +1,104 @@
+[#if MODE="edit_widget"#]
+<script src='<#ROOTHTML#>3rdparty/spectrum/spectrum.min.js'></script>
+<link rel='stylesheet' href='<#ROOTHTML#>3rdparty/spectrum/spectrum.min.css' />
+
+<form method="post" class="form">
+    <div class="form-group">
+        <label><#LANG_TITLE#>:</label>
+        <input type="text" name="element_title" value="[#ELEMENT_TITLE#]" class="form-control">
+    </div>
+    [#begin PROPERTIES#]
+    <div class="form-group">
+        <label>[#DESCRIPTION#]:</label>
+        [#if _CONFIG_TYPE=="text"#]
+         <input type="text" name="property_[#NAME#]" value="[#VALUE#]" class="form-control">
+        [#endif#]
+        [#if _CONFIG_TYPE=="textarea"#]
+        <textarea name="property_[#NAME#]" class="form-control">[#VALUE#]</textarea>
+        [#endif#]
+        [#if _CONFIG_TYPE=="htmlarea"#]
+        <textarea name="property_[#NAME#]" id="property_[#NAME#]" class="form-control">[#VALUE#]</textarea>
+        [#module name="blockly_code" code_field="property_<#PROPERTIES.NAME#>" action="" type="html"#]
+        [#endif#]
+        [#if _CONFIG_TYPE=="yesno"#]
+        <input type="radio" name="property_[#NAME#]" value="1"[#if VALUE="1"#] checked[#endif#]> <#LANG_YES#>
+        <input type="radio" name="property_[#NAME#]" value="0"[#if VALUE!="1"#] checked[#endif#]> <#LANG_NO#>
+        [#endif#]
+        [#if _CONFIG_TYPE=="color"#]
+        <input type="text" name="property_[#NAME#]" value="[#VALUE#]" class="color_pick">
+        [#endif#]
+        [#if _CONFIG_TYPE=="select"#]
+        <select name="property_[#NAME#]" class="form-control">
+            [#begin OPTIONS#]
+            <option value="[#VALUE#]"[#if SELECTED="1"#] selected[#endif#]>[#TITLE#]</option>
+            [#end OPTIONS#]
+        </select>
+
+        [#endif#]
+    </div>
+    [#end PROPERTIES#]
+    <div class="form-group">
+        <input type="submit" class="btn btn-default btn-primary" value="<#LANG_SUBMIT#>">
+        <a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>" class="btn btn-default"><#LANG_CANCEL#></a>
+        <a onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&mode=delete_widget&element_id=<#ELEMENT_ID#>" class="btn btn-default"><i class="glyphicon glyphicon-trash"></i></a>
+    </div>
+    <input type="hidden" name="id" value="<#ID#>">
+    <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+    <input type="hidden" name="tab" value="<#TAB#>">
+    <input type="hidden" name="mode" value="<#MODE#>">
+    <input type="hidden" name="mode2" value="save">
+    <input type="hidden" name="element_id" value="<#ELEMENT_ID#>">
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".color_pick").spectrum({
+            preferredFormat: "hex",
+            showInput: true,
+            chooseText: "OK",
+            cancelText: "<#LANG_CANCEL#>"
+        });
+    });
+</script>
+
+[#else MODE#]
+
+
+<div>
+    [#if WIDGETS#]
+    <table class="table">
+    [#begin WIDGETS#]
+    <tr>
+        <td>
+         <a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&mode=edit_widget&element_id=[#ID#]">[#TITLE#]</a>
+        </td>
+        <td>
+            <a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&mode=edit_widget&element_id=[#ID#]" class="btn btn-default btn-sm"><#LANG_EDIT#></a>
+            <a onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&mode=delete_widget&element_id=[#ID#]" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-trash"></i></a>
+        <td>
+    </tr>
+    [#end WIDGETS#]
+    </table>
+
+    [#else WIDGETS#]
+    <p>No widgets added</p>
+    [#endif#]
+
+</div>
+<hr>
+<h4><#LANG_ADD_WIDGET#></h4>
+<div class="row">
+[#begin WIDGET_TYPES#]
+<div class="col-md-3" style="padding-bottom:10px">
+    <div><b>[#TITLE#]</b>
+    <br/>
+    [#DESCRIPTION#]</div>
+    <div style="padding-top:5px">
+        <a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&mode=add_widget&type=[#TYPE#]&top=<#TOP#>&left=<#LEFT#>" class="btn btn-default"><#LANG_ADD#></a>
+    </div>
+</div>
+[#end WIDGET_TYPES#]
+
+</div>
+[#endif MODE#]
+<p>&nbsp;</p>

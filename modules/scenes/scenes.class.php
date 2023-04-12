@@ -40,19 +40,19 @@ class scenes extends module
     function saveParams($data = 0)
     {
         $p = array();
-        if (IsSet($this->id)) {
+        if (isset($this->id)) {
             $p["id"] = $this->id;
         }
-        if (IsSet($this->view_mode)) {
+        if (isset($this->view_mode)) {
             $p["view_mode"] = $this->view_mode;
         }
-        if (IsSet($this->edit_mode)) {
+        if (isset($this->edit_mode)) {
             $p["edit_mode"] = $this->edit_mode;
         }
-        if (IsSet($this->data_source)) {
+        if (isset($this->data_source)) {
             $p["data_source"] = $this->data_source;
         }
-        if (IsSet($this->tab)) {
+        if (isset($this->tab)) {
             $p["tab"] = $this->tab;
         }
         return parent::saveParams($p);
@@ -104,6 +104,9 @@ class scenes extends module
     {
         global $session;
         $out = array();
+
+        $this->loadWidgetTypes();
+
         if ($this->action == 'admin') {
             $this->admin($out);
         } else {
@@ -112,10 +115,10 @@ class scenes extends module
 
         $this->checkSettings();
 
-        if (IsSet($this->owner->action)) {
+        if (isset($this->owner->action)) {
             $out['PARENT_ACTION'] = $this->owner->action;
         }
-        if (IsSet($this->owner->name)) {
+        if (isset($this->owner->name)) {
             $out['PARENT_NAME'] = $this->owner->name;
         }
         $out['VIEW_MODE'] = $this->view_mode;
@@ -124,13 +127,13 @@ class scenes extends module
         $out['ACTION'] = $this->action;
         $out['DATA_SOURCE'] = $this->data_source;
         $out['TAB'] = $this->tab;
-        if (IsSet($this->scene_id)) {
+        if (isset($this->scene_id)) {
             $out['IS_SET_SCENE_ID'] = 1;
         }
-        if (IsSet($this->element_id)) {
+        if (isset($this->element_id)) {
             $out['IS_SET_ELEMENT_ID'] = 1;
         }
-        if (IsSet($this->script_id)) {
+        if (isset($this->script_id)) {
             $out['IS_SET_SCRIPT_ID'] = 1;
         }
         if ($this->single_rec) {
@@ -677,10 +680,10 @@ class scenes extends module
 
 
                 $state = SQLSelectOne("SELECT * FROM elm_states WHERE ID='" . (int)$real_part . "'");
-                $element = SQLSelectOne("SELECT * FROM elements WHERE ID=".(int)$state['ELEMENT_ID']);
-                $scene = SQLSelectOne("SELECT * FROM scenes WHERE ID=".(int)$element['SCENE_ID']);
+                $element = SQLSelectOne("SELECT * FROM elements WHERE ID=" . (int)$state['ELEMENT_ID']);
+                $scene = SQLSelectOne("SELECT * FROM scenes WHERE ID=" . (int)$element['SCENE_ID']);
 
-                logAction('scene_clicked',$scene['TITLE'].'.'.$element['TITLE'].'.'.$state['TITLE']);
+                logAction('scene_clicked', $scene['TITLE'] . '.' . $element['TITLE'] . '.' . $state['TITLE']);
 
                 $params = array('STATE' => $state['TITLE']);
                 if ($state['ACTION_OBJECT'] && $state['ACTION_METHOD']) {
@@ -768,6 +771,7 @@ class scenes extends module
         $this->admin($out);
 
         $out['ALL_TYPES'] = $this->getAllTypes();
+
 
     }
 
@@ -1015,6 +1019,51 @@ class scenes extends module
     }
 
 
+    function loadWidgetTypes()
+    {
+        if (!isset($this->widget_types['text'])) {
+            include DIR_MODULES . 'scenes/widget_types.inc.php';
+        }
+    }
+
+    function getWidgetData($element_id)
+    {
+
+        $widgetData = array();
+
+        $element = SQLSelectOne("SELECT * FROM elements WHERE ID=" . (int)$element_id);
+        if (!$element['ID']) return '';
+
+        $data = json_decode($element['WIZARD_DATA'], true);
+        if (isset($this->widget_types[$data['WIDGET_TYPE']])) {
+            $widget_type = $this->widget_types[$data['WIDGET_TYPE']];
+            $widgetData['TYPE'] = $data['WIDGET_TYPE'];
+            $widgetData['TYPE_DETAILS'] = $widget_type;
+            if (preg_match('/file:(.+)/', $widget_type['TEMPLATE'], $m)) {
+                $filename = DIR_TEMPLATES . 'scenes/widgets/' . $m[1];
+                if (file_exists($filename)) {
+                    $template = LoadFile($filename);
+                } else {
+                    $template = 'File not found: ' . $filename;
+                }
+            } else {
+                $template = $widget_type['TEMPLATE'];
+            }
+            $data['element_id'] = $element_id;
+            foreach ($data as $k => $v) {
+                $template = str_replace('%' . $k . '%', $v, $template);
+            }
+            $html = $template;
+
+        } else {
+            $html = 'Incorrect widget type: ' . $data['WIDGET_TYPE'];
+        }
+
+        $widgetData['HTML'] = $html;
+
+        return $widgetData;
+    }
+
     /**
      * Title
      *
@@ -1112,7 +1161,11 @@ class scenes extends module
 
             try {
                 $code = $rec['CONDITION_ADVANCED'];
-                $success = eval($code);
+                if ($code!='') {
+                    $success = eval($code);
+                } else {
+                    $success = true;
+                }
                 if ($success === false) {
                     DebMes("Error in scene code: " . $code);
                     registerError('scenes', "Error in scene code: " . $code);
@@ -1148,6 +1201,7 @@ class scenes extends module
     function getDynamicElements($qry = '1')
     {
 
+        $this->loadWidgetTypes();
         $elements = SQLSelect("SELECT elements.* FROM elements, scenes WHERE elements.SCENE_ID=scenes.ID AND $qry ORDER BY PRIORITY DESC, TITLE");
 
         $totale = count($elements);
@@ -1158,11 +1212,24 @@ class scenes extends module
                 $state = array();
                 $state['ID'] = 'element_' . ($elements[$ie]['ID']);
                 $state['ELEMENT_ID'] = $elements[$ie]['ID'];
-                $state['HTML'] = getObjectClassTemplate($elements[$ie]['LINKED_OBJECT'],$elements[$ie]['CLASS_TEMPLATE']);
+                $state['HTML'] = getObjectClassTemplate($elements[$ie]['LINKED_OBJECT'], $elements[$ie]['CLASS_TEMPLATE']);
                 $state['TYPE'] = $elements[$ie]['TYPE'];
                 $state['MENU_ITEM_ID'] = 0;
                 $state['HOMEPAGE_ID'] = 0;
                 $state['OPEN_SCENE_ID'] = 0;
+                $states = array($state);
+            } elseif ($elements[$ie]['TYPE'] == 'widget') {
+                $state = array();
+                $state['ID'] = 'element_' . ($elements[$ie]['ID']);
+                $state['ELEMENT_ID'] = $elements[$ie]['ID'];
+                $state['MENU_ITEM_ID'] = 0;
+                $state['HOMEPAGE_ID'] = 0;
+                $state['OPEN_SCENE_ID'] = 0;
+                $state['TYPE'] = $elements[$ie]['TYPE'];
+                $widgetData = $this->getWidgetData((int)$elements[$ie]['ID']);
+                $state['HTML'] = $widgetData['HTML'];
+                $elements[$ie]['RESIZABLE'] = $widgetData['TYPE_DETAILS']['RESIZABLE'];
+
                 $states = array($state);
             } elseif ($elements[$ie]['TYPE'] == 'device') {
                 $device_rec = SQLSelectOne("SELECT * FROM devices WHERE ID=" . (int)$elements[$ie]['DEVICE_ID']);
@@ -1174,9 +1241,9 @@ class scenes extends module
                 $state['OPEN_SCENE_ID'] = 0;
                 $state['TYPE'] = $elements[$ie]['TYPE'];
                 if (!$device_rec['ARCHIVED']) {
-                    $state['HTML'] = getObjectClassTemplate($device_rec['LINKED_OBJECT'],$elements[$ie]['CLASS_TEMPLATE']);
+                    $state['HTML'] = getObjectClassTemplate($device_rec['LINKED_OBJECT'], $elements[$ie]['CLASS_TEMPLATE']);
                 } else {
-                    $state['HTML']='';
+                    $state['HTML'] = '';
                 }
                 $states = array($state);
             } else {
@@ -1240,6 +1307,11 @@ class scenes extends module
             }
 
 
+            if (!isset($elements[$ie]['RESIZABLE']) && $elements[$ie]['TYPE'] != 'device') {
+                $elements[$ie]['RESIZABLE'] = 1;
+            }
+
+
         }
         return $res2;
 
@@ -1275,7 +1347,7 @@ class scenes extends module
             }
             $positions[$elements[$ie]['ID']]['TOP'] = $elements[$ie]['TOP'];
             $positions[$elements[$ie]['ID']]['LEFT'] = $elements[$ie]['LEFT'];
-            if (IsSet($elements[$ie]['STATES'])) {
+            if (isset($elements[$ie]['STATES'])) {
                 $states = $elements[$ie]['STATES'];
             } else {
                 $states = SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='" . $elements[$ie]['ID'] . "' ORDER BY PRIORITY DESC, TITLE");
@@ -1293,6 +1365,9 @@ class scenes extends module
                     $states[$is]['STATE'] = $this->checkState($states[$is]['ID']);
                     endMeasure('checkstates');
                 }
+            }
+            if (!isset($elements[$ie]['RESIZABLE']) && $elements[$ie]['TYPE'] != 'device') {
+                $elements[$ie]['RESIZABLE'] = 1;
             }
             $elements[$ie]['STATES'] = $states;
             if ($elements[$ie]['TYPE'] == 'container') {
@@ -1542,7 +1617,6 @@ class scenes extends module
             }
 
 
-
             if ($enable_style_caching && count($styles_recs) > 0)
                 SaveFile($cache_file, serialize($styles_recs));
 
@@ -1574,11 +1648,10 @@ class scenes extends module
     function getWatchedProperties($scenes)
     {
 
-        //DebMes("Getting watched properties for ".serialize($scenes));
+        $this->loadWidgetTypes();
 
         $qry = '1';
-
-        if (!IsSet($scenes['all'])) {
+        if (!isset($scenes['all'])) {
             $qry .= " AND (0 ";
             foreach ($scenes as $k => $v) {
                 if ($k == 'all') {
@@ -1588,8 +1661,6 @@ class scenes extends module
             }
             $qry .= ")";
         }
-
-        //DebMes("qry: ".$qry);
 
         $states = array();
         $elements = $this->getDynamicElements($qry);

@@ -509,6 +509,9 @@ class commands extends module
                 $rec = SQLSelectOne("SELECT * FROM commands WHERE ID='" . $this->id . "'");
                 unset($rec['ID']);
                 $rec['TITLE'] = $rec['TITLE'] . ' (copy)';
+                unset($rec['RENDER_TITLE']);
+                unset($rec['RENDER_DATA']);
+                unset($rec['RENDER_UPDATED']);
                 $rec['ID'] = SQLInsert('commands', $rec);
                 $this->redirect("?id=" . $rec['ID'] . "&view_mode=edit_commands");
             }

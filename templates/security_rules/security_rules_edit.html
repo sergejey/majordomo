@@ -1,28 +1,21 @@
 &nbsp;
-<div class="container">
+<div class="panel panel-default">
+<div class="panel-heading"><#LANG_SECURITY_OBJECT_ID#>: [#OBJECT_TYPE#] #[#OBJECT_ID#]</div>
+<div class="panel-body">
 <!-- Table 'security_rules' edit -->
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form form-horizontal">
 [#if OK#]
 <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
 [#endif OK#]
 [#if ERR#]
 <div class="alert alert-error"><#LANG_FILLOUT_REQURED#></div>
 [#endif ERR#]
-<fieldset>
+
 <input type="hidden" name="object_type" value="[#OBJECT_TYPE#]">
 <input type="hidden" name="object_id" value="[#OBJECT_ID#]">
 
-<div class="form-group">
- <label class="control-label"[#if ERR_TERMINALS#] style="color:red;font-weight:bold"[#endif#]>
- <#LANG_SECURITY_OBJECT_ID#>:
- </label>
- <div class="controls">
-  [#OBJECT_TYPE#] #[#OBJECT_ID#]
- </div>
-</div>
 
-
-<!-- TERMINALS (varchar) -->
+[#if DISABLE_TERMINALS!="1"#]
 <div class="form-group">
  <label class="control-label"[#if ERR_TERMINALS#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_SECURITY_TERMINALS#>:
@@ -30,7 +23,6 @@
  <div class="controls">
  <label><input type="checkbox" name="terminals_limited" id='terminals_limited' value="1"[#if TERMINALS!=""#] checked[#endif#]> <#LANG_SET#></label>
  <div id='terminals_select'>
- &nbsp;
   [#begin TERMINALS_LIST#]
   <label><input type="checkbox" name="terminals_list[]" value="[#ID#]"[#if SELECTED#] checked[#endif#]> [#TITLE#]</label>
   [#end TERMINALS_LIST#]
@@ -45,7 +37,9 @@
   });
  </script>
 </div>
+[#endif DISABLE_TERMINALS#]
 
+[#if DISABLE_USERS!="1"#]
 <!-- USERS (varchar) -->
 <div class="form-group">
  <label class="control-label"[#if ERR_USERS#] style="color:red;font-weight:bold"[#endif#]>
@@ -53,11 +47,10 @@
  </label>
  <div class="controls"><label><input type="checkbox" name="users_limited" id='users_limited' value="1"[#if USERS!=""#] checked[#endif#]> <#LANG_SET#></label>
  <div id='users_select'>
- &nbsp;
   [#begin USERS_LIST#]
-  <label><input type="checkbox" name="users_list[]" value="[#ID#]"[#if SELECTED#] checked[#endif#]> [#NAME#]</label>
+  <div><input type="checkbox" name="users_list[]" value="[#ID#]"[#if SELECTED#] checked[#endif#]> [#NAME#]</div>
   [#end USERS_LIST#]
-  <label>( <input type="checkbox" name="users_except" value="1"[#if USERS_EXCEPT="1"#] checked[#endif#]> <#LANG_ALLOW_EXCEPT_ABOVE#> )</label>
+  <div>( <input type="checkbox" name="users_except" value="1"[#if USERS_EXCEPT="1"#] checked[#endif#]> <#LANG_ALLOW_EXCEPT_ABOVE#> )</div>
  </div>
  </div>
  <script language="javascript">
@@ -68,6 +61,7 @@
   });
  </script>
 </div>
+[#endif DISABLE_USERS#]
 
 <!-- TIMES (varchar) -->
 <div class="form-group">
@@ -76,11 +70,11 @@
  </label>
  <div class="controls"><label><input type="checkbox" name="times_limited" id='times_limited' value="1"[#if TIMES#] checked[#endif#]> <#LANG_SET#></label>
  <div id='times_select'>
-  &nbsp;
   [#begin TIMES_LIST#]
-  <label><input type="checkbox" name="times_list[]" value="[#TITLE#]"[#if SELECTED#] checked[#endif#]> [#TITLE#]</label>
+  <nobr><input type="checkbox" name="times_list[]" value="[#TITLE#]"[#if SELECTED#] checked[#endif#]> [#TITLE#]</nobr>
+     &nbsp;&nbsp;
   [#end TIMES_LIST#]
-  <label>( <input type="checkbox" name="times_except" value="1"[#if TIMES_EXCEPT="1"#] checked[#endif#]> <#LANG_ALLOW_EXCEPT_ABOVE#> )</label>
+  <div>( <input type="checkbox" name="times_except" value="1"[#if TIMES_EXCEPT="1"#] checked[#endif#]> <#LANG_ALLOW_EXCEPT_ABOVE#> )</div>
  </div>
  </div>
  <script language="javascript">
@@ -98,51 +92,50 @@
  <label class="control-label"[#if ERR_TIMES#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_CONDITION#>:
  </label>
- <div class="controls"><label><input type="checkbox" name="condition_active" id='condition_active' value="1"[#if CONDITION_ACTIVE=="1"#] checked[#endif#]> <#LANG_SET#></label>
+    <div class="controls">
+     <label><input type="checkbox" name="condition_active" id='condition_active' value="1"[#if CONDITION_ACTIVE=="1"#] checked[#endif#]> <#LANG_SET#> (&amp;&amp;)</label>
+    </div>
+ <div id='condition_select' class="panel-body">
+     <table class="table">
+         <tr>
+             <th>
+                 <#LANG_LINKED_OBJECT#>
+             </th>
+             <th>
+                 <#LANG_LINKED_PROPERTY#>
+             </th>
+             <th><#LANG_CONDITION#></th>
+             <th><#LANG_VALUE#></th>
+         </tr>
+         [#begin CONDITIONS#]
+         <tr class="condition_row" [#if HIDDEN="1"#] style="display:none"[#endif#]>
+             <td><input type="text" class="form-control" name="condition_linked_object[#NUM#]" id="condition_linked_object[#NUM#]" value="[#LINKED_OBJECT#]"></td>
+             <td><input type="text" class="form-control" name="condition_linked_property[#NUM#]" id="condition_linked_property[#NUM#]" value="[#LINKED_PROPERTY#]"></td>
+             [#module name="linkedobject" object_field="condition_linked_object[#NUM#]" property_field="condition_linked_property[#NUM#]"#]
+             <td><select name="condition[#NUM#]" class="form-control">
+                 <option value="1"[#if CONDITION="1"#] selected[#endif#]>=
+                 <option value="2"[#if CONDITION="2"#] selected[#endif#]>&gt;
+                 <option value="3"[#if CONDITION="3"#] selected[#endif#]>&lt;
+                 <option value="4"[#if CONDITION="4"#] selected[#endif#]>&lt;&gt;
+                 <option value="5"[#if CONDITION="5"#] selected[#endif#]><#LANG_VALUE_UPDATED#>
+             </select></td>
+             <td>
+                 <input type="text" class="form-control" name="condition_value[#NUM#]" value="[#VALUE#]">
+             </td>
+         </tr>
+         [#end CONDITIONS#]
+         <tr>
+             <td colspan="10">
+             <a href="#" onclick="$('.condition_row:hidden:first').show();return false;" class="btn btn-default btn-small"><i class="glyphicon glyphicon-plus"></i> &amp;&amp;</a>
+             </td>
+         </tr>
+     </table>
 
- <div id='condition_select'>
-  &nbsp;
 
-   <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_LINKED_OBJECT#><#LANG_HCB#>linked_object<#LANG_HCE#></label>
-        <div class="controls">
-                <input type="text" class="form-control" name="condition_linked_object" id="condition_linked_object" size="10" value="[#CONDITION_LINKED_OBJECT#]">
-        </div>
-   </div>
-
-        <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_LINKED_PROPERTY#><#LANG_HCB#>linked_property<#LANG_HCE#></label>
-        <div class="controls">
-                 <input type="text" class="form-control" name="condition_linked_property" id="condition_linked_property" size="10" value="[#CONDITION_LINKED_PROPERTY#]">
-        </div>
-        </div>
-
-    <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_CONDITION#></label>
-        <div class="controls">
-         <select name="condition" class="form-control">
-      <option value="1"[#if CONDITION="1"#] selected[#endif#]>=
-      <option value="2"[#if CONDITION="2"#] selected[#endif#]>&gt;
-      <option value="3"[#if CONDITION="3"#] selected[#endif#]>&lt;
-      <option value="4"[#if CONDITION="4"#] selected[#endif#]>&lt;&gt;
-      <option value="5"[#if CONDITION="5"#] selected[#endif#]><#LANG_VALUE_UPDATED#>
-     </select>
-        </div>
-        </div>
-
-    <div class="form-group">
-        <label class="col-lg-4 control-label"><#LANG_VALUE#></label>
-        <div class="controls">
-                 <input type="text" class="form-control" name="condition_value" size="10" value="[#CONDITION_VALUE#]">
-        </div>
-        </div>
-
-
-[#module name="linkedobject" object_field="condition_linked_object" property_field="condition_linked_property"#]
-
- </div>
 
  </div>
+
+
  <script language="javascript">
   $(function () {
   $('#condition_active').change(function () {                
@@ -168,7 +161,20 @@
 <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
 <input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
 <input type="hidden" name="mode" value="update">
+    [#if TYPES#]
+     [#begin TYPES#]
+    <input name="types[]" type="hidden" value="[#TITLE#]">
+     [#end TYPES#]
+    [#endif TYPES#]
 </div>
-</fieldset>
+
 </form>
+[#if OBJECT_ID!="" && OBJECT_TYPE!=""#]
+    <hr/>
+    <div>
+        Code example:
+<pre>if (!checkAccess('[#OBJECT_TYPE#]',[#OBJECT_ID#])) return;</pre>
+    </div>
+[#endif ID#]
+</div>
 </div>

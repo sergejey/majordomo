@@ -95,6 +95,27 @@ $this->device_links=array(
             'TARGET_CLASS'=>'SControllers,SOpenable',
             'PARAMS'=>array(
                 array(
+                    'PARAM_NAME'=>'source_value_type',
+                    'PARAM_TITLE'=>LANG_DEVICES_LINK_SENSOR_VALUE_TYPE,
+                    'PARAM_TYPE'=>'select',
+                    'PARAM_OPTIONS'=>array(
+                        array('TITLE'=>LANG_DEVICES_LINK_SENSOR_VALUE_TYPE_CURRENT,'VALUE'=>''),
+                        array('TITLE'=>LANG_DEVICES_LINK_SENSOR_VALUE_TYPE_MIN,'VALUE'=>'min'),
+                        array('TITLE'=>LANG_DEVICES_LINK_SENSOR_VALUE_TYPE_AVG,'VALUE'=>'avg'),
+                        array('TITLE'=>LANG_DEVICES_LINK_SENSOR_VALUE_TYPE_MAX,'VALUE'=>'max'),
+                    )
+                ),
+                array(
+                    'PARAM_VISIBLE_CONDITION'=>array(
+                        'CHECK_PARAM_NAME'=>'source_value_type',
+                        'CHECK_PARAM_CONDITION'=>'!=',
+                        'CHECK_PARAM_VALUE'=>'',
+                    ),
+                    'PARAM_NAME'=>'source_value_time',
+                    'PARAM_TITLE'=>LANG_DEVICES_LINK_SENSOR_VALUE_FOR_PERIOD,
+                    'PARAM_TYPE'=>'duration'
+                ),
+                array(
                     'PARAM_NAME'=>'condition_type',
                     'PARAM_TITLE'=>LANG_DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION,
                     'PARAM_TYPE'=>'select',

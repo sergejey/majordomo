@@ -15,6 +15,11 @@ class MajordomoApplication extends Application
     private $_filename = '';
     private $_latestAlive = 0;
     private $_scenesDynamicElements = array();
+    private $_started;
+    
+    public function __construct() {
+        $this->_started = date("Y-m-d H:i:s");
+    }
 
     public function onConnect($client)
     {
@@ -77,6 +82,11 @@ class MajordomoApplication extends Application
             if ($ws_clients_total != $old_value) {
                 setGlobal('WSClientsTotal', $ws_clients_total, 1);
             }
+            // send ping
+            foreach ($this->_clients as $client){
+                if ($client->getClientIp() != "127.0.0.1")
+                    $client->send('ping', 'ping', false);
+            }
         }
         global $websockets_script_started;
         if ($websockets_script_started > 0 && (time() - $websockets_script_started) > 6 * 60 * 60) {
@@ -84,6 +94,35 @@ class MajordomoApplication extends Application
         }
     }
 
+    private function _actionStatus($data, $client_id)
+    {
+        $this->cycleAlive();
+        $status = [];
+        $clients = [];
+        $status["YOUR_ID"] = $client_id;
+        $status["STARTED"] = $this->_started;
+        $status["COUNT_CLIENTS"] = count($this->_clients);
+        foreach ($this->_clients as $client) {
+            $data = [];
+            $data['ID'] = $client->getClientId();
+            $data['IP'] = $client->getClientIp();
+            $data['CONNECTED'] = $client->connected;
+            $traffic = [];
+            $traffic['IN_PACKET'] = $client->inPacket;
+            $traffic['OUT_PACKET'] = $client->outPacket;
+            $traffic['IN_BYTES'] = $client->inBytes;
+            $traffic['OUT_BYTES'] = $client->outBytes;
+            $data['TRAFFIC'] = $traffic;
+            $data['SUBCRIBED_TO'] = $client->subscribedTo;
+            $data['WATCHED_PROPERTIES'] = $client->watchedProperties;
+            $clients[] = $data;
+        }
+        $status["CLIENTS"] = $clients;
+        $status["COUNT_CACHED"] = count($this->_cachedProperties);
+        $status["CACHED"] = $this->_cachedProperties;
+        $encodedData = $this->_encodeData('status', json_encode($status));
+        $this->_clients[$client_id]->send($encodedData);
+    }
 
     private function _actionSubscribe($data, $client_id)
     {
@@ -230,10 +269,24 @@ class MajordomoApplication extends Application
                 if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS == 1) {
                     DebMes($this->_clients[$client_id]->getClientIp() . " Watching:\n" . json_encode($tmp), 'websockets');
                 }
+                $send_data = array();
                 foreach ($tmp as $property) {
-                    $this->_clients[$client_id]->subscribedTo['properties'][mb_strtolower($property, 'UTF-8')] = 1;
-                    $this->_clients[$client_id]->watchedProperties[mb_strtolower($property, 'UTF-8')]['properties'] = 1;
+                    $property_name_lc = mb_strtolower($property, 'UTF-8');
+                    $this->_clients[$client_id]->subscribedTo['properties'][$property_name_lc] = 1;
+                    $this->_clients[$client_id]->watchedProperties[$property_name_lc]['properties'] = 1;
+                    if (isSet($this->_cachedProperties[$property_name_lc]))
+                        $send_data[] = array('PROPERTY' => $property, 'VALUE' => $this->_cachedProperties[$property_name_lc]);
+                    else
+                        $send_data[] = array('PROPERTY' => $property, 'VALUE' => getGlobal($property));
                 }
+                if (isset($send_data[0])) {
+                    if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS == 1) {
+                        DebMes($this->_clients[$client_id]->getClientIp() . " Sending cached properties\n" . json_encode($send_data), 'websockets');
+                    }
+                    $encodedData = $this->_encodeData('properties', json_encode($send_data));
+                    $this->_clients[$client_id]->send($encodedData);
+                }
+                
             }
 
             if ($data['TYPE'] == 'events') {
@@ -252,7 +305,7 @@ class MajordomoApplication extends Application
                 }
             }
 
-            $send_data = array();
+            $send_data = $data;
             $encodedData = $this->_encodeData('subscribed', json_encode($send_data));
             $this->_clients[$client_id]->send($encodedData);
         }
@@ -307,8 +360,9 @@ class MajordomoApplication extends Application
             $property_name_lc = mb_strtolower($property_name,'UTF-8');
             $property_value = $received_values[$property_name];
             if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS == 1) {
-                //DebMes("Update property ".$property_name,'websockets');
+                DebMes("Update property ".$property_name." => ".$property_value." (total cache:".count($this->_cachedProperties).")",'websockets');
             }
+            $this->_cachedProperties[$property_name_lc] = $property_value;
             //process property update
             $found_subscribers = 0;
 
@@ -501,7 +555,7 @@ class MajordomoApplication extends Application
                     //properties
                     if (isset($client->watchedProperties[$property_name_lc]['properties'])) {
                         $send_data = array();
-                        $send_data[] = array('PROPERTY' => $property_name, 'VALUE' => getGlobal($property_name));
+                        $send_data[] = array('PROPERTY' => $property_name, 'VALUE' => $property_value);
                         if (isset($send_data[0])) {
                             if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS == 1) {
                                 DebMes($client->getClientIp() . " Sending updated properties\n" . json_encode($send_data), 'websockets');
@@ -516,10 +570,9 @@ class MajordomoApplication extends Application
                     $tmp = explode('.', $property_name_lc);
                     if (isset($client->watchedProperties[$tmp[0]]['properties'])) {
                         $send_data = array();
-                        $send_data[] = array('PROPERTY' => $property_name, 'VALUE' => getGlobal($property_name));
+                        $send_data[] = array('PROPERTY' => $property_name, 'VALUE' => $property_value);
                         if (isset($send_data[0])) {
                             if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS == 1) {
-                                DebMes($client->getClientIp() . " Sending updated properties\n" . json_encode($send_data), 'websockets');
                                 DebMes($client->getClientIp() . " Sending updated properties\n" . json_encode($send_data), 'websockets');
                             }
                             $encodedData = $this->_encodeData('properties', json_encode($send_data));

@@ -81,7 +81,7 @@
 						<li><a href="https://mjdm.ru/forum/" target="_blank"><i class="glyphicon glyphicon-edit"></i> <#LANG_NEWDASH_FORUM#></a></li>
 						<li><a href="https://connect.smartliving.ru/" target="_blank"><i class="glyphicon glyphicon-hdd"></i> MajorDoMo Connect</a></li>
 						[#if APP_TDWIKI_INSTALLED="1"#]
-						<li><a href="#" onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)"><i class="glyphicon glyphicon-book"></i> <#LANG_APP_TDWIKI#></a></li>
+						<li><a  onClick="return openModalTWindow('tdWiki', 'Wiki', '/panel/popup/app_tdwiki.html', 1000, 800)" href="#"><i class="glyphicon glyphicon-book"></i> <#LANG_APP_TDWIKI#></a></li>
 						[#endif#]
 						<li><a href="<#LANG_KB_URL#>?utm_source=system&utm_medium=help&utm_campaign=GeneralHelp" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a></li>
 						<li><a href="https://mdminfo.ru/wiki/MajorDoMo" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> MJDM Wiki</a></li>
@@ -392,14 +392,14 @@ $(document).ready(function() {
 	
 	if ($(window).scrollTop() > 200 && (document.documentElement.scrollHeight - window.innerHeight) >= 200) {
 		$("nav").addClass("navbar-fixed-top");
-		$("nav").attr('style', 'box-shadow: 0px 1px 10px rgb(0 0 0 / 25%);z-index: 99999;border-radius: 4px;border-bottom: 2px solid #4792d1;');
+		$("nav").attr('style', 'box-shadow: 0px 1px 10px rgb(0 0 0 / 25%);z-index: 999;border-radius: 4px;border-bottom: 2px solid #4792d1;');
 	}
 		
 	$(window).on("scroll", function(e) {
 		if ($(window).scrollTop() > 200 && (document.documentElement.scrollHeight - window.innerHeight) >= 200) {
 			$("nav").addClass("navbar-fixed-top");
 			$("body").css('padding-top', '54px');
-			$("nav").attr('style', 'box-shadow: 0px 1px 10px rgb(0 0 0 / 25%);z-index: 99999;border-radius: 4px;border-bottom: 2px solid #4792d1;');
+			$("nav").attr('style', 'box-shadow: 0px 1px 10px rgb(0 0 0 / 25%);z-index: 999;border-radius: 4px;border-bottom: 2px solid #4792d1;');
 		} else {
 			$("nav").removeClass("navbar-fixed-top");
 			$("nav").removeAttr('style');
@@ -429,12 +429,13 @@ $(document).ready(function() {
 	$('.datepicker').datetimepicker({format:'YYYY-MM-DD'});
 	$(".wiki_hint").fancybox({
 		type            : 'iframe',
+		iframe			: {preload: false},
 		maxWidth        : 800,
 		maxHeight       : 600,
 		fitToView       : false,
 		width           : '70%',
 		height          : '70%',
-		autoSize        : false,
+		autoSize        : true,
 		closeClick      : false,
 		openEffect      : 'none',
 		closeEffect     : 'none'
@@ -448,6 +449,7 @@ $(document).ready(function() {
 		height          : '70%',
 		autoSize        : false,
 		closeClick      : false,
+		preload			: false,
 		openEffect      : 'none',
 		closeEffect     : 'none'
 	});

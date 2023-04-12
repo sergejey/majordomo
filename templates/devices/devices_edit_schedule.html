@@ -13,7 +13,10 @@
     <tr>
         <td><b>[#SET_TIME#]</b>
             [#if HAS_RULE#]
-            <i class="glyphicon glyphicon-lock"></i>
+            <a onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);"
+               class="btn-sm btn-success"
+               href="?(panel:{action=security_rules})&object_type=spoint&object_id=[#ID#]&print=1&types[]=times&types[]=conditions" target=_blank>
+                <i class="glyphicon glyphicon-cog"></i></a>
             [#endif#]
         </td>
         <td>[#SET_DAYS#]</td>
@@ -96,7 +99,11 @@
     <div class="form-group">
         <label class="control-label col-sm-2"><#LANG_ACCESS_CONTROL#>:<#LANG_HCB#>access_control<#LANG_HCE#></label>
         <div class="col-sm-4">
-            <a href="?(panel:{action=security_rules})&object_type=spoint&object_id=<#POINT_ID#>&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
+            <a onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);"
+               class="btn btn-sm[#if POINT_ACCESS_DEFINED#] btn-success[#endif#]"
+               href="?(panel:{action=security_rules})&object_type=spoint&object_id=<#POINT_ID#>&print=1&types[]=times&types[]=conditions" target=_blank>
+                <i class="glyphicon glyphicon-cog"></i>
+                <#LANG_SET#></a>
         </div>
     </div>
     [#endif POINT_ID#]

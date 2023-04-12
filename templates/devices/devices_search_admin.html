@@ -152,11 +152,14 @@
 </div>
 [#endif#]
 <div class="row">
- <div class="col-md-4"><div class="device[#ID#]">[#HTML#]</div><span id="device_type[#ID#]" style="display:none">[#TYPE#]</span></div>
+ <div class="col-md-4"><div class="device[#ID#]">[#HTML#]</div>
+  <span id="device_type[#ID#]" style="display:none">[#TYPE#]</span></div>
  <div class="col-md-3">
+  [#if ALT_TITLES!=""#]<div style="color:grey">[#ALT_TITLES#]</div>[#endif#]
   [#TYPE_TITLE#]
   [#if FAVORITE="1"#]<i class="glyphicon glyphicon-star"></i>[#endif#]
   &mdash; <a href="/panel/linkedobject.html?op=redirect&object=[#LINKED_OBJECT#]">[#LINKED_OBJECT#]</a>
+
  </div>
  <div class="col-md-2">
   [#if LINKED_MODULES#]
