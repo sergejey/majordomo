@@ -133,7 +133,7 @@ class parser
     */
    public function smarty_parse($template_file, &$data)
    {
-      define('SMARTY_DIR',ROOT . 'lib/smarty/');
+      define('SMARTY_DIR',ROOT . '3rdparty/smarty3/');
       
       require_once(SMARTY_DIR . 'Smarty.class.php');
 

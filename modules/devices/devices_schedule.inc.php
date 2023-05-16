@@ -60,7 +60,7 @@ $days=array(
 );
 
 $points=SQLSelect("SELECT * FROM devices_scheduler_points WHERE DEVICE_ID=".(int)$rec['ID']);
-if ($points[0]['ID']) {
+if (isset($points[0]['ID'])) {
     foreach($points as &$point_item) {
         $point_days=explode(',',$point_item['SET_DAYS']);
         $point_days_title=array();
@@ -91,7 +91,7 @@ if (gr('delete_id','int')) {
 
 $out['DAYS']=$days;
 
-if ($point['SET_DAYS']!='') {
+if (isset($point['SET_DAYS']) && $point['SET_DAYS']!='') {
     $tmp=explode(',',$point['SET_DAYS']);
     foreach($out['DAYS'] as &$day) {
         if (in_array($day['VALUE'],$tmp)) {
@@ -100,7 +100,7 @@ if ($point['SET_DAYS']!='') {
     }
 }
 
-if ($point['SET_TIME']) {
+if (isset($point['SET_TIME']) && $point['SET_TIME']!='') {
     $tmp=explode(':',$point['SET_TIME']);
     $out['HOUR']=$tmp[0];
     $out['MINUTE']=$tmp[1];

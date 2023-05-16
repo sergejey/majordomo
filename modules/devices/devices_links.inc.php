@@ -14,7 +14,7 @@ if ($this->edit_mode=='edit_link') {
     $link_details=$this->getLinkDetails($link_name);
 
     $link_rec=SQLSelectOne("SELECT * FROM devices_linked WHERE ID=".(int)$link_id);
-    if ($link_rec['ID']) {
+    if (isset($link_rec['ID'])) {
         $out['DEVICE2_ID']=$link_rec['DEVICE2_ID'];
         $out['LINK_ID']=$link_rec['ID'];
         $out['COMMENT']=$link_rec['COMMENT'];
@@ -88,7 +88,7 @@ if ($this->edit_mode=='edit_link') {
 }
 
 $links=SQLSelect("SELECT devices_linked.*, devices.TITLE FROM devices_linked LEFT JOIN devices ON devices.ID=DEVICE2_ID WHERE (DEVICE1_ID=".(int)$rec['ID']." OR DEVICE2_ID=".(int)$rec['ID'].") ORDER BY ID");
-if ($links[0]['ID']) {
+if (isset($links[0]['ID'])) {
     $total = count($links);
     for ($i = 0; $i < $total; $i++) {
         $device1=SQLSelectOne("SELECT ID, TITLE FROM devices WHERE ID=".(int)$links[$i]['DEVICE1_ID']);

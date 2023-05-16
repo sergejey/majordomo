@@ -262,7 +262,7 @@
             [#if (ELEMENT_TYPE=="informer" || ELEMENT_TYPE=="switch" || ELEMENT_TYPE=="button" || ELEMENT_TYPE=="navgo" || ELEMENT_TYPE=="nav" || ELEMENT_TYPE=="warning")#]
             #-->
             [#if ELEMENT_TYPE!="device"#]
-            [#if STYLES || COMMON_STYLES#]
+            [#if (STYLES) || (COMMON_STYLES)#]
             <div class="form-group">
                 <label class="col-lg-4 control-label"><#LANG_STYLE#><#LANG_HCB#>elemen_style<#LANG_HCE#></label>
                 <div class="controls">

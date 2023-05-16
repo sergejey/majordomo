@@ -110,7 +110,7 @@
      $replaces=array();
      for($i=0;$i<$total;$i++) {
       $property=SQLSelectOne("SELECT ID FROM properties WHERE TITLE LIKE '".DBSafe($rec['TITLE'])."' AND OBJECT_ID=".(int)$objects[$i]['ID']." AND CLASS_ID!=".(int)$rec['CLASS_ID']);
-      if ($property['ID']) {
+      if (isset($property['ID'])) {
        $replaces[]=$property['ID'];
       }
      }

@@ -5,7 +5,7 @@
 
 global $session;
 
-if ($this->owner->room_id) {
+if (isset($this->owner->room_id) && $this->owner->room_id) {
     $session->data['SHOUT_ROOM_ID'] = $this->owner->room_id;
 }
 
@@ -59,7 +59,7 @@ if ($this->action == '' && $session->data['SITE_USER_ID'] && $msg != '') {
     $getdata = 1;
 }
 
-if ($this->owner->name == 'panel') {
+if (is_object($this->owner) && $this->owner->name == 'panel') {
     $out['CONTROLPANEL'] = 1;
 }
 $qry = "1";
@@ -86,11 +86,11 @@ if ($save_qry) {
 }
 if (!$qry) $qry = "1";
 // FIELDS ORDER
-global $sortby;
-if (!$sortby) {
+$sortby = gr('sortby');
+if (!$sortby && isset($session->data['shouts_sort'])) {
     $sortby = $session->data['shouts_sort'];
 } else {
-    if ($session->data['shouts_sort'] == $sortby) {
+    if (isset($session->data['shouts_sort']) && $session->data['shouts_sort'] == $sortby) {
         if (Is_Integer(strpos($sortby, ' DESC'))) {
             $sortby = str_replace(' DESC', '', $sortby);
         } else {
@@ -139,7 +139,7 @@ if ($this->mobile) {
     $out['MOBILE'] = 1;
 }
 
-if ($session->data['SHOUT_ROOM_ID'] && LOGGED_USER) {
+if (isset($session->data['SHOUT_ROOM_ID']) && $session->data['SHOUT_ROOM_ID'] && defined('LOGGED_USER') && LOGGED_USER) {
     $room = SQLSelectOne("SELECT * FROM shoutrooms WHERE ID='" . (int)$session->data['SHOUT_ROOM_ID'] . "'");
     //print_r($room);
     if ($room['ADDED_BY'] == LOGGED_USER_ID) {
@@ -187,8 +187,14 @@ if ($res[0]['ID']) {
     $txtdata .= 'No data';
 }
 
+if (!isset($session->data['SHOUT_ROOM_ID'])) {
+    $session->data['SHOUT_ROOM_ID']=0;
+}
+if (!isset($session->data['logged_user'])) {
+    $session->data['logged_user']=0;
+}
 $rooms = SQLSelect("SELECT * FROM shoutrooms WHERE (IS_PUBLIC=1) OR (IS_PUBLIC=0 AND ADDED_BY=" . (int)$session->data['logged_user'] . ") OR (IS_PUBLIC=0 AND ID=" . (int)$session->data['SHOUT_ROOM_ID'] . ") ORDER BY PRIORITY DESC, TITLE");
-if ($rooms[0]['ID']) {
+if (isset($rooms[0])) {
     $rooms[0]['FIRST'] = 1;
     $out['ROOMS'] = $rooms;
     if ($session->data['SHOUT_ROOM_ID']) {

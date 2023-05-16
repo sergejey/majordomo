@@ -270,10 +270,10 @@ class events extends module
             //$qry.=" AND TERMINAL_FROM!='".DBSafe($session->data['TERMINAL'])."'";
             $qry .= " AND EVENT_TYPE!='system'";
             $qry .= " AND PROCESSED=0";
-            $qry .= " AND (TERMINAL_TO='*' OR TERMINAL_TO='" . DBSafe($session->data['TERMINAL']) . "')";
-            $qry .= " AND (USER_TO='*' OR USER_TO='" . DBSafe($session->data['USERNAME']) . "')";
+            $qry .= " AND (TERMINAL_TO='*' OR TERMINAL_TO='" . DBSafe(isset($session->data['TERMINAL'])?$session->data['TERMINAL']:'') . "')";
+            $qry .= " AND (USER_TO='*' OR USER_TO='" . DBSafe(isset($session->data['USERNAME'])?$session->data['USERNAME']:'') . "')";
             $event = SQLSelectOne("SELECT * FROM events WHERE $qry ORDER BY ADDED");
-            if ($event['ID']) {
+            if (isset($event['ID'])) {
                 $res = $event['ID'] . '|' . $event['EVENT_TYPE'] . '|' . $event['WINDOW'] . '|' . str_replace("\n", '\n', $event['DETAILS']);
                 echo $res;
                 $event['PROCESSED'] = 1;
@@ -306,7 +306,7 @@ class events extends module
         if ($expire_in) {
             $rec['EXPIRE'] = date('Y-m-d H:i:s', time() + $expire_in * 24 * 60 * 60);
         } else {
-            $rec['EXPIRE'] = null;
+            unset($rec['EXPIRE']);
         }
         $rec['PROCESSED'] = 1;
 

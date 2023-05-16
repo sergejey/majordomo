@@ -410,14 +410,14 @@ function getObject($name)
         //$rec = SQLSelectOne("SELECT objects.* FROM objects WHERE TITLE = '".DBSafe($name)."'");
     }
 
-    if (!$rec['ID']) {
+    if (!isset($rec['ID'])) {
         $sqlQuery = "SELECT objects.*
                      FROM objects
                     WHERE TITLE = '" . DBSafe($name) . "'";
         $rec = SQLSelectOne($sqlQuery);
     }
 
-    if ($rec['ID']) {
+    if (isset($rec['ID'])) {
         include_once(DIR_MODULES . 'objects/objects.class.php');
         $obj = new objects();
         $obj->id = $rec['ID'];
@@ -538,6 +538,10 @@ function getClassProperties($class_id, $def = '')
     if (isset($cached_class_properties[$class_id])) return $cached_class_properties[$class_id];
 
     $class = SQLSelectOne("SELECT ID, PARENT_ID FROM classes WHERE (ID='" . (int)$class_id . "' OR TITLE = '" . DBSafe($class_id) . "')");
+    if (!isset($class['ID'])) {
+        return array();
+    }
+
     $properties = SQLSelect("SELECT properties.*, classes.TITLE AS CLASS_TITLE FROM properties LEFT JOIN classes ON properties.CLASS_ID=classes.ID WHERE CLASS_ID='" . $class['ID'] . "' AND OBJECT_ID=0");
     $res = $properties;
     if (!is_array($def)) {
@@ -552,9 +556,9 @@ function getClassProperties($class_id, $def = '')
             $def[] = $p['TITLE'];
         }
     }
-    if ($class['PARENT_ID']) {
+    if (isset($class['PARENT_ID'])) {
         $p_res = getClassProperties($class['PARENT_ID'], $def);
-        if ($p_res[0]['ID']) {
+        if (isset($p_res[0]['ID'])) {
             foreach ($p_res as $k => $p) {
                 if (!in_array($p['TITLE'], $def)) {
                     $res[] = $p;
@@ -1160,10 +1164,8 @@ function processTitle($title, $object = 0)
     //startMeasure('processTitle ['.$in_title.']');
 
     if ($in_title != '') {
-        if (isset($_SERVER['REQUEST_METHOD'])) {
-            if ($title_memory_cache[$key]) {
-                return $title_memory_cache[$key];
-            }
+        if (isset($_SERVER['REQUEST_METHOD']) && isset($title_memory_cache[$key])) {
+            return $title_memory_cache[$key];
         }
 
         if (preg_match('/\[#.+?#\]/is', $title)) {
@@ -1231,7 +1233,9 @@ function processTitle($title, $object = 0)
                             $data = '0';
                         }
                     }
-                    $title = str_replace($m[0][$i], $hsh[$data], $title);
+                    if (isset($hsh[$data])) {
+                        $title = str_replace($m[0][$i], $hsh[$data], $title);
+                    }
                 }
 
                 endMeasure('processTitlePropertiesReplace');

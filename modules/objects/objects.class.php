@@ -38,16 +38,16 @@ class objects extends module
     function saveParams($data = 1)
     {
         $data = array();
-        if (IsSet($this->id)) {
+        if (isset($this->id)) {
             $data["id"] = $this->id;
         }
-        if (IsSet($this->view_mode)) {
+        if (isset($this->view_mode)) {
             $data["view_mode"] = $this->view_mode;
         }
-        if (IsSet($this->edit_mode)) {
+        if (isset($this->edit_mode)) {
             $data["edit_mode"] = $this->edit_mode;
         }
-        if (IsSet($this->tab)) {
+        if (isset($this->tab)) {
             $data["tab"] = $this->tab;
         }
         return parent::saveParams($data);
@@ -100,10 +100,10 @@ class objects extends module
         } else {
             $this->usual($out);
         }
-        if (IsSet($this->owner->action)) {
+        if (isset($this->owner->action)) {
             $out['PARENT_ACTION'] = $this->owner->action;
         }
-        if (IsSet($this->owner->name)) {
+        if (isset($this->owner->name)) {
             $out['PARENT_NAME'] = $this->owner->name;
         }
         $out['VIEW_MODE'] = $this->view_mode;
@@ -322,7 +322,7 @@ class objects extends module
     function loadObject($id)
     {
         $rec = SQLSelectOne("SELECT * FROM objects WHERE ID=" . (int)$id);
-        if (IsSet($rec['ID'])) {
+        if (isset($rec['ID'])) {
             $this->id = $rec['ID'];
             $this->object_title = $rec['TITLE'];
             $this->class_id = $rec['CLASS_ID'];
@@ -445,7 +445,7 @@ class objects extends module
 
         if ($id) {
             $meth = SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID='" . (int)$id . "' AND TITLE = '" . DBSafe($name) . "'");
-            if ($meth['ID']) {
+            if (isset($meth['ID'])) {
                 return $meth['ID'];
             }
         }
@@ -506,7 +506,7 @@ class objects extends module
             }
             $current_call .= '.' . md5(json_encode($params));
         }
-        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
+        if (isset($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
             if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s']) && !empty($_GET['m_c_s'])) {
                 $call_stack = $_GET['m_c_s'];
                 unset($params['m_c_s']);
@@ -514,10 +514,14 @@ class objects extends module
             if (isset($_GET['raiseEvent']) && !empty($_GET['raiseEvent'])) {
                 $raiseEvent = $_GET['raiseEvent'];
                 unset($params['raiseEvent']);
+            } else {
+                $raiseEvent = '';
             }
             if (isset($_GET['r_s_m']) && !empty($_GET['r_s_m'])) {
                 $run_SafeMethod = $_GET['r_s_m'];
                 unset($params['r_s_m']);
+            } else {
+                $run_SafeMethod = '';
             }
         }
 
@@ -535,7 +539,7 @@ class objects extends module
         $params['raiseEvent'] = $raiseEvent;
         $params['m_c_s'] = $call_stack;
         $params['r_s_m'] = $run_SafeMethod;
-        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && ((!$raiseEvent && $run_SafeMethod) || (defined('LOWER_BACKGROUND_PROCESSES') && LOWER_BACKGROUND_PROCESSES == 1))) {
+        if (isset($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && ((!$raiseEvent && $run_SafeMethod) || (defined('LOWER_BACKGROUND_PROCESSES') && LOWER_BACKGROUND_PROCESSES == 1))) {
             $result = $this->callMethod($name, $params);
         } else {
             $params['r_s_m'] = 1;
@@ -638,8 +642,8 @@ class objects extends module
 
 
             if ($code != '') {
-               if (defined('PYTHON_PATH') and isItPythonCode($code)) {
-					echo ($code);
+                if (defined('PYTHON_PATH') and isItPythonCode($code)) {
+                    echo($code);
                     python_run_code($code, $params, $this->object_title);
                 } else {
                     try {
@@ -702,14 +706,14 @@ class objects extends module
 
         $rec = SQLSelectOne("SELECT ID FROM properties WHERE OBJECT_ID='" . (int)$object_id . "' AND TITLE = '" . DBSafe($name) . "'");
         if (isset($rec['ID'])) {
-            saveToCache($cached_name,$rec['ID']);
+            saveToCache($cached_name, $rec['ID']);
             return $rec['ID'];
         }
         $props = $this->getParentProperties($class_id, '', 1);
         $total = count($props);
         for ($i = 0; $i < $total; $i++) {
             if (strtolower($props[$i]['TITLE']) == strtolower($name)) {
-                saveToCache($cached_name,$props[$i]['ID']);
+                saveToCache($cached_name, $props[$i]['ID']);
                 return $props[$i]['ID'];
             }
         }
@@ -907,7 +911,7 @@ class objects extends module
             startMeasure('setproperty_update_getvalue');
             $v = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID=" . (int)$id . " AND OBJECT_ID=" . (int)$this->id);
             endMeasure('setproperty_update_getvalue');
-            $old_value = $v['VALUE'];
+            $old_value = isset($v['VALUE']) ? $v['VALUE'] : false;
 
             if ($prop['DATA_TYPE'] == 5 && $value != $old_value) { // image
                 $path_parts = pathinfo($value);
@@ -998,7 +1002,7 @@ class objects extends module
             addToOperationsQueue('connect_device_data', $this->object_title . '.' . $property, $value, true);
         }
 
-        if (IsSet($v['LINKED_MODULES']) && $v['LINKED_MODULES']) { // TO-DO !
+        if (isset($v['LINKED_MODULES']) && $v['LINKED_MODULES']) { // TO-DO !
             if (!is_array($no_linked) && $no_linked) {
                 return;
             } elseif (!is_array($no_linked)) {
@@ -1037,7 +1041,7 @@ class objects extends module
             endMeasure('setproperty_postwebsocketqueue');
         }
 
-        if (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY'] > 0)) {
+        if (isset($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY'] > 0)) {
             $q_rec = array();
             $q_rec['VALUE_ID'] = $v['ID'];
             $q_rec['ADDED'] = date('Y-m-d H:i:s');
@@ -1050,7 +1054,7 @@ class objects extends module
 
         if (isset($prop['ONCHANGE']) && $prop['ONCHANGE']) {
             global $property_linked_history;
-            if (!$property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]) {
+            if (!isset($property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']])) {
                 $property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']] = 1;
                 $params = array();
                 $params['PROPERTY'] = $property;
@@ -1059,7 +1063,7 @@ class objects extends module
                 $params['SOURCE'] = (string)$source;
                 //$this->callMethod($prop['ONCHANGE'], $params);
                 //$this->callMethodSafe($prop['ONCHANGE'], $params);
-                if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
+                if (isset($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
                     $this->callMethod($prop['ONCHANGE'], $params);
                 } else {
                     $this->raiseEvent($prop['ONCHANGE'], $params);
@@ -1171,7 +1175,7 @@ class objects extends module
         SQLExec($sqlQuery);
 
         // Если вы дошли до этой записи, при проявлении ошибки, то данная ошибка проявляется на MariDB
-        $sqlQuery = "ALTER TABLE operations_queue DROP COLUMN `ID`;";
+        $sqlQuery = "ALTER TABLE operations_queue DROP COLUMN IF EXISTS `ID`;";
         SQLExec($sqlQuery, true);
 
 

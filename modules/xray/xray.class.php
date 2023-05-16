@@ -770,7 +770,7 @@ class xray extends module
                         while (false !== ($entry = readdir($handle))) {
                             if (preg_match('/^cycle/is', $entry)) {
                                 $title = preg_replace('/\.php$/', '', $entry);
-                                if (!$seen[$title]) {
+                                if (!isset($seen[$title])) {
                                     $res[] = array('TITLE' => $title . 'Run');
                                 }
                             }
@@ -966,7 +966,7 @@ class xray extends module
 						if($this->mode == 'chart') {
 							$arrayDB = array_slice(array_reverse($responce['LIST']), 0, 7);
 							echo json_encode($arrayDB);
-						} else if($this->mode == 'showdbload') {
+						} else if($this->mode == 'showdbload' && isset($GLOBALS['db']->dbh->stat)) {
 							$DBstat = $GLOBALS['db']->dbh->stat;
 							$DBstat = explode('  ', $DBstat);
 							$DBstat_PerSec = preg_replace('/[^0-9.]/', '', $DBstat[7]);

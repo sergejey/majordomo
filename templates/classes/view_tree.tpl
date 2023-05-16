@@ -76,7 +76,7 @@
             <div class="panel panel-{if $item.TITLE == 'SDevices'}primary{else}{if $item.TITLE == 'Computer' OR $item.TITLE == 'systemStates' OR $item.TITLE == 'OperationalModes' OR $item.TITLE == 'Timer'}danger{else}default{/if}{/if}" style="margin-bottom: 5px;{if $item.LEVEL_PAD!=0}margin:10px;{/if}">
                 <div class="panel-heading">
                     <div class="row">
-                        <div class="col-lg-8 col-md-8 col-sm-7 col-xs-9" onclick="toggleClass('{if $item.SUB_LIST!=$item.ID}{$item.ID},{/if}{$item.SUB_LIST}');" style="cursor: pointer;{if $item.CAN_DELETE=="1"}opacity: 0.3;{/if}">
+                        <div class="col-lg-8 col-md-8 col-sm-7 col-xs-9" onclick="toggleClass('{if $item.SUB_LIST!=$item.ID}{$item.ID},{/if}{$item.SUB_LIST}');" style="cursor: pointer;{if isset($item.CAN_DELETE)}opacity: 0.3;{/if}">
                         <h3 class="panel-title">
                             <i class="glyphicon glyphicon-search" style="margin-right: 10px;vertical-align: text-top;cursor: pointer;" onclick="$('#filter_modules').val('{$item.TITLE}');filterSearch();$('#mdmGlobalSearchModal').modal('show');"></i> {$item.TITLE}
                         </h3>
@@ -89,7 +89,7 @@
                             <a href="?view_mode=edit_classes&id={$item.ID}&tab=methods" class="btn btn-default btn-sm hidden-xs" title="{$smarty.const.LANG_METHODS}"><i class="glyphicon glyphicon-th-list"></i></a>
                             <a href="?view_mode=edit_classes&id={$item.ID}&tab=objects" class="btn btn-default btn-sm hidden-xs" title="{$smarty.const.LANG_OBJECTS}"><i class="glyphicon glyphicon-th-large"></i></a>
                             <a href="?view_mode=edit_classes&parent_id={$item.ID}" class="btn btn-default btn-sm hidden-xs" title="{$smarty.const.LANG_EXPAND}"><i class=""></i>{$smarty.const.LANG_EXPAND}</a>
-                            {if $item.CAN_DELETE=="1"}
+                            {if isset($item.CAN_DELETE)}
                             <a href="?view_mode=delete_classes&id={$item.ID}" onClick="return confirm('{$smarty.const.LANG_ARE_YOU_SURE}')" class="btn btn-danger btn-sm" title="{$smarty.const.LANG_DELETE}"><i class="glyphicon glyphicon-remove"></i></a>
                             {/if}
                         </div>
@@ -97,7 +97,7 @@
                 </div>
             </div>
             <div class="panel-collapse collapse out" id="sub_{$item.ID}">
-                {if $item.OBJECTS}
+                {if isset($item.OBJECTS)}
                 <ul class="list-group classSearch">
                     {foreach $item.OBJECTS as $object}
                     <li style="padding: 5px;display: block;border: 0px;border-radius: 0px;border-bottom: 1px solid #ddd;">
@@ -105,7 +105,7 @@
                             <div class="col-md-12">
                                 <a href="{$smarty.const.ROOTHTML}panel/class/{$item.ID}/object/{$object.ID}.html">{$object.TITLE}</a> {if $object.DESCRIPTION != ''}<span style="font-size: 1rem;color: gray;vertical-align: middle;">→ {$object.DESCRIPTION}</span>{/if}
                                 {if $object.KEY_DATA!=""} → <i>{$object.KEY_DATA}</i>{/if}
-                                {if $object.METHODS}
+                                {if isset($object.METHODS)}
                                 <div style="padding-left: 10px">
                                     {foreach $object.METHODS as $method}
                                     <p style="color: gray;font-size: 1.2rem;margin: 0px;">↳
@@ -122,7 +122,7 @@
                 </ul>
                 {/if}
 
-                {if $item.RESULT}
+                {if isset($item.RESULT)}
                     {classes items=$item.RESULT}
                 {/if}
 

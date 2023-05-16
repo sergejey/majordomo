@@ -32,6 +32,7 @@ if (!file_exists(ROOT . 'cms/modules_installed/control_modules.installed')) {
 
 $app = new application();
 
+$md = gr('md');
 if ($md != $app->name)
     $app->restoreParams();
 else
@@ -78,7 +79,7 @@ echobig($result);
 
 endMeasure('final_echo', 1);
 
-if ($cache_filename != '' && $cached_result == '')
+if (isset($cache_filename) && $cache_filename != '' && $cached_result == '')
 {
    SaveFile(ROOT . 'cms/cached/' . $cache_filename, $result);
 }

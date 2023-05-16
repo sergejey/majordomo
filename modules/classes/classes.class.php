@@ -490,7 +490,7 @@ function admin(&$out) {
 
   if ($class['PARENT_ID']) {
    $p_res=$this->getParentMethods($class['PARENT_ID'], $def);
-   if ($p_res[0]['ID']) {
+   if (isset($p_res[0]['ID'])) {
     $res=array_merge($res, $p_res);
    }
   }
@@ -567,7 +567,7 @@ function usual(&$out) {
     if (!is_array($res[$i]['RESULT'])) {
      unset($res[$i]['RESULT']);
     }
-    if (!$res[$i]['RESULT'] && !$res[$i]['OBJECTS']) {
+    if (!isset($res[$i]['RESULT']) && !isset($res[$i]['OBJECTS'])) {
      $res[$i]['CAN_DELETE']=1;
     }
     $res2[]=$res[$i];

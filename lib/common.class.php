@@ -553,7 +553,13 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
 
             if ($host == '127.0.0.1' || $host == 'localhost') {
                 $use_proxy = false;
+            } else {
+                // do not use cookie for local calls
+                $tmpfname = ROOT . 'cms/cached/cookie_' . str_replace('.', '_', $host) . '.txt';
+                curl_setopt($ch, CURLOPT_COOKIEJAR, $tmpfname);
+                curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
             }
+
 
             if ($use_proxy && defined('HOME_NETWORK') && HOME_NETWORK != '') {
                 $p = preg_quote(HOME_NETWORK);
@@ -572,10 +578,6 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
                     curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
                 }
             }
-
-            $tmpfname = ROOT . 'cms/cached/cookie.txt';
-            curl_setopt($ch, CURLOPT_COOKIEJAR, $tmpfname);
-            curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
 
             endMeasure('curl_prepare');
             startMeasure('curl_exec');
@@ -856,10 +858,10 @@ function checkAccessCopy($object_type, $src_id, $dst_id)
 {
     $rec = SQLSelectOne("SELECT * FROM security_rules WHERE OBJECT_TYPE='" . DBSafe($object_type) . "' AND OBJECT_ID=" . (int)$src_id);
     if ($rec['ID']) {
-        SQLExec("DELETE FROM security_rules WHERE OBJECT_TYPE='".DBSafe($object_type)."' AND OBJECT_ID=".(int)$dst_id);
+        SQLExec("DELETE FROM security_rules WHERE OBJECT_TYPE='" . DBSafe($object_type) . "' AND OBJECT_ID=" . (int)$dst_id);
         unset($rec['ID']);
-        $rec['OBJECT_ID']=(int)$dst_id;
-        SQLInsert('security_rules',$rec);
+        $rec['OBJECT_ID'] = (int)$dst_id;
+        SQLInsert('security_rules', $rec);
     }
 }
 
@@ -875,7 +877,7 @@ function registerError($code = 'custom', $details = '')
     $e = new \Exception;
     $backtrace = $e->getTraceAsString();
 
-    DebMes("Error registered (type: $code):\n" . $details . "\nBacktrace:\n" . $backtrace, 'error');
+    DebMes("Error registered (type: $code):\n" . $details . "\nBacktrace:\n" . $backtrace, 'errors');
     $code = trim($code);
 
     if ($code == 'sql') {

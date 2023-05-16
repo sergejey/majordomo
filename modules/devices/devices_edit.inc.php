@@ -38,7 +38,7 @@ if ($rec['TYPE'] != '') {
     $methods = $this->getAllMethods($rec['TYPE']);
     if (is_array($methods)) {
         foreach ($methods as $k => $v) {
-            if ($v['_CONFIG_SHOW']) {
+            if (isset($v['_CONFIG_SHOW']) && $v['_CONFIG_SHOW']) {
                 $v['NAME'] = $k;
                 $show_methods[] = $v;
             }
@@ -137,7 +137,9 @@ if ($this->tab == 'logic') {
             $out['ERR'] = 1;
         }
     }
-    $out['CODE'] = htmlspecialchars($method_rec['CODE']);
+    if (isset($method_rec['CODE'])) {
+        $out['CODE'] = htmlspecialchars($method_rec['CODE']);
+    }
     $out['OBJECT_ID'] = $method_rec['OBJECT_ID'];
 
     $parent_method_id = $object->getMethodByName($method_name, $object->class_id, 0);
@@ -157,7 +159,7 @@ if ($this->tab == 'settings') {
         $onchanges = array();
         $apply_others = gr('apply_others');
         foreach ($properties as $k => $v) {
-            if ($v['_CONFIG_TYPE']) {
+            if (isset($v['_CONFIG_TYPE'])) {
                 if ($this->mode == 'update') {
                     global ${$k . '_value'};
                     if (isset(${$k . '_value'})) {
@@ -180,7 +182,7 @@ if ($this->tab == 'settings') {
                         }
                     }
                     $out['OK'] = 1;
-                    if ($v['ONCHANGE'] != '') {
+                    if (isset($v['ONCHANGE']) && $v['ONCHANGE'] != '') {
                         $onchanges[$v['ONCHANGE']] = 1;
                     }
                 }
@@ -211,7 +213,7 @@ if ($this->tab == 'settings') {
                     $v['FOLDERS'] = $styles;
                 }
 
-                if ($v['_CONFIG_RESTRICTIONS'] && checkAccessDefined('prop_' . $v['NAME'], $rec['ID'])) {
+                if (isset($v['_CONFIG_RESTRICTIONS']) && $v['_CONFIG_RESTRICTIONS'] && checkAccessDefined('prop_' . $v['NAME'], $rec['ID'])) {
                     $v['_CONFIG_RESTRICTIONS_SET'] = 1;
                 }
 
@@ -303,7 +305,7 @@ if ($this->tab == 'interface') {
     $total = count($menu_items);
     for ($i = 0; $i < $total; $i++) {
         $sub = SQLSelectOne("SELECT ID FROM commands WHERE PARENT_ID=" . $menu_items[$i]['ID']);
-        if ($sub['ID']) {
+        if (isset($sub['ID'])) {
             $res_items[] = $menu_items[$i];
         }
     }
@@ -527,7 +529,7 @@ outHash($rec, $out);
 
 $types = array();
 foreach ($this->device_types as $k => $v) {
-    if ($v['TITLE']) {
+    if (isset($v['TITLE'])) {
         $types[] = array('NAME' => $k, 'TITLE' => $v['TITLE']);
     }
     if ($k == $rec['TYPE'] && $rec['TYPE'] != '') {

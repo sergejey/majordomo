@@ -283,7 +283,7 @@ class mysql
             $data[$ndx] = '';
         }
         $qry .= " WHERE $ndx = '" . $data[$ndx] . "'";
-        if ($_GET['debug_qry']) {
+        if (gr('debug_qry')) {
             dprint($qry,false);
         }
         if (!$this->Exec($qry)) {

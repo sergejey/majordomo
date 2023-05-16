@@ -22,7 +22,7 @@
    include_once(DIR_MODULES.'classes/classes.class.php');
    $cl=new classes();
    $out['PARENT_METHODS']=$cl->getParentMethods($this->class_id);
-   if (!$out['PARENT_METHODS'][0]['ID']) {
+   if (!isset($out['PARENT_METHODS'][0]['ID'])) {
     unset($out['PARENT_METHODS']);
    }
 
@@ -41,7 +41,7 @@
   // FIELDS ORDER
   global $sortby;
   if (!$sortby) {
-   $sortby=$session->data['methods_sort'];
+   $sortby=isset($session->data['methods_sort'])?$session->data['methods_sort']:'';
   } else {
    if ($session->data['methods_sort']==$sortby) {
     if (Is_Integer(strpos($sortby, ' DESC'))) {

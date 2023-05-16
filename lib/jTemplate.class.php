@@ -84,7 +84,7 @@ class jTemplate
             $res .= "<!-- begin of file $template -->";
         }
 
-        if ($this->owner->ajax) {
+        if (isset($this->owner) && $this->owner->ajax) {
             $this->ajax = 1;
             $this->div_id = $this->owner->name;
 
@@ -344,7 +344,7 @@ class jTemplate
                 if (defined($matches[1][$i])) {
                     $res = str_replace($matches[0][$i], constant($matches[1][$i]), $res);
                 } else {
-                    if (!isset($hash[$matches[1][$i]])) $hash[$matches[1][$i]] = null;
+                    if (!isset($hash[$matches[1][$i]])) $hash[$matches[1][$i]] = '';
                     $res = str_replace($matches[0][$i], $hash[$matches[1][$i]], $res);
                 }
             }
@@ -519,15 +519,21 @@ class jTemplate
                     $true_part = $temp[0];
                     $false_part = isset($temp[1]) ? $temp[1] : "";
 
-                    $condition = preg_replace('/^!(\w+)$/', '!IsSet($hash[\'\\1\'])', $condition);
-                    $condition = preg_replace('/^(\w+)$/', 'IsSet($hash[\'\\1\'])', $condition);
-                    $condition = preg_replace('/(\w+)(?=[=!<>])/', '$hash[\'\\1\']', $condition);
-                    $condition = preg_replace('/(\w+)[[:space:]](?=[=!<>])/', '$hash[\'\\1\']', $condition);
-                    $condition = preg_replace('/\((\w+)\)/', '($hash[\'\\1\'])', $condition);
+                    $condition = preg_replace('/^!(\w+)$/', '!isset($hash[\'\\1\'])', $condition);
+                    $condition = preg_replace('/^(\w+)$/', 'isset($hash[\'\\1\'])', $condition);
+                    $condition = preg_replace('/(\w+)(?=[=!<>])/', '(isset($hash[\'\\1\'])?$hash[\'\\1\']:null)', $condition);
+                    $condition = preg_replace('/(\w+)[[:space:]](?=[=!<>])/', '(isset($hash[\'\\1\'])?$hash[\'\\1\']:null)', $condition);
+                    $condition = preg_replace('/\((\w+)\)/', '(isset($hash[\'\\1\'])?$hash[\'\\1\']:null)', $condition);
                     $condition = preg_replace('/\]=(?=[^\w=])/', ']==', $condition);
+                    $condition = preg_replace('/:null\)=(?=[^\w=])/', ':null)==', $condition);
 
                     $str = "if ($condition) {\$res1=\$true_part;} else {\$res1=\$false_part;}";
-                    @eval($str);
+
+                    try {
+                        $result = @eval($str);
+                    } catch (Exception $e) {
+                        registerError('jTemplate', sprintf('Error in script "%s": ' . $e->getMessage()));
+                    }
 
                     $bdy = $res1;
                     $res = str_replace($bdy_old, $bdy, $res);
@@ -554,7 +560,8 @@ class jTemplate
      * @param string $dir Current template directory (for correct [#inc ...#] tags parsing)
      * @return void
      */
-    public function parseModules(&$res, &$hash, $dir)
+    public
+    function parseModules(&$res, &$hash, $dir)
     {
         global $md;
         global $inst;
@@ -608,11 +615,11 @@ class jTemplate
                     // setting other module parameters
                     // if current request is to this module, then run get params otherwise get params from encoded query
                     if (($md != $module_data["name"])
-                        || (($module_data["instance"] != '') && ($module_data["instance"] != $instance) && ($instance != ''))) {
+                        || (isset($module_data["instance"]) && ($module_data["instance"] != '') && ($module_data["instance"] != $instance) && ($instance != ''))) {
                         // restoring module params from coded string (module should not overwrite this method)
                         $code .= $obj . "->restoreParams();\n";
                     } elseif (($module_data["name"] == $md)
-                        && (($module_data["instance"] == '') || ($module_data["instance"] == $instance) || ($instance == ''))) {
+                        && (!isset($module_data["instance"]) || ($module_data["instance"] == '') || ($module_data["instance"] == $instance) || ($instance == ''))) {
                         // getting module params from query string (every module should handle this method)
                         $code .= $obj . "->getParams();\n";
                     }
@@ -645,40 +652,8 @@ class jTemplate
                     EndMeasure("module_" . $module_data["name"]);
                 } else {
                     // module class file was not found
-                    global $current_installing_module;
-
-                    $rep_ext = '';
-
-                    if (preg_match('/\.dev/is', $_SERVER['HTTP_HOST'])) {
-                        $rep_ext = '.dev';
-                        $install_dir = "/var/projects/repository/engine_2.x/modules/";
-                    }
-
-                    if (preg_match('/\.jbk/is', $_SERVER['HTTP_HOST'])) {
-                        $rep_ext = '.jbk';
-                        $install_dir = "d:/jey/projects/repository/engine_2.x/modules/";
-                    }
-
-                    if (!$current_installing_module[$module_data["name"]] && $rep_ext != '' && (@is_dir($install_dir . $module_data["name"]))) {
-                        /*
-                         $tmp  = "<div><iframe src=\"http://installer.dev/installer.php?host=" . $_SERVER['HTTP_HOST'];
-                         $tmp .= "&doc_root=" . $_SERVER['DOCUMENT_ROOT'] . "&mode=install&modules[]=" . $module_data["name"];
-                         $tmp .= "\" width=100% height=100></iframe></div>";
-                         */
-                        $wnd_name = "win" . rand(1, 10000000);
-
-                        $tmp = "<script language='javascript' type='text/JavaScript'>";
-                        $tmp .= "wnd=window.open(\"http://installer" . $rep_ext . "/installer.php?host=" . $_SERVER['HTTP_HOST'];
-                        $tmp .= "&doc_root=" . $_SERVER['DOCUMENT_ROOT'] . "&mode=install&modules[]=" . $module_data["name"];
-                        $tmp .= "\", \"" . $wnd_name . "\", \"height=400,width=400\");</script>";
-
-                        $current_installing_module[$module_data["name"]] = 1;
-
-                        echo $tmp;
-                    } else {
-                        $tmp = "<p align=center><font color='red'><b>Module \"" . $module_data["name"] . "\" not found</b>";
-                        $tmp .= " (" . str_replace('#', '', $matches[0][$i]) . ")</font></p>";
-                    }
+                    $tmp = "<p align=center><font color='red'><b>Module \"" . $module_data["name"] . "\" not found</b>";
+                    $tmp .= " (" . str_replace('#', '', $matches[0][$i]) . ")</font></p>";
                 }
 
                 //echo $matches[0][$i];
@@ -698,7 +673,8 @@ class jTemplate
      * @param string $dir Current template directory (for correct [#inc ...#] tags parsing)
      * @return void
      */
-    public function parseIncludes(&$res, &$hash, $dir)
+    public
+    function parseIncludes(&$res, &$hash, $dir)
     {
         if (preg_match_all('/\[#inc (.*?)#\]/', $res, $matches, PREG_PATTERN_ORDER)) {
             $count_matches_0 = count($matches[0]);
@@ -736,7 +712,7 @@ class jTemplate
                 if (!file_exists($file_name)) {
                     $res = str_replace($matches[0][$i], "<!-- Cannot find file $file_name -->", $res);
                 } else {
-                    startMeasure('including '.$file_name);
+                    startMeasure('including ' . $file_name);
                     $old_template = $this->template;
                     $this->template = $file_name;
 
@@ -748,7 +724,7 @@ class jTemplate
                         $res = str_replace($matches[0][$i], $replaceStr, $res);
                         */
                         if (preg_match('/\.tpl$/', $file_name)) {
-                            require_once ROOT . 'lib/smarty/Smarty.class.php';
+                            require_once ROOT . '3rdparty/smarty3/Smarty.class.php';
                             $smarty = new Smarty;
                             $smarty->setCacheDir(ROOT . 'cms/cached/template_c');
                             $smarty->setTemplateDir(ROOT . './templates')
@@ -772,7 +748,7 @@ class jTemplate
                         }
                     }
                     $this->template = $old_template;
-                    endMeasure('including '.$file_name);
+                    endMeasure('including ' . $file_name);
                 }
             }
         }
@@ -786,7 +762,8 @@ class jTemplate
      * @param array $hash data params
      * @return void
      */
-    public function parseVariables(&$res, &$hash)
+    public
+    function parseVariables(&$res, &$hash)
     {
         // [#VARIABLE#] - general variables
         if (preg_match_all('/\[#(\w+?)#\]/', $res, $matches, PREG_PATTERN_ORDER)) {
@@ -815,7 +792,8 @@ class jTemplate
      * @param mixed $val Param
      * @return mixed
      */
-    public function templateSafe($val)
+    public
+    function templateSafe($val)
     {
         $res = $val;
         $res = str_replace('[#', '&#091#', $res);
@@ -836,7 +814,8 @@ class jTemplate
      * @param string $filename filename to load
      * @return string file content
      */
-    public function loadfile($filename)
+    public
+    function loadfile($filename)
     {
         global $preload;
 

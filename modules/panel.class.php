@@ -106,7 +106,7 @@ class panel extends module
         }
 
 
-        if (!$session->data["AUTHORIZED"] && $session->data['SITE_USERNAME']) {
+        if (!isset($session->data["AUTHORIZED"]) && isset($session->data['SITE_USERNAME'])) {
             $user = SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '" . DBSafe($session->data['SITE_USERNAME']) . "'");
             if ($user['IS_ADMIN']) {
                 $user = SQLSelectOne("SELECT * FROM admin_users WHERE LOGIN='admin'");
@@ -262,7 +262,7 @@ class panel extends module
         }
 
         $out["ACTION"] = $this->action;
-        if (!$out['TITLE']) {
+        if (!isset($out['TITLE'])) {
             $out['TITLE'] = LANG_CONTROL_PANEL;
         }
         $this->data = $out;

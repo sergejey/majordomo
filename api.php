@@ -399,7 +399,7 @@ if (function_exists('endMeasure')) {
     endMeasure('TOTAL');
 }
 
-if ($_GET['performance']) {
+if (gr('performance')) {
     $result['performance']=PerformanceReport(1);
 }
 

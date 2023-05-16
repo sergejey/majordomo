@@ -13,6 +13,8 @@
 //
 class linkedobject extends module
 {
+    var $property_field;
+    var $method_field;
     /**
      * linkedobject
      *
@@ -119,7 +121,7 @@ class linkedobject extends module
             $first_run = 1;
         }
 
-        if ($this->width) {
+        if (isset($this->width)) {
 			$ifPX = substr($this->width, -1);
 			if($ifPX != 'x' && $ifPX != '%') $this->width = $this->width.'px';
 			
@@ -249,7 +251,7 @@ class linkedobject extends module
                 $objects[0]['FIRST']=1;
                 $objects[$total-1]['LAST']=1;
                 for($i=0;$i<$total;$i++) {
-                    if ($objects[$i]['CLASS_ID']!=$old_class_id) {
+                    if (isset($objects[$i]['CLASS_ID']) && $objects[$i]['CLASS_ID']!=$old_class_id) {
                         $objects[$i]['NEW_GROUP']=1;
                         $old_class_id=$objects[$i]['CLASS_ID'];
                         if ($i>0) {

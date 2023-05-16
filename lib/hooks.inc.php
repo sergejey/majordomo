@@ -128,7 +128,12 @@ function processSubscriptions($event_name, $details = '', $return_output = false
     if (is_array($data)) {
         $data2 = array();
         foreach ($data as $k => $v) {
-            $data2[] = array('module' => $k, 'filter' => $v['filter'], 'priority' => (int)$v['priority']);
+            if (isset($v['priority'])) {
+                $priority = $v['priority'];
+            } else {
+                $priority = 0;
+            }
+            $data2[] = array('module' => $k, 'filter' => $v['filter'], 'priority' => $priority);
         }
         usort($data2, function ($a, $b) {
             if ($a['priority'] == $b['priority']) return 0;

@@ -145,7 +145,7 @@ if ($res[0]['ID']) {
 
 $types = array();
 foreach ($this->device_types as $k => $v) {
-    if ($v['TITLE']) {
+    if (isset($v['TITLE'])) {
         $type_rec = array('NAME' => $k, 'TITLE' => $v['TITLE']);
         $tmp = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM devices WHERE TYPE='" . $k . "' AND ARCHIVED!=1");
         $type_rec['TOTAL'] = (int)$tmp['TOTAL'];

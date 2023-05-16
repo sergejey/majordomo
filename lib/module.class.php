@@ -64,6 +64,15 @@ class module
      * @var array module configuration
      */
     var $config;
+    var $ajax;
+    var $action;
+    var $mode;
+    var $view_mode;
+    var $edit_mode;
+    var $tab;
+    var $parent_item;
+    var $data_source;
+    var $single_rec;
 
     /**
      * Module constructor
@@ -170,6 +179,8 @@ class module
      */
     public function restoreParams()
     {
+        $global_params = array();
+
         $pd = gr('pd');
         if (strpos($pd, 'm' . STRING_DELIMITER)) {
             $this->restoreParamsOld();
@@ -223,7 +234,11 @@ class module
             }
         } elseif (!isset($this->instance)) {
             // module has no instances at all
-            $module_data = $global_params[$this->name];
+            if (isset($global_params[$this->name])) {
+                $module_data = $global_params[$this->name];
+            } else {
+                $module_data = array();
+            }
         }
 
         // setting module data

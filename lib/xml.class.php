@@ -23,15 +23,15 @@ function GetChildren($vals, &$i)
             $children[] = $vals[$i]['value'];
             break;
          case 'complete':
-            $children[] = array('tag'        => $vals[$i]['tag'],
-                                'attributes' => $vals[$i]['attributes'],
-                                'value'      => $vals[$i]['value']
+            $children[] = array('tag'        => (isset($vals[$i]['tag'])?$vals[$i]['tag']:null),
+                                'attributes' => (isset($vals[$i]['attributes'])?$vals[$i]['attributes']:null),
+                                'value'      => (isset($vals[$i]['value'])?$vals[$i]['value']:null)
                                );
             break;
          case 'open':
-            $children[] = array('tag'        => $vals[$i]['tag'],
-                                'attributes' => $vals[$i]['attributes'],
-                                'value'      => $vals[$i]['value'],
+            $children[] = array('tag'        => (isset($vals[$i]['tag'])?$vals[$i]['tag']:null),
+                                'attributes' => (isset($vals[$i]['attributes'])?$vals[$i]['attributes']:null),
+                                'value'      => (isset($vals[$i]['value'])?$vals[$i]['value']:null),
                                 'children'   => GetChildren($vals, $i)
                                );
             break;

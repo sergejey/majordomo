@@ -12,6 +12,11 @@
 //
 class commands extends module
 {
+    var $parent_item;
+    var $data_source;
+    var $parent;
+    var $id;
+
     /**
      * commands
      *
@@ -121,7 +126,7 @@ class commands extends module
         startMeasure('menu_template');
         if ($this->action == '') {
 
-            require_once ROOT . 'lib/smarty/Smarty.class.php';
+            require_once ROOT . '3rdparty/smarty3/Smarty.class.php';
             $smarty = new Smarty;
             $smarty->setCacheDir(ROOT . 'cms/cached/template_c');
 
@@ -702,7 +707,7 @@ class commands extends module
                 $dynamic_item = 0;
             }
 
-            if ($res[$i + 1]['INLINE']) {
+            if (isset($res[$i + 1]) && $res[$i + 1]['INLINE']) {
                 $res[$i]['INLINE'] = 1;
             }
 
