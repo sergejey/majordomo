@@ -43,13 +43,6 @@ $w_delta = 80;
 $px_per_point = 6;
 $unit = "°C";
 
-if (preg_match('/(\d+)\/(\d+)\/(\d+)/', $_GET['end'], $m)) {
-    $end_time = mktime(23, 59, 59, $m[2], $m[3], $m[1]);
-} else {
-    $end_time = time();
-}
-
-
 $approx = 'avg';
 $fil01 = 0;
 
@@ -60,9 +53,24 @@ include_once("./load_settings.php");
 include(dirname(__FILE__) . "/class/pDraw.class.php");
 include(dirname(__FILE__) . "/class/pImage.class.php");
 include(dirname(__FILE__) . "/class/pData.class.php");
-if ($width) $w = (int)$width;
-if ($height) $h = (int)$height;
-if ($_GET['px']) $px_per_point = (int)$_GET['px'];
+
+$end = gr('end');
+if (preg_match('/(\d+)\/(\d+)\/(\d+)/', $end, $m)) {
+    $end_time = mktime(23, 59, 59, $m[2], $m[3], $m[1]);
+} else {
+    $end_time = time();
+}
+
+$op = gr('op');
+
+$width = gr('width','int');
+if ($width) $w = $width;
+
+$height = gr('height','int');
+if ($height) $h = $height;
+
+$px = gr('px','int');
+if ($px) $px_per_point = $px;
 
 // Dataset definition   
 $DataSet = new pData;
@@ -95,9 +103,7 @@ if (!$type) {
     $type = '7d';
 }
 
-if ($_GET['group']) {
-    $group = $_GET['group'];
-}
+$group = gr('group');
 
 if (preg_match('/(\d+)d/', $type, $m)) {
     $total = (int)$m[1];
@@ -114,10 +120,12 @@ if (preg_match('/(\d+)d/', $type, $m)) {
     $period = round(($total * 31 * 24 * 60 * 60) / (($w - $w_delta) / $px_per_point)); // seconds
     $start_time = $end_time - $total * 31 * 24 * 60 * 60;
 
-} elseif (preg_match('/(\d+)\/(\d+)\/(\d+)/', $_GET['start'], $m) && $_GET['interval']) {
+} elseif (preg_match('/(\d+)\/(\d+)\/(\d+)/', gr('start'), $m) && $_GET['interval']) {
     $period = (int)$_GET['interval']; //seconds
     $start_time = mktime(0, 0, 0, $m[2], $m[3], $m[1]);
     $total = 1;
+} else {
+    $start_time = 0;
 }
 
 if ($total > 0) {
@@ -135,12 +143,12 @@ if ($total > 0) {
         $history = array();
     } else {
         $history = SQLSelect("SELECT ID, VALUE, ADDED, SOURCE FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $end_time) . "')"); // ORDER BY ADDED
-        if (!$history[0]['ID'] && $op == 'log') {
+        if (!isset($history[0]['ID']) && $op == 'log') {
             $history = SQLSelect("SELECT ID, VALUE, ADDED, SOURCE FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC LIMIT 20");
             $history = array_reverse($history);
         }
 
-        if ($history[0]['ID']) {
+        if (isset($history[0]['ID'])) {
             $total = count($history);
             for ($i = 0; $i < $total; $i++) {
                 $history[$i]['UNX'] = strtotime($history[$i]['ADDED']);
@@ -157,9 +165,11 @@ if ($total > 0) {
     //echo "test";exit;
 
     $total_values = count($history);
-    $start_time = $history[0]['UNX'];
+    if (isset($history[0]['UNX'])) {
+        $start_time = $history[0]['UNX'];
+    }
 
-    if ($_GET['op'] == 'timed') {
+    if ($op == 'timed') {
         //header("Content-type: text/json");
         $tret = array();
         $t_times = array();
@@ -345,7 +355,7 @@ FF;
         }
         */
         require(ROOT . '3rdparty/Paginator/Paginator.php');
-        $page = (int)$_GET['page'];
+        $page = gr('page','int');
         if (!$page) $page = 1;
 
         $on_page = 20;

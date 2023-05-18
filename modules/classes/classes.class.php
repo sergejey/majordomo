@@ -594,7 +594,7 @@ function usual(&$out) {
   $res=SQLSelect("SELECT * FROM $table WHERE PARENT_ID='$parent_id'");
   $total=count($res);
   for($i=0;$i<$total;$i++) {
-   if ($parent_list[0]) {
+   if (isset($parent_list[0])) {
     $res[$i]['PARENT_LIST']=implode(',', $parent_list);
    } else {
     $res[$i]['PARENT_LIST']='0';
@@ -603,7 +603,7 @@ function usual(&$out) {
    $tmp_parent=$parent_list;
    $tmp_parent[]=$res[$i]['ID'];
    $sub_this=$this->updateTree_classes($res[$i]['ID'], $tmp_parent);
-   if ($sub_this[0]) {
+   if (isset($sub_this[0])) {
     $res[$i]['SUB_LIST']=implode(',', $sub_this);
    } else {
     $res[$i]['SUB_LIST']=$res[$i]['ID'];

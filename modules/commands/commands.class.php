@@ -612,7 +612,7 @@ class commands extends module
         $rec = SQLSelectOne("SELECT * FROM commands WHERE ID='$id'");
         // some action for related tables
         $tmp = SQLSelectOne("SELECT ID FROM commands WHERE PARENT_ID=" . $rec['ID']);
-        if ($tmp['ID']) {
+        if (isset($tmp['ID'])) {
             return;
         }
         SQLExec("DELETE FROM security_rules WHERE OBJECT_TYPE='menu' AND OBJECT_ID=" . (int)$rec['ID']);
@@ -656,7 +656,7 @@ class commands extends module
         $res = SQLSelect("SELECT * FROM $table WHERE PARENT_ID='$parent_id'");
         $total = count($res);
         for ($i = 0; $i < $total; $i++) {
-            if ($parent_list[0]) {
+            if (isset($parent_list[0])) {
                 $res[$i]['PARENT_LIST'] = implode(',', $parent_list);
             } else {
                 $res[$i]['PARENT_LIST'] = '0';
@@ -665,7 +665,7 @@ class commands extends module
             $tmp_parent = $parent_list;
             $tmp_parent[] = $res[$i]['ID'];
             $sub_this = $this->updateTree_commands($res[$i]['ID'], $tmp_parent);
-            if ($sub_this[0]) {
+            if (isset($sub_this[0])) {
                 $res[$i]['SUB_LIST'] = implode(',', $sub_this);
             } else {
                 $res[$i]['SUB_LIST'] = $res[$i]['ID'];
@@ -853,7 +853,7 @@ class commands extends module
 
             }
 
-            if (preg_match('/<script/is', $res[$i]['DATA']) || preg_match('/\[#module/is', $res[$i]['DATA'])) {
+            if (isset($res[$i]['DATA']) && (preg_match('/<script/is', $res[$i]['DATA']) || preg_match('/\[#module/is', $res[$i]['DATA']))) {
                 $res[$i]['AUTO_UPDATE'] = 0;
             } elseif (!$res[$i]['AUTO_UPDATE'] && $res[$i]['TYPE'] != 'object' && (!defined('DISABLE_WEBSOCKETS') || DISABLE_WEBSOCKETS == 0)) {
                 $res[$i]['AUTO_UPDATE'] = 10;

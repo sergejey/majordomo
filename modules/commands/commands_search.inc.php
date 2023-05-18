@@ -9,8 +9,8 @@ $out['MENU_LOADED'] = $menu_loaded;
 
 $menu_loaded = 1;
 
-if ($this->pda) {
-    $out['PDA'] = 1;
+if (isset($this->pda)) {
+    $out['PDA'] = $this->pda;
 }
 
 global $session;
