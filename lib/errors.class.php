@@ -89,16 +89,15 @@ FF;
 
 }
 
-function majordomoSaveError($details, $type)
+function majordomoSaveError($details, $type, $filename = '')
 {
-    global $errorsSavedHash;
+    return false; // to-do: comment for debug
 
-    $md5 = md5($details);
-    if (isset($errorsSavedHash[$md5])) return;
+    //dprint($filename .' '.$type.': '.$details,false);
 
-    $errorsSavedHash[$md5] = true;
-    DebMes($details, $type);
-
+    if ($filename) {
+        DebMes($details, $type.'_'.basename($filename));
+    }
 }
 
 function majordomoExceptionHandler($e)
@@ -119,7 +118,7 @@ function majordomoErrorHandler($errno, $errmsg, $filename, $linenum, $errcontext
     } else {
         $url = 'commandline';
     }
-    //majordomoSaveError($url . "\nPHP error in $filename (line $linenum): " . $errmsg, 'errors');
+    majordomoSaveError($url . "\nPHP error in $filename (line $linenum): " . $errmsg, 'errors', $filename);
 }
 
 function phpShutDownFunction()

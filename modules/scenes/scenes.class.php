@@ -9,8 +9,14 @@
  * @copyright http://www.atmatic.eu/ (c)
  * @version 0.1 (wizard, 10:05:38 [May 24, 2012])
  */
-Define('DEF_TYPE_OPTIONS', 'img=Image|html=HTML'); // options for 'TYPE'
-Define('DEF_CONDITION_OPTIONS', '1=Equa|2=More|3=Less|4=Not equal'); // options for 'CONDITION'
+
+if (!defined('DEF_TYPE_OPTIONS')) {
+    Define('DEF_TYPE_OPTIONS', 'img=Image|html=HTML'); // options for 'TYPE'
+}
+
+if (!defined('DEF_CONDITION_OPTIONS')) {
+    Define('DEF_CONDITION_OPTIONS', '1=Equa|2=More|3=Less|4=Not equal'); // options for 'CONDITION'
+}
 //
 //
 class scenes extends module
@@ -1162,7 +1168,7 @@ class scenes extends module
 
             try {
                 $code = $rec['CONDITION_ADVANCED'];
-                if ($code!='') {
+                if ($code != '') {
                     $success = eval($code);
                 } else {
                     $success = true;

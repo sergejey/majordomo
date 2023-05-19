@@ -320,15 +320,19 @@ if ($this->tab == '') {
         $out['PRIORITIES'][] = array('VALUE' => $i);
     }
 
-    global $prefix;
+    $prefix = gr('prefix');
     $out['PREFIX'] = $prefix;
-    global $source_table;
+
+    $source_table = gr('source_table');
     $out['SOURCE_TABLE'] = $source_table;
-    global $source_table_id;
+
+    $source_table_id = gr('source_table_id');
     $out['SOURCE_TABLE_ID'] = $source_table_id;
-    global $type;
+
+    $type = gr('type');
     $out['TYPE'] = $type;
-    global $linked_object;
+
+    $linked_object = gr('linked_object');
     if ($linked_object != '') {
         if (!getObject($linked_object)) {
             $linked_object = '';
@@ -371,6 +375,7 @@ if ($this->tab == 'schedule') {
 }
 
 if ($this->mode == 'update' && $this->tab == '') {
+    $added = 0;
     $ok = 1;
     $rec['TITLE'] = gr('title', 'trim');
     if ($rec['TITLE'] == '') {
@@ -513,7 +518,7 @@ if ($this->mode == 'update' && $this->tab == '') {
 }
 if (is_array($rec)) {
     foreach ($rec as $k => $v) {
-        if (!is_array($v)) {
+        if ($v && !is_array($v)) {
             $rec[$k] = htmlspecialchars($v);
         }
     }

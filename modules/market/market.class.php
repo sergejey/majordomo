@@ -141,23 +141,24 @@ class market extends module
     function admin(&$out)
     {
 
-        global $name;
-
-        global $mode;
+        $name = gr('name');
+        $mode = gr('mode');
         if (!$this->mode && $mode) {
             $this->mode = $mode;
         }
+
+        $op = gr('op');
 
         $this->can_be_updated = array();
         $this->can_be_updated_new = array();
         $this->have_updates = array();
 
 
-        global $err_msg;
+        $err_msg = gr('err_msg');
         if ($err_msg) {
             $out['ERR_MSG'] = $err_msg;
         }
-        global $ok_msg;
+        $ok_msg = gr('ok_msg');
         if ($ok_msg) {
             $out['OK_MSG'] = $ok_msg;
         }
@@ -165,6 +166,7 @@ class market extends module
         if (is_dir(ROOT . 'cms/saverestore/temp')) {
             $out['CLEAR_FIRST'] = 1;
         }
+
 
         if ($this->mode == 'upload') {
             global $file;
@@ -180,12 +182,13 @@ class market extends module
         }
 
         if ($this->mode == 'iframe') {
-            global $mode2;
-            global $name;
-            global $names;
-            global $value;
+            $mode2 = gr('mode2');
+            $name = gr('name');
+            $value = gr('value');
 
-            if (is_array($names)) {
+            global $names;
+
+            if (isset($names) && is_array($names)) {
                 $out['NAMES'] = urlencode(implode(',', $names));
             }
             $out['NAME'] = urlencode($name);
@@ -202,7 +205,7 @@ class market extends module
             return;
         }
 
-        if ($this->ajax && $_GET['op'] == 'didyouknow') {
+        if ($this->ajax && $op == 'didyouknow') {
             $result = $this->marketRequest('op=didyouknow', 0);
             $data = json_decode($result, true);
             if ($data['BODY']) {
@@ -214,12 +217,12 @@ class market extends module
             exit;
         }
 
-        if ($this->ajax && $_GET['op'] == 'readNoty' && !empty($this->id)) {
+        if ($this->ajax && $op == 'readNoty' && !empty($this->id)) {
             echo $this->readnotification($this->id);
             exit;
         }
 
-        if ($this->ajax && $_GET['op'] == 'news') {
+        if ($this->ajax && $op == 'news') {
             $result = $this->marketRequest('op=news', 15 * 60); //15*60
             $data = json_decode($result, true);
             //echo json_encode($data);
@@ -287,7 +290,7 @@ class market extends module
             exit;
         }
 
-        if ($_GET['op'] == '') {
+        if ($op == '') {
             $result = $this->marketRequest('op=categories', 120);
             $data = json_decode($result, true);
             if (SETTINGS_SITE_LANGUAGE == 'ru') {
@@ -363,7 +366,7 @@ class market extends module
             foreach ($modules_list as $module) {
                 if ($module == 'control_modules') continue;
                 if ($module == 'control_access') continue;
-                if (!$seen[$module]) {
+                if (!isset($seen[$module])) {
                     $params .= '&m[]=' . urlencode($module);
                 }
                 $seen[$module] = 1;
@@ -385,13 +388,13 @@ class market extends module
             for ($i = 0; $i < $total; $i++) {
                 $rec = (array)$data->PLUGINS[$i];
                 $plugin_rec = SQLSelectOne("SELECT * FROM plugins WHERE MODULE_NAME LIKE '" . DBSafe($rec['MODULE_NAME']) . "'");
-                if (is_dir(ROOT . 'modules/' . $rec['MODULE_NAME']) || $plugin_rec['ID']) {
+                if (is_dir(ROOT . 'modules/' . $rec['MODULE_NAME']) || isset($plugin_rec['ID'])) {
                     $rec['EXISTS'] = 1;
                     if ($plugin_rec['ID']) {
                         $rec['INSTALLED_VERSION'] = $plugin_rec['CURRENT_VERSION'];
                     }
                     $ignore_rec = SQLSelectOne("SELECT * FROM ignore_updates WHERE `NAME` LIKE '" . DBSafe($rec['MODULE_NAME']) . "'");
-                    if ($ignore_rec['ID']) {
+                    if (isset($ignore_rec['ID'])) {
                         $rec['IGNORE_UPDATE'] = 1;
                     }
                 }
@@ -399,7 +402,7 @@ class market extends module
                 //if ($rec['MODULE_NAME']==$name) {
                 //unset($rec['LATEST_VERSION']);
                 if (!isset($rec['LATEST_VERSION_URL'])) {
-                    if (preg_match('/github\.com/is', $rec['REPOSITORY_URL']) && ($rec['EXISTS'] || $rec['MODULE_NAME'] == $name)) {
+                    if (preg_match('/github\.com/is', $rec['REPOSITORY_URL']) && (isset($rec['EXISTS']) || $rec['MODULE_NAME'] == $name)) {
                         $git_url = str_replace('archive/master.tar.gz', 'commits/master.atom', $rec['REPOSITORY_URL']);
                         $github_feed = getURL($git_url, 5 * 60);
                         @$tmp = GetXMLTree($github_feed);
@@ -420,7 +423,7 @@ class market extends module
                     $this->url = 'https://connect.smartliving.ru/market/?op=download&name=' . urlencode($rec['MODULE_NAME']) . "&serial=" . urlencode(gg('Serial'));
                     $this->version = $rec['LATEST_VERSION'];
                 }
-                if (($rec['EXISTS'] && !$rec['IGNORE_UPDATE']) || $missing[$rec['MODULE_NAME']]) {
+                if ((isset($rec['EXISTS']) && !isset($rec['IGNORE_UPDATE'])) || isset($missing[$rec['MODULE_NAME']])) {
                     $this->can_be_updated[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
                 }
 
@@ -430,7 +433,7 @@ class market extends module
                     $this->selected_plugins[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
                 }
                 */
-                if ($rec['EXISTS'] && $rec['INSTALLED_VERSION'] != $rec['LATEST_VERSION'] && $rec['LATEST_VERSION'] != '') {
+                if (isset($rec['EXISTS']) && $rec['INSTALLED_VERSION'] != $rec['LATEST_VERSION'] && $rec['LATEST_VERSION'] != '') {
                     $this->have_updates[] = $rec['MODULE_NAME'];
                     $this->can_be_updated_new[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
                 } elseif ($category_id == 'updates') {
@@ -661,12 +664,14 @@ class market extends module
         //$this->redirect("?mode=install&name=".$can_be_updated[0]."&list=".urlencode(implode(',', $can_be_updated)));
         set_time_limit(0);
         if (!is_dir(ROOT . 'cms/saverestore')) {
-            @umask(0);
-            @mkdir(ROOT . 'cms/saverestore', 0777);
+            umask(0);
+            mkdir(ROOT . 'cms/saverestore', 0777);
         }
 
-        umask(0);
-        @mkdir(ROOT . 'cms/saverestore/temp', 0777);
+        if (!is_dir(ROOT . 'cms/saverestore/temp')) {
+            umask(0);
+            mkdir(ROOT . 'cms/saverestore/temp', 0777);
+        }
 
         if (is_array($can_be_updated)) {
             foreach ($can_be_updated as $k => $v) {
@@ -676,8 +681,14 @@ class market extends module
                 $url = $v['URL'];
 
                 $filename = ROOT . 'cms/saverestore/' . $name . '.tgz';
-                @unlink(ROOT . 'cms/saverestore/' . $name . '.tgz');
-                @unlink(ROOT . 'cms/saverestore/' . $name . '.tar');
+                if (file_exists($filename)) {
+                    unlink($filename);
+                }
+                $filename = ROOT . 'cms/saverestore/' . $name . '.tar';
+                if (file_exists($filename)) {
+                    unlink($filename);
+                }
+
                 $f = fopen($filename, 'wb');
                 if ($f == FALSE) {
                     $this->redirect("?err_msg=" . urlencode("Cannot open " . $filename . " for writing"));
@@ -797,12 +808,16 @@ class market extends module
         $source = ROOT . 'modules';
         if ($dir = @opendir($source)) {
             while (($file = readdir($dir)) !== false) {
-                if (Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..')) {
-                    @unlink(ROOT . "cms/modules_installed/" . $file . ".installed");
+                $installed_filename = ROOT . "cms/modules_installed/" . $file . ".installed";
+                if (file_exists($installed_filename) && Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..')) {
+                    unlink($installed_filename);
                 }
             }
         }
-        @unlink(ROOT . "cms/modules_installed/control_modules.installed");
+
+        if (file_exists(ROOT . "cms/modules_installed/control_modules.installed")) {
+            unlink(ROOT . "cms/modules_installed/control_modules.installed");
+        }
 
         if ($frame) {
             return ("Updates Installed!");
@@ -942,9 +957,13 @@ class market extends module
         }
 
         $filename = ROOT . 'cms/saverestore/' . $name . '.tgz';
-
-        @unlink(ROOT . 'cms/saverestore/' . $name . '.tgz');
-        @unlink(ROOT . 'cms/saverestore/' . $name . '.tar');
+        if (file_exists($filename)) {
+            unlink($filename);
+        }
+        $filename = ROOT . 'cms/saverestore/' . $name . '.tar';
+        if (file_exists($filename)) {
+            unlink($filename);
+        }
 
         $f = fopen($filename, 'wb');
         if ($f == FALSE) {
@@ -1101,12 +1120,15 @@ class market extends module
             $source = ROOT . 'modules';
             if ($dir = @opendir($source)) {
                 while (($file = readdir($dir)) !== false) {
-                    if (Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..')) {
-                        @unlink(ROOT . "cms/modules_installed/" . $file . ".installed");
+                    $installed_filename = ROOT . "cms/modules_installed/" . $file . ".installed";
+                    if (file_exists($installed_filename) && Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..')) {
+                        @unlink($installed_filename);
                     }
                 }
             }
-            @unlink(ROOT . "cms/modules_installed/control_modules.installed");
+            if (file_exists(ROOT . "cms/modules_installed/control_modules.installed")) {
+                unlink(ROOT . "cms/modules_installed/control_modules.installed");
+            }
             $this->checkIfCycleRestartRequired($name);
 
             if ($frame) {
@@ -1138,7 +1160,8 @@ class market extends module
 
     }
 
-    function checkIfCycleRestartRequired($plugin_name) {
+    function checkIfCycleRestartRequired($plugin_name)
+    {
         $files_list_filename = ROOT . 'cms/modules_installed/' . $plugin_name . '.files';
         if (!file_exists($files_list_filename)) return;
         $files_list = LoadFile($files_list_filename);
@@ -1146,8 +1169,8 @@ class market extends module
         $total = count($files);
         for ($i = 0; $i < $total; $i++) {
             $filename = trim($files[$i]);
-            if (preg_match('/cycle_(.+?)\.php$/',$filename, $m)) {
-                $service='cycle_'.$m[1];
+            if (preg_match('/cycle_(.+?)\.php$/', $filename, $m)) {
+                $service = 'cycle_' . $m[1];
                 sg($service . 'Run', '');
                 sg($service . 'Control', 'restart');
             }

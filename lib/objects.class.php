@@ -1359,7 +1359,7 @@ function getRoomObjectByLocation($location_id, $auto_add = 0)
         $location_title = 'Room' . $location_id;
     }
     $room_object = SQLSelectOne("SELECT * FROM objects WHERE TITLE = '" . DBSafe($location_title) . "'");
-    if ($room_object['ID']) return $room_object['TITLE'];
+    if (isset($room_object['ID'])) return $room_object['TITLE'];
 
     $class_id = addClass("Rooms");
     $room_object = SQLSelectOne("SELECT * FROM objects WHERE LOCATION_ID=" . $location_id . " AND CLASS_ID=" . $class_id);

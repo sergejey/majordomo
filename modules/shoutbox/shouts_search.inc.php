@@ -170,7 +170,7 @@ if ($res[0]['ID']) {
             $res[$i]['NAME'] = $comp_name;
         }
         $stl = '';
-        if (trim($res[$i]['COLOR'])) {
+        if (isset($res[$i]['COLOR']) && trim($res[$i]['COLOR'])) {
             $stl = ' style="color:' . $res[$i]['COLOR'] . '"';
         }
         $txtdata .= "<span$stl>" . $res[$i]['DAT'] . " <b>" . $res[$i]['NAME'] . "</b>: " . nl2br($res[$i]['MESSAGE']) . "</span><br>";

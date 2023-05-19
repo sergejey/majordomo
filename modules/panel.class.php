@@ -85,7 +85,7 @@ class panel extends module
 		
 		$out['SETTINGS_SITE_LANGUAGE'] = SETTINGS_SITE_LANGUAGE;
 		
-        if (!$session->data['SITE_USERNAME']) {
+        if (!isset($session->data['SITE_USERNAME'])) {
             $users = SQLSelect("SELECT * FROM users ORDER BY NAME");
             $total = count($users);
 

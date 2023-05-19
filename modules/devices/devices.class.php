@@ -12,6 +12,7 @@ class devices extends module
 {
     var $view;
     var $id;
+
     /**
      * devices
      *
@@ -373,23 +374,23 @@ class devices extends module
             //$v['METHODS']
 
             //CLASS
-            if ($v['PARENT_CLASS']) {
+            if (isset($v['PARENT_CLASS'])) {
                 $class_id = addClass($v['CLASS'], $v['PARENT_CLASS']);
             } else {
                 $class_id = addClass($v['CLASS']);
             }
             if ($class_id) {
                 $class = SQLSelectOne("SELECT * FROM classes WHERE ID=" . $class_id);
-                if ($v['DESCRIPTION']) {
+                if (isset($v['DESCRIPTION'])) {
                     $class['DESCRIPTION'] = $v['DESCRIPTION'];
                     SQLUpdate('classes', $class);
                 }
             }
 
             //PROPERTIES
-            if (is_array($v['PROPERTIES'])) {
+            if (isset($v['PROPERTIES']) && is_array($v['PROPERTIES'])) {
                 foreach ($v['PROPERTIES'] as $pk => $pv) {
-                    $prop_id = addClassProperty($v['CLASS'], $pk, (int)$pv['KEEP_HISTORY']);
+                    $prop_id = addClassProperty($v['CLASS'], $pk, isset($pv['KEEP_HISTORY']) ? $pv['KEEP_HISTORY'] : 0);
                     if ($prop_id) {
                         $property = SQLSelectOne("SELECT * FROM properties WHERE ID=" . $prop_id);
                         if (is_array($pv)) {
@@ -405,7 +406,7 @@ class devices extends module
             }
 
             //METHODS
-            if (is_array($v['METHODS'])) {
+            if (isset($v['METHODS']) && is_array($v['METHODS'])) {
                 foreach ($v['METHODS'] as $mk => $mv) {
                     $method_id = addClassMethod($v['CLASS'], $mk, "require(DIR_MODULES.'devices/" . $v['CLASS'] . "_" . $mk . ".php');", 'SDevices');
                     if (!file_exists(dirname(__FILE__) . '/' . $v['CLASS'] . "_" . $mk . ".php")) {
@@ -425,7 +426,7 @@ class devices extends module
                 }
             }
 
-            if (is_array($v['INJECTS'])) {
+            if (isset($v['INJECTS']) && is_array($v['INJECTS'])) {
                 foreach ($v['INJECTS'] as $class_name => $methods) {
                     addClass($class_name);
                     foreach ($methods as $mk => $mv) {
@@ -1474,8 +1475,12 @@ class devices extends module
     {
         parent::install();
 
-        @include_once(ROOT . 'languages/' . $this->name . '_' . SETTINGS_SITE_LANGUAGE . '.php');
-        @include_once(ROOT . 'languages/' . $this->name . '_default' . '.php');
+        if (file_exists(ROOT . 'languages/' . $this->name . '_' . SETTINGS_SITE_LANGUAGE . '.php')) {
+            include_once(ROOT . 'languages/' . $this->name . '_' . SETTINGS_SITE_LANGUAGE . '.php');
+        }
+        if (file_exists(ROOT . 'languages/' . $this->name . '_default' . '.php')) {
+            include_once(ROOT . 'languages/' . $this->name . '_default' . '.php');
+        }
 
         SQLExec("UPDATE project_modules SET TITLE='" . LANG_DEVICES_MODULE_TITLE . "' WHERE NAME='" . $this->name . "'");
 

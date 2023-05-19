@@ -63,9 +63,9 @@ function GetXMLTree($data)
  
    $i      = 0;
    $tree   = array();
-   $tree[] = array('tag'        => $vals[$i]['tag'],
-                   'attributes' => $vals[$i]['attributes'],
-                   'value'      => $vals[$i]['value'],
+   $tree[] = array('tag'        => isset($vals[$i]['tag'])?$vals[$i]['tag']:'',
+                   'attributes' => isset($vals[$i]['attributes'])?$vals[$i]['attributes']:'',
+                   'value'      => isset($vals[$i]['value'])?$vals[$i]['value']:'',
                    'children'   => GetChildren($vals, $i)
                   );
    return $tree;
@@ -89,7 +89,7 @@ function XMLTreeToArray($data)
          
          $elem = &$res[$data[$i]['tag']];
       }
-      elseif (!is_array($res[$data[$i]['tag']][0]))
+      elseif (!isset($res[$data[$i]['tag']][0]))
       {
          $tmp = $res[$data[$i]['tag']];
          
@@ -119,7 +119,7 @@ function XMLTreeToArray($data)
          $elem['textvalue'] = $data[$i]['value'];
       }
   
-      if (is_array($data[$i]['children']))
+      if (isset($data[$i]['children']) && is_array($data[$i]['children']))
       {
          $children = XMLTreeToArray($data[$i]['children']);
          

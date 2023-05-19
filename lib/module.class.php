@@ -73,6 +73,7 @@ class module
     var $parent_item;
     var $data_source;
     var $single_rec;
+    var $mobile;
 
     /**
      * Module constructor
@@ -352,9 +353,9 @@ class module
 
         $rec = SQLSelectOne($sqlQuery);
         $data = $rec["DATA"];
-
-        $this->config = unserialize($data);
-
+        if ($data) {
+            $this->config = unserialize($data);
+        }
         return $this->config;
     }
 
@@ -512,7 +513,7 @@ class module
                 }
 
             } elseif ((strtolower($field) == 'key') || (strtolower($field) == 'index') || (strtolower($field) == 'fulltext')) {
-                if (!$indexes_retrieved[$table]) {
+                if (!isset($indexes_retrieved[$table])) {
                     $result = SQLGetIndexes($table);
                     foreach ($result as $row) {
                         $tbl_indexes[$table][$row['Key_name']] = 1;

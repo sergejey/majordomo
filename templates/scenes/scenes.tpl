@@ -1,4 +1,4 @@
-{if $DRAGGABLE=="1"}
+{if isset($DRAGGABLE)}
     <link rel="stylesheet" href="{$smarty.const.ROOTHTML}3rdparty/jquery.contextmenu/jquery.contextMenu.min.css">
     <script type="text/javascript" src="{$smarty.const.ROOTHTML}3rdparty/jquery.contextmenu/jquery.contextMenu.min.js"></script>
     <script type="text/javascript" src="{$smarty.const.ROOTHTML}3rdparty/jquery.contextmenu/jquery.ui.position.min.js"></script>
@@ -514,7 +514,7 @@ $.fn.customContextMenu = function(callBack){
                 $(document).ready(function(){
                 {if $TOTAL_SCENES=="1"}
 
-                 {if $DRAGGABLE=="1"}
+                 {if isset($DRAGGABLE)}
 
                     $.contextMenu({
                         selector: '.context-menu-one',
@@ -630,7 +630,7 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
                   }
                  }
                  {/if}
-                    {if $SCENE_AUTO_SCALE!="0" && $DRAGGABLE!="1"}
+                    {if $SCENE_AUTO_SCALE!="0" && !isset($DRAGGABLE)}
                     setTimeout('sceneZoom();',2000);
                     $(window).on('resize', function(){
                         sceneZoom();
@@ -696,7 +696,7 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
         {/if}
     </style>
 {if $TOTAL_SCENES!="1"}<li id='scene_{$ID}' style="width:{$smarty.const.SETTINGS_SCENES_WIDTH}px;">{/if}
- {if $SCENE.VIDEO_WALLPAPER!=""}
+ {if isset($SCENE.VIDEO_WALLPAPER)}
      <video autoplay muted loop id="myVideo" style="position: fixed;
   right: 0;
   bottom: 0;
@@ -711,9 +711,9 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
 
  {foreach $items as $ELEMENT}
  <!-- element {$ID} -->
- {if $ELEMENT.ELEMENTS}
+ {if isset($ELEMENT.ELEMENTS)}
  <div 
-   class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE}{if $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if}{if $ELEMENT.BACKGROUND=="1"} container_background{/if}{if $DRAGGABLE=="1"} draggable{/if}"
+   class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE}{if $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if}{if $ELEMENT.BACKGROUND=="1"} container_background{/if}{if isset($DRAGGABLE)} draggable{/if}"
    style="{if $ELEMENT.POSITION_TYPE=="0"}position:absolute;left:{$ELEMENT.LEFT}px;top:{$ELEMENT.TOP}px;{/if}
    {if $ELEMENT.ZINDEX!=""}z-index:{$ELEMENT.ZINDEX};{/if}
    {if $ELEMENT.WIDTH!="0"}width:{$ELEMENT.WIDTH}px;{/if}{if $ELEMENT.HEIGHT!="0"}height:{$ELEMENT.HEIGHT}px;{/if}
@@ -727,7 +727,7 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
 
  {if $ELEMENT.TYPE=="s3d"}
   <div 
-   class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE}{if $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if} state_{$TITLE}{if $ELEMENT.BACKGROUND=="1"} html_background{/if}{if $ELEMENT.POSITION_TYPE=="1"} inlineblock{/if}{if $DRAGGABLE=="1" && $ELEMENT.POSITION_TYPE=="0"} draggable{/if}" 
+   class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE}{if $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if} state_{$TITLE}{if $ELEMENT.BACKGROUND=="1"} html_background{/if}{if $ELEMENT.POSITION_TYPE=="1"} inlineblock{/if}{if isset($DRAGGABLE) && $ELEMENT.POSITION_TYPE=="0"} draggable{/if}"
    id='canvas_{$ELEMENT.ID}'
    style="
    background-color:red;
@@ -839,7 +839,7 @@ function onDocumentMouseDown( event ) {
     <div class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE} state_{$STATE.TITLE} s3d_state" id="state_{$STATE.ID}"
     {if $STATE.S3D_OBJECT!=""} data-s3d_object='{$STATE.S3D_OBJECT}'{/if}
     {if $STATE.S3D_CAMERA!=""} data-s3d_camera='{$STATE.S3D_CAMERA}'{/if}
-    {if $DRAGGABLE!="1"}onClick="stateClicked('{$STATE.ID}');"{/if}
+    {if !isset($DRAGGABLE)}onClick="stateClicked('{$STATE.ID}');"{/if}
     ></div>{/foreach}
    </div>
 
@@ -847,10 +847,10 @@ function onDocumentMouseDown( event ) {
 
  {foreach $ELEMENT.STATES as $STATE}
   <div 
-   class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE}{if $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if} state_{$STATE.TITLE}{if $ELEMENT.BACKGROUND=="1"} html_background{/if}{if $ELEMENT.POSITION_TYPE=="1"} inlineblock{/if}{if $DRAGGABLE=="1" && $ELEMENT.POSITION_TYPE=="0"} draggable {if $ELEMENT.RESIZABLE=="1"} resizable {$ELEMENT.RESIZABLE}{/if}{/if}"
+   class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE}{if $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if} state_{$STATE.TITLE}{if $ELEMENT.BACKGROUND=="1"} html_background{/if}{if $ELEMENT.POSITION_TYPE=="1"} inlineblock{/if}{if isset($DRAGGABLE) && $ELEMENT.POSITION_TYPE=="0"} draggable {if $ELEMENT.RESIZABLE=="1"} resizable {$ELEMENT.RESIZABLE}{/if}{/if}"
    id="state_{$STATE.ID}"
    {if $STATE.SCRIPT_ID!="0" || $STATE.HOMEPAGE_ID!="0" || $STATE.OPEN_SCENE_ID!="0" || $STATE.EXT_URL!="" || $STATE.MENU_ITEM_ID!="0" || $STATE.ACTION_METHOD!="" || $STATE.CODE!=""} 
-   {if $DRAGGABLE!="1"}
+   {if !isset($DRAGGABLE)}
     onClick="stateClicked('{$STATE.ID}');"
    {/if}
    {/if} 

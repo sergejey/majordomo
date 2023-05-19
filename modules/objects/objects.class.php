@@ -776,7 +776,7 @@ class objects extends module
 
         if ($id) {
             $value = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='" . (int)$id . "' AND OBJECT_ID='" . (int)$this->id . "'");
-            if (!$value['PROPERTY_NAME'] && $this->object_title) {
+            if (isset($value['ID']) && !$value['PROPERTY_NAME'] && isset($this->object_title)) {
                 $value['PROPERTY_NAME'] = $this->object_title . '.' . $property;
                 SQLUpdate('pvalues', $value);
             }

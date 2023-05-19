@@ -82,7 +82,8 @@ function processSubscriptionsSafe($event_name, $details = '')
     return 1;
 }
 
-function processSubscriptionByModule($module_name,$event_name, &$details) {
+function processSubscriptionByModule($module_name, $event_name, &$details)
+{
     $modulePath = DIR_MODULES . $module_name . '/' . $module_name . '.class.php';
     $output = '';
     if (file_exists($modulePath)) {
@@ -120,7 +121,7 @@ function processSubscriptions($event_name, $details = '', $return_output = false
     }
     if (!is_array($details)) {
         $details = array();
-    } 
+    }
     if (!defined('SETTINGS_HOOK_EVENT_' . strtoupper($event_name))) {
         return 0;
     }
@@ -128,12 +129,9 @@ function processSubscriptions($event_name, $details = '', $return_output = false
     if (is_array($data)) {
         $data2 = array();
         foreach ($data as $k => $v) {
-            if (isset($v['priority'])) {
-                $priority = $v['priority'];
-            } else {
-                $priority = 0;
-            }
-            $data2[] = array('module' => $k, 'filter' => $v['filter'], 'priority' => $priority);
+            $priority = isset($v['priority']) ? $v['priority'] : 0;
+            $filter = isset($v['filter']) ? $v['filter'] : '';
+            $data2[] = array('module' => $k, 'filter' => $filter, 'priority' => $priority);
         }
         usort($data2, function ($a, $b) {
             if ($a['priority'] == $b['priority']) return 0;
@@ -144,7 +142,7 @@ function processSubscriptions($event_name, $details = '', $return_output = false
         for ($i = 0; $i < $total; $i++) {
             $module_name = $data2[$i]['module'];
             $filter_details = $data2[$i]['filter'];
-            $output .= processSubscriptionByModule($module_name,$event_name,$details);
+            $output .= processSubscriptionByModule($module_name, $event_name, $details);
             if (!isset($details['BREAK'])) {
                 $details['BREAK'] = false;
             }

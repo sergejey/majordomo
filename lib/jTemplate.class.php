@@ -51,6 +51,9 @@ class jTemplate
      */
     public function __construct($template, &$data, &$owner = '')
     {
+
+        $this->phpversion = (float)phpversion();
+
         // set current directory for template includes
         if (strpos($template, "/") !== false) {
             $root = preg_replace("/\/[^\/]*?$/", "", $template) . "/";
@@ -397,7 +400,7 @@ class jTemplate
                             $count_matches1_1 = count($matches1[1]);
 
                             for ($m = 0; $m < $count_matches1_1; $m++) {
-                                @$line2 = str_replace($matches1[0][$m], $this->templateSafe($var[$k][$matches1[1][$m]]), $line2);
+                                @$line2 = str_replace($matches1[0][$m], $this->templateSafe(isset($var[$k][$matches1[1][$m]]) ? $var[$k][$matches1[1][$m]] : ''), $line2);
                             }
                         }
 
@@ -603,6 +606,11 @@ class jTemplate
                     $obj = "\$object$i";
                     $code = "";
                     $code .= "$obj=new " . $module_data["name"] . "();\n";
+
+                    if ($this->phpversion >= 8) {
+                        $code .= "if (method_exists($obj,'" . $module_data["name"] . "')) $obj->" . $module_data["name"] . "();\n";
+                    }
+
                     $code .= $obj . "->owner=&\$this->owner;\n";
 
                     // setting module parameters from module including directive
@@ -795,6 +803,8 @@ class jTemplate
     public
     function templateSafe($val)
     {
+        if (is_null($val)) return '';
+
         $res = $val;
         $res = str_replace('[#', '&#091#', $res);
         $res = str_replace('#]', '#&#093', $res);
