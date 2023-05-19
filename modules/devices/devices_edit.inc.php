@@ -14,7 +14,7 @@ if ($this->owner->print == 1) {
     $out['NO_NAV'] = 1;
 }
 
-if ($rec['LINKED_OBJECT'] != '') {
+if (isset($rec['LINKED_OBJECT']) && $rec['LINKED_OBJECT'] != '') {
     $object_rec = SQLSelectOne("SELECT ID FROM objects WHERE TITLE='" . $rec['LINKED_OBJECT'] . "'");
     if ($object_rec['ID']) {
         $properties = SQLSelect("SELECT pvalues.*, properties.TITLE as PROPERTY FROM pvalues LEFT JOIN properties ON properties.ID=pvalues.PROPERTY_ID WHERE pvalues.OBJECT_ID=" . $object_rec['ID'] . " AND pvalues.LINKED_MODULES!='' ORDER BY UPDATED DESC");
@@ -524,7 +524,7 @@ if (is_array($rec)) {
     }
 }
 
-if (!$rec['LOCATION_ID']) {
+if (!isset($rec['LOCATION_ID'])) {
     $rec['LOCATION_ID'] = gr('location_id', 'int');
 }
 
@@ -537,7 +537,7 @@ foreach ($this->device_types as $k => $v) {
     if (isset($v['TITLE'])) {
         $types[] = array('NAME' => $k, 'TITLE' => $v['TITLE']);
     }
-    if ($k == $rec['TYPE'] && $rec['TYPE'] != '') {
+    if (isset($rec['TYPE']) && $k == $rec['TYPE'] && $rec['TYPE'] != '') {
         $out['TYPE_TITLE'] = $v['TITLE'];
     }
 }

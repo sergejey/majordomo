@@ -26,6 +26,7 @@ class xray extends module
         $this->title = "X-Ray";
         $this->module_category = "<#LANG_SECTION_SYSTEM#>";
         $this->checkInstalled();
+        $this->cycle = '';
     }
 
     /**
@@ -129,6 +130,7 @@ class xray extends module
 
     function service_control(&$out)
     {
+
         $cycle = $this->cycle;
         if (!$this->cycle) {
             $this->cycle = gr('cycle');
@@ -326,7 +328,7 @@ class xray extends module
                     $methods = SQLSelect("SELECT methods.ID, methods.TITLE, classes.TITLE AS CLASS, objects.TITLE AS OBJECT, methods.CLASS_ID, methods.OBJECT_ID FROM methods LEFT JOIN classes ON methods.CLASS_ID=classes.ID LEFT JOIN objects ON methods.OBJECT_ID=objects.ID WHERE (methods.CODE LIKE '%" . DBSafe($k) . "%' OR methods.TITLE LIKE '" . DBSafe($v) . "')");
                     $total = count($methods);
                     for ($i = 0; $i < $total; $i++) {
-                        if (!$found['method' . $methods[$i]['ID']]) {
+                        if (!isset($found['method' . $methods[$i]['ID']])) {
                             $rec = array();
                             $rec['TYPE'] = 'method';
                             $rec['TITLE'] = $methods[$i]['TITLE'];
@@ -575,7 +577,7 @@ class xray extends module
                     $result = array();
 
                     foreach ($files as $file_item) {
-                        if ($file_item['SELECTED']) {
+                        if (isset($file_item['SELECTED'])) {
                             $file = $file_item['TITLE'];
                             $filename = $path . '/' . $file;
                             if (file_exists($filename)) {
@@ -620,7 +622,7 @@ class xray extends module
                                 foreach ($res_lines as $line) {
                                     if (preg_match('/<b>(\d+?:\d+?:\d+?) ([\d\.]+)<\\/b>/uis', $line, $m)) {
                                         $tm = strtotime(date('Y-m-d', filemtime($filename)) . ' ' . $m[1]) + (float)$m[1];
-                                        $result[] = array('TM' => $tm + (float)$m2, 'CONTENT' => $line);
+                                        $result[] = array('TM' => $tm + (float)$m[2], 'CONTENT' => $line);
                                     }
                                 }
                             } else {
@@ -694,20 +696,23 @@ class xray extends module
 					$responce['TOTAL'] = $total;
 					
 					for ($i = 0; $i < $total; $i++) {
-						@$tmp = unserialize($res[$i]['EXECUTED_PARAMS']);
-                        if ($tmp['ORIGINAL_OBJECT_TITLE'] && !$res[$i]['OBJECT']) {
-                            $res[$i]['OBJECT'] = $tmp['ORIGINAL_OBJECT_TITLE'];
-                            $res[$i]['EXECUTED_PARAMS'] = serialize($tmp);
+					    if (isset($res[$i]['EXECUTED_PARAMS']) && $res[$i]['EXECUTED_PARAMS']!='') {
+                            $tmp = json_decode($res[$i]['EXECUTED_PARAMS'],true);
+                            if (isset($tmp['ORIGINAL_OBJECT_TITLE']) && !isset($res[$i]['OBJECT'])) {
+                                $res[$i]['OBJECT'] = $tmp['ORIGINAL_OBJECT_TITLE'];
+                                $res[$i]['EXECUTED_PARAMS'] = serialize($tmp);
+                            }
                         }
-						
+
 						$responce['LIST'][$i]['METHOD'] = $res[$i]['OBJECT'] . '.' . $res[$i]['TITLE'];
 						if ($res[$i]['DESCRIPTION']) {
                             $responce['LIST'][$i]['DESC'] = $res[$i]['DESCRIPTION'];
                         } else {
 							$responce['LIST'][$i]['DESC'] = '';
 						}
-						
-						$responce['LIST'][$i]['PARAMS'] = htmlspecialchars(str_replace(',"', ', "', $res[$i]['EXECUTED_PARAMS']));
+						if (isset($res[$i]['EXECUTED_PARAMS'])) {
+                            $responce['LIST'][$i]['PARAMS'] = htmlspecialchars(str_replace(',"', ', "', $res[$i]['EXECUTED_PARAMS']));
+                        }
 						$responce['LIST'][$i]['EXECUTED'] = $res[$i]['EXECUTED'];
 						$responce['LIST'][$i]['SOURCE'] = $res[$i]['EXECUTED_SRC'];
                     }
@@ -921,9 +926,11 @@ class xray extends module
 						
 						$responce['LIST'][$i]['ADDED'] = $res[$i]['ADDED'];
                     }
-					
-					$responce['LIST'] = array_reverse($responce['LIST']);
-					
+
+					if (isset($responce['LIST']) && is_array($responce['LIST'])) {
+                        $responce['LIST'] = array_reverse($responce['LIST']);
+                    }
+
 					echo json_encode($responce);
                 }
 

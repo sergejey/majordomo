@@ -26,6 +26,7 @@ class objects extends module
         $this->title = "<#LANG_MODULE_OBJECT_INSTANCES#>";
         $this->module_category = "<#LANG_SECTION_OBJECTS#>";
         $this->checkInstalled();
+        $this->id = '';
     }
 
     /**

@@ -149,13 +149,13 @@ class devices extends module
             $out['PREFIX'] = $this->prefix;
         }
 
-        if ($this->add_title) {
+        if (isset($this->add_title)) {
             $out['ADD_TITLE'] = urlencode($this->add_title);
         }
 
         if ($this->linked_object) {
             $device_rec = SQLSelectOne("SELECT ID,TITLE FROM devices WHERE LINKED_OBJECT LIKE '" . DBSafe($this->linked_object) . "'");
-            if ($device_rec['TITLE']) {
+            if (isset($device_rec['TITLE'])) {
                 $out['TITLE'] = $device_rec['TITLE'];
                 if ($this->preview) {
                     $data = $this->processDevice($device_rec['ID']);

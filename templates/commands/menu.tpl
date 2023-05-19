@@ -29,7 +29,11 @@
          payload.action = 'Subscribe';
          payload.data = new Object();
          payload.data.TYPE='commands';
+         {if isset($PARENT_ID)}
          payload.data.PARENT_ID='{$PARENT_ID}';
+         {else}
+         payload.data.PARENT_ID='0';
+         {/if}
          wsSocket.send(JSON.stringify(payload));
          subscribedWebSocketsTimer=setTimeout('subscribeToMenu();', 3000);
          return false;
@@ -225,8 +229,8 @@
 
 
         <div id="home" class="current">
-{if $ONE_ITEM_MODE!='1'}
-{if $PARENT_TITLE!=''}
+{if !isset($ONE_ITEM_MODE)}
+{if isset($PARENT_TITLE)}
             <div data-role="header"{if $smarty.const.SETTINGS_THEME=="dark"} data-theme="b"{/if}>
 {if $IFRAME_MODE==''}
                 <h1 id="label_{$PARENT_ID}">{if $PARENT_TITLE!=''}{$PARENT_TITLE}{else}MajorDoMo{/if}</h1>
@@ -241,7 +245,7 @@
 {/if}
 
 
-{if $PARENT_ID!=''}
+{if isset($PARENT_ID)}
 {if $PARENT_AUTO_UPDATE!='0'}
 <script language="javascript">
  var label{$PARENT_ID}_timer;
@@ -267,7 +271,7 @@
 
 {/if}
 
-<div data-role="content"{if $FROM_SCENE==1} style='margin:0px;padding:0px;'{/if}>
+<div data-role="content"{if isset($FROM_SCENE)} style='margin:0px;padding:0px;'{/if}>
 
 
 <!--
@@ -280,12 +284,12 @@
 {if $RESULT}
 
 <!-- search results (list) -->
-{if $ONE_ITEM_MODE!='1'}
+{if !isset($ONE_ITEM_MODE)}
 <ul data-role="listview" data-inset="true">
 {/if}
 
 
-{if $RESULT_HTML!=''}{$RESULT_HTML}{/if}
+{if isset($RESULT_HTML)}{$RESULT_HTML}{/if}
 
 {function name=menu}
 
@@ -750,7 +754,7 @@
 
 {menu items=$RESULT}
 
-{if $ONE_ITEM_MODE!='1'}</ul>{/if}
+{if !isset($ONE_ITEM_MODE)}</ul>{/if}
 <!-- / search results (list) -->
 {else}
 <p>

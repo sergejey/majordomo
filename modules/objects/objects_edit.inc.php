@@ -10,10 +10,12 @@ if ($this->owner->name == 'panel') {
 $table_name = 'objects';
 $rec = SQLSelectOne("SELECT * FROM $table_name WHERE ID='$id'");
 
-$device_rec = SQLSelectOne("SELECT * FROM devices WHERE LINKED_OBJECT='" . $rec['TITLE'] . "'");
-if (isset($device_rec['ID'])) {
-    $out['DEVICE_ID'] = $device_rec['ID'];
-    $out['DEVICE_TITLE'] = $device_rec['TITLE'];
+if (isset($rec['TITLE'])) {
+    $device_rec = SQLSelectOne("SELECT * FROM devices WHERE LINKED_OBJECT='" . $rec['TITLE'] . "'");
+    if (isset($device_rec['ID'])) {
+        $out['DEVICE_ID'] = $device_rec['ID'];
+        $out['DEVICE_TITLE'] = $device_rec['TITLE'];
+    }
 }
 
 $class_changed_from = '';
@@ -93,8 +95,10 @@ if ($this->tab == '') {
     for ($classes_i = 0; $classes_i < $classes_total; $classes_i++) {
         $class_id_opt[$tmp[$classes_i]['ID']] = $tmp[$classes_i]['TITLE'];
     }
-    for ($i = 0; $i < $classes_total; $i++) {
-        if ($rec['CLASS_ID'] == $tmp[$i]['ID']) $tmp[$i]['SELECTED'] = 1;
+    if (isset($rec['CLASS_ID'])) {
+        for ($i = 0; $i < $classes_total; $i++) {
+            if ($rec['CLASS_ID'] == $tmp[$i]['ID']) $tmp[$i]['SELECTED'] = 1;
+        }
     }
     $out['CLASS_ID_OPTIONS'] = $tmp;
     //options for 'Location' (select)
@@ -103,8 +107,10 @@ if ($this->tab == '') {
     for ($locations_i = 0; $locations_i < $locations_total; $locations_i++) {
         $location_id_opt[$tmp[$locations_i]['ID']] = $tmp[$locations_i]['TITLE'];
     }
-    for ($i = 0; $i < $locations_total; $i++) {
-        if ($rec['LOCATION_ID'] == $tmp[$i]['ID']) $tmp[$i]['SELECTED'] = 1;
+    if (isset($rec['LOCATION_ID'])) {
+        for ($i = 0; $i < $locations_total; $i++) {
+            if ($rec['LOCATION_ID'] == $tmp[$i]['ID']) $tmp[$i]['SELECTED'] = 1;
+        }
     }
     $out['LOCATION_ID_OPTIONS'] = $tmp;
 }
@@ -150,7 +156,7 @@ if ($this->tab == 'properties') {
     $props = $cl->getParentProperties($rec['CLASS_ID'], '', 1);
 
     $my_props = SQLSelect("SELECT * FROM properties WHERE OBJECT_ID='" . $rec['ID'] . "'");
-    if ($my_props[0]['ID']) {
+    if (isset($my_props[0]['ID'])) {
         foreach ($my_props as $p) {
             $props[] = $p;
         }
@@ -303,7 +309,7 @@ if ($this->tab == 'methods') {
         $my_meth = SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID='" . $rec['ID'] . "' AND TITLE LIKE '" . DBSafe($methods[$i]['TITLE']) . "'");
         $obj_name = SQLSelectOne("SELECT TITLE FROM `objects` WHERE ID = {$rec['ID']}");
         $methods[$i]['OBJECT_TITLE'] = $obj_name['TITLE'];
-        if ($my_meth['ID']) {
+        if (isset($my_meth['ID'])) {
             $methods[$i]['CUSTOMIZED'] = 1;
         }
     }
@@ -322,12 +328,12 @@ if (is_array($rec)) {
 }
 outHash($rec, $out);
 
-if (!$rec['ID'] && $this->class_id) {
+if (!isset($rec['ID']) && isset($this->class_id)) {
     $out['CLASS_ID'] = $this->class_id;
 }
 
 $out['SCRIPTS'] = SQLSelect("SELECT ID, TITLE FROM scripts ORDER BY TITLE");
 
-if ($out['TITLE']) {
+if (isset($out['TITLE'])) {
     $this->owner->owner->data['TITLE'] = $out['TITLE'];
 }

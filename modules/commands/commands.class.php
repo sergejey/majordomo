@@ -168,6 +168,7 @@ class commands extends module
     function admin(&$out)
     {
 
+        $out['VISIBLE_DELAYS'] = 0;
         global $ajax;
         if ($ajax) {
 
