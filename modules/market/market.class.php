@@ -167,6 +167,36 @@ class market extends module
             $out['CLEAR_FIRST'] = 1;
         }
 
+        if ($this->mode == 'install_multiple') {
+            $this->updateAll($this->selected_plugins);
+        }
+
+
+        if ($this->mode == 'update_all') {
+            $this->updateAll($this->can_be_updated);
+        }
+
+        if ($this->mode == 'update_new') {
+            $this->updateAll($this->can_be_updated_new);
+        }
+
+        if ($this->mode == 'install' && $this->url) {
+            $this->getLatest($out, $this->url, $name, $this->version);
+        }
+
+        if ($this->mode == 'upload') {
+            $this->upload($out);
+        }
+
+        if ($this->mode == 'uninstall' && $name) {
+            $this->uninstallPlugin($name);
+        }
+
+        if ($this->mode == 'clear') {
+            $this->removeTree(ROOT . 'cms/saverestore/temp');
+            $this->redirect("?err_msg=" . urlencode($err_msg) . "&ok_msg=" . urlencode($ok_msg));
+        }
+
 
         if ($this->mode == 'upload') {
             global $file;
@@ -317,6 +347,7 @@ class market extends module
             return;
         }
 
+
         if (isset($this->category_id)) {
             $category_id = $this->category_id;
         } else {
@@ -371,13 +402,13 @@ class market extends module
                 }
                 $seen[$module] = 1;
             }
-            //dprint($modules_in_db);
         }
 
         if ($params) {
             $result = $this->marketRequest($params);
             $data = json_decode($result);
         }
+
 
         if (!$data->PLUGINS) {
             $out['ERR'] = 1;
@@ -466,7 +497,6 @@ class market extends module
             $p = new parser(DIR_TEMPLATES . $this->name . "/list.html", $out, $this);
             echo $p->result;
             exit;
-
         }
 
         return;
@@ -584,37 +614,6 @@ class market extends module
         $out['CATEGORY'] = $cat;
 
 
-        if ($this->mode == 'install_multiple') {
-            $this->updateAll($this->selected_plugins);
-        }
-
-
-        if ($this->mode == 'update_all') {
-            $this->updateAll($this->can_be_updated);
-        }
-
-        if ($this->mode == 'update_new') {
-            $this->updateAll($this->can_be_updated_new);
-        }
-
-        if ($this->mode == 'install' && $this->url) {
-            $this->getLatest($out, $this->url, $name, $this->version);
-        }
-
-        if ($this->mode == 'upload') {
-            $this->upload($out);
-        }
-
-        if ($this->mode == 'uninstall' && $name) {
-            $this->uninstallPlugin($name);
-        }
-
-        if ($this->mode == 'clear') {
-            $this->removeTree(ROOT . 'cms/saverestore/temp');
-            @SaveFile(ROOT . 'reboot', 'updated');
-            $this->redirect("?err_msg=" . urlencode($err_msg) . "&ok_msg=" . urlencode($ok_msg));
-        }
-
     }
 
     function marketRequest($details = '', $cache_timeout = 0)
@@ -720,18 +719,18 @@ class market extends module
                     $file = basename($filename);
                     DebMes("Installing/updating plugin $name ($version)");
 
-                    @chdir(ROOT . 'cms/saverestore/temp');
+                    chdir(ROOT . 'cms/saverestore/temp');
 
                     if ($frame) {
                         $this->echonow("Unpacking '$file' ..");
                     }
 
-
                     if (IsWindowsOS()) {
-                        $result = exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
+                        exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
                         $result = exec(DOC_ROOT . '/tar xvf ../' . str_replace('.tgz', '.tar', $file), $output, $res);
                     } else {
-                        $result = exec('tar xzvf ../' . $file, $output, $res);
+                        $cmd = 'tar xzvf ../' . $file;
+                        $result = exec($cmd, $output, $res);
                     }
 
                     if (!$result) {
@@ -960,9 +959,9 @@ class market extends module
         if (file_exists($filename)) {
             unlink($filename);
         }
-        $filename = ROOT . 'cms/saverestore/' . $name . '.tar';
-        if (file_exists($filename)) {
-            unlink($filename);
+        $filename2 = ROOT . 'cms/saverestore/' . $name . '.tar';
+        if (file_exists($filename2)) {
+            unlink($filename2);
         }
 
         $f = fopen($filename, 'wb');
@@ -1057,6 +1056,7 @@ class market extends module
             $name = $file_name;
             $name = str_replace('.tgz', '', $name);
             $name = str_replace('.tar.gz', '', $name);
+            $name = str_replace('.tar', '', $name);
             $name = strtolower($name);
         }
 
@@ -1069,13 +1069,17 @@ class market extends module
             if ($frame) {
                 $this->echonow("Unpacking '$file' ... ");
             }
+
             if (IsWindowsOS()) {
                 // for windows only
-                $result = exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
+                exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
                 $result = exec(DOC_ROOT . '/tar xvf ../' . str_replace('.tgz', '.tar', $file), $output, $res);
-                @unlink('../' . str_replace('.tgz', '.tar', $file));
+                if (is_file('../' . str_replace('.tgz', '.tar', $file))) {
+                    unlink('../' . str_replace('.tgz', '.tar', $file));
+                }
             } else {
-                $result = exec('tar xzvf ../' . $file, $output, $res);
+                $cmd = 'tar xzvf ../' . $file;
+                $result = exec($cmd, $output, $res);
             }
 
             if (!$result) {
@@ -1086,7 +1090,6 @@ class market extends module
             if ($frame) {
                 $this->echonow(" OK <br/>", 'green');
             }
-
 
             $x = 0;
             $dir = opendir('./');
