@@ -973,11 +973,14 @@ class xray extends module
 						if($this->mode == 'chart') {
 							$arrayDB = array_slice(array_reverse($responce['LIST']), 0, 7);
 							echo json_encode($arrayDB);
-						} else if($this->mode == 'showdbload' && isset($GLOBALS['db']->dbh->stat)) {
-							$DBstat = $GLOBALS['db']->dbh->stat;
-							$DBstat = explode('  ', $DBstat);
-							$DBstat_PerSec = preg_replace('/[^0-9.]/', '', $DBstat[7]);
-							$DBstat_PerSecType = 'main';
+						} else if($this->mode == 'showdbload') {
+							if(isset($GLOBALS['db']->dbh->stat)) {
+								$DBstat = $GLOBALS['db']->dbh->stat;
+								$DBstat = explode('  ', $DBstat);
+								$DBstat_PerSec = preg_replace('/[^0-9.]/', '', $DBstat[7]);
+								$DBstat_PerSecType = 'main';
+							}
+							else $DBstat_PerSec = 0;
 							
 							if(round($DBstat_PerSec) == 0) {
 								$select = SQLSelect("SHOW GLOBAL STATUS");
