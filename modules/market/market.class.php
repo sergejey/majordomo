@@ -674,18 +674,21 @@ class market extends module
 
         if (is_array($can_be_updated)) {
             foreach ($can_be_updated as $k => $v) {
+
                 //$this->getLatest($out, $v['URL'], $v['NAME'], $v['VERSION']);
                 $name = $v['NAME'];
                 $version = $v['VERSION'];
                 $url = $v['URL'];
 
+
+
                 $filename = ROOT . 'cms/saverestore/' . $name . '.tgz';
                 if (file_exists($filename)) {
                     unlink($filename);
                 }
-                $filename = ROOT . 'cms/saverestore/' . $name . '.tar';
-                if (file_exists($filename)) {
-                    unlink($filename);
+                $filename2 = ROOT . 'cms/saverestore/' . $name . '.tar';
+                if (file_exists($filename2)) {
+                    unlink($filename2);
                 }
 
                 $f = fopen($filename, 'wb');
@@ -693,11 +696,18 @@ class market extends module
                     $this->redirect("?err_msg=" . urlencode("Cannot open " . $filename . " for writing"));
                 }
 
+                if (!isset($url) || !$url) {
+                    if ($frame) {
+                        $this->echonow("No download URL available for $name ($version).<br/>");
+                    }
+                    continue;
+                }
+
                 if ($frame) {
                     $this->echonow("Downloading '$url' ... ");
                 }
 
-                DebMes("Downloading plugin $name ($version) from $url");
+                DebMes("Downloading plugin $name ($version) from $url",'market');
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $url);
                 curl_setopt($ch, CURLOPT_TIMEOUT, 600);
@@ -709,20 +719,19 @@ class market extends module
                 curl_close($ch);
                 @fclose($f);
 
-                if (file_exists($filename)) {
+                if (file_exists($filename) && filesize($filename)>0) {
 
                     if ($frame) {
                         $this->echonow("OK<br/>", 'green');
                     }
 
-
                     $file = basename($filename);
-                    DebMes("Installing/updating plugin $name ($version)");
+                    DebMes("Installing/updating plugin $name ($version)",'market');
 
                     chdir(ROOT . 'cms/saverestore/temp');
 
                     if ($frame) {
-                        $this->echonow("Unpacking '$file' ..");
+                        $this->echonow("Unpacking '$file' ...");
                     }
 
                     if (IsWindowsOS()) {
@@ -734,8 +743,8 @@ class market extends module
                     }
 
                     if (!$result) {
-                        $this->echonow("Unpack failed!", 'red');
-                        return false;
+                        $this->echonow("Unpack failed!<br/>", 'red');
+                        continue;
                     }
 
                     $x = 0;
@@ -760,13 +769,13 @@ class market extends module
 
                     chdir('../../');
 
-                    DebMes("Latest folder: $latest_dir");
+                    DebMes("Latest folder: $latest_dir",'market');
 
                     if ($latest_dir == '') {
                         if ($frame) {
                             $this->echonow("ERROR<br/>", 'red');
                         }
-                        DebMes("Error extracting $file");
+                        DebMes("Error extracting $file",'market');
                         continue;
                     }
 
@@ -799,6 +808,10 @@ class market extends module
                     }
                     $this->checkIfCycleRestartRequired($name);
 
+                } else {
+                    if ($frame) {
+                        $this->echonow("Download failed.<br/>",'red');
+                    }
                 }
             }
         }
@@ -1139,7 +1152,7 @@ class market extends module
             }
 
 
-            DebMes("Installing/updating plugin $name ($version)");
+            DebMes("Installing/updating plugin $name ($version)",'market');
 
             $rec = SQLSelectOne("SELECT * FROM plugins WHERE MODULE_NAME LIKE '" . DBSafe($name) . "'");
             $rec['MODULE_NAME'] = $name;
@@ -1362,7 +1375,7 @@ class market extends module
 
     function echonow($msg, $color = '')
     {
-        DebMes(strip_tags($msg), 'auto_update');
+        DebMes(strip_tags($msg), 'market');
         if ($color) {
             echo '<font color="' . $color . '">';
         }
