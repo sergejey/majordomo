@@ -454,6 +454,11 @@ class market extends module
                     $this->url = 'https://connect.smartliving.ru/market/?op=download&name=' . urlencode($rec['MODULE_NAME']) . "&serial=" . urlencode(gg('Serial'));
                     $this->version = $rec['LATEST_VERSION'];
                 }
+
+                if (!$rec['REPOSITORY_URL']) {
+                    $rec['REPOSITORY_URL'] = 'https://connect.smartliving.ru/market/?op=download&name=' . urlencode($rec['MODULE_NAME']) . "&serial=" . urlencode(gg('Serial'));
+                }
+
                 if ((isset($rec['EXISTS']) && !isset($rec['IGNORE_UPDATE'])) || isset($missing[$rec['MODULE_NAME']])) {
                     $this->can_be_updated[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
                 }
@@ -470,7 +475,6 @@ class market extends module
                 } elseif ($category_id == 'updates') {
                     continue;
                 }
-
                 $plugins[] = $rec;
             }
 
@@ -681,7 +685,6 @@ class market extends module
                 $url = $v['URL'];
 
 
-
                 $filename = ROOT . 'cms/saverestore/' . $name . '.tgz';
                 if (file_exists($filename)) {
                     unlink($filename);
@@ -691,11 +694,6 @@ class market extends module
                     unlink($filename2);
                 }
 
-                $f = fopen($filename, 'wb');
-                if ($f == FALSE) {
-                    $this->redirect("?err_msg=" . urlencode("Cannot open " . $filename . " for writing"));
-                }
-
                 if (!isset($url) || !$url) {
                     if ($frame) {
                         $this->echonow("No download URL available for $name ($version).<br/>");
@@ -703,30 +701,12 @@ class market extends module
                     continue;
                 }
 
-                if ($frame) {
-                    $this->echonow("Downloading '$url' ... ");
-                }
 
-                DebMes("Downloading plugin $name ($version) from $url",'market');
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $url);
-                curl_setopt($ch, CURLOPT_TIMEOUT, 600);
-                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-                curl_setopt($ch, CURLOPT_FILE, $f);
-                $incoming = curl_exec($ch);
-                curl_close($ch);
-                @fclose($f);
-
-                if (file_exists($filename) && filesize($filename)>0) {
-
-                    if ($frame) {
-                        $this->echonow("OK<br/>", 'green');
-                    }
+                $filename = $this->downloadPlugin($url, $filename, $frame);
+                if (file_exists($filename)) {
 
                     $file = basename($filename);
-                    DebMes("Installing/updating plugin $name ($version)",'market');
+                    DebMes("Installing/updating plugin $name ($version)", 'market');
 
                     chdir(ROOT . 'cms/saverestore/temp');
 
@@ -769,13 +749,13 @@ class market extends module
 
                     chdir('../../');
 
-                    DebMes("Latest folder: $latest_dir",'market');
+                    DebMes("Latest folder: $latest_dir", 'market');
 
                     if ($latest_dir == '') {
                         if ($frame) {
                             $this->echonow("ERROR<br/>", 'red');
                         }
-                        DebMes("Error extracting $file",'market');
+                        DebMes("Error extracting $file", 'market');
                         continue;
                     }
 
@@ -810,7 +790,7 @@ class market extends module
 
                 } else {
                     if ($frame) {
-                        $this->echonow("Download failed.<br/>",'red');
+                        $this->echonow("Download failed.<br/>", 'red');
                     }
                 }
             }
@@ -958,6 +938,66 @@ class market extends module
         }
     }
 
+    function downloadPlugin($url, $filename, $frame = 0)
+    {
+        if (file_exists($filename)) {
+            unlink($filename);
+        }
+
+        DebMes("Downloading plugin from $url", 'market');
+        if ($frame) {
+            $this->echonow("Downloading '" . $url . "' ... ");
+        }
+
+        $f = fopen($filename, 'wb');
+        if ($f == FALSE) {
+            if ($frame) {
+                $this->echonow("Cannot open " . $filename . " for writing", "red");
+                return 0;
+            } else {
+                $this->redirect("?err_msg=" . urlencode("Cannot open " . $filename . " for writing"));
+            }
+        }
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 600);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch, CURLOPT_FILE, $f);
+
+        if (preg_match('/market/\?op=download/', $url)) {
+            @include_once(DIR_MODULES . 'connect/connect.class.php');
+            if (class_exists('connect')) {
+                $connect = new connect();
+                $connect->getConfig();
+                $connect_username = strtolower($connect->config['CONNECT_USERNAME']);
+                $connect_password = $connect->config['CONNECT_PASSWORD'];
+                if ($connect_username != '' && $connect_password != '') {
+                    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+                    curl_setopt($ch, CURLOPT_USERPWD, $connect_username . ":" . $connect_password);
+                }
+            }
+        }
+        $incoming = curl_exec($ch);
+        curl_close($ch);
+        @fclose($f);
+
+        if (filesize($filename)>0) {
+            if ($frame) {
+                $this->echonow("OK<br/>", 'green');
+            }
+        } else {
+            unlink($filename);
+            if ($frame) {
+                $this->echonow("Failed<br/>", 'red');
+            }
+        }
+
+        return $filename;
+    }
+
     function getLatest(&$out, $url, $name, $version, $frame = 0)
     {
 
@@ -977,62 +1017,16 @@ class market extends module
             unlink($filename2);
         }
 
-        $f = fopen($filename, 'wb');
-        if ($f == FALSE) {
-            if ($frame) {
-                $this->echonow("Cannot open " . $filename . " for writing", "red");
-                return 0;
-            } else {
-                $this->redirect("?err_msg=" . urlencode("Cannot open " . $filename . " for writing"));
-            }
-        }
-
-
-        if ($frame) {
-            $this->echonow("Downloading '" . $url . "' ... ");
-        }
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 600);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-        curl_setopt($ch, CURLOPT_FILE, $f);
-
-        @include_once(DIR_MODULES . 'connect/connect.class.php');
-        if (class_exists('connect')) {
-            $connect = new connect();
-            $connect->getConfig();
-            $connect_username = strtolower($connect->config['CONNECT_USERNAME']);
-            $connect_password = $connect->config['CONNECT_PASSWORD'];
-            if ($connect_username != '' && $connect_password != '') {
-                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-                curl_setopt($ch, CURLOPT_USERPWD, $connect_username . ":" . $connect_password);
-            }
-        }
-
-        $incoming = curl_exec($ch);
-
-        curl_close($ch);
-        @fclose($f);
+        $filename = $this->downloadPlugin($url, $filename, $frame);
 
         if (file_exists($filename)) {
-
-            if ($frame) {
-                $this->echonow("OK<br/>", 'green');
-            }
-
-
             $this->removeTree(ROOT . 'cms/saverestore/temp', $frame);
-
             if ($frame) {
                 return 1;
             } else {
                 global $list;
                 $this->redirect("?mode=upload&restore=" . urlencode($name . '.tgz') . "&folder=" . urlencode($name) . "&name=" . urlencode($name) . "&version=" . urlencode($version) . "&list=" . urlencode($list));
             }
-
         } else {
             if ($frame) {
                 $this->echonow("Cannot download '" . $url . "'<br/>", "red");
@@ -1152,7 +1146,7 @@ class market extends module
             }
 
 
-            DebMes("Installing/updating plugin $name ($version)",'market');
+            DebMes("Installing/updating plugin $name ($version)", 'market');
 
             $rec = SQLSelectOne("SELECT * FROM plugins WHERE MODULE_NAME LIKE '" . DBSafe($name) . "'");
             $rec['MODULE_NAME'] = $name;
