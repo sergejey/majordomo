@@ -967,7 +967,8 @@ class market extends module
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_FILE, $f);
 
-        if (preg_match('/market/\?op=download/', $url)) {
+        if (preg_match('/\?op=download/', $url)) {
+            DebMes("Setting CONNECT authorization credentials", 'market');
             @include_once(DIR_MODULES . 'connect/connect.class.php');
             if (class_exists('connect')) {
                 $connect = new connect();
@@ -977,6 +978,9 @@ class market extends module
                 if ($connect_username != '' && $connect_password != '') {
                     curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
                     curl_setopt($ch, CURLOPT_USERPWD, $connect_username . ":" . $connect_password);
+                    DebMes("Auth credentials set.", 'market');
+                } else {
+                    DebMes("Auth credentials missing.", 'market');
                 }
             }
         }
@@ -984,7 +988,7 @@ class market extends module
         curl_close($ch);
         @fclose($f);
 
-        if (filesize($filename)>0) {
+        if (filesize($filename) > 0) {
             if ($frame) {
                 $this->echonow("OK<br/>", 'green');
             }
