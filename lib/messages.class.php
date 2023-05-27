@@ -142,7 +142,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
 
     //dprint(date('Y-m-d H:i:s')." Say started",false);
 
-    verbose_log("SAY (level: $level; member: $member; source: $source): " . $ph);
+    verbose_log("SAY (level: $level; member: $member_id; source: $source): " . $ph);
     //DebMes("SAY (level: $level; member: $member; source: $source): ".$ph,'say');
 
     $image = '';

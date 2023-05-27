@@ -195,7 +195,7 @@ class Threads
          $stream_status = stream_get_meta_data($stream);
          $proc_status   = proc_get_status($this->handles[$id]);
 
-         if ($output_show[$this->commandLines[$id]] != $now)
+         if (!isset($output_show[$this->commandLines[$id]]) || $output_show[$this->commandLines[$id]] != $now)
          {
             $output_show[$this->commandLines[$id]] = $now;
             

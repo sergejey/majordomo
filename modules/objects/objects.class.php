@@ -492,6 +492,9 @@ class objects extends module
         startMeasure('callMethodSafe');
         $current_call = $this->object_title . '.' . $name;
         $call_stack = array();
+        $raiseEvent = '';
+        $run_SafeMethod = '';
+
         if (is_array($params)) {
             if (isset($params['m_c_s']) && is_array($params['m_c_s']) && !empty($params['m_c_s'])) {
                 $call_stack = $params['m_c_s'];
@@ -584,19 +587,19 @@ class objects extends module
 
         if ($id) {
 
+            $source = '';
             $method = SQLSelectOne("SELECT * FROM methods WHERE ID='" . $id . "'");
             $update_rec = array('ID' => $method['ID']);
             $update_rec['EXECUTED'] = date('Y-m-d H:i:s');
             if (defined('CALL_SOURCE')) {
                 $source = CALL_SOURCE;
-            } else {
+            } elseif (isset($_SERVER['REQUEST_URI'])) {
                 $source = urldecode($_SERVER['REQUEST_URI']);
             }
             if (strlen($source) > 250) {
                 $source = substr($source, 0, 250) . '...';
             }
             $update_rec['EXECUTED_SRC'] = $source;
-
 
             if (!$method['OBJECT_ID']) {
                 if (!$params) {
@@ -642,7 +645,7 @@ class objects extends module
             }
 
 
-            if ($code != '') {
+            if (isset($code) && $code != '') {
                 if (defined('PYTHON_PATH') and isItPythonCode($code)) {
                     echo($code);
                     python_run_code($code, $params, $this->object_title);
@@ -1167,17 +1170,14 @@ class objects extends module
                ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
         SQLExec($sqlQuery);
 
+        SQLExec("DROP TABLE IF EXISTS `operations_queue`;");
         $sqlQuery = "CREATE TABLE IF NOT EXISTS `operations_queue` 
               (`TOPIC`   CHAR(255) NOT NULL,
-               `DATANAME` CHAR(255) NOT NULL,
-               `DATAVALUE` CHAR(255) NOT NULL,
-               `EXPIRE`    DATETIME  NOT NULL
+               `DATANAME` VARCHAR(1024) NOT NULL,
+               `DATAVALUE` VARCHAR(1024) NOT NULL,
+               `EXPIRE` DATETIME NOT NULL
               ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
         SQLExec($sqlQuery);
-
-        // Если вы дошли до этой записи, при проявлении ошибки, то данная ошибка проявляется на MariDB
-        $sqlQuery = "ALTER TABLE operations_queue DROP COLUMN IF EXISTS `ID`;";
-        SQLExec($sqlQuery, true);
 
 
         /*

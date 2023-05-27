@@ -44,7 +44,7 @@ echo "CONNECTED TO DB" . PHP_EOL;
 
 //если есть "поломанные" таблицы, попытаться их "вылечить"
 echo "CHECK/REPAIR TABLES\n";
-$tables = SQLSelect("select TABLE_NAME Tbl from information_schema.tables where TABLE_SCHEMA='".DB_NAME."' AND ENGINE !='MEMORY';");
+$tables = SQLSelect("select TABLE_NAME Tbl from information_schema.tables where TABLE_SCHEMA='" . DB_NAME . "' AND ENGINE !='MEMORY';");
 $total = count($tables);
 $checked = 0;
 $broken = 0;
@@ -64,34 +64,34 @@ for ($i = 0; $i < $total; $i++) {
         SQLExec("REPAIR TABLE " . $table . ";");
         sleep(10);
         $result = SQLSelectOne("CHECK TABLE " . $table . ";");
-      if ($result['Msg_text'] == 'OK') {
-          echo "OK\n";
-            $repaired = $repaired + 1;
-      } else {
-          echo "try to repair extended...";
-          SQLExec("REPAIR TABLE " . $table . " EXTENDED;");
-          sleep(10);
-            $result = SQLSelectOne("CHECK TABLE " . $table . ";");
         if ($result['Msg_text'] == 'OK') {
             echo "OK\n";
-                $repaired = $repaired + 1;
+            $repaired = $repaired + 1;
         } else {
-            echo "try to repair use_frm...";
-            SQLExec("REPAIR TABLE " . $table . " USE_FRM;");
+            echo "try to repair extended...";
+            SQLExec("REPAIR TABLE " . $table . " EXTENDED;");
             sleep(10);
+            $result = SQLSelectOne("CHECK TABLE " . $table . ";");
+            if ($result['Msg_text'] == 'OK') {
+                echo "OK\n";
+                $repaired = $repaired + 1;
+            } else {
+                echo "try to repair use_frm...";
+                SQLExec("REPAIR TABLE " . $table . " USE_FRM;");
+                sleep(10);
                 $result = SQLSelectOne("CHECK TABLE " . $table . ";");
-          if ($result['Msg_text'] == 'OK') {
-              echo "OK\n";
+                if ($result['Msg_text'] == 'OK') {
+                    echo "OK\n";
                     $repaired = $repaired + 1;
-          } else {
-              echo "NO RESULT(...try restore from backup\n";
+                } else {
+                    echo "NO RESULT(...try restore from backup\n";
                     $fatal = $fatal + 1;
-          }
+                }
+            }
         }
-      }
     }
 }
-echo "CHECK/REPAIR TABLES RESULT -> Total: ".$total.", checked Ok: ".$checked.", broken: ".$broken.", repaired: ".$repaired.", FATAL Errors : ".$fatal;
+echo "CHECK/REPAIR TABLES RESULT -> Total: " . $total . ", checked Ok: " . $checked . ", broken: " . $broken . ", repaired: " . $repaired . ", FATAL Errors : " . $fatal;
 echo "\n";
 
 // создаем табличку cyclesRun, если её нет
@@ -185,7 +185,7 @@ if (file_exists($db_filename)) {
     $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
     $mysqlParam = " -h " . DB_HOST;
     $mysqlParam .= " -u " . DB_USER;
-    if (DB_PASSWORD != '') $mysqlParam .= " -p'" . DB_PASSWORD."'";
+    if (DB_PASSWORD != '') $mysqlParam .= " -p'" . DB_PASSWORD . "'";
     $mysqlParam .= " " . DB_NAME . " <" . $db_filename;
     exec($mysql_path . $mysqlParam);
 
@@ -195,7 +195,7 @@ if (file_exists($db_filename)) {
         $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
         $mysqlParam = " -h " . DB_HOST;
         $mysqlParam .= " -u " . DB_USER;
-        if (DB_PASSWORD != '') $mysqlParam .= " -p'" . DB_PASSWORD."'";
+        if (DB_PASSWORD != '') $mysqlParam .= " -p'" . DB_PASSWORD . "'";
         $mysqlParam .= " " . DB_NAME . " <" . $db_history_filename;
         exec($mysql_path . $mysqlParam);
     }
@@ -210,12 +210,16 @@ echo "Checking modules.\n";
 $source = ROOT . 'modules';
 if ($dir = @opendir($source)) {
     while (($file = readdir($dir)) !== false) {
-        if (Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..')) {
-            @unlink(ROOT . "cms/modules_installed/" . $file . ".installed");
+        $installed_file = ROOT . "cms/modules_installed/" . $file . ".installed";
+        if (Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..') && is_file($installed_file)) {
+            unlink($installed_file);
         }
     }
 }
-@unlink(ROOT . "cms/modules_installed/control_modules.installed");
+
+if (is_file(ROOT . "cms/modules_installed/control_modules.installed")) {
+    unlink(ROOT . "cms/modules_installed/control_modules.installed");
+}
 
 // continue startup
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
@@ -269,26 +273,26 @@ SQLExec("DELETE FROM cached_cycles");
 
 $total = count($cycles_records);
 for ($i = 0; $i < $total; $i++) {
-    DebMes("Removing property ThisComputer.$property (object ".$thisCompObject->id.")",'threads');
-    echo "Removing ThisComputer.$property (object " . $thisCompObject->id . ")";
     $property = $cycles_records[$i]['TITLE'];
+    echo "Removing ThisComputer.$property (object " . $thisCompObject->id . ")";
+    DebMes("Removing property ThisComputer.$property (object " . $thisCompObject->id . ")", 'threads');
     $property_id = $thisCompObject->getPropertyByName($property, $thisCompObject->class_id, $thisCompObject->id);
     //DebMes("Property id: $property_id",'threads');
     if ($property_id) {
         $sqlQuery = "SELECT ID FROM pvalues WHERE PROPERTY_ID = " . (int)$property_id;
         $pvalue = SQLSelectOne($sqlQuery);
         if ($pvalue['ID']) {
-            DebMes("Deleting Pvalue: ".$pvalue['ID'],'threads');
+            DebMes("Deleting Pvalue: " . $pvalue['ID'], 'threads');
             SQLExec("DELETE FROM phistory WHERE VALUE_ID=" . $pvalue['ID']);
             SQLExec("DELETE FROM pvalues WHERE ID=" . $pvalue['ID']);
         } else {
-            DebMes("NO Pvalue for ".$property_id,'threads');
+            DebMes("NO Pvalue for " . $property_id, 'threads');
         }
         SQLExec("DELETE FROM properties WHERE ID=" . $property_id);
-        DebMes("REMOVED $property_id",'threads');
+        DebMes("REMOVED $property_id", 'threads');
         echo " REMOVED $property_id\n";
     } else {
-        DebMes("No property record found for $property",'threads');
+        DebMes("No property record found for $property", 'threads');
         echo " FAILED\n";
     }
 }
@@ -388,16 +392,16 @@ while (false !== ($result = $threads->iteration())) {
     if ((time() - $last_cycles_control_check) >= 5 || !empty($result)) {
 
         $last_cycles_control_check = time();
-        $cyclesControls=$cyclesTimestamps=array();
-        $tmpcyclesTimestamps=SQLSelect("SELECT * FROM cached_cycles;");
+        $cyclesControls = $cyclesTimestamps = array();
+        $tmpcyclesTimestamps = SQLSelect("SELECT * FROM cached_cycles;");
 
         $total = count($tmpcyclesTimestamps);
         foreach ($tmpcyclesTimestamps as $k => $v) {
-                if (strpos($v['TITLE'],'Run') !== FALSE) {
-                        $cyclesTimestamps[$v['TITLE']] = $v['VALUE'];
-                } else if (strpos($v['TITLE'],'Control') !== FALSE) {
-                        $cyclesControls[$v['TITLE']] = $v['VALUE'];
-                }
+            if (strpos($v['TITLE'], 'Run') !== FALSE) {
+                $cyclesTimestamps[$v['TITLE']] = $v['VALUE'];
+            } else if (strpos($v['TITLE'], 'Control') !== FALSE) {
+                $cyclesControls[$v['TITLE']] = $v['VALUE'];
+            }
         }
 
         $seen = array();
@@ -409,7 +413,7 @@ while (false !== ($result = $threads->iteration())) {
                 continue;
             }
             $seen[$title] = 1;
-            $control='';
+            $control = '';
 
             if (isset($cyclesControls[$title . 'Control'])) $control = $cyclesControls[$title . 'Control'];
             if ($control != '') {
@@ -436,10 +440,10 @@ while (false !== ($result = $threads->iteration())) {
                     DebMes("Adding $title to auto-recovery list", 'threads');
                     $auto_restarts[] = $title;
                 }
-                $cycle_updated_timestamp=$cyclesTimestamps[$title.'Run'];
+                $cycle_updated_timestamp = $cyclesTimestamps[$title . 'Run'];
 
-                if (!$to_start[$title] && $cycle_updated_timestamp && in_array($title, $auto_restarts) && ((time() - $cycle_updated_timestamp) > 30 * 60)) { //
-                    DebMes("Looks like $title is dead (updated: ".date('Y-m-d H:i:s',$cycle_updated_timestamp)."). Need to recovery", 'threads');
+                if (!isset($to_start[$title]) && $cycle_updated_timestamp && in_array($title, $auto_restarts) && ((time() - $cycle_updated_timestamp) > 30 * 60)) { //
+                    DebMes("Looks like $title is dead (updated: " . date('Y-m-d H:i:s', $cycle_updated_timestamp) . "). Need to recovery", 'threads');
                     registerError('cycle_hang', $title);
                     setGlobal($title . 'Control', 'restart');
                 }

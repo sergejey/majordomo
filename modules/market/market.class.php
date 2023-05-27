@@ -436,9 +436,13 @@ class market extends module
                     if (preg_match('/github\.com/is', $rec['REPOSITORY_URL']) && (isset($rec['EXISTS']) || $rec['MODULE_NAME'] == $name)) {
                         $git_url = str_replace('archive/master.tar.gz', 'commits/master.atom', $rec['REPOSITORY_URL']);
                         $github_feed = getURL($git_url, 5 * 60);
-                        @$tmp = GetXMLTree($github_feed);
-                        @$items_data = XMLTreeToArray($tmp);
-                        @$items = $items_data['feed']['entry'];
+                        $tmp = GetXMLTree($github_feed);
+                        if (is_array($tmp)) {
+                            $items_data = XMLTreeToArray($tmp);
+                            $items = $items_data['feed']['entry'];
+                        } else {
+                            $items = false;
+                        }
                         if (is_array($items)) {
                             $latest_item = $items[0];
                             //print_r($latest_item);exit;
@@ -582,9 +586,13 @@ class market extends module
                 if (preg_match('/github\.com/is', $rec['REPOSITORY_URL']) && ($rec['EXISTS'] || $rec['MODULE_NAME'] == $name)) {
                     $git_url = str_replace('archive/master.tar.gz', 'commits/master.atom', $rec['REPOSITORY_URL']);
                     $github_feed = getURL($git_url, 5 * 60);
-                    @$tmp = GetXMLTree($github_feed);
-                    @$items_data = XMLTreeToArray($tmp);
-                    @$items = $items_data['feed']['entry'];
+                    $tmp = GetXMLTree($github_feed);
+                    if (is_array($tmp)) {
+                        $items_data = XMLTreeToArray($tmp);
+                        $items = $items_data['feed']['entry'];
+                    } else {
+                        $items = false;
+                    }
                     if (is_array($items)) {
                         $latest_item = $items[0];
                         //print_r($latest_item);exit;

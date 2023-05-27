@@ -452,7 +452,7 @@ function admin(&$out) {
 
   if ($class['PARENT_ID']) {
    $p_res=$this->getParentProperties($class['PARENT_ID'], $def);
-   if ($p_res[0]['ID']) {
+   if (isset($p_res[0]['ID'])) {
     $res=array_merge($res, $p_res);
    }
   }

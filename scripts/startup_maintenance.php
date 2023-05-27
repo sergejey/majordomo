@@ -183,19 +183,19 @@ if (time() >= getGlobal('ThisComputer.started_time')) {
 $sqlQuery = "SELECT pvalues.*, properties.ID AS PROP_ID, objects.ID as OBJ_ID  FROM `pvalues` LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID";
 $data = SQLSelect($sqlQuery);
 $total = count($data);
-$found_pvalues=array();
+$found_pvalues = array();
 for ($i = 0; $i < $total; $i++) {
     if (!$data[$i]['PROP_ID'] || !$data[$i]['OBJ_ID']) {
-     echo "Removing incorrect property value: " . $data[$i]['PROPERTY_NAME'] . PHP_EOL;
-     SQLExec("DELETE FROM phistory WHERE VALUE_ID=" . $data[$i]['ID']);
-     SQLExec("DELETE FROM pvalues WHERE ID=" . $data[$i]['ID']);
+        echo "Removing incorrect property value: " . $data[$i]['PROPERTY_NAME'] . PHP_EOL;
+        SQLExec("DELETE FROM phistory WHERE VALUE_ID=" . $data[$i]['ID']);
+        SQLExec("DELETE FROM pvalues WHERE ID=" . $data[$i]['ID']);
     } else {
-        $found_pvalues[]=$data[$i]['ID'];
+        $found_pvalues[] = $data[$i]['ID'];
     }
 }
 if (isset($found_pvalues[0])) {
-    $sqlQuery = "DELETE FROM phistory WHERE VALUE_ID NOT IN (".implode(',',$found_pvalues).")";
-    $data=SQLExec($sqlQuery);
+    $sqlQuery = "DELETE FROM phistory WHERE VALUE_ID NOT IN (" . implode(',', $found_pvalues) . ")";
+    $data = SQLExec($sqlQuery);
 }
 
 // fixing property names
@@ -238,8 +238,8 @@ for ($i = 0; $i < $total; $i++) {
     $prop_title = $properties[$i]['TITLE'];
     $object_id = $properties[$i]['OBJECT_ID'];
     $object_rec = SQLSelectOne("SELECT * FROM objects WHERE ID=" . $object_id);
-    $class_id = $object_rec['CLASS_ID'];
-    if ($class_id) {
+    if (isset($object_rec['CLASS_ID']) && $object_rec['CLASS_ID']) {
+        $class_id = $object_rec['CLASS_ID'];
         $class_property = array();
         $parent_props = $cls_module->getParentProperties($class_id, '', true);
         foreach ($parent_props as $class_prop) {
@@ -247,20 +247,9 @@ for ($i = 0; $i < $total; $i++) {
                 $class_property = $class_prop;
             }
         }
-        if ($class_property['ID']) {
+        if (isset($class_property['ID'])) {
             $object_pvalue = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID=" . $properties[$i]['ID'] . " AND OBJECT_ID=" . $properties[$i]['OBJECT_ID']);
             $class_pvalue = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID=" . $class_property['ID'] . " AND OBJECT_ID=" . $properties[$i]['OBJECT_ID']);
-            /*
-            echo $object_rec['TITLE'].'.'.$properties[$i]['TITLE']."<br/>";
-            echo "OBJECT PROPERTY:";
-            dprint($properties[$i],false);
-            echo "VALUE:";
-            dprint($object_pvalue,false);
-            echo "CLASS PROPERTY:";
-            dprint($class_property,false);
-            echo "VALUE:";
-            dprint($class_pvalue,false);
-            */
             if (!$class_pvalue['ID']) {
                 $object_pvalue['PROPERTY_ID'] = $class_property['ID'];
                 SQLUpdate('pvalues', $object_pvalue);
@@ -277,8 +266,8 @@ for ($i = 0; $i < $total; $i++) {
 clearCacheData();
 
 // removing old errors
-if (defined('SETTINGS_ERRORS_KEEP_HISTORY') && SETTINGS_ERRORS_KEEP_HISTORY>0) {
-    SQLExec("DELETE FROM system_errors_data WHERE ADDED<'".date('Y-m-d H:i:s',time()-SETTINGS_ERRORS_KEEP_HISTORY*24*60*60)."'");
+if (defined('SETTINGS_ERRORS_KEEP_HISTORY') && SETTINGS_ERRORS_KEEP_HISTORY > 0) {
+    SQLExec("DELETE FROM system_errors_data WHERE ADDED<'" . date('Y-m-d H:i:s', time() - SETTINGS_ERRORS_KEEP_HISTORY * 24 * 60 * 60) . "'");
 }
 
 // SET SERIAL

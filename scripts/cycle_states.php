@@ -15,61 +15,53 @@ $ctl = new control_modules();
 
 $checked_time = 0;
 
-setGlobal((str_replace('.php', '', basename(__FILE__))).'Run', time(), 1);
-$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
+setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+$cycleVarName = 'ThisComputer.' . str_replace('.php', '', basename(__FILE__)) . 'Run';
 
 $objects = getObjectsByClass('systemStates');
 if (is_array($objects) || $objects instanceof Countable) {
-	$total = count($objects);
-	echo $total . " objects by class systemStates." . "\n";
+    $total = count($objects);
+    echo $total . " objects by class systemStates." . "\n";
 } else {
-	$total = 0;
-	echo "No systemStates objects found....". "\n";
-	exit;
+    $total = 0;
+    echo "No systemStates objects found...." . "\n";
+    exit;
 }
 
-if ($_GET['once'])
-{
-	
-   echo "Runing once.......";
-   $last_run = getGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run');
+if (isset($_GET['once'])) {
 
-   if ((time() - $last_run) > 5 * 60)
-   {
-      setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-      for ($i = 0; $i < $total; $i++)
-      {
-         callMethod($objects[$i]['TITLE'] . '.checkState');
-      }
-   }
+    echo "Runing once.......";
+    $last_run = getGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run');
 
-   echo "OK" . "\n";
-   exit;
-}
-else
-{
-   echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
-
-   while (1)
-   {
-      if (time() - $checked_time > 10)
-      {
-         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-         $checked_time = time();
-         // saveToCache("MJD:$cycleVarName", $checked_time);
-
-         for ($i = 0; $i < $total; $i++)
-         {
+    if ((time() - $last_run) > 5 * 60) {
+        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+        for ($i = 0; $i < $total; $i++) {
             callMethod($objects[$i]['TITLE'] . '.checkState');
-         }
-      }
+        }
+    }
 
-	  if (isRebootRequired() || IsSet($_GET['onetime'])) {
-        exit;
-      }
+    echo "OK" . "\n";
+    exit;
+} else {
+    echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 
-      sleep(1);
-   }
+    while (1) {
+        if (time() - $checked_time > 10) {
+            setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+            $checked_time = time();
+            // saveToCache("MJD:$cycleVarName", $checked_time);
 
-   DebMes("Unexpected close of cycle: " . basename(__FILE__));
+            for ($i = 0; $i < $total; $i++) {
+                callMethod($objects[$i]['TITLE'] . '.checkState');
+            }
+        }
+
+        if (isRebootRequired() || isset($_GET['onetime'])) {
+            exit;
+        }
+
+        sleep(1);
+    }
+
+    DebMes("Unexpected close of cycle: " . basename(__FILE__));
 }

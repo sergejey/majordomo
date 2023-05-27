@@ -403,7 +403,9 @@ if (gr('performance')) {
     $result['performance']=PerformanceReport(1);
 }
 
-header("Content-type:application/json");
+if (!headers_sent()) {
+    header("Content-type:application/json");
+}
 echo json_encode($result);
 
 function apiShutdown() {

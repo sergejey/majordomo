@@ -199,10 +199,14 @@ class saverestore extends module
         $github_feed = getURL($github_feed_url, 30 * 60);
 
         if ($github_feed != '') {
-            @$tmp = GetXMLTree($github_feed);
-            @$data = XMLTreeToArray($tmp);
-            @$items = $data['feed']['entry'];
-			
+            $tmp = GetXMLTree($github_feed);
+            if (is_array($tmp)) {
+                $data = XMLTreeToArray($tmp);
+                $items = $data['feed']['entry'];
+            } else {
+                $items = false;
+            }
+
             if (is_array($items)) {
                 $total = count($items);
                 if ($total) {
@@ -1727,9 +1731,13 @@ class saverestore extends module
         $github_feed = getURL($github_feed_url, 30 * 60);
 
         if ($github_feed != '') {
-            @$tmp = GetXMLTree($github_feed);
-            @$data = XMLTreeToArray($tmp);
-            @$items = $data['feed']['entry'];
+            $tmp = GetXMLTree($github_feed);
+            if (is_array($tmp)) {
+                $data = XMLTreeToArray($tmp);
+                $items = $data['feed']['entry'];
+            } else {
+                $items = false;
+            }
             if (is_array($items)) {
                 $latest_id = preg_replace('/.+Commit\//is', '', trim($items[0]['id']['textvalue']));
                 $latest_tm = strtotime($items[0]['updated']['textvalue']);

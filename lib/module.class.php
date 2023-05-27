@@ -347,14 +347,18 @@ class module
      */
     public function getConfig()
     {
+        $this->config = array();
+
         $sqlQuery = "SELECT *
                      FROM project_modules
                     WHERE NAME = '" . $this->name . "'";
 
         $rec = SQLSelectOne($sqlQuery);
-        $data = $rec["DATA"];
-        if ($data) {
-            $this->config = unserialize($data);
+        if (isset($rec["DATA"])) {
+            $data = $rec["DATA"];
+            if ($data) {
+                $this->config = unserialize($data);
+            }
         }
         return $this->config;
     }

@@ -36,8 +36,7 @@ function context_getcurrent($from_user_id = 0)
                   FROM users
                  WHERE ID = '" . (int)$from_user_id . "'";
     $user = SQLSelectOne($sqlQuery);
-    if (!$user['ID'])
-        return 0;
+    if (!isset($user['ID'])) return 0;
     if ($user['ACTIVE_CONTEXT_EXTERNAL']) {
         return 'ext' . (int)$user['ACTIVE_CONTEXT_ID'];
     } else {

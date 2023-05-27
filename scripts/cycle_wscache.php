@@ -17,6 +17,7 @@ if (defined('DISABLE_WEBSOCKETS') && DISABLE_WEBSOCKETS == 1) {
 SQLTruncateTable('cached_ws');
 echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 
+$checked_time = 0;
 $latest_sent = time();
 setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 $cycleVarName = 'ThisComputer.' . str_replace('.php', '', basename(__FILE__)) . 'Run';
@@ -27,7 +28,7 @@ while (1) {
     if ($checked_time != time()) {
         $checked_time = time();
         $queue = SQLSelect("SELECT * FROM cached_ws");
-        if ($queue[0]['PROPERTY']) {
+        if (isset($queue[0]['PROPERTY'])) {
             SQLTruncateTable('cached_ws');
             $total = count($queue);
             $sent_ok = 1;
@@ -67,7 +68,7 @@ while (1) {
             }
         }
     }
-    if (isRebootRequired() || IsSet($_GET['onetime'])) {
+    if (isRebootRequired() || isset($_GET['onetime'])) {
         exit;
     }
     sleep(1);

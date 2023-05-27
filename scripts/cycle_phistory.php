@@ -65,7 +65,7 @@ while (1) {
     $count_queue = (int)$tmp['TOTAL'];
 
     $queue = SQLSelect("SELECT * FROM phistory_queue ORDER BY ID LIMIT ". $limit);
-    if ($queue[0]['ID']) {
+    if (isset($queue[0]['ID'])) {
         if ($count_queue>$limit && !$queue_error_status) {
                 sg('phistory_queue_problem',1);
                 $txt = 'Properties history queue is too long ('.$count_queue.')';

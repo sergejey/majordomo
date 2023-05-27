@@ -437,6 +437,9 @@ function runScriptSafe($id, $params = 0)
     startMeasure('runScriptSafe');
     $current_call = 'script.' . $id;
     $call_stack = array();
+    $raiseEvent = '';
+    $run_SafeScript = '';
+
     if (is_array($params)) {
         if (isset($params['m_c_s']) && is_array($params['m_c_s']) && !empty($params['m_c_s'])) {
             $call_stack = $params['m_c_s'];
