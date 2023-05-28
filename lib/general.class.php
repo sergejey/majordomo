@@ -9,7 +9,16 @@
  * @version 1.3
  */
 
-if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0]) && (!(preg_match('/^\/gps\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/^\/trackme\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/^\/btraced\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/^\/rss\.php/is', $_SERVER['REQUEST_URI'])) || $_REQUEST['op'] != '')) {
+if (defined('HOME_NETWORK')
+    && HOME_NETWORK != ''
+    && !isset($argv[0])
+    && isset($_SERVER['REQUEST_URI'])
+    && (!(
+        preg_match('/^\/gps\.php/is', $_SERVER['REQUEST_URI']) ||
+        preg_match('/^\/trackme\.php/is', $_SERVER['REQUEST_URI']) ||
+        preg_match('/^\/rss\.php/is', $_SERVER['REQUEST_URI'])
+    ))
+) {
     $p = preg_quote(HOME_NETWORK);
     $p = str_replace('\*', '\d+?', $p);
     $p = str_replace(',', ' ', $p);
@@ -18,7 +27,7 @@ if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0]) && (!(preg
 
     $remoteAddr = $_SERVER["REMOTE_ADDR"];
 
-    if (defined('LOCAL_IP') && LOCAL_IP!='') {
+    if (defined('LOCAL_IP') && LOCAL_IP != '') {
         $local_ip = LOCAL_IP;
     } else {
         $local_ip = '127.0.0.1';
