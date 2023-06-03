@@ -1451,7 +1451,7 @@ function addToOperationsQueue($topic, $dataname, $datavalue = '', $uniq = false,
     $rec = array();
     $rec['TOPIC'] = $topic;
     $rec['DATANAME'] = $dataname;
-    if (strlen($datavalue) < 255) {
+    if (strlen($datavalue) < 1024) {
         $rec['DATAVALUE'] = $datavalue;
     }
     $rec['EXPIRE'] = date('Y-m-d H:i:s', time() + $ttl);

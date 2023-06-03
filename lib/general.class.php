@@ -13,11 +13,6 @@ if (defined('HOME_NETWORK')
     && HOME_NETWORK != ''
     && !isset($argv[0])
     && isset($_SERVER['REQUEST_URI'])
-    && (!(
-        preg_match('/^\/gps\.php/is', $_SERVER['REQUEST_URI']) ||
-        preg_match('/^\/trackme\.php/is', $_SERVER['REQUEST_URI']) ||
-        preg_match('/^\/rss\.php/is', $_SERVER['REQUEST_URI'])
-    ))
 ) {
     $p = preg_quote(HOME_NETWORK);
     $p = str_replace('\*', '\d+?', $p);

@@ -17,8 +17,6 @@ class application extends module
     function __construct()
     {
         $this->name = "application";
-        $this->doc_name = '';
-        $this->doc = '';
         $this->app_action = '';
         $this->popup = false;
     }
@@ -30,9 +28,6 @@ class application extends module
         $p = array();
         if (isset($this->action) && $this->action) {
             $p["action"] = $this->action;
-        }
-        if (isset($this->doc_name) && $this->doc_name) {
-            $p['doc_name'] = $this->doc_name;
         }
         if (isset($this->ajax) && $this->ajax) {
             $p['ajax'] = $this->ajax;
@@ -49,7 +44,7 @@ class application extends module
 // --------------------------------------------------------------------
     function getParams()
     {
-        global $action;
+        $action = gr('action');
         if ($action != '') $this->action = $action;
     }
 
@@ -75,8 +70,9 @@ class application extends module
         if ($this->action == 'ajaxgetglobal') {
             header("HTTP/1.0: 200 OK\n");
             header('Content-Type: text/html; charset=utf-8');
-            $_GET['var'] = str_replace('%', '', $_GET['var']);
-            $res['DATA'] = getGlobal($_GET['var']);
+            $var = gr('var');
+            $var = str_replace('%', '', $var);
+            $res['DATA'] = getGlobal($var);
             echo json_encode($res);
             exit;
         }
@@ -84,8 +80,9 @@ class application extends module
         if ($this->action == 'ajaxsetglobal') {
             header("HTTP/1.0: 200 OK\n");
             header('Content-Type: text/html; charset=utf-8');
-            $_GET['var'] = str_replace('%', '', $_GET['var']);
-            setGlobal($_GET['var'], $_GET['value']);
+            $var = gr('var');
+            $var = str_replace('%', '', $var);
+            setGlobal($var, gr('value'));
             $res['DATA'] = 'OK';
             echo json_encode($res);
             exit;
@@ -162,10 +159,8 @@ class application extends module
 
         $out["ACTION"] = $this->action;
         $out["TODAY"] = date('l, F d, Y');
-        $out["DOC_NAME"] = $this->doc_name;
 
-        global $username;
-
+        $username = gr('username');
         if ($username) {
             $user = SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '" . DBSafe($username) . "'");
             if (hash('sha512', '') == $user['PASSWORD']) {
@@ -190,7 +185,8 @@ class application extends module
                 }
             }
         }
-        global $terminal;
+
+        $terminal = gr('terminal');
         if ($terminal) {
             $session->data['TERMINAL'] = $terminal;
         }
@@ -219,7 +215,7 @@ class application extends module
             if ($terminals[$i]['HOST'] != '' && $_SERVER['REMOTE_ADDR'] == $terminals[$i]['HOST'] && !$session->data['TERMINAL']) {
                 $session->data['TERMINAL'] = $terminals[$i]['NAME'];
             }
-            if (mb_strtoupper($terminals[$i]['NAME'], 'UTF-8') == mb_strtoupper(isset($session->data['TERMINAL'])?$session->data['TERMINAL']:'', 'UTF-8')) {
+            if (mb_strtoupper($terminals[$i]['NAME'], 'UTF-8') == mb_strtoupper(isset($session->data['TERMINAL']) ? $session->data['TERMINAL'] : '', 'UTF-8')) {
                 $terminals[$i]['LATEST_ACTIVITY'] = date('Y-m-d H:i:s');
                 $terminals[$i]['IS_ONLINE'] = 1;
                 SQLUpdate('terminals', $terminals[$i]);
@@ -259,7 +255,7 @@ class application extends module
         $users = SQLSelect("SELECT * FROM users ORDER BY NAME");
         $total = count($users);
         for ($i = 0; $i < $total; $i++) {
-            if ($users[$i]['USERNAME'] == (isset($session->data['SITE_USERNAME'])?$session->data['SITE_USERNAME']:'')) {
+            if ($users[$i]['USERNAME'] == (isset($session->data['SITE_USERNAME']) ? $session->data['SITE_USERNAME'] : '')) {
                 $users[$i]['SELECTED'] = 1;
                 $out['USER_TITLE'] = $users[$i]['NAME'];
                 $out['USER_AVATAR'] = $users[$i]['AVATAR'];
@@ -284,7 +280,7 @@ class application extends module
             $session->data['SITE_USERNAME'] = $out['DEFAULT_USERNAME'];
             $session->data['SITE_USER_ID'] = $out['DEFAULT_USER_ID'];
             for ($i = 0; $i < $total; $i++) {
-                if ($users[$i]['USERNAME'] == (isset($session->data['USERNAME'])?$session->data['USERNAME']:'')) {
+                if ($users[$i]['USERNAME'] == (isset($session->data['USERNAME']) ? $session->data['USERNAME'] : '')) {
                     $users[$i]['SELECTED'] = 1;
                     $out['USER_TITLE'] = $users[$i]['NAME'];
                     $out['USER_AVATAR'] = $users[$i]['AVATAR'];
@@ -328,13 +324,6 @@ class application extends module
             $out['TOTAL_LAYOUTS'] = 0;
         }
 
-        if ($this->doc) {
-            $this->doc_id = $this->doc;
-        } else {
-            $this->doc_id = false;
-        }
-        $out["DOC_ID"] = $this->doc_id;
-
         if (isset($session->data['MY_MEMBER']) && $session->data['MY_MEMBER']) {
             $out['MY_MEMBER'] = $session->data['MY_MEMBER'];
             $tmp = SQLSelectOne("SELECT ID FROM users WHERE ID='" . (int)$out['MY_MEMBER'] . "' AND ACTIVE_CONTEXT_ID!=0 AND TIMESTAMPDIFF(SECOND, ACTIVE_CONTEXT_UPDATED, NOW())>600");
@@ -352,13 +341,13 @@ class application extends module
         Define('TODAY', $out['TODAY']);
         $out['REQUEST_URI'] = $_SERVER['REQUEST_URI'];
 
-        global $from_scene;
+        $from_scene = gr('from_scene');
         if ($from_scene) {
             $out['FROM_SCENE'] = 1;
         }
 
 
-        global $ajt;
+        $ajt = gr('ajt');
         if ($ajt == '') {
             $template_file = DIR_TEMPLATES . $this->name . ".html";
         } else {
