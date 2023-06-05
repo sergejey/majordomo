@@ -123,7 +123,7 @@ if ($this->tab == 'properties') {
         if ($pr['ID']) {
             $value = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='" . $delete_prop . "' AND OBJECT_ID='" . $rec['ID'] . "'");
             if ($value['ID']) {
-                SQLExec("DELETE FROM phistory WHERE VALUE_ID='" . $value['ID'] . "'");
+                cleanUpValueHistory($value['ID'], 0, $pr['DATA_TYPE']);
                 SQLExec("DELETE FROM pvalues WHERE PROPERTY_ID='" . $delete_prop . "' AND OBJECT_ID='" . $rec['ID'] . "'");
             }
             if (!$pr['CLASS_ID']) {
@@ -178,12 +178,12 @@ if ($this->tab == 'properties') {
                 $this->setProperty($props[$i]['TITLE'], ${"value" . $props[$i]['ID']});
             }
         }
-        $props[$i]['VALUE'] = isset($value['VALUE'])?$value['VALUE']:'';
+        $props[$i]['VALUE'] = isset($value['VALUE']) ? $value['VALUE'] : '';
         $props[$i]['VALUE_HTML'] = htmlspecialchars($props[$i]['VALUE']);
-        $props[$i]['SOURCE'] = isset($value['SOURCE'])?$value['SOURCE']:'';
-        $props[$i]['UPDATED'] = isset($value['UPDATED'])?date('d.m.Y H:i:s', strtotime($value['UPDATED'])):'';
+        $props[$i]['SOURCE'] = isset($value['SOURCE']) ? $value['SOURCE'] : '';
+        $props[$i]['UPDATED'] = isset($value['UPDATED']) ? date('d.m.Y H:i:s', strtotime($value['UPDATED'])) : '';
 
-        $value['LINKED_MODULES'] = isset($value['LINKED_MODULES'])?explode(',', $value['LINKED_MODULES']):false;
+        $value['LINKED_MODULES'] = isset($value['LINKED_MODULES']) ? explode(',', $value['LINKED_MODULES']) : false;
         $props[$i]['LINKED_MODULES'] = '';
         if (is_array($value['LINKED_MODULES'])) {
             foreach ($value['LINKED_MODULES'] as $prop_link) {

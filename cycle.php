@@ -283,7 +283,7 @@ for ($i = 0; $i < $total; $i++) {
         $pvalue = SQLSelectOne($sqlQuery);
         if ($pvalue['ID']) {
             DebMes("Deleting Pvalue: " . $pvalue['ID'], 'threads');
-            SQLExec("DELETE FROM phistory WHERE VALUE_ID=" . $pvalue['ID']);
+            cleanUpValueHistory($pvalue['ID'], 0);
             SQLExec("DELETE FROM pvalues WHERE ID=" . $pvalue['ID']);
         } else {
             DebMes("NO Pvalue for " . $property_id, 'threads');

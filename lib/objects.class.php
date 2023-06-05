@@ -932,6 +932,53 @@ function getHistoryValue($varname, $time, $nerest = false)
     }
 }
 
+
+function cleanUpValueHistory($value_id, $max_age_days, $data_type = 0)
+{
+    $total_removed = 0;
+
+    if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+        $table_name = 'phistory_value_'.$value_id;
+    } else {
+        $table_name = 'phistory';
+    }
+
+    $start_tm = date('Y-m-d H:i:s', (time() - $max_age_days * 24 * 60 * 60));
+    $qry = "VALUE_ID='" . $value_id . "' AND ADDED<('" . $start_tm . "')";
+
+    if ($data_type == 5) {
+        $values = SQLSelect("SELECT * FROM $table_name WHERE $qry");
+        $totalv = count($values);
+        for ($iv = 0; $iv < $totalv; $iv++) {
+            $file_path = ROOT . 'cms/images/' . $values[$iv]['VALUE'];
+            if ($values[$iv]['VALUE'] != '' && file_exists($file_path)) {
+                unlink($file_path);
+            }
+        }
+    }
+
+    $tmp = SQLSelectOne("SELECT COUNT(*) as TOTAL FROM $table_name WHERE $qry");
+    if (isset($tmp['TOTAL']) && $tmp['TOTAL']>0) {
+        $total_removed = (int)$tmp['TOTAL'];
+        SQLExec("DELETE FROM $table_name WHERE $qry");
+    }
+    return $total_removed;
+}
+
+function cleanUpPropertyHistory($property_id, $max_age_days)
+{
+    $total_removed = 0;
+    $property = SQLSelectOne("SELECT * FROM properties WHERE ID=".(int)$property_id);
+    if (isset($property['ID'])) {
+        $pvalues = SQLSelect("SELECT * FROM pvalues WHERE PROPERTY_ID='" . $property_id . "'");
+        $total = count($pvalues);
+        for ($i = 0; $i < $total; $i++) {
+            $total_removed+=cleanUpValueHistory($pvalues[$i]['ID'], $max_age_days, $property['DATA_TYPE']);
+        }
+    }
+    return $total_removed;
+}
+
 /**
  * Summary of setGlobal
  * @param mixed $varname Variable name

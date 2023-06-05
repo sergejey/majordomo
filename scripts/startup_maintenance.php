@@ -226,6 +226,49 @@ for ($i = 0; $i < $total; $i++) {
     SQLUpdate('pvalues', $rec);
 }
 
+// Removing incorrect history for images
+$folder = ROOT . 'cms/images/';
+$properties = SQLSelect("SELECT * FROM properties WHERE DATA_TYPE=5");
+$total = count($properties);
+for ($i = 0; $i < $total; $i++) {
+    $found_in_db = 0;
+    $found_in_dir = 0;
+    $files = array();
+    $found_files = array();
+    getDirFiles($folder . $properties[$i]['ID'], $files);
+    foreach ($files as $file) {
+        $found_files[$properties[$i]['ID'] . '/' . $file['NAME']] = 1;
+        $found_in_dir++;
+    }
+    $values = SQLSelect("SELECT * FROM pvalues WHERE PROPERTY_ID=" . $properties[$i]['ID']);
+    foreach ($values as $pvalue) {
+        if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+            $table_name = 'phistory_value_' . $pvalue['ID'];
+        } else {
+            $table_name = 'phistory';
+        }
+        $history = SQLSelect("SELECT * FROM $table_name WHERE VALUE_ID=" . $pvalue['ID']);
+        $h_total = count($history);
+        if ($h_total > 0) {
+            for ($ih = 0; $ih < $h_total; $ih++) {
+                if (isset($found_files[$history[$ih]['VALUE']])) {
+                    unset($found_files[$history[$ih]['VALUE']]);
+                    $found_in_db++;
+                }
+            }
+        }
+    }
+    echo ("Found in db $found_in_db / found in dir: $found_in_dir\n");
+    foreach ($found_files as $k => $v) {
+        $path = $folder . $k;
+        if (is_file($path)) {
+            echo "Removing $path<br/>";
+            unlink($path);
+        }
+    }
+}
+
+
 // Removing duplicates when we have both class property and object property with the same name
 include_once(DIR_MODULES . 'classes/classes.class.php');
 $cls_module = new classes();
