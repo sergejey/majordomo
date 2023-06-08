@@ -563,11 +563,12 @@ class scenes extends module
     function usual(&$out)
     {
 
+
         if ($this->owner->action == 'apps') {
             $this->redirect(ROOTHTML . "popup/scenes.html");
         }
 
-        global $ajax;
+        $ajax = gr('ajax');
         if ($ajax) {
             global $op;
             header("HTTP/1.0: 200 OK\n");

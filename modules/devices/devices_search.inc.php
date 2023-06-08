@@ -30,6 +30,23 @@ if ($group_name == 'manage_groups') {
     $qry .= " AND devices.ARCHIVED=1";
 } elseif ($group_name == 'is:system') {
     $qry .= " AND devices.SYSTEM_DEVICE=1";
+} elseif ($group_name == 'is:inactive') {
+    $object_names = getObjectsByProperty('alive');
+    if (!is_array($object_names)) {
+        $object_names = array(0);
+    }
+    $total = count($object_names);
+    if ($total > 0) {
+        for ($i = 0; $i < $total; $i++) {
+            $val = getGlobal($object_names[$i].'.alive');
+            if (!$val) {
+                $res_object_names[] = "'" . $object_names[$i] . "'";
+            }
+        }
+        $qry .= " AND devices.LINKED_OBJECT IN (" . implode(',', $res_object_names) . ")";
+    } else {
+        $qry .= " AND 0";
+    }
 } elseif ($group_name == 'is:battery') {
     $object_names = getObjectsByProperty('batteryOperated', 1);
     if (!is_array($object_names)) {
@@ -99,7 +116,7 @@ $res = SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devic
 if ($res[0]['ID']) {
     //paging($res, 100, $out); // search result paging
     $total = count($res);
-    $out['TOTAL_FOUND']=$total;
+    $out['TOTAL_FOUND'] = $total;
     for ($i = 0; $i < $total; $i++) {
         // some action for every record if required
         if ($res[$i]['LOCATION_TITLE'] != $loc_title) {

@@ -676,12 +676,9 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
 
 
 <div id="scenes_body">
-<table  border="0" cellpadding="0" cellspacing="0">
- <tr>
-  <td valign="top">
 <div style="{if $TOTAL_SCENES!="1"}width:{$smarty.const.SETTINGS_SCENES_WIDTH}px;{/if};position:relative;" class="context-menu-one">
 <div id="slider">
-{if $TOTAL_SCENES!="1"}<ul>{/if}
+{if $TOTAL_SCENES!="1"}<ul class='scenes_ul'>{/if}
 {foreach $RESULT as $SCENE}
     <style>
         {if $SCENE.DEVICES_BACKGROUND=="dark"}
@@ -695,7 +692,7 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
         }
         {/if}
     </style>
-{if $TOTAL_SCENES!="1"}<li id='scene_{$ID}' style="width:{$smarty.const.SETTINGS_SCENES_WIDTH}px;">{/if}
+{if $TOTAL_SCENES!="1"}<li class='scenes_li' id='scene_{$SCENE.ID}' style="width:{$smarty.const.SETTINGS_SCENES_WIDTH}px;">{/if}
  {if isset($SCENE.VIDEO_WALLPAPER)}
      <video autoplay muted loop id="myVideo" style="position: fixed;
   right: 0;
@@ -708,11 +705,10 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
  <div id="scene_wallpaper_{$SCENE.ID}" style="{if $SCENE.WALLPAPER!=""}background-image:url({$SCENE.WALLPAPER});{if $SCENE.WALLPAPER_FIXED=="1"}background-attachment: fixed;{/if}{if $SCENE.WALLPAPER_NOREPEAT=="1"}background-repeat: no-repeat;{/if}{/if};">
  <div id="scene_background_{$SCENE.ID}" style="position:relative;">
  {function name=elements}
-
  {foreach $items as $ELEMENT}
  <!-- element {$ID} -->
  {if isset($ELEMENT.ELEMENTS)}
- <div 
+ <div
    class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE}{if $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if}{if $ELEMENT.BACKGROUND=="1"} container_background{/if}{if isset($DRAGGABLE)} draggable{/if}"
    style="{if $ELEMENT.POSITION_TYPE=="0"}position:absolute;left:{$ELEMENT.LEFT}px;top:{$ELEMENT.TOP}px;{/if}
    {if $ELEMENT.ZINDEX!=""}z-index:{$ELEMENT.ZINDEX};{/if}
@@ -724,9 +720,8 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
   {elements items=$ELEMENT.ELEMENTS}
  </div>
  {else}
-
  {if $ELEMENT.TYPE=="s3d"}
-  <div 
+  <div
    class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE}{if $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if} state_{$TITLE}{if $ELEMENT.BACKGROUND=="1"} html_background{/if}{if $ELEMENT.POSITION_TYPE=="1"} inlineblock{/if}{if isset($DRAGGABLE) && $ELEMENT.POSITION_TYPE=="0"} draggable{/if}"
    id='canvas_{$ELEMENT.ID}'
    style="
@@ -776,20 +771,10 @@ loader.load(
             objects.push(loaded.objects[obj]);
            }
            if (loaded.currentCamera) {
-
             loaded.currentCamera.aspect = {$ELEMENT.WIDTH}/{$ELEMENT.HEIGHT};
             loaded.currentCamera.updateProjectionMatrix();
             default_camera=loaded.currentCamera;
             camera = default_camera.clone();
-            /*
-            var old_position = new THREE.Vector3();
-            old_position.setFromMatrixPosition( camera.matrix );
-            camera.matrixAutoUpdate = true;
-            camera.position.setX(old_position.x);
-            camera.position.setY(old_position.y);
-            camera.position.setZ(old_position.z);
-            */
-
            }
 
         }
@@ -819,7 +804,7 @@ function onDocumentMouseDown( event ) {
                 mouse.y = - ( (event.clientY-{$ELEMENT.TOP}) / renderer.domElement.height ) * 2 + 1;
                 raycaster.setFromCamera( mouse, camera );
 
-        var intersects = raycaster.intersectObjects( objects ); 
+        var intersects = raycaster.intersectObjects( objects );
 
     if ( intersects.length > 0 ) {
      console.log('Clicked on '+intersects[0].object.name);
@@ -831,7 +816,7 @@ function onDocumentMouseDown( event ) {
      {/foreach}
     }
 }
- 
+
 
    </script>
    <div style="display:none">
@@ -846,23 +831,31 @@ function onDocumentMouseDown( event ) {
  {else}
 
  {foreach $ELEMENT.STATES as $STATE}
-  <div 
-   class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE}{if $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if} state_{$STATE.TITLE}{if $ELEMENT.BACKGROUND=="1"} html_background{/if}{if $ELEMENT.POSITION_TYPE=="1"} inlineblock{/if}{if isset($DRAGGABLE) && $ELEMENT.POSITION_TYPE=="0"} draggable {if $ELEMENT.RESIZABLE=="1"} resizable {$ELEMENT.RESIZABLE}{/if}{/if}"
-   id="state_{$STATE.ID}"
-   {if $STATE.SCRIPT_ID!="0" || $STATE.HOMEPAGE_ID!="0" || $STATE.OPEN_SCENE_ID!="0" || $STATE.EXT_URL!="" || $STATE.MENU_ITEM_ID!="0" || $STATE.ACTION_METHOD!="" || $STATE.CODE!=""} 
-   {if !isset($DRAGGABLE)}
-    onClick="stateClicked('{$STATE.ID}');"
-   {/if}
-   {/if} 
-   style="
-   {if $ELEMENT.POSITION_TYPE=="0"}position:absolute;left:{$ELEMENT.LEFT}px;top:{$ELEMENT.TOP}px;{/if}
-   {if $ELEMENT.ZINDEX!=""}z-index:{$ELEMENT.ZINDEX};{/if}
-   {if $ELEMENT.WIDTH!="0"}width:{$ELEMENT.WIDTH}px;{/if}{if $ELEMENT.HEIGHT!="0"}height:{$ELEMENT.HEIGHT}px;{/if}
-   {if $STATE.SCRIPT_ID!="0" || $STATE.MENU_ITEM_ID!="0" || $STATE.ACTION_METHOD!="" || $STATE.EXT_URL!="" || $STATE.HOMEPAGE_ID!="0" || $STATE.OPEN_SCENE_ID!="0" || $STATE.CODE!=""}cursor:pointer;{/if}
-   {if $STATE.STATE!="1"}display:none;{else}display:inline-block;{/if}">{if $ELEMENT.TYPE=="img"}<img src="{$STATE.IMAGE}" border="0">{/if}<span>{$STATE.HTML}</span></div>
+     <div
+             class="element_{$ELEMENT.ID}
+          type_{$ELEMENT.TYPE}
+          {if $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if}
+          state_{$STATE.TITLE}
+          {if $ELEMENT.BACKGROUND=="1"} html_background{/if}
+          {if $ELEMENT.POSITION_TYPE=="1"} inlineblock{/if}
+          {if isset($DRAGGABLE) && $ELEMENT.POSITION_TYPE=="0"} draggable
+           {if $ELEMENT.RESIZABLE=="1"} resizable {$ELEMENT.RESIZABLE}{/if}
+          {/if}"
+             id="state_{$STATE.ID}"
+             {if $STATE.SCRIPT_ID!="0" || $STATE.HOMEPAGE_ID!="0" || $STATE.OPEN_SCENE_ID!="0" || $STATE.EXT_URL!="" || $STATE.MENU_ITEM_ID!="0" || $STATE.ACTION_METHOD!="" || $STATE.CODE!=""}
+                 {if !isset($DRAGGABLE)}
+                     onClick="stateClicked('{$STATE.ID}');"
+                 {/if}
+             {/if}
+             style="
+             {if $ELEMENT.POSITION_TYPE=="0"}position:absolute;left:{$ELEMENT.LEFT}px;top:{$ELEMENT.TOP}px;{/if}
+             {if $ELEMENT.ZINDEX!=""}z-index:{$ELEMENT.ZINDEX};{/if}
+             {if $ELEMENT.WIDTH!="0"}width:{$ELEMENT.WIDTH}px;{/if}{if $ELEMENT.HEIGHT!="0"}height:{$ELEMENT.HEIGHT}px;{/if}
+             {if $STATE.SCRIPT_ID!="0" || $STATE.MENU_ITEM_ID!="0" || $STATE.ACTION_METHOD!="" || $STATE.EXT_URL!="" || $STATE.HOMEPAGE_ID!="0" || $STATE.OPEN_SCENE_ID!="0" || $STATE.CODE!=""}cursor:pointer;{/if}
+                     {if $STATE.STATE!="1"}display:none;{else}display:inline-block;{/if}">{if $ELEMENT.TYPE=="img"}<img src="{$STATE.IMAGE}" border="0">{/if}<span>{$STATE.HTML}</span></div>
  {/foreach}
- {/if}
 
+ {/if}
  {/if}
 
  {if $ELEMENT.CSS!=""}
@@ -890,8 +883,5 @@ function onDocumentMouseDown( event ) {
 {if $TOTAL_SCENES!="1"}</ul>{/if}
 </div>
 </div> <!-- /slider -->
-</td>
- </tr>
-</table>
 </div>
 

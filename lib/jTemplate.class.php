@@ -52,8 +52,6 @@ class jTemplate
     public function __construct($template, &$data, &$owner = '')
     {
 
-        $this->phpversion = (float)phpversion();
-
         // set current directory for template includes
         if (strpos($template, "/") !== false) {
             $root = preg_replace("/\/[^\/]*?$/", "", $template) . "/";
@@ -606,10 +604,6 @@ class jTemplate
                     $obj = "\$object$i";
                     $code = "";
                     $code .= "$obj=new " . $module_data["name"] . "();\n";
-
-                    if ($this->phpversion >= 8) {
-                        $code .= "if (method_exists($obj,'" . $module_data["name"] . "')) $obj->" . $module_data["name"] . "();\n";
-                    }
 
                     $code .= $obj . "->owner=&\$this->owner;\n";
 

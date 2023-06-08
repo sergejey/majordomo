@@ -60,24 +60,25 @@
                                 
                 this.each(function() {  
                         var obj = $(this);                              
-                        var s = $("li", obj).length;
-                        var w = $("li", obj).width(); 
-                        var h = $("li", obj).height(); 
+                        var s = $("li.scenes_li", obj).length;
+                        var w = $("li.scenes_li", obj).width();
+                        var h = $("li.scenes_li", obj).height();
                         var clickable = true;
                         obj.width(w);
                         obj.height(h);
                         obj.css("overflow","hidden");
                         var ts = s-1;
                         var t = 0;
-                        $("ul", obj).css('width',s*w);
-                        
+                        $("ul.scenes_ul", obj).css('width',s*w);
+
+
                         if(options.continuous){
-                                $("ul", obj).prepend($("ul li:last-child", obj).clone().css("margin-left","-"+ w +"px"));
-                                $("ul", obj).append($("ul li:nth-child(2)", obj).clone());
-                                $("ul", obj).css('width',(s+1)*w);
+                                $("ul.scenes_ul", obj).prepend($("ul.scenes_ul li:last-child", obj).clone().css("margin-left","-"+ w +"px"));
+                                $("ul.scenes_ul", obj).append($("ul.scenes_ul li:nth-child(2)", obj).clone());
+                                $("ul.scenes_ul", obj).css('width',(s+1)*w);
                         };                              
                         
-                        if(!options.vertical) $("li", obj).css('float','left');
+                        if(!options.vertical) $("li.scenes_li", obj).css('float','left');
                                                                 
                         if(options.controlsShow){
                                 var html = options.controlsBefore;                              
@@ -121,17 +122,17 @@
                         
                         function setCurrent(i){
                                 i = parseInt(i)+1;
-                                $("li", "#" + options.numericId).removeClass("current");
-                                $("li#" + options.numericId + i).addClass("current");
+                                $("li.scenes_li", "#" + options.numericId).removeClass("current");
+                                $("li.scenes_li#" + options.numericId + i).addClass("current");
                         };
                         
                         function adjust(){
                                 if(t>ts) t=0;           
                                 if(t<0) t=ts;   
                                 if(!options.vertical) {
-                                        $("ul",obj).css("margin-left",(t*w*-1));
+                                        $("ul.scenes_ul",obj).css("margin-left",(t*w*-1));
                                 } else {
-                                        $("ul",obj).css("margin-left",(t*h*-1));
+                                        $("ul.scenes_ul",obj).css("margin-left",(t*h*-1));
                                 }
                                 clickable = true;
                                 if(options.numeric) setCurrent(t);
@@ -162,13 +163,13 @@
                                         var speed = diff*options.speed;                                         
                                         if(!options.vertical) {
                                                 p = (t*w*-1);
-                                                $("ul",obj).animate(
+                                                $("ul.scenes_ul",obj).animate(
                                                         { marginLeft: p }, 
                                                         { queue:false, duration:speed, complete:adjust }
                                                 );                              
                                         } else {
                                                 p = (t*h*-1);
-                                                $("ul",obj).animate(
+                                                $("ul.scenes_ul",obj).animate(
                                                         { marginTop: p }, 
                                                         { queue:false, duration:speed, complete:adjust }
                                                 );                                      

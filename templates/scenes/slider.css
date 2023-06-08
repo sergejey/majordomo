@@ -1,13 +1,13 @@
 {literal}
 /* Easy Slider */
-        #slider ul, #slider li,
-        #slider2 ul, #slider2 li{
+        #slider ul.scenes_ul, #slider li.scenes_li,
+        #slider2 ul.scenes_ul, #slider2 li.scenes_li {
                 margin:0;
                 padding:0;
                 list-style:none;
                 }
-        #slider2{margin-top:1em;}
-        #slider li, #slider2 li{ 
+        #slider2 {margin-top:1em;}
+        #slider li.scenes_li, #slider2 li.scenes_li {
                 /* 
                         define width and height of list item (slide)
                         entire slider area will adjust according to the parameters provided here

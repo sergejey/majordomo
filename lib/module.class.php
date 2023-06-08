@@ -82,6 +82,13 @@ class module
      */
     public function __construct()
     {
+        $php_version = (float)phpversion();
+        if ($php_version >= 8) {
+            $class_name = get_class($this);
+            if (method_exists($this, $class_name)) {
+                $this->$class_name();
+            }
+        }
     }
 
     /**

@@ -490,13 +490,7 @@ $this->device_types=array(
         'CLASS'=>'SLightSensors',
         'PROPERTIES'=>array(
             'unit'=>array('DESCRIPTION'=>LANG_DEVICES_UNIT,'_CONFIG_TYPE'=>'text'),
-            'periodMinValue'=>array('DESCRIPTION'=>'Minimum value for period','ONCHANGE'=>'periodMinValueUpdated','KEEP_HISTORY'=>365),
-            'periodTime'=>array('DESCRIPTION'=>'Period to calculate minimum value (seconds)','_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdSensorPeriodTime'),
             ),
-        'METHODS'=>array(
-            'valueUpdated'=>array('DESCRIPTION'=>'Value Updated','CALL_PARENT'=>1),
-            'periodMinValueUpdated'=>array('DESCRIPTION'=>'Period Min value updated'),
-        ),
     ),
 );
 
