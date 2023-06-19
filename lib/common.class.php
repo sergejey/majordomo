@@ -260,7 +260,7 @@ function deleteScheduledJob($id)
  * @param mixed $timeout Timeout
  * @return mixed
  */
-function setTimeOut($title, $commands, $timeout)
+function setTimeOut($title, $commands, $timeout = 0)
 {
     startMeasure('setTimeout');
     $res = addScheduledJob($title, $commands, time() + $timeout);
