@@ -73,7 +73,7 @@ if ($this->filter_name == '' && !defined('SETTINGS_GENERAL_START_LAYOUT')) {
     );
     foreach ($options as $k => $v) {
         $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
-        if (!$tmp['ID']) {
+        if (!isset($tmp['ID'])) {
             $tmp = array();
             $tmp['NAME'] = $k;
             $tmp['TITLE'] = $v;

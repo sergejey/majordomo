@@ -147,14 +147,14 @@ function redirect($url, $owner = "", $no_sid = 0)
         $owner->redirect($url);
     } else {
         $param_str = "";
-
         if (!$no_sid) {
             $replaceStr = $_SERVER['PHP_SELF'] . '?' . session_name() . '=' . session_id();
-            $replaceStr .= '&pd=' . $param_str . '&md=' . $owner->name . '&inst=' . $owner->instance . '&';
-
+            $replaceStr .= '&pd=' . $param_str;
+            if (is_object($owner)) {
+                $replaceStr .= '&md=' . $owner->name . '&inst=' . $owner->instance . '&';
+            }
             $url = str_replace('?', $replaceStr, $url);
         }
-
         $url = "Location:$url\n\n";
         $session->save();
         header($url);

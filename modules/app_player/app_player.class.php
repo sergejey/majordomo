@@ -143,7 +143,7 @@ class app_player extends module
         }
         $this->usual($out);
         $out['MODE'] = $this->mode;
-        $out['ENABLED'] = (int)($this->config['ENABLED']);
+        $out['ENABLED'] = (int)(isset($this->config['ENABLED'])?$this->config['ENABLED']:'');
     }
 
     /**
@@ -223,14 +223,14 @@ class app_player extends module
         if ($ajax) {
 
             // Command
-            if ($this->command) {
+            if (isset($this->command) && $this->command) {
                 $command = $this->command;
             } else {
                 $command = trim(gr('command'));
             }
 
             // Param
-            if ($this->param) {
+            if (isset($this->param) && $this->param) {
                 $param = $this->param;
             } else {
                 $param = trim(gr('param'));
@@ -348,7 +348,7 @@ class app_player extends module
             }
 
             // Return json
-            if ($this->intCall) {
+            if (isset($this->intCall) && $this->intCall) {
                 $this->json = $json;
             } else {
                 $session->save();
