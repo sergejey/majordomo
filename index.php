@@ -41,12 +41,13 @@ else
 if ($app->action != '' && $app->action != 'docs') $fake_doc = '';
 
 $result = $app->run();
-$result = str_replace("nf.php", "index.php", $result);
-
+if ($result) {
+    $result = str_replace("nf.php", "index.php", $result);
+    require(ROOT.'lib/utils/postprocess_general.inc.php');
+    require(ROOT.'lib/utils/postprocess_subscriptions.inc.php');
+    require(ROOT.'lib/utils/postprocess_result.inc.php');
+}
 endMeasure('prepare');
-require(ROOT.'lib/utils/postprocess_general.inc.php');
-require(ROOT.'lib/utils/postprocess_subscriptions.inc.php');
-require(ROOT.'lib/utils/postprocess_result.inc.php');
 
 /**
  * Echo large text
@@ -75,7 +76,9 @@ if (!headers_sent()) {
    }
 }
 
-echobig($result);
+if ($result) {
+    echobig($result);
+}
 
 endMeasure('final_echo', 1);
 

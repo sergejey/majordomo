@@ -20,7 +20,10 @@ class SmartyCompilerException extends SmartyException
      *
      * @type int|null
      */
-    public $line = null;
+    public function setLine($line)
+    {
+        $this->line = $line;
+    }
 
     /**
      * The template source snippet relating to the error
@@ -42,4 +45,5 @@ class SmartyCompilerException extends SmartyException
      * @type string|null
      */
     public $template = null;
+
 }

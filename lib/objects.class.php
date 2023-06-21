@@ -938,7 +938,7 @@ function cleanUpValueHistory($value_id, $max_age_days, $data_type = 0)
     $total_removed = 0;
 
     if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
-        $table_name = 'phistory_value_'.$value_id;
+        $table_name = 'phistory_value_' . $value_id;
     } else {
         $table_name = 'phistory';
     }
@@ -958,7 +958,7 @@ function cleanUpValueHistory($value_id, $max_age_days, $data_type = 0)
     }
 
     $tmp = SQLSelectOne("SELECT COUNT(*) as TOTAL FROM $table_name WHERE $qry");
-    if (isset($tmp['TOTAL']) && $tmp['TOTAL']>0) {
+    if (isset($tmp['TOTAL']) && $tmp['TOTAL'] > 0) {
         $total_removed = (int)$tmp['TOTAL'];
         SQLExec("DELETE FROM $table_name WHERE $qry");
     }
@@ -968,12 +968,12 @@ function cleanUpValueHistory($value_id, $max_age_days, $data_type = 0)
 function cleanUpPropertyHistory($property_id, $max_age_days)
 {
     $total_removed = 0;
-    $property = SQLSelectOne("SELECT * FROM properties WHERE ID=".(int)$property_id);
+    $property = SQLSelectOne("SELECT * FROM properties WHERE ID=" . (int)$property_id);
     if (isset($property['ID'])) {
         $pvalues = SQLSelect("SELECT * FROM pvalues WHERE PROPERTY_ID='" . $property_id . "'");
         $total = count($pvalues);
         for ($i = 0; $i < $total; $i++) {
-            $total_removed+=cleanUpValueHistory($pvalues[$i]['ID'], $max_age_days, $property['DATA_TYPE']);
+            $total_removed += cleanUpValueHistory($pvalues[$i]['ID'], $max_age_days, $property['DATA_TYPE']);
         }
     }
     return $total_removed;
@@ -1487,7 +1487,7 @@ function objectClassChanged($object_id)
 function checkOperationsQueue($topic)
 {
     $data = SQLSelect("SELECT * FROM operations_queue WHERE TOPIC='" . DBSafe($topic) . "' ORDER BY EXPIRE");
-    if ($data[0]['TOPIC']) {
+    if (isset($data[0]['TOPIC'])) {
         SQLExec("DELETE FROM operations_queue WHERE TOPIC='" . DBSafe($topic) . "'");
     }
     return $data;

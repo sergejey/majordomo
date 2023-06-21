@@ -568,7 +568,11 @@ class scenes extends module
             $this->redirect(ROOTHTML . "popup/scenes.html");
         }
 
-        $ajax = gr('ajax');
+        if (isset($this->ajax) && $this->ajax) {
+            $ajax = $this->ajax;
+        } else {
+            $ajax = gr('ajax');
+        }
         if ($ajax) {
             global $op;
             header("HTTP/1.0: 200 OK\n");
@@ -670,7 +674,6 @@ class scenes extends module
             if ($op == 'click') {
                 global $id;
 
-
                 if (preg_match('/(\d+)\_(\d+)/', $id, $m)) {
                     $dynamic_item = 1;
                     $real_part = $m[1];
@@ -769,7 +772,7 @@ class scenes extends module
 
             endMeasure('TOTAL');
 
-            if ($_GET['performance']) {
+            if (isset($_GET['performance'])) {
                 performanceReport();
             }
 
@@ -799,7 +802,7 @@ class scenes extends module
             unset($state['HTML']);
         }
 
-        if ($state['HTML'] != '') {
+        if (isset($state['HTML']) && $state['HTML'] != '') {
             if (preg_match('/\[#modul/is', $state['HTML'])) {
                 //$states[$i]['HTML']=str_replace('#', '', $state['HTML']);
                 unset($state['HTML']);

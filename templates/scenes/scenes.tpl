@@ -91,7 +91,7 @@
 }
 
 {foreach $ALL_TYPES as $TYPE}
- {if $TYPE.HAS_STYLE!=""}{include file="../../cms/scenes/styles/{$TYPE.TITLE}/style.css.tpl"}{/if}
+ {if isset($TYPE.HAS_STYLE) && $TYPE.HAS_STYLE!=""}{include file="../../cms/scenes/styles/{$TYPE.TITLE}/style.css.tpl"}{/if}
 {/foreach}
 </style>
 
@@ -706,14 +706,14 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
  <div id="scene_background_{$SCENE.ID}" style="position:relative;">
  {function name=elements}
  {foreach $items as $ELEMENT}
- <!-- element {$ID} -->
+ <!-- element {$ELEMENT.ID} -->
  {if isset($ELEMENT.ELEMENTS)}
  <div
-   class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE}{if $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if}{if $ELEMENT.BACKGROUND=="1"} container_background{/if}{if isset($DRAGGABLE)} draggable{/if}"
-   style="{if $ELEMENT.POSITION_TYPE=="0"}position:absolute;left:{$ELEMENT.LEFT}px;top:{$ELEMENT.TOP}px;{/if}
-   {if $ELEMENT.ZINDEX!=""}z-index:{$ELEMENT.ZINDEX};{/if}
-   {if $ELEMENT.WIDTH!="0"}width:{$ELEMENT.WIDTH}px;{/if}{if $ELEMENT.HEIGHT!="0"}height:{$ELEMENT.HEIGHT}px;{/if}
-   {if $ELEMENT.STATE!="1"}display:none;{/if}
+   class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE}{if isset($ELEMENT.CSS_STYLE) && $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if}{if isset($ELEMENT.BACKGROUND) && $ELEMENT.BACKGROUND=="1"} container_background{/if}{if isset($DRAGGABLE)} draggable{/if}"
+   style="{if isset($ELEMENT.POSITION_TYPE) && $ELEMENT.POSITION_TYPE=="0"}position:absolute;left:{$ELEMENT.LEFT}px;top:{$ELEMENT.TOP}px;{/if}
+   {if isset($ELEMENT.ZINDEX) && $ELEMENT.ZINDEX!=""}z-index:{$ELEMENT.ZINDEX};{/if}
+   {if isset($ELEMENT.WIDTH) && $ELEMENT.WIDTH!="0"}width:{$ELEMENT.WIDTH}px;{/if}{if isset($ELEMENT.HEIGHT) && $ELEMENT.HEIGHT!="0"}height:{$ELEMENT.HEIGHT}px;{/if}
+   {if isset($ELEMENT.STATE) && $ELEMENT.STATE!="1"}display:none;{/if}
    "
    id="state_{$ELEMENT.STATE_ID}"
    >
@@ -726,9 +726,9 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
    id='canvas_{$ELEMENT.ID}'
    style="
    background-color:red;
-   {if $ELEMENT.POSITION_TYPE=="0"}position:absolute;left:{$ELEMENT.LEFT}px;top:{$ELEMENT.TOP}px;{/if}
-   {if $ELEMENT.ZINDEX!=""}z-index:{$ELEMENT.ZINDEX};{/if}
-   {if $ELEMENT.WIDTH!="0"}width:{$ELEMENT.WIDTH}px;{/if}{if $ELEMENT.HEIGHT!="0"}height:{$ELEMENT.HEIGHT}px;{/if}
+   {if isset($ELEMENT.POSITION_TYPE) && $ELEMENT.POSITION_TYPE=="0"}position:absolute;left:{$ELEMENT.LEFT}px;top:{$ELEMENT.TOP}px;{/if}
+   {if isset($ELEMENT.ZINDEX) && $ELEMENT.ZINDEX!=""}z-index:{$ELEMENT.ZINDEX};{/if}
+   {if isset($ELEMENT.WIDTH) && $ELEMENT.WIDTH!="0"}width:{$ELEMENT.WIDTH}px;{/if}{if isset($ELEMENT.HEIGHT) && $ELEMENT.HEIGHT!="0"}height:{$ELEMENT.HEIGHT}px;{/if}
    display:inline-block;"></div>
 
 <script language="javascript" src="{$smarty.const.ROOTHTML}3rdparty/threejs/libs/tween.min.js"></script>
@@ -849,7 +849,7 @@ function onDocumentMouseDown( event ) {
              {/if}
              style="
              {if $ELEMENT.POSITION_TYPE=="0"}position:absolute;left:{$ELEMENT.LEFT}px;top:{$ELEMENT.TOP}px;{/if}
-             {if $ELEMENT.ZINDEX!=""}z-index:{$ELEMENT.ZINDEX};{/if}
+             {if isset($ELEMENT.ZINDEX) && $ELEMENT.ZINDEX!=""}z-index:{$ELEMENT.ZINDEX};{/if}
              {if $ELEMENT.WIDTH!="0"}width:{$ELEMENT.WIDTH}px;{/if}{if $ELEMENT.HEIGHT!="0"}height:{$ELEMENT.HEIGHT}px;{/if}
              {if $STATE.SCRIPT_ID!="0" || $STATE.MENU_ITEM_ID!="0" || $STATE.ACTION_METHOD!="" || $STATE.EXT_URL!="" || $STATE.HOMEPAGE_ID!="0" || $STATE.OPEN_SCENE_ID!="0" || $STATE.CODE!=""}cursor:pointer;{/if}
                      {if $STATE.STATE!="1"}display:none;{else}display:inline-block;{/if}">{if $ELEMENT.TYPE=="img"}<img src="{$STATE.IMAGE}" border="0">{/if}<span>{$STATE.HTML}</span></div>
