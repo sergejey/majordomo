@@ -91,12 +91,12 @@ FF;
 
 function majordomoSaveError($details, $type, $filename = '')
 {
-    return false; // to-do: comment for debug
-
-    //dprint($filename .' '.$type.': '.$details,false);
-
+    if (isset($_SERVER['REQUEST_URI'])) {
+        return false; // to-do: comment for debug
+    }
+    dprint($filename . ' ' . $type . ': ' . $details, false);
     if ($filename) {
-        DebMes($details, $type.'_'.basename($filename));
+        //DebMes($details, $type . '_' . basename($filename));
     }
 }
 
