@@ -65,28 +65,36 @@ if (gr('err_msg')) {
 
 if ($this->tab == 'logic') {
 
-    $method_name = gr('method');
-    if (!$method_name) {
-        $method_name = 'logicAction';
-    }
 
-    $out['METHOD'] = $method_name;
+    $method_name = gr('method');
 
     $object = getObject($rec['LINKED_OBJECT']);
-
 
     $methods = $object->getParentMethods($object->class_id, '', 1);
     $total = count($methods);
     for ($i = 0; $i < $total; $i++) {
-        if ($methods[$i]['TITLE'] == $out['METHOD']) {
-            $methods[$i]['SELECTED'] = 1;
-        }
         if ($methods[$i]['DESCRIPTION'] != '') {
             $methods[$i]['DESCRIPTION'] = $methods[$i]['TITLE'] . ' - ' . $methods[$i]['DESCRIPTION'];
         } else {
             $methods[$i]['DESCRIPTION'] = $methods[$i]['TITLE'];
         }
+        if (isset($object_rec['ID'])) {
+            $object_method = SQLSelectOne("SELECT * FROM methods WHERE TITLE='".$methods[$i]['TITLE']."' AND OBJECT_ID=".$object_rec['ID']." ORDER BY TITLE");
+            if (isset($object_method['ID'])) {
+                $methods[$i]['DESCRIPTION'].=' (*)';
+                if (!$method_name) {
+                    $method_name = $object_method['TITLE'];
+                }
+            }
+        }
+
     }
+
+    if (!$method_name) {
+        $method_name = 'logicAction';
+    }
+
+    $out['METHOD'] = $method_name;
     $out['METHODS'] = $methods;
 
     $method_id = $object->getMethodByName($method_name, $object->class_id, $object->id);
@@ -94,11 +102,7 @@ if ($this->tab == 'logic') {
     $method_rec = SQLSelectOne("SELECT * FROM methods WHERE ID=" . (int)$method_id);
 
     if ($method_rec['OBJECT_ID'] != $object->id) {
-        $method_rec = array();
-        $method_rec['OBJECT_ID'] = $object->id;
-        $method_rec['TITLE'] = $method_name;
-        $method_rec['CALL_PARENT'] = 1;
-        $method_rec['ID'] = SQLInsert('methods', $method_rec);
+        $method_rec['CODE'] = '';
     }
 
     if (defined('SETTINGS_CODEEDITOR_TURNONSETTINGS')) {
@@ -108,7 +112,16 @@ if ($this->tab == 'logic') {
     }
 
     if ($this->mode == 'update') {
-        global $code;
+
+        if ($method_rec['OBJECT_ID'] != $object->id) {
+            $method_rec = array();
+            $method_rec['OBJECT_ID'] = $object->id;
+            $method_rec['TITLE'] = $method_name;
+            $method_rec['CALL_PARENT'] = 1;
+            $method_rec['ID'] = SQLInsert('methods', $method_rec);
+        }
+
+        $code = gr('code');
 
         $old_code = $method_rec['CODE'];
         $method_rec['CODE'] = $code;
@@ -129,6 +142,11 @@ if ($this->tab == 'logic') {
                 $out['ERR_OLD_CODE'] = $old_code;
                 $ok = 0;
             }
+        } else {
+            if ($method_rec['ID']) {
+                SQLExec("DELETE FROM methods WHERE ID=".$method_rec['ID']);
+            }
+            $this->redirect("?id=".$rec['ID']."&view_mode=".$this->view_mode."&tab=".$this->tab."&method=".urlencode($method_rec['TITLE']));
         }
         if ($ok) {
             SQLUpdate('methods', $method_rec);

@@ -156,6 +156,10 @@ if ($res[0]['ID']) {
         if ($linked['TOTAL']) {
             $res[$i]['LINKED'] = $linked['TOTAL'];
         }
+        $methods = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM methods WHERE CODE!='' AND OBJECT_ID=".(int)$object_rec['ID']);
+        if ($methods['TOTAL']) {
+            $res[$i]['METHODS'] = $methods['TOTAL'];
+        }
     }
     $out['RESULT'] = $res;
 }

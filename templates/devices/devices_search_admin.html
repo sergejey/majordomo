@@ -170,13 +170,11 @@
   [#endif LINKED_MODULES#]
  </div>
  <div class="col-md-3" nowrap>
-  [#if "<#ACTION#>"=="admin"#]
    <a href="?view_mode=edit_devices&id=[#ID#]" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
    <a href="?view_mode=edit_devices&id=[#ID#]&tab=settings" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-wrench"></i></a>
    <a href="?view_mode=edit_devices&id=[#ID#]&tab=links" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-link"></i>[#if LINKED!=""#] ([#LINKED#])[#endif#]</a>
-   <a href="?view_mode=edit_devices&id=[#ID#]&tab=logic" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-flash"></i></a>
-    <a href="?view_mode=delete_devices&id=[#ID#]&location_id=<#LOCATION_ID#>&type=<#TYPE#>&group_name=<#GROUP_NAME#>" onClick="return confirm('Are you sure? Please confirm.')" class="btn btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i></a>
-  [#endif ACTION#]
+   <a href="?view_mode=edit_devices&id=[#ID#]&tab=logic" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-flash"></i>[#if METHODS!=""#] ([#METHODS#])[#endif#]</a>
+   <a href="?view_mode=delete_devices&id=[#ID#]&location_id=<#LOCATION_ID#>&type=<#TYPE#>&group_name=<#GROUP_NAME#>" onClick="return confirm('Are you sure? Please confirm.')" class="btn btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i></a>
  </div>
 </div>
 [#end RESULT#]
