@@ -15,6 +15,7 @@ class linkedobject extends module
 {
     var $property_field;
     var $method_field;
+
     /**
      * linkedobject
      *
@@ -40,16 +41,16 @@ class linkedobject extends module
     function saveParams($data = 0)
     {
         $p = array();
-        if (IsSet($this->id)) {
+        if (isset($this->id)) {
             $p["id"] = $this->id;
         }
-        if (IsSet($this->view_mode)) {
+        if (isset($this->view_mode)) {
             $p["view_mode"] = $this->view_mode;
         }
-        if (IsSet($this->edit_mode)) {
+        if (isset($this->edit_mode)) {
             $p["edit_mode"] = $this->edit_mode;
         }
-        if (IsSet($this->tab)) {
+        if (isset($this->tab)) {
             $p["tab"] = $this->tab;
         }
         return parent::saveParams($p);
@@ -102,10 +103,10 @@ class linkedobject extends module
         } else {
             $this->usual($out);
         }
-        if (IsSet($this->owner->action)) {
+        if (isset($this->owner->action)) {
             $out['PARENT_ACTION'] = $this->owner->action;
         }
-        if (IsSet($this->owner->name)) {
+        if (isset($this->owner->name)) {
             $out['PARENT_NAME'] = $this->owner->name;
         }
 
@@ -122,9 +123,9 @@ class linkedobject extends module
         }
 
         if (isset($this->width)) {
-			$ifPX = substr($this->width, -1);
-			if($ifPX != 'x' && $ifPX != '%') $this->width = $this->width.'px';
-			
+            $ifPX = substr($this->width, -1);
+            if ($ifPX != 'x' && $ifPX != '%') $this->width = $this->width . 'px';
+
             $out['WIDTH'] = $this->width;
         } else {
             $out['WIDTH'] = '90%';
@@ -137,8 +138,13 @@ class linkedobject extends module
         }
 
         if ($op == 'redirect') {
-            global $object;
-            global $sub;
+            $device_id = gr('device_id', 'int');
+            if ($device_id) {
+                redirect(ROOTHTML . 'panel/devices/' . $device_id . '.html?tab=settings');
+            }
+
+            $object = gr('object');
+            $sub = gr('sub');
             if (!$object) {
                 redirect(ROOTHTML);
             }
@@ -162,7 +168,7 @@ class linkedobject extends module
                 for ($i = 0; $i < $total; $i++) {
                     $res[] = $tmp[$i];
                 }
-                $res[]=array('ID'=>'scripts','TITLE'=>'AllScripts','DESCRIPTION'=>LANG_SCRIPTS);
+                $res[] = array('ID' => 'scripts', 'TITLE' => 'AllScripts', 'DESCRIPTION' => LANG_SCRIPTS);
                 $res['OBJECTS'] = $res;
 
                 //$tmp=SQLSelectOne("SELECT TITLE FROM objects ORDER BY ID DESC LIMIT 1");
@@ -177,8 +183,11 @@ class linkedobject extends module
                 $properties = array();
                 do {
                     if (!$object) break;
-                    if ($object=='AllScripts') break;
+                    if ($object == 'AllScripts') break;
                     $obj = getObject($object);
+                    if ($obj->device_id) {
+                        $res['DEVICE_ID'] = $obj->device_id;
+                    }
                     if (!$obj) break;
                     $parent_properties = $obj->getParentProperties($obj->class_id, '', 1);
                     if ($parent_properties && is_array($parent_properties)) {
@@ -203,8 +212,8 @@ class linkedobject extends module
                 $properties = array();
                 do {
                     if (!$object) break;
-                    if ($object=='AllScripts') {
-                        $properties=SQLSelect("SELECT TITLE FROM scripts ORDER BY TITLE");
+                    if ($object == 'AllScripts') {
+                        $properties = SQLSelect("SELECT TITLE FROM scripts ORDER BY TITLE");
                         break;
                     }
                     $obj = getObject($object);
@@ -238,36 +247,39 @@ class linkedobject extends module
         }
 
         if ($this->object_field) {
-            $objects = SQLSelect("SELECT objects.CLASS_ID, objects.TITLE, objects.DESCRIPTION, classes.TITLE AS CLASS_NAME FROM objects JOIN classes WHERE CLASS_ID=classes.ID ORDER BY CLASS_ID, TITLE");
+            $objects = SQLSelect("SELECT objects.CLASS_ID, objects.TITLE, objects.DESCRIPTION, classes.TITLE AS CLASS_NAME FROM objects JOIN classes ON CLASS_ID=classes.ID ORDER BY CLASS_ID, TITLE");
 
-            $objects[]=array('ID'=>'scripts','TITLE'=>'AllScripts','DESCRIPTION'=>LANG_SCRIPTS);
+            $objects[] = array('ID' => 'scripts', 'TITLE' => 'AllScripts', 'DESCRIPTION' => LANG_SCRIPTS);
 
             $total = count($objects);
-            $old_class_id=0;
+            $old_class_id = 0;
 
-            $list_result='';
+            $list_result = '';
 
             if ($total) {
-                $objects[0]['FIRST']=1;
-                $objects[$total-1]['LAST']=1;
-                for($i=0;$i<$total;$i++) {
-                    if (isset($objects[$i]['CLASS_ID']) && $objects[$i]['CLASS_ID']!=$old_class_id) {
-                        $objects[$i]['NEW_GROUP']=1;
-                        $old_class_id=$objects[$i]['CLASS_ID'];
-                        if ($i>0) {
-                            $list_result.='</optgroup>';
+                $objects[0]['FIRST'] = 1;
+                $objects[$total - 1]['LAST'] = 1;
+                for ($i = 0; $i < $total; $i++) {
+                    if (isset($objects[$i]['CLASS_ID']) && $objects[$i]['CLASS_ID'] != $old_class_id) {
+                        $objects[$i]['NEW_GROUP'] = 1;
+                        $old_class_id = $objects[$i]['CLASS_ID'];
+                        if ($i > 0) {
+                            $list_result .= '</optgroup>';
                         }
-                        $list_result.='<optgroup label="'.$objects[$i]['CLASS_NAME'].'">';
+                        $list_result .= '<optgroup label="' . $objects[$i]['CLASS_NAME'] . '">';
                     }
-                    $list_result.='<option value="'.$objects[$i]['TITLE'].'">'.$objects[$i]['TITLE'];
-                    if ($objects[$i]['DESCRIPTION']!='') {
-                        $list_result.=' - '.$objects[$i]['DESCRIPTION'];
+
+                    $value = $objects[$i]['TITLE'];
+                    $list_result .= '<option value="' . $value . '">';
+                    $list_result .= $objects[$i]['TITLE'];
+                    if ($objects[$i]['DESCRIPTION'] != '') {
+                        $list_result .= ' - ' . $objects[$i]['DESCRIPTION'];
                     }
-                    $list_result.='</option>';
+                    $list_result .= '</option>';
                 }
-                $list_result.='</optgroup>';
+                $list_result .= '</optgroup>';
             }
-            $out['OBJECTS_LIST_RESULT']=$list_result;
+            $out['OBJECTS_LIST_RESULT'] = $list_result;
 
             /*
 			foreach($objects as $key => $object) {
@@ -283,12 +295,11 @@ class linkedobject extends module
 				}
 			}
             */
-			
 
-			//echo '<pre>';
-			//var_dump($objects);
-			//die();
 
+            //echo '<pre>';
+            //var_dump($objects);
+            //die();
 
 
             $out['OBJECTS'] = $objects;

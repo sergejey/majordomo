@@ -670,6 +670,7 @@ class scenes extends module
                     $this->processState($states[$i]);
                 }
                 echo json_encode($states);
+                exit;
             }
             if ($op == 'click') {
                 global $id;

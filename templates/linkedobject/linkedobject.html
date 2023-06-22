@@ -12,6 +12,7 @@
 				[#OBJECTS_LIST_RESULT#]
 				</select>
 				<a href="#" id="linked_object_link<#UNIQ#>" target="_blank" style='display:none'><i class="glyphicon glyphicon-export"></i></a>
+			    <a href="#" id="linked_object_device_link<#UNIQ#>" target="_blank" style='display:none'><i class="glyphicon glyphicon-hdd"></i></a>
 		</nobr>
 	</span>
 [#endif#]
@@ -100,6 +101,15 @@ function linked_object_chaged<#UNIQ#>() {
 		return;
 	}
 
+	/*
+	if (selected_object<#UNIQ#>) {
+		const data = selected_object<#UNIQ#>.split('/');
+		if (data[1]) {
+		} else {
+			$('#linked_object_device_link<#UNIQ#>').hide();
+		}
+	}*/
+
 	$('#linked_object_link<#UNIQ#>').attr("href", "<#ROOTHTML#>panel/linkedobject.html?op=redirect&object="+selected_object<#UNIQ#>);
 	$('#linked_object_link<#UNIQ#>').show();
   
@@ -111,6 +121,14 @@ function linked_object_chaged<#UNIQ#>() {
 		$.get(url, function(obj) {
 			//var obj=jQuery.parseJSON(data);
 			$('#linked_property_copy<#UNIQ#>').empty();
+
+			if (obj.DEVICE_ID) {
+				$('#linked_object_device_link<#UNIQ#>').attr("href", "<#ROOTHTML#>panel/linkedobject.html?op=redirect&device_id="+obj.DEVICE_ID);
+				$('#linked_object_device_link<#UNIQ#>').show();
+			} else {
+				$('#linked_object_device_link<#UNIQ#>').hide();
+			}
+
 			var objPropertyCnt = obj.PROPERTIES.length;
 
 			if (objPropertyCnt > 0) {
