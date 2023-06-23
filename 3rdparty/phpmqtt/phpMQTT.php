@@ -268,7 +268,7 @@ class phpMQTT
     public function read($int = 8192, $nb = false)
     {
         $string = '';
-        $togo = $int;
+        $togo = (int)$int;
 
         if ($nb) {
             return fread($this->socket, $togo);
@@ -277,7 +277,7 @@ class phpMQTT
         while (!feof($this->socket) && $togo > 0) {
             $fread = fread($this->socket, $togo);
             $string .= $fread;
-            $togo = $int - strlen($string);
+            $togo = (int)($int - strlen($string));
         }
 
         return $string;
