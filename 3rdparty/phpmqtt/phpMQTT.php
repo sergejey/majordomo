@@ -3,35 +3,35 @@
 namespace Bluerhinos;
 
 /*
-     phpMQTT
-    A simple php class to connect/publish/subscribe to an MQTT broker
+ 	phpMQTT
+	A simple php class to connect/publish/subscribe to an MQTT broker
 
 */
 
 /*
-    Licence
+	Licence
 
-    Copyright (c) 2010 Blue Rhinos Consulting | Andrew Milsted
-    andrew@bluerhinos.co.uk | http://www.bluerhinos.co.uk
+	Copyright (c) 2010 Blue Rhinos Consulting | Andrew Milsted
+	andrew@bluerhinos.co.uk | http://www.bluerhinos.co.uk
 
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
 
-    The above copyright notice and this permission notice shall be included in
-    all copies or substantial portions of the Software.
+	The above copyright notice and this permission notice shall be included in
+	all copies or substantial portions of the Software.
 
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-    THE SOFTWARE.
-
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+	THE SOFTWARE.
+	
 */
 
 /* phpMQTT */
@@ -90,22 +90,12 @@ class phpMQTT
      * @param $clientid
      * @param null $cafile
      */
-    public function broker($address, $port, $clientid, $cafile = null)
+    public function broker($address, $port, $clientid, $cafile = null): void
     {
         $this->address = $address;
         $this->port = $port;
         $this->clientid = $clientid;
         $this->cafile = $cafile;
-    }
-
-    private function getSubChar($str, $idx)
-    {
-        return substr($str, $idx, 1);
-    }
-
-    private function setSubChar(&$str, $idx, $char)
-    {
-        $str = substr_replace($str, $char, $idx, 1);
     }
 
     /**
@@ -118,7 +108,7 @@ class phpMQTT
      *
      * @return bool
      */
-    public function connect_auto($clean = true, $will = null, $username = null, $password = null)
+    public function connect_auto($clean = true, $will = null, $username = null, $password = null): bool
     {
         while ($this->connect($clean, $will, $username, $password) === false) {
             sleep(10);
@@ -134,7 +124,7 @@ class phpMQTT
      *
      * @return bool
      */
-    public function connect($clean = true, $will = null, $username = null, $password = null)
+    public function connect($clean = true, $will = null, $username = null, $password = null): bool
     {
         if ($will) {
             $this->will = $will;
@@ -150,9 +140,8 @@ class phpMQTT
             $socketContext = stream_context_create(
                 [
                     'ssl' => [
-                        'verify_peer' => false,
-                        "verify_peer_name" => false,
-                        "cafile" => $this->cafile
+                        'verify_peer_name' => true,
+                        'cafile' => $this->cafile
                     ]
                 ]
             );
@@ -250,14 +239,14 @@ class phpMQTT
 
         $string = $this->read(4);
 
-        if (ord($this->getSubChar($string, 0)) >> 4 === 2 && $this->getSubChar($string, 3) === chr(0)) {
+        if (ord($string[0]) >> 4 === 2 && $string[3] === chr(0)) {
             $this->_debugMessage('Connected to Broker');
         } else {
             $this->_errorMessage(
                 sprintf(
                     "Connection failed! (Error: 0x%02x 0x%02x)\n",
-                    ord($this->getSubChar($string, 0)),
-                    ord($this->getSubChar($string, 3))
+                    ord($string[0]),
+                    ord($string[3])
                 )
             );
             return false;
@@ -302,7 +291,7 @@ class phpMQTT
      *
      * @return string
      */
-    public function subscribeAndWaitForMessage($topic, $qos)
+    public function subscribeAndWaitForMessage($topic, $qos): string
     {
         $this->subscribe(
             [
@@ -326,7 +315,7 @@ class phpMQTT
      * @param $topics
      * @param int $qos
      */
-    public function subscribe($topics, $qos = 0)
+    public function subscribe($topics, $qos = 0): void
     {
         $i = 0;
         $buffer = '';
@@ -361,7 +350,7 @@ class phpMQTT
     /**
      * Sends a keep alive ping
      */
-    public function ping()
+    public function ping(): void
     {
         $head = chr(0xc0);
         $head .= chr(0x00);
@@ -373,18 +362,18 @@ class phpMQTT
     /**
      *  sends a proper disconnect cmd
      */
-    public function disconnect()
+    public function disconnect(): void
     {
         $head = ' ';
-        $this->setSubChar($head,0,chr(0xe0));
-        $this->setSubChar($head,1,chr(0x00));
+        $head[0] = chr(0xe0);
+        $head[1] = chr(0x00);
         fwrite($this->socket, $head, 2);
     }
 
     /**
      * Sends a proper disconnect, then closes the socket
      */
-    public function close()
+    public function close(): void
     {
         $this->disconnect();
         stream_socket_shutdown($this->socket, STREAM_SHUT_WR);
@@ -398,7 +387,7 @@ class phpMQTT
      * @param int $qos
      * @param bool $retain
      */
-    public function publish($topic, $content, $qos = 0, $retain = false)
+    public function publish($topic, $content, $qos = 0, $retain = false): void
     {
         $i = 0;
         $buffer = '';
@@ -425,7 +414,7 @@ class phpMQTT
             ++$cmd;
         }
 
-        $this->setSubChar($head,0,chr($cmd));
+        $head[0] = chr($cmd);
         $head .= $this->setmsglength($i);
 
         fwrite($this->socket, $head, strlen($head));
@@ -460,7 +449,7 @@ class phpMQTT
      */
     public function message($msg)
     {
-        $tlen = (ord($this->getSubChar($msg, 0)) << 8) + ord($this->getSubChar($msg, 1));
+        $tlen = (ord($msg[0]) << 8) + ord($msg[1]);
         $topic = substr($msg, 2, $tlen);
         $msg = substr($msg, ($tlen + 2));
         $found = false;
@@ -485,6 +474,8 @@ class phpMQTT
                 ) . '$/',
                 $topic
             )) {
+                $found = true;
+
                 if ($top['function'] === '__direct_return_message__') {
                     return $msg;
                 }
@@ -594,7 +585,7 @@ class phpMQTT
         $multiplier = 1;
         $value = 0;
         do {
-            $digit = ord($this->getSubChar($msg, $i));
+            $digit = ord($msg[$i]);
             $value += ($digit & 127) * $multiplier;
             $multiplier *= 128;
             $i++;
@@ -608,7 +599,7 @@ class phpMQTT
      *
      * @return string
      */
-    protected function setmsglength($len)
+    protected function setmsglength($len): string
     {
         $string = '';
         do {
@@ -629,7 +620,7 @@ class phpMQTT
      *
      * @return string
      */
-    protected function strwritestring($str, &$i)
+    protected function strwritestring($str, &$i): string
     {
         $len = strlen($str);
         $msb = $len >> 8;
@@ -650,9 +641,9 @@ class phpMQTT
     {
         $strlen = strlen($string);
         for ($j = 0; $j < $strlen; $j++) {
-            $num = ord($this->getSubChar($string, $j));
+            $num = ord($string[$j]);
             if ($num > 31) {
-                $chr = $this->getSubChar($string, $j);
+                $chr = $string[$j];
             } else {
                 $chr = ' ';
             }
@@ -663,7 +654,7 @@ class phpMQTT
     /**
      * @param string $message
      */
-    protected function _debugMessage(string $message)
+    protected function _debugMessage(string $message): void
     {
         if ($this->debug === true) {
             echo date('r: ') . $message . PHP_EOL;
@@ -673,7 +664,7 @@ class phpMQTT
     /**
      * @param string $message
      */
-    protected function _errorMessage(string $message)
+    protected function _errorMessage(string $message): void
     {
         error_log('Error:' . $message);
     }
