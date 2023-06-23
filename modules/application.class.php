@@ -192,16 +192,17 @@ class application extends module
         }
 
         if ($this->action != 'apps') {
-            if ($this->action && (preg_match('/^app_\w+$/is', $this->action) || $this->action == 'xray')) {
+            if (isset($this->action) && $this->action &&
+                (preg_match('/^app_\w+$/is', $this->action) || $this->action == 'xray')) {
                 $out['APP_ACTION'] = 1;
             }
 
-            if (isset($this->app_action) && $this->action!='') {
+            if (isset($this->app_action) && $this->app_action && $this->action!='') {
                 $out['APP_ACTION'] = 1;
             }
         }
 
-        if (isset($this->app_action) && $this->app_action == 'panel') {
+        if (isset($this->app_action)  && $this->app_action == 'panel') {
             $this->redirect(ROOTHTML . 'admin.php');
         }
 
