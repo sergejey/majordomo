@@ -196,7 +196,7 @@ class application extends module
                 $out['APP_ACTION'] = 1;
             }
 
-            if (isset($this->app_action)) {
+            if (isset($this->app_action) && $this->action!='') {
                 $out['APP_ACTION'] = 1;
             }
         }
