@@ -242,9 +242,9 @@ class connect extends module
             DebMes("Cloudbackup result: " . $result, 'cloudbackup');
 
             //echo "POST RESULT: ".$result;
-            if ($result == 'OK') {
+            if ($result == 'OK' || preg_match('/OK: (.+?)/', $result, $m)) {
                 @unlink($dest_file);
-                return true;
+                return $result;
             } else {
                 return false;
             }
@@ -318,7 +318,11 @@ class connect extends module
         if ($this->mode == 'sendbackup') {
             $result = $this->cloudBackup();
             if ($result) {
-                $this->redirect("?ok_msg=" . urlencode('Backup sent'));
+                if (preg_match('/OK: (\w+)/', $result, $m)) {
+                    $this->redirect("?ok_msg=" . urlencode('Backup sent, code: <b>' . $m[1] . '</b>'));
+                } else {
+                    $this->redirect("?ok_msg=" . urlencode('Backup sent.'));
+                }
             } else {
                 $this->redirect("?err_msg=" . urlencode('Error sending backup'));
             }
