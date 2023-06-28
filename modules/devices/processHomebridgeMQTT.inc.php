@@ -116,6 +116,20 @@ if ($params['PROPERTY'] == 'from_get' && $device['ID']) {
                 }
             }
             break;
+        case 'unlockable':
+            $payload['service'] = 'LockMechanism';
+            if ($data['characteristic'] == 'LockTargetState') {
+                $payload['characteristic'] = 'LockTargetState';
+                $payload['value'] = gg($device['LINKED_OBJECT'] . '.lockstatus');
+				sg('HomeBridge.to_set', json_encode($payload));
+				$payload['name'] .= "_sensor";
+				$payload['service_name'] .= "_sensor";
+				$payload['characteristic'] = 'ContactSensorState';
+				$payload['service'] = 'ContactSensor';
+				$nc = gg($device['LINKED_OBJECT'] . '.ncno') == 'nc';
+                $payload['value'] = $nc ? 1 - gg($device['LINKED_OBJECT'] . '.status') : gg($device['LINKED_OBJECT'] . '.status');
+            }
+            break;
         case 'sensor_temp':
             $payload['service'] = 'TemperatureSensor';
             if ($data['characteristic'] == 'CurrentTemperature') {
@@ -252,6 +266,15 @@ if ($params['PROPERTY'] == 'from_set' && $device['ID']) {
                 callMethodSafe($device['LINKED_OBJECT'] . '.close');
             } elseif ($data['value'] == 0) {
                 callMethodSafe($device['LINKED_OBJECT'] . '.open');
+            }
+        }
+    }
+    if (in_array($device['TYPE'], array('unlockable'))) {
+        if ($data['characteristic'] == 'LockTargetState') {
+            if ($data['value']) {
+                callMethodSafe($device['LINKED_OBJECT'] . '.unlock');
+            } else {
+                callMethodSafe($device['LINKED_OBJECT'] . '.lock');
             }
         }
     }
