@@ -21,146 +21,130 @@
  */
 class parser
 {
-   var $data;     // data
-   var $template; // template-file
-   var $result;   // result
-   var $owner;    // parser's owner object
+    var $data;     // data
+    var $template; // template-file
+    var $result;   // result
+    var $owner;    // parser's owner object
 
-   /**
-    * Used to parse templates with data provided
-    * Based on template file extention:
-    * .xslt - XSLT-parser used
-    * .tpl - SMARTY-parser used
-    * all other extensions - jTemplates-parser used
-    * @param mixed $template Template filename
-    * @param mixed $data     Data
-    * @param mixed $owner    Parser's owner object
-    */
-   public function __construct($template, &$data, $owner = "")
-   {
-      // set current directory for template includes
-      $this->data     = &$data;
-      $this->template = $template;
+    /**
+     * Used to parse templates with data provided
+     * Based on template file extention:
+     * .xslt - XSLT-parser used
+     * .tpl - SMARTY-parser used
+     * all other extensions - jTemplates-parser used
+     * @param mixed $template Template filename
+     * @param mixed $data Data
+     * @param mixed $owner Parser's owner object
+     */
+    public function __construct($template, &$data, $owner = "")
+    {
+        // set current directory for template includes
+        $this->data = &$data;
+        $this->template = $template;
 
-      if (is_object($owner))
-      {
-         $this->owner = &$owner;
-      }
+        if (is_object($owner)) {
+            $this->owner = &$owner;
+        }
 
-      if (strpos($template, ".xslt") == TRUE)
-      {
-         // xslt-Templates
-         $this->result = $this->xslt_parse($template, $this->data);
-      }
-      elseif (strpos($template, ".tpl") == TRUE)
-      {
-         // smarty-Templates
-         $this->result = $this->smarty_parse($template, $this->data);
-      }
-      else
-      {
-         // j-Templates
-         $this->result = $this->jtemplate_parse($template, $this->data);
-      }
+        if (strpos($template, ".xslt") == TRUE) {
+            // xslt-Templates
+            $this->result = $this->xslt_parse($template, $this->data);
+        } elseif (strpos($template, ".tpl") == TRUE) {
+            // smarty-Templates
+            $this->result = $this->smarty_parse($template, $this->data);
+        } else {
+            // j-Templates
+            $this->result = $this->jtemplate_parse($template, $this->data);
+        }
 
-      if (is_object($this->owner))
-      {
-         // links parsing for all results (framework support)
-         $this->result = $this->owner->parseLinks($this->result);
-      }
-   }
+        if (is_object($this->owner)) {
+            // links parsing for all results (framework support)
+            $this->result = $this->owner->parseLinks($this->result);
+        }
+    }
 
-   /**
-    * jTemplates-parse
-    * Used to parse jTemplates
-    * @access private
-    * @param mixed $template jTemplate filename
-    * @param mixed $data     Data
-    * @return string
-    */
-   public function jtemplate_parse($template, &$data)
-   {
-      /*
-      if (preg_match('/menu\.html/', $_SERVER['REQUEST_URI'])) {
-      $compl=new jTemplateCompiler($template, "out", $this->owner);
-      $out=&$data;
-      include($compl->compiled_file);
-      }
-       */
+    /**
+     * jTemplates-parse
+     * Used to parse jTemplates
+     * @access private
+     * @param mixed $template jTemplate filename
+     * @param mixed $data Data
+     * @return string
+     */
+    public function jtemplate_parse($template, &$data)
+    {
+        /*
+        if (preg_match('/menu\.html/', $_SERVER['REQUEST_URI'])) {
+        $compl=new jTemplateCompiler($template, "out", $this->owner);
+        $out=&$data;
+        include($compl->compiled_file);
+        }
+         */
 
-      startMeasure('Parse template ' . $template);
-      
-      $jTempl = new jTemplate($template, $data, $this->owner);
-      $result = $jTempl->result;
+        startMeasure('Parse template ' . $template);
 
-      endMeasure('Parse template ' . $template);
+        $jTempl = new jTemplate($template, $data, $this->owner);
+        $result = $jTempl->result;
 
-      return $result;
-   }
+        endMeasure('Parse template ' . $template);
 
-   /**
-    * XSLT-parser
-    * Used to parse xslt-templates
-    * @access private
-    * @param mixed $template XSLT-rules
-    * @param mixed $data     Data
-    * @return mixed
-    */
-   public function xslt_parse($template, &$data)
-   {
-      $new_data["ROOT"] = $data;
-      
-      $xml = new xml_data($new_data);
-      
-      $arguments = array('/_xml' => $xml->string, '/_xsl' => $template);
-      
-      $xh = xslt_create();
-      
-      $result = xslt_process($xh, 'arg:/_xml', 'arg:/_xsl', NULL, $arguments);
-      
-      xslt_free($xh);
+        return $result;
+    }
 
-      return $result;
-   }
+    /**
+     * XSLT-parser
+     * Used to parse xslt-templates
+     * @access private
+     * @param mixed $template XSLT-rules
+     * @param mixed $data Data
+     * @return mixed
+     */
+    public function xslt_parse($template, &$data)
+    {
+        $new_data["ROOT"] = $data;
 
-   /**
-    * SMARTY-parser
-    * Used to parse SMARTY templates
-    * @access private
-    * @param mixed $template_file Template filename
-    * @param mixed $data          Data
-    * @return mixed
-    */
-   public function smarty_parse($template_file, &$data)
-   {
-      define('SMARTY_DIR',ROOT . '3rdparty/smarty3/');
-      
-      require_once(SMARTY_DIR . 'Smarty.class.php');
+        $xml = new xml_data($new_data);
 
-      $smarty = new Smarty;
-      
-      $smarty->compile_dir = SMARTY_DIR . 'templates_c/';
+        $arguments = array('/_xml' => $xml->string, '/_xsl' => $template);
 
-      if (isset($this->owner))
-      {
-         $smarty->template_dir = DIR_TEMPLATES . $this->owner->name . "/";
-      }
+        $xh = xslt_create();
 
-      $data["ROOTHTML"] = ROOTHTML;
+        $result = xslt_process($xh, 'arg:/_xml', 'arg:/_xsl', NULL, $arguments);
 
-      foreach ($data as $k => $v)
-      {
-         $smarty->assign($k, $data[$k]);
-      }
+        xslt_free($xh);
 
-      if (is_object($this->owner))
-      {
-         $smarty->owner = &$this->owner;
-      }
+        return $result;
+    }
 
-      $result = $smarty->fetch($template_file);
+    /**
+     * SMARTY-parser
+     * Used to parse SMARTY templates
+     * @access private
+     * @param mixed $template_file Template filename
+     * @param mixed $data Data
+     * @return mixed
+     */
+    public function smarty_parse($template_file, &$data)
+    {
+        define('SMARTY_DIR', ROOT . '3rdparty/smarty3/');
 
-      return $result;
-   }
+        require_once(SMARTY_DIR . 'Smarty.class.php');
+        $smarty = new Smarty;
+        $smarty->compile_dir = ROOT . 'cms/cached/templates_c/';
+
+        if (isset($this->owner)) {
+            $smarty->template_dir = DIR_TEMPLATES . $this->owner->name . "/";
+        }
+        $data["ROOTHTML"] = ROOTHTML;
+        foreach ($data as $k => $v) {
+            $smarty->assign($k, $data[$k]);
+        }
+        if (is_object($this->owner)) {
+            $smarty->owner = $this->owner;
+        }
+
+        $result = $smarty->fetch($template_file);
+
+        return $result;
+    }
 }
-?>
