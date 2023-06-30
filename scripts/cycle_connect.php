@@ -31,6 +31,8 @@ const CONNECT_HOST = 'connect.smartliving.ru';
 
 $simple_devices_queue_checked = 0;
 
+setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+
 while (1) {
     $connect = new connect();
     $connect->getConfig();
@@ -146,7 +148,7 @@ while (1) {
 
     } else {
         echo date('Y-m-d H:i:s') . " Failed to connect ...\n";
-        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+        //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
         DebMes("Failed to connect to MQTT", 'connect');
         sleep(10);
         continue;
