@@ -113,7 +113,7 @@ $sortby_devices = "locations.PRIORITY DESC, locations.TITLE, devices.LOCATION_ID
 $out['SORTBY'] = $sortby_devices;
 // SEARCH RESULTS
 $res = SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE $qry ORDER BY " . $sortby_devices);
-if ($res[0]['ID']) {
+if (isset($res[0])) {
     //paging($res, 100, $out); // search result paging
     $total = count($res);
     $out['TOTAL_FOUND'] = $total;

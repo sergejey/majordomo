@@ -66,6 +66,16 @@ function collectData()
     }
     $result['OS'] = $os;
     $result['locale'] = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+    $result['PHP']['version'] = phpversion();
+    $result['PHP']['extensions'] = get_loaded_extensions();
+
+    $server_keys = array('SERVER_SOFTWARE','GATEWAY_INTERFACE','DOCUMENT_ROOT','FCGI_ROLE','USER','HOME','HTTP_HOST');
+    foreach($server_keys as $key) {
+        if (isset($_SERVER[$key])) {
+            $result['SERVER'][$key]=$_SERVER[$key];
+        }
+    }
+
 
     $cycles = array();
     if ($lib_dir = opendir("./scripts")) {
