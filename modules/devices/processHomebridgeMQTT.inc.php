@@ -89,9 +89,9 @@ if ($params['PROPERTY'] == 'from_get' && $device['ID']) {
                 if ($data['characteristic']=='CurrentPosition') {
                     $currentStatus = (int)gg($device['LINKED_OBJECT'] . '.status');
                     if ($currentStatus) {
-                        $payload['value'] = 0;
-                    } else {
                         $payload['value'] = 100;
+                    } else {
+                        $payload['value'] = 0;
                     }
                 }
             } elseif ($open_type == 'window') {
@@ -99,9 +99,9 @@ if ($params['PROPERTY'] == 'from_get' && $device['ID']) {
                 if ($data['characteristic']=='CurrentPosition') {
                     $currentStatus = (int)gg($device['LINKED_OBJECT'] . '.status');
                     if ($currentStatus) {
-                        $payload['value'] = 0;
-                    } else {
                         $payload['value'] = 100;
+                    } else {
+                        $payload['value'] = 0;
                     }
                 }
             } elseif ($open_type == 'curtains' || $open_type == 'shutters') {
@@ -109,9 +109,9 @@ if ($params['PROPERTY'] == 'from_get' && $device['ID']) {
                 if ($data['characteristic']=='CurrentPosition') {
                     $currentStatus = (int)gg($device['LINKED_OBJECT'] . '.status');
                     if ($currentStatus) {
-                        $payload['value'] = 0;
-                    } else {
                         $payload['value'] = 100;
+                    } else {
+                        $payload['value'] = 0;
                     }
                 }
             }
@@ -365,6 +365,12 @@ if ($params['PROPERTY'] == 'from_set' && $device['ID']) {
             }
         }
     }
+
+    $addon_path = dirname(__FILE__) . '/addons/' . $device['TYPE'] . '_processHomebridgeMQTT.php';
+    if (file_exists($addon_path)) {
+        require($addon_path);
+    }
+
 }
 
 /*

@@ -24,7 +24,7 @@ for ($i = 0; $i < $total; $i++) {
 
     if ($devices[$i]['SYSTEM_DEVICE'] || $devices[$i]['ARCHIVED']) {
         if ($debug_sync) {
-            DebMes("HomeBridge.to_remove: ".json_encode($payload),'homebridge');
+            DebMes("HomeBridge.to_remove: " . json_encode($payload), 'homebridge');
         }
         sg('HomeBridge.to_remove', json_encode($payload));
         continue;
@@ -82,7 +82,7 @@ for ($i = 0; $i < $total; $i++) {
                     $payload['characteristic'] = 'TargetDoorState';
                     $payload['value'] = "1";
                     sg('HomeBridge.to_set', json_encode($payload));
-                } elseif ($open_type == 'door' || $open_type == 'window' || $open_type == 'curtains'  || $open_type == 'shutters') {
+                } elseif ($open_type == 'door' || $open_type == 'window' || $open_type == 'curtains' || $open_type == 'shutters') {
                     $payload['characteristic'] = 'CurrentPosition';
                     if (gg($devices[$i]['LINKED_OBJECT'] . '.status')) {
                         $payload['value'] = "0"; // открыто на 0% (закрыто)
@@ -115,29 +115,6 @@ for ($i = 0; $i < $total; $i++) {
             $payload['value'] = gg($devices[$i]['LINKED_OBJECT'] . '.value');
             sg('HomeBridge.to_set', json_encode($payload));
             break;
-        case 'sensor_temphum':
-            // Temp
-            $payload['service'] = 'TemperatureSensor';
-            $payload['CurrentTemperature']['minValue'] = -40;
-            sg('HomeBridge.to_add', json_encode($payload));
-
-            $payload['characteristic'] = 'CurrentTemperature';
-            $payload['value'] = gg($devices[$i]['LINKED_OBJECT'] . '.value');
-            sg('HomeBridge.to_set', json_encode($payload));
-
-            // Hum
-            $payload['name'] .= '_Hum';
-            $payload['service_name'] .= '_Hum';
-            $payload['service'] = 'HumiditySensor';
-            unset($payload['CurrentTemperature']['minValue']);
-            sg('HomeBridge.to_add', json_encode($payload));
-
-            $payload['characteristic'] = 'CurrentRelativeHumidity';
-            $payload['value'] = gg($devices[$i]['LINKED_OBJECT'] . '.valueHumidity');
-            sg('HomeBridge.to_set', json_encode($payload));
-
-            break;
-
         case 'sensor_co2':
             $payload['service'] = 'CarbonDioxideSensor';
             sg('HomeBridge.to_add', json_encode($payload));
@@ -398,6 +375,10 @@ for ($i = 0; $i < $total; $i++) {
            sg('HomeBridge.to_set',json_encode($payload));
            break;
         */
+    }
+    $addon_path = dirname(__FILE__) . '/addons/' . $devices[$i]['TYPE'] . '_homebridgeSync.php';
+    if (file_exists($addon_path)) {
+        require($addon_path);
     }
 }
 
