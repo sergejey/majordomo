@@ -64,7 +64,15 @@ while (1) {
         $ca_file = dirname(__FILE__) . '/../modules/connect/fullchain.pem';
     }
 
-    $query = $username . '/incoming_urls,' . $username . '/menu_session,' . $username . '/reverse_requests';
+    $topics = array(
+        $username . '/incoming_urls',
+        $username . '/menu_session',
+        $username . '/reverse_requests',
+        $username . '/forward/#',
+        $connect->config['CONNECT_USERNAME'] . '/forward/#',
+    );
+
+    $query = implode(',', $topics);
     $ping_topic = $username . '/ping';
     $client_name = "MajorDoMo " . $username . " Connect";
     $mqtt_client = new Bluerhinos\phpMQTT($host, $port, $client_name, $ca_file);
@@ -96,7 +104,7 @@ while (1) {
                 $previousMillis = $currentMillis;
                 $checked_time = time();
                 setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-                if (isRebootRequired() || IsSet($_GET['onetime'])) {
+                if (isRebootRequired() || isset($_GET['onetime'])) {
                     exit;
                 }
             }
@@ -186,6 +194,10 @@ function procmsg($topic, $msg)
         $url = BASE_URL . '/ajax/connect.html?no_session=1&op=reverse_request&msg=' . urlencode($msg);
         echo date("Y-m-d H:i:s") . " Incoming reverse url: $msg\n";
         getURLBackground($url, 0);
+    } elseif (preg_match('/\/forward\/(.+)/is', $topic, $m)) {
+        $forward_topic = $m[1];
+        //DebMes("Forward $forward_topic: $msg",'connect');
+        callAPI('/api/module/mqtt', 'GET', array('topic' => $forward_topic, 'msg' => $msg));
     } elseif (preg_match('/reverse_requests/is', $topic)) {
         //DebMes("Reverse request: $msg",'connect');
         $url = BASE_URL . '/ajax/connect.html?no_session=1&op=reverse_request_full&msg=' . urlencode($msg);
