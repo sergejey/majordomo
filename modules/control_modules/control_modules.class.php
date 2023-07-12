@@ -260,17 +260,22 @@ class control_modules extends module
                 if (file_exists($installedFile))
                     @unlink($installedFile);
                 startMeasure('Installing ' . $lst[$i]['FILENAME']);
-                $url = BASE_URL . '/module/' . $lst[$i]['FILENAME'] . '.html';
+
                 if (!isset($_SERVER['REQUEST_METHOD'])) {
                     echo 'Installing ' . $lst[$i]['FILENAME'] . " ...";
                 }
                 DebMes('Installing ' . $lst[$i]['FILENAME'] . " ...", 'reinstall');
-                //$data = getURL($url); //
+                //$url = BASE_URL . '/module/' . $lst[$i]['FILENAME'] . '.html';
+                //$data = getURL($url);
+                $data = callAPI('/api/module/'.$lst[$i]['FILENAME']);
+
+                /*
                 include_once(DIR_MODULES . $lst[$i]['FILENAME'] . "/" . $lst[$i]['FILENAME'] . ".class.php");
                 $obj = "\$object$i";
                 $code = "$obj=new " . $lst[$i]['FILENAME'] . ";\n";
                 //echo "Installing ".$lst[$i]['FILENAME']."\n";
                 @eval("$code");
+                */
 
                 endMeasure('Installing ' . $lst[$i]['FILENAME']);
                 if (!isset($_SERVER['REQUEST_METHOD'])) {
