@@ -265,10 +265,8 @@ class control_modules extends module
                     echo 'Installing ' . $lst[$i]['FILENAME'] . " ...";
                 }
                 DebMes('Installing ' . $lst[$i]['FILENAME'] . " ...", 'reinstall');
-                //$url = BASE_URL . '/module/' . $lst[$i]['FILENAME'] . '.html';
-                //$data = getURL($url);
-                $data = callAPI('/api/module/'.$lst[$i]['FILENAME']);
-
+                $url = BASE_URL . '/api.php/module/'.$lst[$i]['FILENAME'];
+                $data = getURL($url);
                 /*
                 include_once(DIR_MODULES . $lst[$i]['FILENAME'] . "/" . $lst[$i]['FILENAME'] . ".class.php");
                 $obj = "\$object$i";
