@@ -265,15 +265,15 @@ class control_modules extends module
                     echo 'Installing ' . $lst[$i]['FILENAME'] . " ...";
                 }
                 DebMes('Installing ' . $lst[$i]['FILENAME'] . " ...", 'reinstall');
-                $url = BASE_URL . '/api.php/module/'.$lst[$i]['FILENAME'];
-                $data = getURL($url);
-                /*
+                //$url = BASE_URL . '/api.php/module/'.$lst[$i]['FILENAME'];
+                //$data = getURL($url);
+
                 include_once(DIR_MODULES . $lst[$i]['FILENAME'] . "/" . $lst[$i]['FILENAME'] . ".class.php");
                 $obj = "\$object$i";
                 $code = "$obj=new " . $lst[$i]['FILENAME'] . ";\n";
                 //echo "Installing ".$lst[$i]['FILENAME']."\n";
                 @eval("$code");
-                */
+                
 
                 endMeasure('Installing ' . $lst[$i]['FILENAME']);
                 if (!isset($_SERVER['REQUEST_METHOD'])) {
