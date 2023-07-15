@@ -375,10 +375,11 @@ for ($i = 0; $i < $total; $i++) {
            sg('HomeBridge.to_set',json_encode($payload));
            break;
         */
-    }
-    $addon_path = dirname(__FILE__) . '/addons/' . $devices[$i]['TYPE'] . '_homebridgeSync.php';
-    if (file_exists($addon_path)) {
-        require($addon_path);
+        default:
+            $addon_path = dirname(__FILE__) . '/addons/' . $devices[$i]['TYPE'] . '_homebridgeSync.php';
+            if (file_exists($addon_path)) {
+                require($addon_path);
+            }
     }
 }
 

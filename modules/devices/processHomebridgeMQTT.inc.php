@@ -218,6 +218,11 @@ if ($params['PROPERTY'] == 'from_get' && $device['ID']) {
            }
            break;
         */
+        default:
+            $addon_path = dirname(__FILE__) . '/addons/' . $device['TYPE'] . '_processHomebridgeMQTT_from_get.php';
+            if (file_exists($addon_path)) {
+                require($addon_path);
+            }
     }
     if (isset($payload['value'])) {
         sg('HomeBridge.to_set', json_encode($payload));
@@ -366,7 +371,7 @@ if ($params['PROPERTY'] == 'from_set' && $device['ID']) {
         }
     }
 
-    $addon_path = dirname(__FILE__) . '/addons/' . $device['TYPE'] . '_processHomebridgeMQTT.php';
+    $addon_path = dirname(__FILE__) . '/addons/' . $device['TYPE'] . '_processHomebridgeMQTT_from_set.php';
     if (file_exists($addon_path)) {
         require($addon_path);
     }
