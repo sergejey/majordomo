@@ -520,8 +520,8 @@ class jTemplate
                     $true_part = $temp[0];
                     $false_part = isset($temp[1]) ? $temp[1] : "";
 
-                    $condition = preg_replace('/^!(\w+)$/', '!isset($hash[\'\\1\'])', $condition);
-                    $condition = preg_replace('/^(\w+)$/', 'isset($hash[\'\\1\'])', $condition);
+                    $condition = preg_replace('/^!(\w+)$/', '!(isset($hash[\'\\1\'])?$hash[\'\\1\']:null)', $condition);
+                    $condition = preg_replace('/^(\w+)$/', '(isset($hash[\'\\1\'])?$hash[\'\\1\']:null)', $condition);
                     $condition = preg_replace('/(\w+)(?=[=!<>])/', '(isset($hash[\'\\1\'])?$hash[\'\\1\']:null)', $condition);
                     $condition = preg_replace('/(\w+)[[:space:]](?=[=!<>])/', '(isset($hash[\'\\1\'])?$hash[\'\\1\']:null)', $condition);
                     $condition = preg_replace('/\((\w+)\)/', '(isset($hash[\'\\1\'])?$hash[\'\\1\']:null)', $condition);
