@@ -1204,6 +1204,29 @@ function hsvToHex($h, $s, $v)
     return sprintf("%02x%02x%02x", $rgb[0], $rgb[1], $rgb[2]);
 }
 
+function RgbToXyBri($rgb) {
+  $r = $rgb['r'];
+  $g = $rgb['g'];
+  $b = $rgb['b'];
+  if ($r < 0 || $r > 1 || $g < 0 || $g > 1 || $b < 0 || $b > 1) {
+    throw new Exception('Invalid RGB array');
+  }
+  
+  $rt = ($r > 0.04045) ? pow(($r + 0.055) / (1.0 + 0.055), 2.4) : ($r / 12.92);
+  $gt = ($g > 0.04045) ? pow(($g + 0.055) / (1.0 + 0.055), 2.4) : ($g / 12.92);
+  $bt = ($b > 0.04045) ? pow(($b + 0.055) / (1.0 + 0.055), 2.4) : ($b / 12.92);
+
+  $cie_x = $rt * 0.649926 + $gt * 0.103455 + $bt * 0.197109;
+  $cie_y = $rt * 0.234327 + $gt * 0.743075 + $bt * 0.022598;
+  $cie_z = $rt * 0.0000000 + $gt * 0.053077 + $bt * 1.035763;
+  
+  $hue_x = $cie_x / ($cie_x + $cie_y + $cie_z);
+  $hue_y = $cie_y / ($cie_x + $cie_y + $cie_z);
+  
+  return array('x'=>$hue_x,'y'=>$hue_y,'bri'=>$cie_y);
+  
+}
+
 function logAction($action_type, $details = '')
 {
     global $session;
