@@ -338,13 +338,14 @@ function addLinkedProperty($object, $property, $module)
     }
 }
 
-/**
- * Summary of removeLinkedProperty
- * @param mixed $object Object
- * @param mixed $property Property
- * @param mixed $module Module
- * @return int
- */
+function removeLinkedPropertyIfNotUsed($table_name, $object, $property, $module)
+{
+    $tmp = SQLSelectOne("SELECT ID FROM " . DBSafe($table_name) . " WHERE LINKED_OBJECT='" . DBSafe($object) . "' AND LINKED_PROPERTY='" . DBSafe($property) . "'");
+    if (!isset($tmp['ID'])) {
+        removeLinkedProperty($object, $property, $module);
+    }
+}
+
 function removeLinkedProperty($object, $property, $module)
 {
     $sqlQuery = "SELECT *
@@ -353,27 +354,21 @@ function removeLinkedProperty($object, $property, $module)
 
     $value = SQLSelectOne($sqlQuery);
 
-    if ($value['ID']) {
+    if (isset($value['ID'])) {
         if (!$value['LINKED_MODULES']) {
             $tmp = array();
         } else {
             $tmp = explode(',', $value['LINKED_MODULES']);
         }
-
         if (in_array($module, $tmp)) {
             $total = count($tmp);
             $res = array();
-
             for ($i = 0; $i < $total; $i++) {
                 if ($tmp[$i] != $module) {
                     $res[] = $tmp[$i];
                 }
             }
-
-            $tmp = $res;
-
-            $value['LINKED_MODULES'] = implode(',', $tmp);
-
+            $value['LINKED_MODULES'] = implode(',', $res);
             SQLUpdate('pvalues', $value);
         }
     } else {

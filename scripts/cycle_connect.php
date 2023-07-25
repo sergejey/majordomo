@@ -116,26 +116,18 @@ while (1) {
                 foreach ($devices_data as $property_data) {
                     if (!isset($saved_devices_data[$property_data['DATANAME']]) || $saved_devices_data[$property_data['DATANAME']] != $property_data['DATAVALUE']) {
                         $saved_devices_data[$property_data['DATANAME']] = $property_data['DATAVALUE'];
-                        //DebMes("Sending value of ".$property_data['DATANAME']. "(".$property_data['DATAVALUE'].")",'connect');
                         $connect->sendDeviceProperty($property_data['DATANAME'], $property_data['DATAVALUE']);
-                        //DebMes("Sending value OK",'connect');
                     }
                 }
                 $sync_required = checkOperationsQueue('connect_sync_devices');
                 if ((time() - $devices_sent_time > 60 * 60) || is_array($sync_required[0])) {
                     $devices_sent_time = time();
                     echo date('Y-m-d H:i:s') . " Sending all devices\n";
-                    //DebMes("Sending all devices",'connect');
                     $connect->sendAllDevices();
-                    //DebMes("All devices sent OK",'connect');
+                    $saved_devices_data = array(); // clear sent data cache
                 }
             }
-            /*
-            if (time() - $menu_sent_time > 60 * 60) {
-                $menu_sent_time = time();
-                send_all_menu();
-            }
-            */
+
             if ((time() - $started_time) > $max_run_time) {
                 DebMes("Running too long, exit.", 'connect');
                 echo "Exit cycle CONNECT... (reconnecting)";
@@ -143,12 +135,10 @@ while (1) {
                 exit;
             }
             if ((time() - $ping_timestamp) > 60) {
-                //DebMes("Sending PING to MQTT",'connect');
                 $ping_timestamp = time();
                 set_time_limit(10);
                 $mqtt_client->publish($ping_topic, time());
                 set_time_limit(0);
-                //DebMes("Sending PING OK",'connect');
             }
         }
         DebMes("Closing MQTT connection", 'connect');

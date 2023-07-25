@@ -8,7 +8,7 @@ $debug_sync = 0;
 
 if (!$device1['SYSTEM_DEVICE'] && !$device1['ARCHIVED'] && $this->isHomeBridgeAvailable()) {
     // send updated status to HomeKit
-    require DIR_MODULES.'devices/homebridgeSendUpdate.inc.php';
+    require DIR_MODULES . 'devices/homebridgeSendUpdate.inc.php';
 }
 endMeasure('homebridge_update');
 
@@ -16,12 +16,12 @@ startMeasure('checkingLinks');
 $value = (float)gg($device1['LINKED_OBJECT'] . '.value');
 $status = (float)gg($device1['LINKED_OBJECT'] . '.status');
 
-$links = SQLSelect("SELECT devices_linked.*, devices.LINKED_OBJECT FROM devices_linked LEFT JOIN devices ON devices_linked.DEVICE2_ID=devices.ID WHERE DEVICE1_ID=" . (int)$device1['ID']);
+$links = SQLSelect("SELECT devices_linked.*, devices.LINKED_OBJECT FROM devices_linked LEFT JOIN devices ON devices_linked.DEVICE2_ID=devices.ID WHERE devices_linked.IS_ACTIVE=1 AND DEVICE1_ID=" . (int)$device1['ID']);
 $total = count($links);
 for ($i = 0; $i < $total; $i++) {
     if (!checkAccess('sdevice', $links[$i]['ID'])) continue;
-    if ($device1['TYPE']=='motion' && !$status) continue;
-    if ($device1['TYPE']=='button' && !$status) continue;
+    if ($device1['TYPE'] == 'motion' && !$status) continue;
+    if ($device1['TYPE'] == 'button' && !$status) continue;
     $link_type = $links[$i]['LINK_TYPE'];
     $object = $links[$i]['LINKED_OBJECT'];
     $settings = unserialize($links[$i]['LINK_SETTINGS']);
@@ -83,15 +83,15 @@ for ($i = 0; $i < $total; $i++) {
             $action_string = 'callMethodSafe("' . $object . '.close' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
         }
 
-        if ($settings['source_value_type']!='') {
+        if ($settings['source_value_type'] != '') {
             $period = (int)$settings['source_value_time'];
-            if ($period<1) $period=1;
+            if ($period < 1) $period = 1;
             if ($settings['source_value_type'] == 'avg') {
-                $value = getHistoryAvg($device1['LINKED_OBJECT'] . '.value',(-1)*$period);
+                $value = getHistoryAvg($device1['LINKED_OBJECT'] . '.value', (-1) * $period);
             } elseif ($settings['source_value_type'] == 'min') {
-                $value = getHistoryMin($device1['LINKED_OBJECT'] . '.value',(-1)*$period);
+                $value = getHistoryMin($device1['LINKED_OBJECT'] . '.value', (-1) * $period);
             } elseif ($settings['source_value_type'] == 'max') {
-                $value = getHistoryMax($device1['LINKED_OBJECT'] . '.value',(-1)*$period);
+                $value = getHistoryMax($device1['LINKED_OBJECT'] . '.value', (-1) * $period);
             }
         }
 
@@ -110,19 +110,14 @@ for ($i = 0; $i < $total; $i++) {
     } elseif ($link_type == 'thermostat_switch') {
         $set_value = 0;
         $current_relay_status = gg($device1['LINKED_OBJECT'] . '.relay_status');
-        $ncno = gg($device1['LINKED_OBJECT'] . '.ncno');
-        if ($ncno == 'no' && $current_relay_status) {
-            $current_relay_status = 0;
-        } elseif ($ncno == 'no' && !$current_relay_status) {
-            $current_relay_status = 1;
-        }
         $current_target_status = gg($object . '.status');
-        //echo "status: $current_relay_status / $current_target_status<Br/>";
-        if (!$settings['invert_status'] && $current_relay_status) { // NC
-            $set_value = 1;
-        } elseif ($settings['invert_status'] && !$current_relay_status) {
-            $set_value = 1;
+        if ($settings['invert_status']) {
+            $set_value = $current_relay_status ? 0 : 1;
+        } else {
+            $set_value = $current_relay_status;
         }
+        DebMes("Set value: $set_value, Current status: $current_target_status", $link_type);
+
         if ($set_value && !$current_target_status) {
             // turn on
             $action_string = 'callMethodSafe("' . $object . '.turnOn' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
@@ -130,6 +125,8 @@ for ($i = 0; $i < $total; $i++) {
             // turn off
             $action_string = 'callMethodSafe("' . $object . '.turnOff' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
         }
+
+        DebMes("Action string: $action_string", $link_type);
     }
 
     $addons_dir = dirname(__FILE__) . '/addons';

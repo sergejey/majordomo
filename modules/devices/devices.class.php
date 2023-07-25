@@ -1534,6 +1534,7 @@ class devices extends module
  devices: ROLES varchar(100) NOT NULL DEFAULT ''
 
  devices_linked: ID int(10) unsigned NOT NULL auto_increment
+ devices_linked: IS_ACTIVE int(3) unsigned NOT NULL DEFAULT 1 
  devices_linked: DEVICE1_ID int(10) unsigned NOT NULL DEFAULT 0
  devices_linked: DEVICE2_ID int(10) unsigned NOT NULL DEFAULT 0
  devices_linked: LINK_TYPE varchar(100) NOT NULL DEFAULT ''

@@ -50,16 +50,20 @@ if ($this->mode == 'update') {
         //echo $content;
 		
         $errors = php_syntax_error($rec['CODE']);
-		
+
         if ($errors) {
             $out['ERR_LINE'] = preg_replace('/[^0-9]/', '', substr(stristr($errors, 'php on line '), 0, 18))-2;
             $out['ERR_CODE'] = 1;
 			$errorStr = explode('Parse error: ', htmlspecialchars(strip_tags(nl2br($errors))));
 			$errorStr = explode('Errors parsing', $errorStr[1]);
 			$errorStr = explode(' in ', $errorStr[0]);
-			//var_dump($errorStr);
-            $out['ERRORS'] = $errorStr[0];
-			$out['ERR_FULL'] = $errorStr[0].' '.$errorStr[1];
+            if ($errorStr[0]) {
+                $out['ERRORS'] = $errorStr[0];
+                $out['ERR_FULL'] = $errorStr[0].' '.$errorStr[1];
+            } else {
+                $out['ERRORS'] = $errors;
+                $out['ERR_FULL'] = nl2br($errors);
+            }
 			$out['ERR_OLD_CODE'] = $old_code;
             $ok = 0;
         }

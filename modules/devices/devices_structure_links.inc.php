@@ -146,7 +146,7 @@ $this->device_links=array(
             'LINK_NAME'=>'sensor_pass',
             'LINK_TITLE'=>LANG_DEVICES_LINK_SENSOR_PASS,
             'LINK_DESCRIPTION'=>LANG_DEVICES_LINK_SENSOR_PASS_DESCRIPTION,
-            'TARGET_CLASS'=>'SThermostats',
+            'TARGET_CLASS'=>'SThermostats,SAirConditioners',
         )
     ),
     'SOpenClose' =>array(
