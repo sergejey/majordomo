@@ -513,17 +513,14 @@ class objects extends module
         if (isset($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
             if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s']) && !empty($_GET['m_c_s'])) {
                 $call_stack = $_GET['m_c_s'];
-                unset($params['m_c_s']);
             }
             if (isset($_GET['raiseEvent']) && !empty($_GET['raiseEvent'])) {
                 $raiseEvent = $_GET['raiseEvent'];
-                unset($params['raiseEvent']);
             } else {
                 $raiseEvent = '';
             }
             if (isset($_GET['r_s_m']) && !empty($_GET['r_s_m'])) {
                 $run_SafeMethod = $_GET['r_s_m'];
-                unset($params['r_s_m']);
             } else {
                 $run_SafeMethod = '';
             }
