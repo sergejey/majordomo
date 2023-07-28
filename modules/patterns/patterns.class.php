@@ -772,7 +772,7 @@ class patterns extends module
 
             $sub_patterns_matched = 0;
 
-            if ($rec['IS_CONTEXT']) {
+            if ($rec['IS_CONTEXT'] && !$rec['IS_LAST']) {
                 $sub_patterns = SQLSelect("SELECT ID, IS_LAST FROM patterns WHERE PARENT_ID='" . $rec['ID'] . "' ORDER BY PRIORITY DESC, TITLE");
                 $total = count($sub_patterns);
                 for ($i = 0; $i < $total; $i++) {

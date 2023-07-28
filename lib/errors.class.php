@@ -107,40 +107,51 @@ function majordomoExceptionHandler($e)
     } else {
         $url = 'commandline';
     }
-    majordomoSaveError($url . "\nPHP exception: " . $e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine() . "\nBacktrace: " . $e->getTraceAsString(), 'exceptions');
+    $message = $url . "\nPHP exception: " . $e->getMessage() . "\nBacktrace: " . $e->getTraceAsString();
+    DebMes($message,'php_exceptions');
+    majordomoSaveError($message, 'exceptions');
     return true;
 }
 
-function majordomoErrorHandler($errno, $errmsg, $filename, $linenum, $errcontext = 0)
+function majordomoErrorHandler($errno, $errmsg, $filename, $linenum)
 {
+    if (in_array($errno, array(E_NOTICE, E_DEPRECATED))) return;
+
     if (isset($_SERVER['REQUEST_URI'])) {
         $url = $_SERVER['REQUEST_URI'];
     } else {
         $url = 'commandline';
     }
-    majordomoSaveError($url . "\nPHP error in $filename (line $linenum): " . $errmsg, 'errors', $filename);
+
+    $message = $url . "\nPHP error level $errno in $filename (line $linenum): " . $errmsg;
+    if ($errno == E_WARNING) {
+        //DebMes($message, 'php_warning');
+    } else {
+        DebMes($message, 'php_error');
+    }
+    majordomoSaveError($message, 'errors', $filename);
 }
 
 function phpShutDownFunction()
 {
     $error = error_get_last();
-    $e = new \Exception;
-    $backtrace = $e->getTraceAsString();
     if (!is_array($error)) {
         return;
     }
-
+    $e = new \Exception;
+    $backtrace = $e->getTraceAsString();
     if (isset($_SERVER['REQUEST_URI'])) {
         $url = $_SERVER['REQUEST_URI'];
     } else {
         $url = 'commandline';
     }
     if ($error['type'] === E_ERROR) {
-        majordomoSaveError($url . "\nPHP error: " . $error['message'] . "\nBacktrace: " . $backtrace, 'errors');
+        $message = $url . "\nPHP error: " . $error['message'] . "\nBacktrace: " . $backtrace;
+        DebMes($message, 'php_errors');
+        majordomoSaveError($message, 'errors');
         $err = new custom_error(nl2br($error['message']));
     } elseif ($error['type'] === E_WARNING) {
         majordomoSaveError($url . "\nPHP warning: " . $error['message'] . "\nBacktrace: " . $backtrace, 'warnings');
-        //dprint($error, false);
     }
 }
 
