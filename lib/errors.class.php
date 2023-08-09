@@ -107,7 +107,7 @@ function majordomoExceptionHandler($e)
     } else {
         $url = 'commandline';
     }
-    $message = $url . "\nPHP exception: " . $e->getMessage() . "\nBacktrace: " . $e->getTraceAsString();
+    $message = $url . "\nPHP exception: " . $e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine() . "\nBacktrace: " . $e->getTraceAsString();
     DebMes($message,'php_exceptions');
     majordomoSaveError($message, 'exceptions');
     return true;
