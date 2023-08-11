@@ -21,7 +21,6 @@ function python_run_code($code, $params = '', $object = '') {
         }
         $filePath = DOC_ROOT . '/cms/python/' . $fileName;
         $cmd = $python_path." ".$filePath.' \''.json_encode($params).'\' 2>&1';
-
         if (file_exists($filePath)) {
             $currentMd5=md5(LoadFile($filePath));
         } else {

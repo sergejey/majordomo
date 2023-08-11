@@ -338,13 +338,14 @@ function addLinkedProperty($object, $property, $module)
     }
 }
 
-/**
- * Summary of removeLinkedProperty
- * @param mixed $object Object
- * @param mixed $property Property
- * @param mixed $module Module
- * @return int
- */
+function removeLinkedPropertyIfNotUsed($table_name, $object, $property, $module)
+{
+    $tmp = SQLSelectOne("SELECT ID FROM " . DBSafe($table_name) . " WHERE LINKED_OBJECT='" . DBSafe($object) . "' AND LINKED_PROPERTY='" . DBSafe($property) . "'");
+    if (!isset($tmp['ID'])) {
+        removeLinkedProperty($object, $property, $module);
+    }
+}
+
 function removeLinkedProperty($object, $property, $module)
 {
     $sqlQuery = "SELECT *
@@ -353,27 +354,21 @@ function removeLinkedProperty($object, $property, $module)
 
     $value = SQLSelectOne($sqlQuery);
 
-    if ($value['ID']) {
+    if (isset($value['ID'])) {
         if (!$value['LINKED_MODULES']) {
             $tmp = array();
         } else {
             $tmp = explode(',', $value['LINKED_MODULES']);
         }
-
         if (in_array($module, $tmp)) {
             $total = count($tmp);
             $res = array();
-
             for ($i = 0; $i < $total; $i++) {
                 if ($tmp[$i] != $module) {
                     $res[] = $tmp[$i];
                 }
             }
-
-            $tmp = $res;
-
-            $value['LINKED_MODULES'] = implode(',', $tmp);
-
+            $value['LINKED_MODULES'] = implode(',', $res);
             SQLUpdate('pvalues', $value);
         }
     } else {
@@ -410,14 +405,14 @@ function getObject($name)
         //$rec = SQLSelectOne("SELECT objects.* FROM objects WHERE TITLE = '".DBSafe($name)."'");
     }
 
-    if (!$rec['ID']) {
+    if (!isset($rec['ID'])) {
         $sqlQuery = "SELECT objects.*
                      FROM objects
                     WHERE TITLE = '" . DBSafe($name) . "'";
         $rec = SQLSelectOne($sqlQuery);
     }
 
-    if ($rec['ID']) {
+    if (isset($rec['ID'])) {
         include_once(DIR_MODULES . 'objects/objects.class.php');
         $obj = new objects();
         $obj->id = $rec['ID'];
@@ -538,6 +533,10 @@ function getClassProperties($class_id, $def = '')
     if (isset($cached_class_properties[$class_id])) return $cached_class_properties[$class_id];
 
     $class = SQLSelectOne("SELECT ID, PARENT_ID FROM classes WHERE (ID='" . (int)$class_id . "' OR TITLE = '" . DBSafe($class_id) . "')");
+    if (!isset($class['ID'])) {
+        return array();
+    }
+
     $properties = SQLSelect("SELECT properties.*, classes.TITLE AS CLASS_TITLE FROM properties LEFT JOIN classes ON properties.CLASS_ID=classes.ID WHERE CLASS_ID='" . $class['ID'] . "' AND OBJECT_ID=0");
     $res = $properties;
     if (!is_array($def)) {
@@ -552,9 +551,9 @@ function getClassProperties($class_id, $def = '')
             $def[] = $p['TITLE'];
         }
     }
-    if ($class['PARENT_ID']) {
+    if (isset($class['PARENT_ID'])) {
         $p_res = getClassProperties($class['PARENT_ID'], $def);
-        if ($p_res[0]['ID']) {
+        if (isset($p_res[0]['ID'])) {
             foreach ($p_res as $k => $p) {
                 if (!in_array($p['TITLE'], $def)) {
                     $res[] = $p;
@@ -928,6 +927,53 @@ function getHistoryValue($varname, $time, $nerest = false)
     }
 }
 
+
+function cleanUpValueHistory($value_id, $max_age_days, $data_type = 0)
+{
+    $total_removed = 0;
+
+    if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+        $table_name = 'phistory_value_' . $value_id;
+    } else {
+        $table_name = 'phistory';
+    }
+
+    $start_tm = date('Y-m-d H:i:s', (time() - $max_age_days * 24 * 60 * 60));
+    $qry = "VALUE_ID='" . $value_id . "' AND ADDED<('" . $start_tm . "')";
+
+    if ($data_type == 5) {
+        $values = SQLSelect("SELECT * FROM $table_name WHERE $qry");
+        $totalv = count($values);
+        for ($iv = 0; $iv < $totalv; $iv++) {
+            $file_path = ROOT . 'cms/images/' . $values[$iv]['VALUE'];
+            if ($values[$iv]['VALUE'] != '' && file_exists($file_path)) {
+                unlink($file_path);
+            }
+        }
+    }
+
+    $tmp = SQLSelectOne("SELECT COUNT(*) as TOTAL FROM $table_name WHERE $qry");
+    if (isset($tmp['TOTAL']) && $tmp['TOTAL'] > 0) {
+        $total_removed = (int)$tmp['TOTAL'];
+        SQLExec("DELETE FROM $table_name WHERE $qry");
+    }
+    return $total_removed;
+}
+
+function cleanUpPropertyHistory($property_id, $max_age_days)
+{
+    $total_removed = 0;
+    $property = SQLSelectOne("SELECT * FROM properties WHERE ID=" . (int)$property_id);
+    if (isset($property['ID'])) {
+        $pvalues = SQLSelect("SELECT * FROM pvalues WHERE PROPERTY_ID='" . $property_id . "'");
+        $total = count($pvalues);
+        for ($i = 0; $i < $total; $i++) {
+            $total_removed += cleanUpValueHistory($pvalues[$i]['ID'], $max_age_days, $property['DATA_TYPE']);
+        }
+    }
+    return $total_removed;
+}
+
 /**
  * Summary of setGlobal
  * @param mixed $varname Variable name
@@ -1160,10 +1206,8 @@ function processTitle($title, $object = 0)
     //startMeasure('processTitle ['.$in_title.']');
 
     if ($in_title != '') {
-        if (isset($_SERVER['REQUEST_METHOD'])) {
-            if ($title_memory_cache[$key]) {
-                return $title_memory_cache[$key];
-            }
+        if (isset($_SERVER['REQUEST_METHOD']) && isset($title_memory_cache[$key])) {
+            return $title_memory_cache[$key];
         }
 
         if (preg_match('/\[#.+?#\]/is', $title)) {
@@ -1231,7 +1275,9 @@ function processTitle($title, $object = 0)
                             $data = '0';
                         }
                     }
-                    $title = str_replace($m[0][$i], $hsh[$data], $title);
+                    if (isset($hsh[$data])) {
+                        $title = str_replace($m[0][$i], $hsh[$data], $title);
+                    }
                 }
 
                 endMeasure('processTitlePropertiesReplace');
@@ -1355,7 +1401,7 @@ function getRoomObjectByLocation($location_id, $auto_add = 0)
         $location_title = 'Room' . $location_id;
     }
     $room_object = SQLSelectOne("SELECT * FROM objects WHERE TITLE = '" . DBSafe($location_title) . "'");
-    if ($room_object['ID']) return $room_object['TITLE'];
+    if (isset($room_object['ID'])) return $room_object['TITLE'];
 
     $class_id = addClass("Rooms");
     $room_object = SQLSelectOne("SELECT * FROM objects WHERE LOCATION_ID=" . $location_id . " AND CLASS_ID=" . $class_id);
@@ -1436,7 +1482,7 @@ function objectClassChanged($object_id)
 function checkOperationsQueue($topic)
 {
     $data = SQLSelect("SELECT * FROM operations_queue WHERE TOPIC='" . DBSafe($topic) . "' ORDER BY EXPIRE");
-    if ($data[0]['TOPIC']) {
+    if (isset($data[0]['TOPIC'])) {
         SQLExec("DELETE FROM operations_queue WHERE TOPIC='" . DBSafe($topic) . "'");
     }
     return $data;
@@ -1447,7 +1493,7 @@ function addToOperationsQueue($topic, $dataname, $datavalue = '', $uniq = false,
     $rec = array();
     $rec['TOPIC'] = $topic;
     $rec['DATANAME'] = $dataname;
-    if (strlen($datavalue) < 255) {
+    if (strlen($datavalue) < 1024) {
         $rec['DATAVALUE'] = $datavalue;
     }
     $rec['EXPIRE'] = date('Y-m-d H:i:s', time() + $ttl);

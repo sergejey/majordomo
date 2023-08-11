@@ -3,11 +3,12 @@
 <p><#LANG_DEVICES_LINKS_ADDED#>:<p>
 <table class="table">
     [#begin LINKS#]
-    <tr>
+    <tr[#if IS_ACTIVE!="1"#] style="background-color:lightgrey"[#endif#]>
         <td>
             <b><a href="?view_mode=<#VIEW_MODE#>&id=[#DEVICE1_ID#]&tab=<#TAB#>">[#DEVICE1_TITLE#]</a></b>
             &rarr;
             <b><a href="?view_mode=<#VIEW_MODE#>&id=[#DEVICE2_ID#]&tab=<#TAB#>">[#TITLE#]</a></b>
+            [#if IS_ACTIVE!="1"#](disabled)[#endif#]
         </td>
         <td>
             [#if COMMENT!=""#][#COMMENT#]<br/>[#endif#]
@@ -172,6 +173,16 @@
             </label>
             <div class="col-md-8">
                 <input type="text" value="[#COMMENT#]" name="comment" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label">
+                <#LANG_DEVICES_STATUS#>:
+            </label>
+            <div class="col-md-8">
+                <input type="checkbox" name="is_active" value="1" [#if IS_ACTIVE="1"#] checked[#endif#]>
+                <#LANG_DEVICES_IS_ON#>
             </div>
         </div>
 

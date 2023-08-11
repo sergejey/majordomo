@@ -11,15 +11,15 @@
 </script>
 {foreach $SUB_MODULES as $item}
 
-    {if $item.NEW_CATEGORY}
+    {if isset($item.NEW_CATEGORY)}
         <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
            aria-expanded="false">{$item.CATEGORY} <b class="caret"></b></a>
         <ul class="dropdown-menu">
     {/if}
 
-    {if !$item.DENIED}
-        {if $item.LINKS}
+    {if !isset($item.DENIED)}
+        {if isset($item.LINKS)}
             <li class="[#if SELECTED#]active[#endif#] category{$item.CATEGORY_ID} menu-item dropdown dropdown-submenu"
                 id="module_{$item.NAME}_link"><a href='{$smarty.const.ROOTHTML}admin.php?action={$item.NAME}'
                                                  class="top-menu dropdown-toggle"><img src="{$item.ICON_SM}" width="24"
@@ -27,7 +27,7 @@
                 </a>
                 <ul class="dropdown-menu">
                     {foreach $item.LINKS as $link}
-                        {if $link.DIVIDER==1}
+                        {if isset($link.DIVIDER)}
                             <li class="divider" role="separator"></li>
                         {else}
                             <li class="menu-item"><a href="{$link.LINK}">{$link.TITLE}</a></li>
@@ -53,7 +53,7 @@
         {/if}
     {/if}
 
-    {if $item.LAST_IN_CATEGORY}
+    {if isset($item.LAST_IN_CATEGORY)}
         </ul>
         </li>
     {/if}

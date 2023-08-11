@@ -253,7 +253,6 @@ class patterns extends module
     function checkAllPatterns($from_user_id = 0, $details = 0)
     {
         $current_context = context_getcurrent($from_user_id);
-        //DebMes("current context:".$current_context);
         if ($from_user_id && preg_match('/^ext(\d+)/', $current_context, $m)) {
             $res = $this->checkExtPatterns($m[1], $from_user_id);
         } else {
@@ -278,7 +277,7 @@ class patterns extends module
             $total = count($patterns);
             $res = 0;
             for ($i = 0; $i < $total; $i++) {
-                $res = $this->checkPattern($patterns[$i]['ID'], $from_user_id);
+                $res = $this->checkPattern($patterns[$i]['ID'], $from_user_id, $details);
             }
             if (!$res && $from_user_id) {
                 $res = $this->checkExtPatterns(0);
@@ -335,9 +334,7 @@ class patterns extends module
             $fields = array(
                 'data' => urlencode(serialize($data))
             );
-            //DebMes("Sending data: ".serialize($data));
 
-            //url-ify the data for the POST
             foreach ($fields as $key => $value) {
                 $fields_string .= $key . '=' . $value . '&';
             }
@@ -764,6 +761,7 @@ class patterns extends module
             }
 
             $rec['LOG'] = date('Y-m-d H:i:s') . ' Pattern matched' . "\n" . $rec['LOG'];
+
             if (strlen($rec['LOG']) > 65000) {
                 $rec['LOG'] = substr($rec['LOG'], 0, 65000);
             }
@@ -774,7 +772,7 @@ class patterns extends module
 
             $sub_patterns_matched = 0;
 
-            if ($rec['IS_CONTEXT']) {
+            if ($rec['IS_CONTEXT'] && !$rec['IS_LAST']) {
                 $sub_patterns = SQLSelect("SELECT ID, IS_LAST FROM patterns WHERE PARENT_ID='" . $rec['ID'] . "' ORDER BY PRIORITY DESC, TITLE");
                 $total = count($sub_patterns);
                 for ($i = 0; $i < $total; $i++) {

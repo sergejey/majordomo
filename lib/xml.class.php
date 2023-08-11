@@ -7,38 +7,36 @@
 /**
  * Summary of GetChildren
  * @param mixed $vals Val
- * @param mixed $i    Iterator
+ * @param mixed $i Iterator
  * @return array
  */
 function GetChildren($vals, &$i)
 {
-   $children = array();
- 
-   while (++$i < sizeof($vals))
-   {
-      // compair type
-      switch ($vals[$i]['type'])
-      {
-         case 'cdata':
-            $children[] = $vals[$i]['value'];
-            break;
-         case 'complete':
-            $children[] = array('tag'        => $vals[$i]['tag'],
-                                'attributes' => $vals[$i]['attributes'],
-                                'value'      => $vals[$i]['value']
-                               );
-            break;
-         case 'open':
-            $children[] = array('tag'        => $vals[$i]['tag'],
-                                'attributes' => $vals[$i]['attributes'],
-                                'value'      => $vals[$i]['value'],
-                                'children'   => GetChildren($vals, $i)
-                               );
-            break;
-         case 'close':
-            return $children;
-      }
-   }
+    $children = array();
+
+    while (++$i < sizeof($vals)) {
+        // compair type
+        switch ($vals[$i]['type']) {
+            case 'cdata':
+                $children[] = $vals[$i]['value'];
+                break;
+            case 'complete':
+                $children[] = array('tag' => (isset($vals[$i]['tag']) ? $vals[$i]['tag'] : null),
+                    'attributes' => (isset($vals[$i]['attributes']) ? $vals[$i]['attributes'] : null),
+                    'value' => (isset($vals[$i]['value']) ? $vals[$i]['value'] : null)
+                );
+                break;
+            case 'open':
+                $children[] = array('tag' => (isset($vals[$i]['tag']) ? $vals[$i]['tag'] : null),
+                    'attributes' => (isset($vals[$i]['attributes']) ? $vals[$i]['attributes'] : null),
+                    'value' => (isset($vals[$i]['value']) ? $vals[$i]['value'] : null),
+                    'children' => GetChildren($vals, $i)
+                );
+                break;
+            case 'close':
+                return $children;
+        }
+    }
 }
 
 /**
@@ -48,27 +46,29 @@ function GetChildren($vals, &$i)
  */
 function GetXMLTree($data)
 {
-   // $data = implode('', file($file));
-   // by: waldo@wh-e.com - trim space around tags not within
-   //$data = eregi_replace(">"."[[:space:]]+"."<","><",$data);
-   $data = preg_replace('/>\s+</', '><', $data);
-   
-   // XML functions
-   $p = xml_parser_create();
- 
-   // by: anony@mous.com - meets XML 1.0 specification
-   xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
-   xml_parse_into_struct($p, $data, $vals, $index);
-   xml_parser_free($p);
- 
-   $i      = 0;
-   $tree   = array();
-   $tree[] = array('tag'        => $vals[$i]['tag'],
-                   'attributes' => $vals[$i]['attributes'],
-                   'value'      => $vals[$i]['value'],
-                   'children'   => GetChildren($vals, $i)
-                  );
-   return $tree;
+    // $data = implode('', file($file));
+    // by: waldo@wh-e.com - trim space around tags not within
+    //$data = eregi_replace(">"."[[:space:]]+"."<","><",$data);
+    if (!function_exists('xml_parser_create')) return false;
+
+    $data = preg_replace('/>\s+</', '><', $data);
+
+    // XML functions
+    $p = xml_parser_create();
+
+    // by: anony@mous.com - meets XML 1.0 specification
+    xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
+    xml_parse_into_struct($p, $data, $vals, $index);
+    xml_parser_free($p);
+
+    $i = 0;
+    $tree = array();
+    $tree[] = array('tag' => isset($vals[$i]['tag']) ? $vals[$i]['tag'] : '',
+        'attributes' => isset($vals[$i]['attributes']) ? $vals[$i]['attributes'] : '',
+        'value' => isset($vals[$i]['value']) ? $vals[$i]['value'] : '',
+        'children' => GetChildren($vals, $i)
+    );
+    return $tree;
 }
 
 /**
@@ -78,59 +78,48 @@ function GetXMLTree($data)
  */
 function XMLTreeToArray($data)
 {
-   $res   = array();
-   $total = count($data);
+    $res = array();
+    $total = count($data);
 
-   for ($i = 0; $i < $total; $i++)
-   {
-      if (!isset($res[$data[$i]['tag']]))
-      {
-         $res[$data[$i]['tag']] = array();
-         
-         $elem = &$res[$data[$i]['tag']];
-      }
-      elseif (!is_array($res[$data[$i]['tag']][0]))
-      {
-         $tmp = $res[$data[$i]['tag']];
-         
-         $res[$data[$i]['tag']]    = array();
-         $res[$data[$i]['tag']][0] = $tmp;
-         $res[$data[$i]['tag']][]  = array();
-         
-         $elem = &$res[$data[$i]['tag']][count($res[$data[$i]['tag']]) - 1];
-      }
-      else
-      {
-         $elem = array();
-         
-         $res[$data[$i]['tag']][] = &$elem;
-      }
-  
-      if (is_array($data[$i]['attributes']))
-      {
-         foreach ($data[$i]['attributes'] as $k => $v)
-         {
-            $elem[$k] = $v;
-         }
-      }
-  
-      if ($data[$i]['value'])
-      {
-         $elem['textvalue'] = $data[$i]['value'];
-      }
-  
-      if (is_array($data[$i]['children']))
-      {
-         $children = XMLTreeToArray($data[$i]['children']);
-         
-         foreach ($children as $k => $v)
-         {
-            $elem[$k] = $v;
-         }
-      }
-  
-      unset($elem);
-   }
- 
-   return $res;
+    for ($i = 0; $i < $total; $i++) {
+        if (!isset($res[$data[$i]['tag']])) {
+            $res[$data[$i]['tag']] = array();
+
+            $elem = &$res[$data[$i]['tag']];
+        } elseif (!isset($res[$data[$i]['tag']][0])) {
+            $tmp = $res[$data[$i]['tag']];
+
+            $res[$data[$i]['tag']] = array();
+            $res[$data[$i]['tag']][0] = $tmp;
+            $res[$data[$i]['tag']][] = array();
+
+            $elem = &$res[$data[$i]['tag']][count($res[$data[$i]['tag']]) - 1];
+        } else {
+            $elem = array();
+
+            $res[$data[$i]['tag']][] = &$elem;
+        }
+
+        if (is_array($data[$i]['attributes'])) {
+            foreach ($data[$i]['attributes'] as $k => $v) {
+                $elem[$k] = $v;
+            }
+        }
+
+        if ($data[$i]['value']) {
+            $elem['textvalue'] = $data[$i]['value'];
+        }
+
+        if (isset($data[$i]['children']) && is_array($data[$i]['children'])) {
+            $children = XMLTreeToArray($data[$i]['children']);
+
+            foreach ($children as $k => $v) {
+                $elem[$k] = $v;
+            }
+        }
+
+        unset($elem);
+    }
+
+    return $res;
 }

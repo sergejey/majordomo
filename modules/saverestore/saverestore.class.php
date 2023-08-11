@@ -199,10 +199,14 @@ class saverestore extends module
         $github_feed = getURL($github_feed_url, 30 * 60);
 
         if ($github_feed != '') {
-            @$tmp = GetXMLTree($github_feed);
-            @$data = XMLTreeToArray($tmp);
-            @$items = $data['feed']['entry'];
-			
+            $tmp = GetXMLTree($github_feed);
+            if (is_array($tmp)) {
+                $data = XMLTreeToArray($tmp);
+                $items = $data['feed']['entry'];
+            } else {
+                $items = false;
+            }
+
             if (is_array($items)) {
                 $total = count($items);
                 if ($total) {
@@ -223,7 +227,14 @@ class saverestore extends module
                         $itm['LINK'] = $value['link']['href'];
                         $itm['UPDATED'] = strtotime($value['updated']['textvalue']);
                         $itm['UPDATE_TEXT'] = date('d.m.Y H:i', $itm['UPDATED']);
-                        $itm['DESC_UPDATE'] = strip_tags(preg_split('/\\r\\n?|\\n/', $value['content']['textvalue'])[3]);
+                        $itm['DESC_UPDATE'] = '';
+                        if (isset($value['content']['textvalue'])) {
+                            $content = preg_split('/\\r\\n?|\\n/', $value['content']['textvalue']);
+                            if (isset($content[3])) {
+                                $itm['DESC_UPDATE'] = strip_tags($content[3]);
+                            }
+                        }
+
 						$itm['MYVERSION'] = ($itm['ID'] == $this->config['LATEST_UPDATED_ID']) ? 1 : 0;
                         $out['UPDATES'][] = $itm;
 						$iteration++;
@@ -247,7 +258,7 @@ class saverestore extends module
                         $out['NO_NEED_TO_UPDATE'] = 1;
                     }
                     if ($this->ajax && $_GET['op'] == 'check_updates') {
-                        if (!$out['NO_NEED_TO_UPDATE']) {
+                        if (!isset($out['NO_NEED_TO_UPDATE'])) {
 							echo json_encode(array('needUpdate' => '1', 'currBranch' => $out['LATEST_CURR_BRANCH'], 'current_version' => $this->config['LATEST_UPDATED_ID']));
                         } else {
                            echo json_encode(array('needUpdate' => '0', 'currBranch' => $out['LATEST_CURR_BRANCH'], 'current_version' => $this->config['LATEST_UPDATED_ID']));
@@ -1720,9 +1731,13 @@ class saverestore extends module
         $github_feed = getURL($github_feed_url, 30 * 60);
 
         if ($github_feed != '') {
-            @$tmp = GetXMLTree($github_feed);
-            @$data = XMLTreeToArray($tmp);
-            @$items = $data['feed']['entry'];
+            $tmp = GetXMLTree($github_feed);
+            if (is_array($tmp)) {
+                $data = XMLTreeToArray($tmp);
+                $items = $data['feed']['entry'];
+            } else {
+                $items = false;
+            }
             if (is_array($items)) {
                 $latest_id = preg_replace('/.+Commit\//is', '', trim($items[0]['id']['textvalue']));
                 $latest_tm = strtotime($items[0]['updated']['textvalue']);

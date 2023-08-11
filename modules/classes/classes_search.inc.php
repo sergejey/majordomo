@@ -20,7 +20,7 @@
   // FIELDS ORDER
   global $sortby;
   if (!$sortby) {
-   $sortby=$session->data['classes_sort'];
+   $sortby=isset($session->data['classes_sort'])?$session->data['classes_sort']:'';
   } else {
    if ($session->data['classes_sort']==$sortby) {
     if (Is_Integer(strpos($sortby, ' DESC'))) {
@@ -46,7 +46,7 @@
    for($i=0;$i<$total;$i++) {
     // some action for every record if required
     $objects=SQLSelect("SELECT ID, TITLE, CLASS_ID, DESCRIPTION FROM objects WHERE CLASS_ID='".$res[$i]['ID']."' ORDER BY objects.TITLE");
-    if ($objects[0]['ID']) {
+    if (isset($objects[0]['ID'])) {
      $total_o=count($objects);
      for($o=0;$o<$total_o;$o++) {
       $objects[$o]['KEY_DATA']=getKeyData($objects[$o]['ID']);
@@ -61,12 +61,12 @@
       }
 
       $parent_methods_titles=array();
-      if ($parent_methods[0]['ID']) {
+      if (isset($parent_methods[0]['ID'])) {
        foreach($parent_methods as $k=>$v) {
         $parent_methods_titles[$v['TITLE']]=$v['ID'];
        }
       }
-      if ($methods[0]['ID']) {
+      if (isset($methods[0]['ID'])) {
        $total_m=count($methods);
        for($im=0;$im<$total_m;$im++) {
         if ($parent_methods_titles[$methods[$im]['TITLE']]) {

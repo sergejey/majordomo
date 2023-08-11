@@ -267,7 +267,7 @@ class mysql
      */
     public function Update($table, $data, $ndx = "ID")
     {
-        if (is_array($ndx)) $ndx='ID';
+        if (is_array($ndx)) $ndx = 'ID';
         $qry = "UPDATE `$table` SET ";
         $qry_fields = array();
         foreach ($data as $field => $value) {
@@ -283,8 +283,8 @@ class mysql
             $data[$ndx] = '';
         }
         $qry .= " WHERE $ndx = '" . $data[$ndx] . "'";
-        if ($_GET['debug_qry']) {
-            dprint($qry,false);
+        if (gr('debug_qry')) {
+            dprint($qry, false);
         }
         if (!$this->Exec($qry)) {
             $this->Error($qry);
@@ -351,8 +351,10 @@ class mysql
             echo "Database is not connected!";
             exit;
         }
-        $str = mysqli_real_escape_string($this->dbh, $str);
-        $str = str_replace("%", "\%", $str);
+        if ($str != '') {
+            $str = mysqli_real_escape_string($this->dbh, $str);
+            $str = str_replace("%", "\%", $str);
+        }
         return $str;
     }
 

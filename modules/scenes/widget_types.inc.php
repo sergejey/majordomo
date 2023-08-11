@@ -34,9 +34,9 @@ $this->widget_types = array(
                 'DEFAULT_VALUE' => 'left',
                 '_CONFIG_TYPE' => 'select',
                 '_CONFIG_OPTIONS' => array(
-                    array('VALUE' => 'left', 'TITLE'=>LANG_WIDGET_TEXT_ALIGNMENT_LEFT),
-                    array('VALUE' => 'center', 'TITLE'=>LANG_WIDGET_TEXT_ALIGNMENT_CENTER),
-                    array('VALUE' => 'right', 'TITLE'=>LANG_WIDGET_TEXT_ALIGNMENT_RIGHT)
+                    array('VALUE' => 'left', 'TITLE' => LANG_WIDGET_TEXT_ALIGNMENT_LEFT),
+                    array('VALUE' => 'center', 'TITLE' => LANG_WIDGET_TEXT_ALIGNMENT_CENTER),
+                    array('VALUE' => 'right', 'TITLE' => LANG_WIDGET_TEXT_ALIGNMENT_RIGHT)
                 )
             ),
             'text_color' => array('DESCRIPTION' => LANG_WIDGET_TEXT_BLOCK_COLOR,
@@ -85,16 +85,34 @@ $this->widget_types = array(
         'TEMPLATE' => 'file:image_block.html'
     ),
     'device_scaled' => array(
-        'TITLE' => LANG_DEVICE.' (scaled)',
+        'TITLE' => LANG_DEVICE . ' (scaled)',
         'DESCRIPTION' => LANG_DEVICE,
         'PROPERTIES' => array(
-            'device_id'=>array(
-                'DESCRIPTION'=>LANG_DEVICE,
-                '_CONFIG_TYPE'=>'select',
-                '_CONFIG_OPTIONS'=>function () {
+            'device_id' => array(
+                'DESCRIPTION' => LANG_DEVICE,
+                '_CONFIG_TYPE' => 'select',
+                '_CONFIG_OPTIONS' => function () {
                     $options = SQLSelect("SELECT ID as VALUE, TITLE FROM devices ORDER BY TITLE");
                     return $options;
                 }),
+            'view' => array(
+                'DESCRIPTION' => LANG_CLASS_TEMPLATE,
+                '_CONFIG_TYPE' => 'select',
+                '_CONFIG_OPTIONS' => function () {
+                    $options = array(
+                        array('VALUE'=>'','TITLE'=>LANG_DEFAULT),
+                        array('VALUE'=>'mini','TITLE'=>'Mini')
+                    );
+                    return $options;
+                }
+            ),
+            'viewbox_width' => array('FUNCTION' => function ($data) {
+                if ($data['view']=='mini') {
+                    return 60;
+                } else {
+                    return 260;
+                }
+            }),
             'widget_background' => array('DESCRIPTION' => LANG_WIDGET_TEXT_BLOCK_BACKGROUND_COLOR,
                 'DEFAULT_VALUE' => '#000000', '_CONFIG_TYPE' => 'color'),
             'background_opacity' => array('DESCRIPTION' => LANG_WIDGET_TEXT_BLOCK_BACKGROUND_OPACITY,
@@ -118,7 +136,7 @@ $this->widget_types = array(
                 list($r, $g, $b) = sscanf($data['widget_background'], "#%02x%02x%02x");
                 return "$r, $g, $b, " . $data['background_opacity'];
             })
-            ),
+        ),
         'RESIZABLE' => true,
         'DEFAULT_WIDTH' => 260,
         'DEFAULT_HEIGHT' => 60,

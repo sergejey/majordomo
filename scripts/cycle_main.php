@@ -41,7 +41,7 @@ if ($timerClass['SUB_LIST'] != '') {
 
 $old_minute = date('i');
 $old_hour = date('h');
-if ($_GET['onetime']) {
+if (isset($_GET['onetime'])) {
     $old_minute = -1;
     if (date('i') == '00') {
         $old_hour = -1;
@@ -58,7 +58,15 @@ while (1) {
     if (time() - $checked_time > 5) {
         $checked_time = time();
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-//       saveToCache("MJD:$cycleVarName", $checked_time);
+
+    }
+
+    $m = date('i');
+    $h = date('h');
+    $dt = date('Y-m-d');
+
+    #NewMinute
+    if ($m != $old_minute) {
 
         $timestamp = time() - getGlobal('ThisComputer.started_time');
         setGlobal('ThisComputer.uptime', $timestamp);
@@ -82,14 +90,6 @@ while (1) {
         }
         setGlobal('ThisComputer.uptimeText', trim($timestring));
 
-    }
-
-    $m = date('i');
-    $h = date('h');
-    $dt = date('Y-m-d');
-
-    #NewMinute
-    if ($m != $old_minute) {
         processSubscriptionsSafe('MINUTELY');
         $sqlQuery = "SELECT ID, TITLE
                      FROM objects

@@ -99,7 +99,7 @@ foreach($requests as $key => $value)
    }
 }
 
-if (preg_match('/^moved:(.+)/is', $link, $matches))
+if (isset($link) && preg_match('/^moved:(.+)/is', $link, $matches))
 {
    Header("HTTP/1.1 301 Moved Permanently");
    header("Location:" . $matches[1]);
@@ -114,7 +114,7 @@ startMeasure('loader');
 include_once("./lib/loader.php");
 endMeasure('loader');
 
-if ($link != '')
+if (isset($link))
 {
    $mdl       = new module();
    $param_str = $mdl->parseLinks("<a href=\"$link\">");

@@ -1396,6 +1396,7 @@ $dictionary = array(
     'FAVORITE_DEVICE' => 'В списке быстрого доступа',
     'SYSTEM_DEVICE' => 'Системное устройство',
 	'ARCHIVED_DEVICE' => 'Архивное утройство',
+    'INACTIVE_DEVICE' => 'Неактивное устройство',
 
     'ROOMS' => 'Комнаты',
     'APPEARANCE' => 'Внешний вид',

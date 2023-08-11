@@ -10,6 +10,9 @@
 //
 class devices extends module
 {
+    var $view;
+    var $id;
+
     /**
      * devices
      *
@@ -146,13 +149,13 @@ class devices extends module
             $out['PREFIX'] = $this->prefix;
         }
 
-        if ($this->add_title) {
+        if (isset($this->add_title)) {
             $out['ADD_TITLE'] = urlencode($this->add_title);
         }
 
         if ($this->linked_object) {
             $device_rec = SQLSelectOne("SELECT ID,TITLE FROM devices WHERE LINKED_OBJECT LIKE '" . DBSafe($this->linked_object) . "'");
-            if ($device_rec['TITLE']) {
+            if (isset($device_rec['TITLE'])) {
                 $out['TITLE'] = $device_rec['TITLE'];
                 if ($this->preview) {
                     $data = $this->processDevice($device_rec['ID']);
@@ -217,7 +220,7 @@ class devices extends module
     function getAllProperties($type)
     {
         $properties = $this->device_types[$type]['PROPERTIES'];
-        $parent_class = $this->device_types[$type]['PARENT_CLASS'];
+        $parent_class = isset($this->device_types[$type]['PARENT_CLASS']) ? $this->device_types[$type]['PARENT_CLASS'] : '';
         if ($parent_class != '') {
             foreach ($this->device_types as $k => $v) {
                 if ($v['CLASS'] == $parent_class) {
@@ -236,7 +239,7 @@ class devices extends module
     function getAllMethods($type)
     {
         $methods = $this->device_types[$type]['METHODS'];
-        $parent_class = $this->device_types[$type]['PARENT_CLASS'];
+        $parent_class = isset($this->device_types[$type]['PARENT_CLASS']) ? $this->device_types[$type]['PARENT_CLASS'] : '';
         if ($parent_class != '') {
             foreach ($this->device_types as $k => $v) {
                 if ($v['CLASS'] == $parent_class) {
@@ -371,23 +374,23 @@ class devices extends module
             //$v['METHODS']
 
             //CLASS
-            if ($v['PARENT_CLASS']) {
+            if (isset($v['PARENT_CLASS'])) {
                 $class_id = addClass($v['CLASS'], $v['PARENT_CLASS']);
             } else {
                 $class_id = addClass($v['CLASS']);
             }
             if ($class_id) {
                 $class = SQLSelectOne("SELECT * FROM classes WHERE ID=" . $class_id);
-                if ($v['DESCRIPTION']) {
+                if (isset($v['DESCRIPTION'])) {
                     $class['DESCRIPTION'] = $v['DESCRIPTION'];
                     SQLUpdate('classes', $class);
                 }
             }
 
             //PROPERTIES
-            if (is_array($v['PROPERTIES'])) {
+            if (isset($v['PROPERTIES']) && is_array($v['PROPERTIES'])) {
                 foreach ($v['PROPERTIES'] as $pk => $pv) {
-                    $prop_id = addClassProperty($v['CLASS'], $pk, (int)$pv['KEEP_HISTORY']);
+                    $prop_id = addClassProperty($v['CLASS'], $pk, isset($pv['KEEP_HISTORY']) ? $pv['KEEP_HISTORY'] : 0);
                     if ($prop_id) {
                         $property = SQLSelectOne("SELECT * FROM properties WHERE ID=" . $prop_id);
                         if (is_array($pv)) {
@@ -403,7 +406,7 @@ class devices extends module
             }
 
             //METHODS
-            if (is_array($v['METHODS'])) {
+            if (isset($v['METHODS']) && is_array($v['METHODS'])) {
                 foreach ($v['METHODS'] as $mk => $mv) {
                     $method_id = addClassMethod($v['CLASS'], $mk, "require(DIR_MODULES.'devices/" . $v['CLASS'] . "_" . $mk . ".php');", 'SDevices');
                     if (!file_exists(dirname(__FILE__) . '/' . $v['CLASS'] . "_" . $mk . ".php")) {
@@ -423,7 +426,7 @@ class devices extends module
                 }
             }
 
-            if (is_array($v['INJECTS'])) {
+            if (isset($v['INJECTS']) && is_array($v['INJECTS'])) {
                 foreach ($v['INJECTS'] as $class_name => $methods) {
                     addClass($class_name);
                     foreach ($methods as $mk => $mv) {
@@ -485,7 +488,7 @@ class devices extends module
                 $diff2 = time() - $latestRun;
 
 
-                if ($diff < 0 || $diff >= 10 * 60 || $diff2<=10*60) {
+                if ($diff < 0 || $diff >= 10 * 60 || $diff2 <= 10 * 60) {
                     continue;
                 }
                 /*
@@ -502,8 +505,8 @@ class devices extends module
                 unset($rec['LINKED_OBJECT']);
                 $rec['LATEST_RUN'] = date('Y-m-d H:i:s');
                 SQLUpdate('devices_scheduler_points', $rec);
-                DebMes("Running point: " . $linked_object . '.' . $rec['LINKED_METHOD'].' ('.$rec['VALUE'].')', 'devices_schedule');
-                if ($rec['VALUE']!='') {
+                DebMes("Running point: " . $linked_object . '.' . $rec['LINKED_METHOD'] . ' (' . $rec['VALUE'] . ')', 'devices_schedule');
+                if ($rec['VALUE'] != '') {
                     callMethodSafe($linked_object . '.' . $rec['LINKED_METHOD'], array('value' => $rec['VALUE']));
                 } else {
                     callMethodSafe($linked_object . '.' . $rec['LINKED_METHOD']);
@@ -633,7 +636,7 @@ class devices extends module
     {
         //return true; // temporary
         $tmp = SQLSelectOne("SELECT ID FROM objects WHERE TITLE='HomeBridge'");
-        if ($tmp['ID']) {
+        if (isset($tmp['ID'])) {
             return true;
         } else {
             return false;
@@ -662,7 +665,7 @@ class devices extends module
     {
 
         $view = gr('view');
-        if ($view) $this->view=$view;
+        if ($view) $this->view = $view;
 
         if ($this->ajax) {
             header("HTTP/1.0: 200 OK\n");
@@ -690,7 +693,7 @@ class devices extends module
                 $res = array();
                 foreach ($tmp as $id) {
                     if (!$id) continue;
-                    $record = $this->processDevice($id,$view);
+                    $record = $this->processDevice($id, $view);
                     if (!$record['DEVICE_ID']) continue;
                     $res['devices'][] = $record;
                 }
@@ -737,9 +740,8 @@ class devices extends module
             }
         }
 
-        $out['UNIQ'] = uniqid('dev' . $this->id);
-
-        if ($this->id) {
+        if (isset($this->id)) {
+            $out['UNIQ'] = uniqid('dev' . $this->id);
             $qry .= " AND devices.ID=" . (int)$this->id;
             $out['SINGLE_DEVICE'] = 1;
             $out['VIEW'] = $this->view;
@@ -797,7 +799,7 @@ class devices extends module
                         $location_title = $devices[$i]['LOCATION_TITLE'];
                     }
                 } else {
-                    if ($devices[$i]['LOCATION_TITLE'] != $location_title && !$out['LOCATION_TITLE']) {
+                    if ($devices[$i]['LOCATION_TITLE'] != $location_title && !isset($out['LOCATION_TITLE'])) {
                         $devices[$i]['NEW_LOCATION'] = 1;
                         $location_title = $devices[$i]['LOCATION_TITLE'];
                     }
@@ -882,7 +884,7 @@ class devices extends module
                 $favorite_devices[] = $device;
             }
 
-            if ($recent_devices[0]['ID']) {
+            if (isset($recent_devices[0]['ID'])) {
                 $recent_devices[0]['NEW_SECTION'] = 1;
                 $recent_devices[0]['SECTION_TITLE'] = LANG_RECENTLY_USED;
                 foreach ($recent_devices as &$device) {
@@ -935,7 +937,7 @@ class devices extends module
 
         if (is_array($this->device_types)) {
             foreach ($this->device_types as $k => $v) {
-                if ($v['TITLE']) {
+                if (isset($v['TITLE'])) {
                     $type_rec = array('NAME' => $k, 'TITLE' => $v['TITLE']);
                     $tmp = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM devices WHERE SYSTEM_DEVICE=0 AND ARCHIVED=0 AND TYPE='" . $k . "'");
                     $type_rec['TOTAL'] = (int)$tmp['TOTAL'];
@@ -1473,8 +1475,12 @@ class devices extends module
     {
         parent::install();
 
-        @include_once(ROOT . 'languages/' . $this->name . '_' . SETTINGS_SITE_LANGUAGE . '.php');
-        @include_once(ROOT . 'languages/' . $this->name . '_default' . '.php');
+        if (file_exists(ROOT . 'languages/' . $this->name . '_' . SETTINGS_SITE_LANGUAGE . '.php')) {
+            include_once(ROOT . 'languages/' . $this->name . '_' . SETTINGS_SITE_LANGUAGE . '.php');
+        }
+        if (file_exists(ROOT . 'languages/' . $this->name . '_default' . '.php')) {
+            include_once(ROOT . 'languages/' . $this->name . '_default' . '.php');
+        }
 
         SQLExec("UPDATE project_modules SET TITLE='" . LANG_DEVICES_MODULE_TITLE . "' WHERE NAME='" . $this->name . "'");
 
@@ -1528,6 +1534,7 @@ class devices extends module
  devices: ROLES varchar(100) NOT NULL DEFAULT ''
 
  devices_linked: ID int(10) unsigned NOT NULL auto_increment
+ devices_linked: IS_ACTIVE int(3) unsigned NOT NULL DEFAULT 1 
  devices_linked: DEVICE1_ID int(10) unsigned NOT NULL DEFAULT 0
  devices_linked: DEVICE2_ID int(10) unsigned NOT NULL DEFAULT 0
  devices_linked: LINK_TYPE varchar(100) NOT NULL DEFAULT ''

@@ -265,10 +265,24 @@ if (!isset($request[0])) {
     $result['event_id']=registerEvent($event_name,$result['params']);
     $result['result'] = true;
 } elseif (strtolower($request[0]) == 'objects') {
+    $class_name = '';
     if (isset($request[1])) {
-        $objects=getObjectsByClass($request[1]);
+        $class_name = $request[1];
+        $objects=getObjectsByClass($class_name);
+        $properties = getClassProperties($class_name);
+        $total = count($objects);
+        for($i=0;$i<$total;$i++) {
+            $objects[$i]['object']=$objects[$i]['TITLE'];
+            $objects[$i]['id']=$objects[$i]['ID'];
+            unset($objects[$i]['TITLE']);
+            unset($objects[$i]['ID']);
+            foreach($properties as $property) {
+                $property_title = $property['TITLE'];
+                $objects[$i][$property_title]=getGlobal($objects[$i]['object'].'.'.$property_title);
+            }
+        }
     } else {
-        $objects=SQLSelect("SELECT ID, TITLE FROM objects ORDER BY TITLE");
+        $objects=SQLSelect("SELECT ID, TITLE, TITLE as OBJECT FROM objects ORDER BY TITLE");
     }
     $result['objects'] = $objects;
 } elseif (strtolower($request[0]) == 'data' && !isset($request[1]) && is_array($input['properties']) && $method=='POST') {
@@ -399,11 +413,15 @@ if (function_exists('endMeasure')) {
     endMeasure('TOTAL');
 }
 
-if ($_GET['performance']) {
+if (gr('performance')) {
     $result['performance']=PerformanceReport(1);
 }
 
-header("Content-type:application/json");
+if (!headers_sent()) {
+    header("Access-Control-Allow-Origin: *");
+    //header("Access-Control-Allow-Methods: \"GET, HEAD\"");
+    header("Content-type:application/json");
+}
 echo json_encode($result);
 
 function apiShutdown() {

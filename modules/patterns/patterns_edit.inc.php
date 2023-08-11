@@ -115,7 +115,7 @@ if ($this->mode == 'update') {
     }
 
 
-    $rec['PARENT_ID'] = gr('parent_id','int');
+    $rec['PARENT_ID'] = gr('parent_id', 'int');
 
     if ($rec['PATTERN_TYPE'] == 1) {
         $rec['PARENT_ID'] = 0;
@@ -145,7 +145,7 @@ if ($this->mode == 'update') {
 
 if (is_array($rec)) {
     foreach ($rec as $k => $v) {
-        if (!is_array($v)) {
+        if (!is_array($v) && $v) {
             $rec[$k] = htmlspecialchars($v);
         }
     }

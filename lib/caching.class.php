@@ -28,7 +28,7 @@ function checkCycleFromCache($key)
                 }
         }
         $rec = SQLSelectOne("SELECT * FROM cached_cycles WHERE TITLE = '" . DBSafe($key) . "'");
-    if ($rec['TITLE']) {
+    if (isset($rec['TITLE'])) {
         return $rec['VALUE'];
     } else {
         return false;

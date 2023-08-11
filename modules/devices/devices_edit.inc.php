@@ -14,7 +14,7 @@ if ($this->owner->print == 1) {
     $out['NO_NAV'] = 1;
 }
 
-if ($rec['LINKED_OBJECT'] != '') {
+if (isset($rec['LINKED_OBJECT']) && $rec['LINKED_OBJECT'] != '') {
     $object_rec = SQLSelectOne("SELECT ID FROM objects WHERE TITLE='" . $rec['LINKED_OBJECT'] . "'");
     if ($object_rec['ID']) {
         $properties = SQLSelect("SELECT pvalues.*, properties.TITLE as PROPERTY FROM pvalues LEFT JOIN properties ON properties.ID=pvalues.PROPERTY_ID WHERE pvalues.OBJECT_ID=" . $object_rec['ID'] . " AND pvalues.LINKED_MODULES!='' ORDER BY UPDATED DESC");
@@ -38,7 +38,7 @@ if ($rec['TYPE'] != '') {
     $methods = $this->getAllMethods($rec['TYPE']);
     if (is_array($methods)) {
         foreach ($methods as $k => $v) {
-            if ($v['_CONFIG_SHOW']) {
+            if (isset($v['_CONFIG_SHOW']) && $v['_CONFIG_SHOW']) {
                 $v['NAME'] = $k;
                 $show_methods[] = $v;
             }
@@ -65,28 +65,36 @@ if (gr('err_msg')) {
 
 if ($this->tab == 'logic') {
 
-    $method_name = gr('method');
-    if (!$method_name) {
-        $method_name = 'logicAction';
-    }
 
-    $out['METHOD'] = $method_name;
+    $method_name = gr('method');
 
     $object = getObject($rec['LINKED_OBJECT']);
-
 
     $methods = $object->getParentMethods($object->class_id, '', 1);
     $total = count($methods);
     for ($i = 0; $i < $total; $i++) {
-        if ($methods[$i]['TITLE'] == $out['METHOD']) {
-            $methods[$i]['SELECTED'] = 1;
-        }
         if ($methods[$i]['DESCRIPTION'] != '') {
             $methods[$i]['DESCRIPTION'] = $methods[$i]['TITLE'] . ' - ' . $methods[$i]['DESCRIPTION'];
         } else {
             $methods[$i]['DESCRIPTION'] = $methods[$i]['TITLE'];
         }
+        if (isset($object_rec['ID'])) {
+            $object_method = SQLSelectOne("SELECT * FROM methods WHERE TITLE='".$methods[$i]['TITLE']."' AND OBJECT_ID=".$object_rec['ID']." ORDER BY TITLE");
+            if (isset($object_method['ID'])) {
+                $methods[$i]['DESCRIPTION'].=' (*)';
+                if (!$method_name) {
+                    $method_name = $object_method['TITLE'];
+                }
+            }
+        }
+
     }
+
+    if (!$method_name) {
+        $method_name = 'logicAction';
+    }
+
+    $out['METHOD'] = $method_name;
     $out['METHODS'] = $methods;
 
     $method_id = $object->getMethodByName($method_name, $object->class_id, $object->id);
@@ -94,11 +102,7 @@ if ($this->tab == 'logic') {
     $method_rec = SQLSelectOne("SELECT * FROM methods WHERE ID=" . (int)$method_id);
 
     if ($method_rec['OBJECT_ID'] != $object->id) {
-        $method_rec = array();
-        $method_rec['OBJECT_ID'] = $object->id;
-        $method_rec['TITLE'] = $method_name;
-        $method_rec['CALL_PARENT'] = 1;
-        $method_rec['ID'] = SQLInsert('methods', $method_rec);
+        $method_rec['CODE'] = '';
     }
 
     if (defined('SETTINGS_CODEEDITOR_TURNONSETTINGS')) {
@@ -108,7 +112,16 @@ if ($this->tab == 'logic') {
     }
 
     if ($this->mode == 'update') {
-        global $code;
+
+        if ($method_rec['OBJECT_ID'] != $object->id) {
+            $method_rec = array();
+            $method_rec['OBJECT_ID'] = $object->id;
+            $method_rec['TITLE'] = $method_name;
+            $method_rec['CALL_PARENT'] = 1;
+            $method_rec['ID'] = SQLInsert('methods', $method_rec);
+        }
+
+        $code = gr('code');
 
         $old_code = $method_rec['CODE'];
         $method_rec['CODE'] = $code;
@@ -129,6 +142,11 @@ if ($this->tab == 'logic') {
                 $out['ERR_OLD_CODE'] = $old_code;
                 $ok = 0;
             }
+        } else {
+            if ($method_rec['ID']) {
+                SQLExec("DELETE FROM methods WHERE ID=".$method_rec['ID']);
+            }
+            $this->redirect("?id=".$rec['ID']."&view_mode=".$this->view_mode."&tab=".$this->tab."&method=".urlencode($method_rec['TITLE']));
         }
         if ($ok) {
             SQLUpdate('methods', $method_rec);
@@ -137,7 +155,9 @@ if ($this->tab == 'logic') {
             $out['ERR'] = 1;
         }
     }
-    $out['CODE'] = htmlspecialchars($method_rec['CODE']);
+    if (isset($method_rec['CODE'])) {
+        $out['CODE'] = htmlspecialchars($method_rec['CODE']);
+    }
     $out['OBJECT_ID'] = $method_rec['OBJECT_ID'];
 
     $parent_method_id = $object->getMethodByName($method_name, $object->class_id, 0);
@@ -157,7 +177,7 @@ if ($this->tab == 'settings') {
         $onchanges = array();
         $apply_others = gr('apply_others');
         foreach ($properties as $k => $v) {
-            if ($v['_CONFIG_TYPE']) {
+            if (isset($v['_CONFIG_TYPE'])) {
                 if ($this->mode == 'update') {
                     global ${$k . '_value'};
                     if (isset(${$k . '_value'})) {
@@ -180,7 +200,7 @@ if ($this->tab == 'settings') {
                         }
                     }
                     $out['OK'] = 1;
-                    if ($v['ONCHANGE'] != '') {
+                    if (isset($v['ONCHANGE']) && $v['ONCHANGE'] != '') {
                         $onchanges[$v['ONCHANGE']] = 1;
                     }
                 }
@@ -211,7 +231,7 @@ if ($this->tab == 'settings') {
                     $v['FOLDERS'] = $styles;
                 }
 
-                if ($v['_CONFIG_RESTRICTIONS'] && checkAccessDefined('prop_' . $v['NAME'], $rec['ID'])) {
+                if (isset($v['_CONFIG_RESTRICTIONS']) && $v['_CONFIG_RESTRICTIONS'] && checkAccessDefined('prop_' . $v['NAME'], $rec['ID'])) {
                     $v['_CONFIG_RESTRICTIONS_SET'] = 1;
                 }
 
@@ -303,7 +323,7 @@ if ($this->tab == 'interface') {
     $total = count($menu_items);
     for ($i = 0; $i < $total; $i++) {
         $sub = SQLSelectOne("SELECT ID FROM commands WHERE PARENT_ID=" . $menu_items[$i]['ID']);
-        if ($sub['ID']) {
+        if (isset($sub['ID'])) {
             $res_items[] = $menu_items[$i];
         }
     }
@@ -318,15 +338,19 @@ if ($this->tab == '') {
         $out['PRIORITIES'][] = array('VALUE' => $i);
     }
 
-    global $prefix;
+    $prefix = gr('prefix');
     $out['PREFIX'] = $prefix;
-    global $source_table;
+
+    $source_table = gr('source_table');
     $out['SOURCE_TABLE'] = $source_table;
-    global $source_table_id;
+
+    $source_table_id = gr('source_table_id');
     $out['SOURCE_TABLE_ID'] = $source_table_id;
-    global $type;
+
+    $type = gr('type');
     $out['TYPE'] = $type;
-    global $linked_object;
+
+    $linked_object = gr('linked_object');
     if ($linked_object != '') {
         if (!getObject($linked_object)) {
             $linked_object = '';
@@ -369,6 +393,7 @@ if ($this->tab == 'schedule') {
 }
 
 if ($this->mode == 'update' && $this->tab == '') {
+    $added = 0;
     $ok = 1;
     $rec['TITLE'] = gr('title', 'trim');
     if ($rec['TITLE'] == '') {
@@ -511,13 +536,13 @@ if ($this->mode == 'update' && $this->tab == '') {
 }
 if (is_array($rec)) {
     foreach ($rec as $k => $v) {
-        if (!is_array($v)) {
+        if ($v && !is_array($v)) {
             $rec[$k] = htmlspecialchars($v);
         }
     }
 }
 
-if (!$rec['LOCATION_ID']) {
+if (!isset($rec['LOCATION_ID'])) {
     $rec['LOCATION_ID'] = gr('location_id', 'int');
 }
 
@@ -527,10 +552,10 @@ outHash($rec, $out);
 
 $types = array();
 foreach ($this->device_types as $k => $v) {
-    if ($v['TITLE']) {
+    if (isset($v['TITLE'])) {
         $types[] = array('NAME' => $k, 'TITLE' => $v['TITLE']);
     }
-    if ($k == $rec['TYPE'] && $rec['TYPE'] != '') {
+    if (isset($rec['TYPE']) && $k == $rec['TYPE'] && $rec['TYPE'] != '') {
         $out['TYPE_TITLE'] = $v['TITLE'];
     }
 }

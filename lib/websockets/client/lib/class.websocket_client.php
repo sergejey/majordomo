@@ -47,7 +47,7 @@ class WebsocketClient
                         return false;
                 }               
                 $buffer = ' ';
-                while($buffer !== '')
+                while($buffer != '')
                 {                       
                         $buffer = fread($this->_Socket, 512);// drop?
                 }

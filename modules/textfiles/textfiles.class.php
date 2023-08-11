@@ -162,13 +162,13 @@ class textfiles extends module
                 $data = LoadFile(ROOT . 'cms/texts/' . $file . ".txt");
                 $out['DATA'] = htmlspecialchars($data);
             }
-            $out['FILE'] = $file;
-            $out['FILE_URL'] = urlencode($out['FILE']);
-
-            if (preg_match('/panelBlock/', $file)) {
-                $out['ADD_EDITOR'] = 1;
-                if (!$out['DATA']) {
-                    $out['DATA'] = <<<FF
+            if ($file) {
+                $out['FILE'] = $file;
+                $out['FILE_URL'] = urlencode($out['FILE']);
+                if (preg_match('/panelBlock/', $file)) {
+                    $out['ADD_EDITOR'] = 1;
+                    if (!isset($out['DATA'])) {
+                        $out['DATA'] = <<<FF
 <div class="panel panel-default">
  <div class="panel-heading">
   Panel title
@@ -178,8 +178,11 @@ class textfiles extends module
  </div>
 </div>
 FF;
+                    }
                 }
+
             }
+
 
 
         }

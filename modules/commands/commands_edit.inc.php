@@ -179,7 +179,7 @@ if ($this->tab == '') {
     }
     $total = count($parents);
     for ($i = 0; $i < $total; $i++) {
-        if ($titles[$parents[$i]['PARENT_ID']]) {
+        if (isset($titles[$parents[$i]['PARENT_ID']])) {
             $parents[$i]['TITLE'] = $titles[$parents[$i]['PARENT_ID']] . ' &gt; ' . $parents[$i]['TITLE'];
         }
     }

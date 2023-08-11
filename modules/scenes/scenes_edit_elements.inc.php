@@ -131,7 +131,7 @@ if ($this->mode == 'update') {
     $image_new = gr('image_new');
     $script_id_new = gr('script_id_new', 'int');
     $menu_item_id_new = gr('menu_item_id_new', 'int');
-    $action_object_new = gr('$action_object_new');
+    $action_object_new = gr('action_object_new');
     $action_method_new = gr('action_method_new');
     $is_dynamic_new = gr('is_dynamic_new');
     $linked_object_new = gr('linked_object_new');
@@ -279,7 +279,7 @@ if ($this->mode == 'update') {
 
         $wizard_data = array();
 
-        $menuitem_select_id = gr('$menuitem_select_id','int');
+        $menuitem_select_id = gr('menuitem_select_id','int');
         $wizard_data['MENU_ITEM_ID'] = (int)$menuitem_select_id;
         $element['WIZARD_DATA'] = json_encode($wizard_data) . '';
         SQLUpdate('elements', $element);

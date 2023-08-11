@@ -56,11 +56,6 @@ function is_dir2($d)
     
     if (is_dir($d)) return true;
     
-    if ($node = @opendir($d)) {
-        closedir($node);
-        return true;
-    } 
-
    return false;
 }
 
@@ -517,7 +512,7 @@ function getLocalFilesTree($dir, $pattern, $ex_pattern, &$log, $verbose)
     if ($dir = @opendir($destination)) {
         while (($file = readdir($dir)) !== false) {
             if (Is_Dir2($destination . "/" . $file) && ($file != '.') && ($file != '..')) {
-                $sub_ar = $this->getLocalFilesTree($destination . "/" . $file, $pattern, $ex_pattern, $log, $verbose);
+                $sub_ar = getLocalFilesTree($destination . "/" . $file, $pattern, $ex_pattern, $log, $verbose);
                 $res = array_merge($res, $sub_ar);
             } elseif (Is_File($destination . "/" . $file)) {
                 $fl = array();

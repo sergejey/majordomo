@@ -9,8 +9,14 @@
  * @copyright http://www.atmatic.eu/ (c)
  * @version 0.1 (wizard, 10:05:38 [May 24, 2012])
  */
-Define('DEF_TYPE_OPTIONS', 'img=Image|html=HTML'); // options for 'TYPE'
-Define('DEF_CONDITION_OPTIONS', '1=Equa|2=More|3=Less|4=Not equal'); // options for 'CONDITION'
+
+if (!defined('DEF_TYPE_OPTIONS')) {
+    Define('DEF_TYPE_OPTIONS', 'img=Image|html=HTML'); // options for 'TYPE'
+}
+
+if (!defined('DEF_CONDITION_OPTIONS')) {
+    Define('DEF_CONDITION_OPTIONS', '1=Equa|2=More|3=Less|4=Not equal'); // options for 'CONDITION'
+}
 //
 //
 class scenes extends module
@@ -147,7 +153,7 @@ class scenes extends module
              $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
              $this->result=$p->result;
             */
-            require_once ROOT . 'lib/smarty/Smarty.class.php';
+            require_once ROOT . '3rdparty/smarty3/Smarty.class.php';
             $smarty = new Smarty;
             $smarty->setCacheDir(ROOT . 'cms/cached/template_c');
 
@@ -296,7 +302,7 @@ class scenes extends module
             }
 
             if ($this->view_mode == '' || $this->view_mode == 'search_scenes') {
-                if ($_GET['draggable']) {
+                if (gr('draggable')) {
                     $out['DRAGGABLE'] = 1;
                 }
                 $this->search_scenes($out);
@@ -557,11 +563,16 @@ class scenes extends module
     function usual(&$out)
     {
 
+
         if ($this->owner->action == 'apps') {
             $this->redirect(ROOTHTML . "popup/scenes.html");
         }
 
-        global $ajax;
+        if (isset($this->ajax) && $this->ajax) {
+            $ajax = $this->ajax;
+        } else {
+            $ajax = gr('ajax');
+        }
         if ($ajax) {
             global $op;
             header("HTTP/1.0: 200 OK\n");
@@ -647,6 +658,7 @@ class scenes extends module
                     if (is_array($elements[$i]['STATES'])) {
                         foreach ($elements[$i]['STATES'] as $st) {
                             if ($elements[$i]['TYPE'] == 'container') unset($st['HTML']);
+                            if ($elements[$i]['TYPE'] == 'widget' && preg_match('/<script/', $st['HTML'])) unset($st['HTML']);
                             $states[] = $st;
                         }
                     }
@@ -658,10 +670,10 @@ class scenes extends module
                     $this->processState($states[$i]);
                 }
                 echo json_encode($states);
+                exit;
             }
             if ($op == 'click') {
                 global $id;
-
 
                 if (preg_match('/(\d+)\_(\d+)/', $id, $m)) {
                     $dynamic_item = 1;
@@ -761,7 +773,7 @@ class scenes extends module
 
             endMeasure('TOTAL');
 
-            if ($_GET['performance']) {
+            if (isset($_GET['performance'])) {
                 performanceReport();
             }
 
@@ -791,7 +803,7 @@ class scenes extends module
             unset($state['HTML']);
         }
 
-        if ($state['HTML'] != '') {
+        if (isset($state['HTML']) && $state['HTML'] != '') {
             if (preg_match('/\[#modul/is', $state['HTML'])) {
                 //$states[$i]['HTML']=str_replace('#', '', $state['HTML']);
                 unset($state['HTML']);
@@ -1161,7 +1173,7 @@ class scenes extends module
 
             try {
                 $code = $rec['CONDITION_ADVANCED'];
-                if ($code!='') {
+                if ($code != '') {
                     $success = eval($code);
                 } else {
                     $success = true;
@@ -1360,7 +1372,7 @@ class scenes extends module
                 if ($states[$is]['HTML'] != '') {
                     $states[$is]['HTML'] = processTitle($states[$is]['HTML']);
                 }
-                if (!is_array($options) || $options['ignore_state'] != 1) {
+                if (!is_array($options) || !isset($options['ignore_state']) || $options['ignore_state'] != 1) {
                     startMeasure('checkstates');
                     $states[$is]['STATE'] = $this->checkState($states[$is]['ID']);
                     endMeasure('checkstates');
@@ -1371,7 +1383,7 @@ class scenes extends module
             }
             $elements[$ie]['STATES'] = $states;
             if ($elements[$ie]['TYPE'] == 'container') {
-                if (!is_array($options) || $options['ignore_sub'] != 1) {
+                if (!is_array($options) || !isset($options['ignore_sub']) || $options['ignore_sub'] != 1) {
                     startMeasure('getSubElements');
                     $elements[$ie]['STATE'] = $elements[$ie]['STATES'][0]['STATE'];
                     $elements[$ie]['STATE_ID'] = $elements[$ie]['STATES'][0]['ID'];
@@ -1569,7 +1581,7 @@ class scenes extends module
                             $has_na = $entry;
                         }
 
-                        if (is_array($this->all_styles) && !$this->all_styles[$style])
+                        if (is_array($this->all_styles) && !isset($this->all_styles[$style]))
                             continue;
 
                         $styles_recs[$style]['TITLE'] = $style;
@@ -1595,20 +1607,20 @@ class scenes extends module
                         if (!$has_low && !$has_high && !$has_on && !$has_off && !$has_mid && !$has_na)
                             $styles_recs[$style]['HAS_DEFAULT'] = $entry;
 
-                        if (!$styles_recs[$style]['HAS_DEFAULT'] && $has_on)
+                        if (!isset($styles_recs[$style]['HAS_DEFAULT']) && $has_on)
                             $styles_recs[$style]['HAS_DEFAULT'] = $has_on;
                     }
                 }
 
                 if (is_array($styles_recs)) {
                     foreach ($styles_recs as $k => $v) {
-                        if (!$styles_recs[$k]['IMAGE'] && file_exists($path . '/' . $v['TITLE'] . '.png'))
+                        if (!isset($styles_recs[$k]['IMAGE']) && file_exists($path . '/' . $v['TITLE'] . '.png'))
                             $styles_recs[$k]['IMAGE'] = $type . '/' . $v['TITLE'] . '.png';
 
-                        if (!$styles_recs[$k]['IMAGE'] && file_exists($path . '/i_' . $v['TITLE'] . '.png'))
+                        if (!isset($styles_recs[$k]['IMAGE']) && file_exists($path . '/i_' . $v['TITLE'] . '.png'))
                             $styles_recs[$k]['IMAGE'] = $type . '/i_' . $v['TITLE'] . '.png';
 
-                        if (!$styles_recs[$k]['IMAGE'] && file_exists($path . '/i_' . $v['TITLE'] . '_on.png'))
+                        if (!isset($styles_recs[$k]['IMAGE']) && file_exists($path . '/i_' . $v['TITLE'] . '_on.png'))
                             $styles_recs[$k]['IMAGE'] = $type . '/i_' . $v['TITLE'] . '_on.png';
                     }
                 }

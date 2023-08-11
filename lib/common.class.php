@@ -260,7 +260,7 @@ function deleteScheduledJob($id)
  * @param mixed $timeout Timeout
  * @return mixed
  */
-function setTimeOut($title, $commands, $timeout)
+function setTimeOut($title, $commands, $timeout = 0)
 {
     startMeasure('setTimeout');
     $res = addScheduledJob($title, $commands, time() + $timeout);
@@ -437,6 +437,9 @@ function runScriptSafe($id, $params = 0)
     startMeasure('runScriptSafe');
     $current_call = 'script.' . $id;
     $call_stack = array();
+    $raiseEvent = '';
+    $run_SafeScript = '';
+
     if (is_array($params)) {
         if (isset($params['m_c_s']) && is_array($params['m_c_s']) && !empty($params['m_c_s'])) {
             $call_stack = $params['m_c_s'];
@@ -553,7 +556,13 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
 
             if ($host == '127.0.0.1' || $host == 'localhost') {
                 $use_proxy = false;
+            } else {
+                // do not use cookie for local calls
+                $tmpfname = ROOT . 'cms/cached/cookie_' . str_replace('.', '_', $host) . '.txt';
+                curl_setopt($ch, CURLOPT_COOKIEJAR, $tmpfname);
+                curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
             }
+
 
             if ($use_proxy && defined('HOME_NETWORK') && HOME_NETWORK != '') {
                 $p = preg_quote(HOME_NETWORK);
@@ -572,10 +581,6 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
                     curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
                 }
             }
-
-            $tmpfname = ROOT . 'cms/cached/cookie.txt';
-            curl_setopt($ch, CURLOPT_COOKIEJAR, $tmpfname);
-            curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
 
             endMeasure('curl_prepare');
             startMeasure('curl_exec');
@@ -856,10 +861,10 @@ function checkAccessCopy($object_type, $src_id, $dst_id)
 {
     $rec = SQLSelectOne("SELECT * FROM security_rules WHERE OBJECT_TYPE='" . DBSafe($object_type) . "' AND OBJECT_ID=" . (int)$src_id);
     if ($rec['ID']) {
-        SQLExec("DELETE FROM security_rules WHERE OBJECT_TYPE='".DBSafe($object_type)."' AND OBJECT_ID=".(int)$dst_id);
+        SQLExec("DELETE FROM security_rules WHERE OBJECT_TYPE='" . DBSafe($object_type) . "' AND OBJECT_ID=" . (int)$dst_id);
         unset($rec['ID']);
-        $rec['OBJECT_ID']=(int)$dst_id;
-        SQLInsert('security_rules',$rec);
+        $rec['OBJECT_ID'] = (int)$dst_id;
+        SQLInsert('security_rules', $rec);
     }
 }
 
@@ -875,7 +880,7 @@ function registerError($code = 'custom', $details = '')
     $e = new \Exception;
     $backtrace = $e->getTraceAsString();
 
-    DebMes("Error registered (type: $code):\n" . $details . "\nBacktrace:\n" . $backtrace, 'error');
+    DebMes("Error registered (type: $code):\n" . $details . "\nBacktrace:\n" . $backtrace, 'errors');
     $code = trim($code);
 
     if ($code == 'sql') {
@@ -1204,12 +1209,12 @@ function logAction($action_type, $details = '')
     global $session;
     $rec = array();
     $rec['ADDED'] = date('Y-m-d H:i:s');
-    if ($session->data['SITE_USERNAME']) {
+    if (isset($session->data['SITE_USERNAME'])) {
         $rec['USER'] = $session->data['SITE_USERNAME'];
     } elseif (preg_match('/^\/admin\.php/', $_SERVER['REQUEST_URI'])) {
         $rec['USER'] = 'Control Panel';
     }
-    if ($session->data['TERMINAL']) {
+    if (isset($session->data['TERMINAL'])) {
         $rec['TERMINAL'] = $session->data['TERMINAL'];
     } else {
         $rec['TERMINAL'] = '';

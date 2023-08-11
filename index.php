@@ -32,6 +32,7 @@ if (!file_exists(ROOT . 'cms/modules_installed/control_modules.installed')) {
 
 $app = new application();
 
+$md = gr('md');
 if ($md != $app->name)
     $app->restoreParams();
 else
@@ -40,12 +41,13 @@ else
 if ($app->action != '' && $app->action != 'docs') $fake_doc = '';
 
 $result = $app->run();
-$result = str_replace("nf.php", "index.php", $result);
-
+if ($result) {
+    $result = str_replace("nf.php", "index.php", $result);
+    require(ROOT.'lib/utils/postprocess_general.inc.php');
+    require(ROOT.'lib/utils/postprocess_subscriptions.inc.php');
+    require(ROOT.'lib/utils/postprocess_result.inc.php');
+}
 endMeasure('prepare');
-require(ROOT.'lib/utils/postprocess_general.inc.php');
-require(ROOT.'lib/utils/postprocess_subscriptions.inc.php');
-require(ROOT.'lib/utils/postprocess_result.inc.php');
 
 /**
  * Echo large text
@@ -74,11 +76,13 @@ if (!headers_sent()) {
    }
 }
 
-echobig($result);
+if ($result) {
+    echobig($result);
+}
 
 endMeasure('final_echo', 1);
 
-if ($cache_filename != '' && $cached_result == '')
+if (isset($cache_filename) && $cache_filename != '' && $cached_result == '')
 {
    SaveFile(ROOT . 'cms/cached/' . $cache_filename, $result);
 }

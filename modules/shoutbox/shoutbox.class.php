@@ -11,6 +11,8 @@
 //
 //
 class shoutbox extends module {
+    var $importance;
+    var $mobile;
 /**
 * shoutbox
 *

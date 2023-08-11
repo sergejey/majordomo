@@ -49,6 +49,7 @@
    <option value="is:battery_low"[#if GROUP_NAME="is:battery_low"#] selected[#endif#]>(*) <#LANG_DEVICES_BATTERY_WARNING#></option>
    <option value="is:archived"[#if GROUP_NAME="is:archived"#] selected[#endif#]>(*) <#LANG_ARCHIVED_DEVICE#></option>
    <option value="is:system"[#if GROUP_NAME="is:system"#] selected[#endif#]>(*) <#LANG_SYSTEM_DEVICE#></option>
+   <option value="is:inactive"[#if GROUP_NAME="is:inactive"#] selected[#endif#]>(*) <#LANG_INACTIVE_DEVICE#></option>
    <option value="manage_groups">[ <#LANG_ADD#> / <#LANG_EDIT#> ]</option>
   </select>
  </div>
@@ -169,13 +170,11 @@
   [#endif LINKED_MODULES#]
  </div>
  <div class="col-md-3" nowrap>
-  [#if "<#ACTION#>"=="admin"#]
    <a href="?view_mode=edit_devices&id=[#ID#]" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
    <a href="?view_mode=edit_devices&id=[#ID#]&tab=settings" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-wrench"></i></a>
    <a href="?view_mode=edit_devices&id=[#ID#]&tab=links" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-link"></i>[#if LINKED!=""#] ([#LINKED#])[#endif#]</a>
-   <a href="?view_mode=edit_devices&id=[#ID#]&tab=logic" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-flash"></i></a>
-    <a href="?view_mode=delete_devices&id=[#ID#]&location_id=<#LOCATION_ID#>&type=<#TYPE#>&group_name=<#GROUP_NAME#>" onClick="return confirm('Are you sure? Please confirm.')" class="btn btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i></a>
-  [#endif ACTION#]
+   <a href="?view_mode=edit_devices&id=[#ID#]&tab=logic" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-flash"></i>[#if METHODS!=""#] ([#METHODS#])[#endif#]</a>
+   <a href="?view_mode=delete_devices&id=[#ID#]&location_id=<#LOCATION_ID#>&type=<#TYPE#>&group_name=<#GROUP_NAME#>" onClick="return confirm('Are you sure? Please confirm.')" class="btn btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i></a>
  </div>
 </div>
 [#end RESULT#]

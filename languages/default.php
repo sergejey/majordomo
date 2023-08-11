@@ -1399,6 +1399,7 @@ $dictionary = array(
     'FAVORITE_DEVICE' => 'Favorite device',
     'SYSTEM_DEVICE' => 'System device',
 	'ARCHIVED_DEVICE' => 'Archived device',
+    'INACTIVE_DEVICE' => 'Inactive device',
 
     'ROOMS' => 'Rooms',
     'APPEARANCE' => 'Appearance',

@@ -9,7 +9,11 @@
  * @version 1.3
  */
 
-if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0]) && (!(preg_match('/^\/gps\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/^\/trackme\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/^\/btraced\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/^\/rss\.php/is', $_SERVER['REQUEST_URI'])) || $_REQUEST['op'] != '')) {
+if (defined('HOME_NETWORK')
+    && HOME_NETWORK != ''
+    && !isset($argv[0])
+    && isset($_SERVER['REQUEST_URI'])
+) {
     $p = preg_quote(HOME_NETWORK);
     $p = str_replace('\*', '\d+?', $p);
     $p = str_replace(',', ' ', $p);
@@ -18,7 +22,7 @@ if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0]) && (!(preg
 
     $remoteAddr = $_SERVER["REMOTE_ADDR"];
 
-    if (defined('LOCAL_IP') && LOCAL_IP!='') {
+    if (defined('LOCAL_IP') && LOCAL_IP != '') {
         $local_ip = LOCAL_IP;
     } else {
         $local_ip = '127.0.0.1';
@@ -143,14 +147,14 @@ function redirect($url, $owner = "", $no_sid = 0)
         $owner->redirect($url);
     } else {
         $param_str = "";
-
         if (!$no_sid) {
             $replaceStr = $_SERVER['PHP_SELF'] . '?' . session_name() . '=' . session_id();
-            $replaceStr .= '&pd=' . $param_str . '&md=' . $owner->name . '&inst=' . $owner->instance . '&';
-
+            $replaceStr .= '&pd=' . $param_str;
+            if (is_object($owner)) {
+                $replaceStr .= '&md=' . $owner->name . '&inst=' . $owner->instance . '&';
+            }
             $url = str_replace('?', $replaceStr, $url);
         }
-
         $url = "Location:$url\n\n";
         $session->save();
         header($url);

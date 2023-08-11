@@ -1,26 +1,29 @@
 <?php
 
-if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES==1) return;
+if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES == 1) return;
 
-$devices=SQLSelect("SELECT ID, TITLE, TYPE, LINKED_OBJECT FROM devices WHERE devices.ARCHIVED!=1 ORDER BY TYPE, TITLE");
+$devices = SQLSelect("SELECT ID, TITLE, TYPE, LINKED_OBJECT FROM devices WHERE devices.ARCHIVED!=1 ORDER BY TYPE, TITLE");
 $total = count($devices);
-for($idv=0;$idv<$total;$idv++) {
+for ($idv = 0; $idv < $total; $idv++) {
     if (($devices[$idv]['TYPE'] == 'motion' ||
-        $devices[$idv]['TYPE'] == 'openclose' ||
-        $devices[$idv]['TYPE'] == 'leak' ||
-        $devices[$idv]['TYPE'] == 'smoke' ||
-        $devices[$idv]['TYPE'] == 'counter' ||
-        preg_match('/^sensor/',$devices[$idv]['TYPE']) ||
-        $this->device_types[$devices[$idv]['TYPE']]['PARENT_CLASS'] == 'SSensors' ||
-        (int)gg($devices[$idv]['LINKED_OBJECT'] . '.aliveTimeout')>0
-    ) && gg($devices[$idv]['LINKED_OBJECT'] . '.alive') === '0') {
-        $yellow_state=1;
-        $details[]=$devices[$idv]['TITLE'].' '.LANG_DEVICES_NOT_UPDATING;
+            $devices[$idv]['TYPE'] == 'openclose' ||
+            $devices[$idv]['TYPE'] == 'leak' ||
+            $devices[$idv]['TYPE'] == 'smoke' ||
+            $devices[$idv]['TYPE'] == 'counter' ||
+            preg_match('/^sensor/', $devices[$idv]['TYPE']) ||
+            (
+                isset($this->device_types[$devices[$idv]['TYPE']]) &&
+                isset($this->device_types[$devices[$idv]['TYPE']]['PARENT_CLASS']) &&
+                $this->device_types[$devices[$idv]['TYPE']]['PARENT_CLASS'] == 'SSensors') ||
+            (int)gg($devices[$idv]['LINKED_OBJECT'] . '.aliveTimeout') > 0
+        ) && gg($devices[$idv]['LINKED_OBJECT'] . '.alive') === '0') {
+        $yellow_state = 1;
+        $details[] = $devices[$idv]['TITLE'] . ' ' . LANG_DEVICES_NOT_UPDATING;
     }
     $batteryWarning = gg($devices[$idv]['LINKED_OBJECT'] . '.batteryWarning');
-    if ($batteryWarning==1) {
-        $yellow_state=1;
-        $details[]=$devices[$idv]['TITLE'].' '.LANG_DEVICES_LOW_BATTERY;
+    if ($batteryWarning == 1) {
+        $yellow_state = 1;
+        $details[] = $devices[$idv]['TITLE'] . ' ' . LANG_DEVICES_LOW_BATTERY;
     }
 }
 

@@ -65,7 +65,7 @@ class custom_error
           <div class="container">
           <h1>Error</h1>
           <h3>Details</h3>
-          <div class="alert alert-danger">$script<br/>$description</div>
+          <div class="alert alert-danger"><b>$script</b><br/><br/>$description</div>
           <h3>Backtrace</h3>
           <div><pre>{$e->getTraceAsString()}</pre></div>
           <div>
@@ -89,36 +89,72 @@ FF;
 
 }
 
-/**
- * Custom PHP Error Handler
- * Used for custom handling of PHP errors
- *
- * @param mixed $errno Error number
- * @param mixed $errmsg Error message
- * @param mixed $filename File name
- * @param mixed $linenum Line num
- * @param mixed $vars Variables
- * @return void
- */
-function simplisticErrorHandler($errno, $errmsg, $filename, $linenum, $vars)
+function majordomoSaveError($details, $type, $filename = '')
 {
-    if (($errno != E_NOTICE)) //&& ( $errno != E_WARNING)
-    {
-        $err = "PHP warning: $errmsg in $filename on line $linenum\n";
-        $err = new custom_error($err, 0, 1);
+    if (isset($_SERVER['REQUEST_URI'])) {
+        return false; // to-do: comment for debug
+    }
+    dprint($filename . ' ' . $type . ': ' . $details, false);
+    if ($filename) {
+        //DebMes($details, $type . '_' . basename($filename));
     }
 }
 
-function phpShutDownFunction() {
+function majordomoExceptionHandler($e)
+{
+    if (isset($_SERVER['REQUEST_URI'])) {
+        $url = $_SERVER['REQUEST_URI'];
+    } else {
+        $url = 'commandline';
+    }
+    $message = $url . "\nPHP exception: " . $e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine() . "\nBacktrace: " . $e->getTraceAsString();
+    DebMes($message,'php_exceptions');
+    majordomoSaveError($message, 'exceptions');
+    return true;
+}
+
+function majordomoErrorHandler($errno, $errmsg, $filename, $linenum)
+{
+    if (in_array($errno, array(E_NOTICE, E_DEPRECATED))) return;
+
+    if (isset($_SERVER['REQUEST_URI'])) {
+        $url = $_SERVER['REQUEST_URI'];
+    } else {
+        $url = 'commandline';
+    }
+
+    $message = $url . "\nPHP error level $errno in $filename (line $linenum): " . $errmsg;
+    if ($errno == E_WARNING) {
+        //DebMes($message, 'php_warning');
+    } else {
+        DebMes($message, 'php_error');
+    }
+    majordomoSaveError($message, 'errors', $filename);
+}
+
+function phpShutDownFunction()
+{
     $error = error_get_last();
+    if (!is_array($error)) {
+        return;
+    }
     $e = new \Exception;
     $backtrace = $e->getTraceAsString();
+    if (isset($_SERVER['REQUEST_URI'])) {
+        $url = $_SERVER['REQUEST_URI'];
+    } else {
+        $url = 'commandline';
+    }
     if ($error['type'] === E_ERROR) {
-        DebMes($_SERVER['REQUEST_URI']."\nPHP shutdown error: ".$error['message']."\nBacktrace: ".$backtrace,'errors');
-        $err = new custom_error($error['message']);
+        $message = $url . "\nPHP error: " . $error['message'] . "\nBacktrace: " . $backtrace;
+        DebMes($message, 'php_errors');
+        majordomoSaveError($message, 'errors');
+        $err = new custom_error(nl2br($error['message']));
+    } elseif ($error['type'] === E_WARNING) {
+        majordomoSaveError($url . "\nPHP warning: " . $error['message'] . "\nBacktrace: " . $backtrace, 'warnings');
     }
 }
 
 register_shutdown_function('phpShutDownFunction');
-
-//set_error_handler("simplisticErrorHandler");
+set_error_handler("majordomoErrorHandler");
+set_exception_handler('majordomoExceptionHandler');

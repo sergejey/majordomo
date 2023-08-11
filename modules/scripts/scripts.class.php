@@ -138,7 +138,7 @@ class scripts extends module
         verbose_log("Script [" . $id . "] (" . is_array($params) ? json_encode($params) : '' . ")");
 
         $rec = SQLSelectOne("SELECT * FROM scripts WHERE ID='" . (int)$id . "' OR TITLE = '" . DBSafe($id) . "'");
-        if ($rec['ID']) {
+        if (isset($rec['ID'])) {
             $update_rec = array('ID' => $rec['ID']);
             $update_rec['EXECUTED'] = date('Y-m-d H:i:s');
             if (defined('CALL_SOURCE')) {

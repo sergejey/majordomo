@@ -64,6 +64,16 @@ class module
      * @var array module configuration
      */
     var $config;
+    var $ajax;
+    var $action;
+    var $mode;
+    var $view_mode;
+    var $edit_mode;
+    var $tab;
+    var $parent_item;
+    var $data_source;
+    var $single_rec;
+    var $mobile;
 
     /**
      * Module constructor
@@ -72,6 +82,13 @@ class module
      */
     public function __construct()
     {
+        $php_version = (float)phpversion();
+        if ($php_version >= 8) {
+            $class_name = get_class($this);
+            if (method_exists($this, $class_name)) {
+                $this->$class_name();
+            }
+        }
     }
 
     /**
@@ -164,12 +181,15 @@ class module
         return $res;
     }
     // --------------------------------------------------------------------
+
     /**
      * Restoring module data from query string
      *
      */
     public function restoreParams()
     {
+        $global_params = array();
+
         $pd = gr('pd');
         if (strpos($pd, 'm' . STRING_DELIMITER)) {
             $this->restoreParamsOld();
@@ -223,7 +243,11 @@ class module
             }
         } elseif (!isset($this->instance)) {
             // module has no instances at all
-            $module_data = $global_params[$this->name];
+            if (isset($global_params[$this->name])) {
+                $module_data = $global_params[$this->name];
+            } else {
+                $module_data = array();
+            }
         }
 
         // setting module data
@@ -236,13 +260,13 @@ class module
 
     /**
      * Restoring module data from query string (old version)
-     * @deprecated
      * @return void
+     * @deprecated
      */
     public function restoreParamsOld()
     {
-        $md=gr('md');             // query param - current module
-        $pd=gr('pd');             // query param - all params
+        $md = gr('md');             // query param - current module
+        $pd = gr('pd');             // query param - all params
 
         $global_params = array();
 
@@ -308,7 +332,7 @@ class module
     public function checkInstalled()
     {
 
-        $flag_filename = ROOT.'cms/modules_installed/'.$this->name . '.installed';
+        $flag_filename = ROOT . 'cms/modules_installed/' . $this->name . '.installed';
         if (!file_exists($flag_filename)) {
             $this->install();
         } else {
@@ -330,15 +354,19 @@ class module
      */
     public function getConfig()
     {
+        $this->config = array();
+
         $sqlQuery = "SELECT *
                      FROM project_modules
                     WHERE NAME = '" . $this->name . "'";
 
         $rec = SQLSelectOne($sqlQuery);
-        $data = $rec["DATA"];
-
-        $this->config = unserialize($data);
-
+        if (isset($rec["DATA"])) {
+            $data = $rec["DATA"];
+            if ($data) {
+                $this->config = unserialize($data);
+            }
+        }
         return $this->config;
     }
 
@@ -397,13 +425,13 @@ class module
         } else {
             SQLUpdate("project_modules", $rec);
         }
-        SQLExec("DELETE FROM project_modules WHERE NAME = '".$this->name."' AND ID!=".$rec["ID"]);
+        SQLExec("DELETE FROM project_modules WHERE NAME = '" . $this->name . "' AND ID!=" . $rec["ID"]);
 
-        if (!is_dir(ROOT.'cms/modules_installed')) {
+        if (!is_dir(ROOT . 'cms/modules_installed')) {
             umask(0);
-            mkdir(ROOT.'cms/modules_installed',0777);
+            mkdir(ROOT . 'cms/modules_installed', 0777);
         }
-        $flag_filename = ROOT.'cms/modules_installed/'.$this->name . '.installed';
+        $flag_filename = ROOT . 'cms/modules_installed/' . $this->name . '.installed';
         if (!file_exists($flag_filename)) SaveFile($flag_filename, date("H:m d.M.Y"));
     }
 
@@ -430,12 +458,13 @@ class module
             SQLExec($sqlQuery);
         }
 
-        $flag_filename = ROOT.'cms/modules_installed/'.$this->name . '.installed';
+        $flag_filename = ROOT . 'cms/modules_installed/' . $this->name . '.installed';
         if (file_exists($flag_filename)) unlink($flag_filename);
     }
 
 
     // --------------------------------------------------------------------
+
     /**
      * Module data installation
      *
@@ -495,7 +524,7 @@ class module
                 }
 
             } elseif ((strtolower($field) == 'key') || (strtolower($field) == 'index') || (strtolower($field) == 'fulltext')) {
-                if (!$indexes_retrieved[$table]) {
+                if (!isset($indexes_retrieved[$table])) {
                     $result = SQLGetIndexes($table);
                     foreach ($result as $row) {
                         $tbl_indexes[$table][$row['Key_name']] = 1;
@@ -513,14 +542,14 @@ class module
                     $definition = str_replace('`', '', $definition);
                     $sql = "ALTER TABLE $table ADD $definition;";
                     SQLExec($sql);
-                    SQLExec("FLUSH TABLES ".$table.";");
+                    SQLExec("FLUSH TABLES " . $table . ";");
                     $to_optimize[] = $table;
                 }
             } elseif (!isset($tbl_fields[$table][$field])) {
                 // new field
                 $sql = "ALTER TABLE $table ADD $definition;";
                 SQLExec($sql);
-                SQLExec("FLUSH TABLES ".$table.";");
+                SQLExec("FLUSH TABLES " . $table . ";");
             }
         }
 
@@ -584,13 +613,14 @@ class module
         global $session;
 
         $new_url = $this->makeRealURL($url);
-        if (isset($this->owner) && $this->owner->name=='panel' && preg_match('/nf\.php/',$new_url)) {
-            $new_url = str_replace('nf.php','admin.php',$new_url);
+        if (isset($this->owner) && $this->owner->name == 'panel' && preg_match('/nf\.php/', $new_url)) {
+            $new_url = str_replace('nf.php', 'admin.php', $new_url);
         }
 
         $session->save();
 
-        if ($_GET['part_load']) {
+        $part_load = gr('part_load');
+        if ($part_load) {
             $res = array();
             $res['CONTENT'] = '';
             $res['NEED_RELOAD'] = 1;
@@ -708,7 +738,7 @@ class module
      */
     public function parseLinks($result)
     {
-        $md=gr('md');
+        $md = gr('md');
         if (!isset($_SERVER['PHP_SELF'])) {
             global $PHP_SELF;
             $_SERVER['PHP_SELF'] = $PHP_SELF;
@@ -828,55 +858,55 @@ class module
 
         return $res_str;
     }
-	
-	public function sendNotification($str, $type = 'default')
+
+    public function sendNotification($str, $type = 'default')
     {
 
         if (!SQLTableExists('module_notifications')) {
-            return json_encode(array('status'=>false));
+            return json_encode(array('status' => false));
         }
 
-		if($type != 'info' && $type != 'danger' && $type != 'warning' && $type != 'success' && $type != 'default') {
-			$type = 'default';
-		}
-		
-		$rec["ADDED"] = date('Y-m-d H:i:s');
-		$rec["TYPE"] = $type;
-		$rec["MODULE_NAME"] = $this->name;
-		$rec["MESSAGE"] = htmlspecialchars(strip_tags($str));
+        if ($type != 'info' && $type != 'danger' && $type != 'warning' && $type != 'success' && $type != 'default') {
+            $type = 'default';
+        }
 
-		if(SQLSelectOne("SELECT COUNT(*) AS TOTAL_UNREAD FROM `module_notifications` WHERE `MODULE_NAME` = '".$rec["MODULE_NAME"]."' AND `IS_READ` = '0'")['TOTAL_UNREAD'] > 10) {
-			return json_encode(array('status' => false, 'error' => 'More than 10 notifications in the unread status.'));
-		}
-		
-		$ifExist = SQLSelectOne("SELECT ID FROM `module_notifications` WHERE `MESSAGE` = '".DBSafe($rec['MESSAGE'])."' AND TYPE='".DBSafe($rec['TYPE'])."' AND `IS_READ` = '0'");
-		if(!empty($ifExist) && is_array($ifExist)) {
-			return json_encode(array('status' => false, 'error' => 'Notification already exists. ID: '.$ifExist['ID'], 'id' => $ifExist['ID']));
-		}
-		
-		$rec["ID"] = SQLInsert("module_notifications", $rec);
+        $rec["ADDED"] = date('Y-m-d H:i:s');
+        $rec["TYPE"] = $type;
+        $rec["MODULE_NAME"] = $this->name;
+        $rec["MESSAGE"] = htmlspecialchars(strip_tags($str));
 
-		return json_encode(array('status' => true, 'id' => $rec["ID"]));
+        if (SQLSelectOne("SELECT COUNT(*) AS TOTAL_UNREAD FROM `module_notifications` WHERE `MODULE_NAME` = '" . $rec["MODULE_NAME"] . "' AND `IS_READ` = '0'")['TOTAL_UNREAD'] > 10) {
+            return json_encode(array('status' => false, 'error' => 'More than 10 notifications in the unread status.'));
+        }
+
+        $ifExist = SQLSelectOne("SELECT ID FROM `module_notifications` WHERE `MESSAGE` = '" . DBSafe($rec['MESSAGE']) . "' AND TYPE='" . DBSafe($rec['TYPE']) . "' AND `IS_READ` = '0'");
+        if (!empty($ifExist) && is_array($ifExist)) {
+            return json_encode(array('status' => false, 'error' => 'Notification already exists. ID: ' . $ifExist['ID'], 'id' => $ifExist['ID']));
+        }
+
+        $rec["ID"] = SQLInsert("module_notifications", $rec);
+
+        return json_encode(array('status' => true, 'id' => $rec["ID"]));
 
     }
-	
-	public function readNotification($notification_id)
+
+    public function readNotification($notification_id)
     {
 
         if (!SQLTableExists('module_notifications')) {
-            return json_encode(array('status'=>false));
+            return json_encode(array('status' => false));
         }
 
-		$rec["ID"] = $notification_id;
-		$rec["IS_READ"] = 1;
-		
-		if(empty(SQLSelectOne("SELECT ID FROM `module_notifications` WHERE `ID` = '".$rec["ID"]."' AND `IS_READ` = '0'")['ID'])) {
-			return json_encode(array('status' => false, 'error' => 'No such noty found'));
-		}
-		
-		SQLUpdate("module_notifications", $rec);
-		
-		return json_encode(array('status' => true));
+        $rec["ID"] = $notification_id;
+        $rec["IS_READ"] = 1;
+
+        if (empty(SQLSelectOne("SELECT ID FROM `module_notifications` WHERE `ID` = '" . $rec["ID"] . "' AND `IS_READ` = '0'")['ID'])) {
+            return json_encode(array('status' => false, 'error' => 'No such noty found'));
+        }
+
+        SQLUpdate("module_notifications", $rec);
+
+        return json_encode(array('status' => true));
 
     }
 }

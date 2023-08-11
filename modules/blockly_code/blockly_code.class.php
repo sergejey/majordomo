@@ -13,6 +13,10 @@
 //
 class blockly_code extends module
 {
+    var $type;
+    var $autofocus;
+    var $onlycode;
+    var $system_name;
     /**
      * blockly_code
      *
@@ -232,11 +236,13 @@ class blockly_code extends module
 		}
 		
         $rec = SQLSelectOne("SELECT * FROM blockly_code WHERE SYSTEM_NAME LIKE '" . DBSafe($this->system_name) . "'");
-        $out['CODE_TYPE'] = (int)$rec['CODE_TYPE'];
-        if (!$rec['ID'] && $this->owner->xml) {
+		if (isset($rec['CODE_TYPE'])) {
+            $out['CODE_TYPE'] = (int)$rec['CODE_TYPE'];
+        }
+        if (!isset($rec['ID']) && isset($this->owner->xml)) {
             $rec['XML'] = $this->owner->xml;
         }
-        if (preg_match_all('/<block type="(.+?)\_turnoff"(.+?)>/uis',$rec['XML'],$m)) {
+        if (isset($rec['XML']) && preg_match_all('/<block type="(.+?)\_turnoff"(.+?)>/uis',$rec['XML'],$m)) {
             $total = count($m[0]);
             for($i=0;$i<$total;$i++) {
                 $new_line = $m[0][$i];
@@ -253,7 +259,7 @@ class blockly_code extends module
                 $rec['XML'] = str_replace($m[0][$i],$new_line,$rec['XML']);
             }
         }
-        if (preg_match_all('/<block type="(.+?)\_turnOn"(.+?)>/uis',$rec['XML'],$m)) {
+        if (isset($rec['XML']) && preg_match_all('/<block type="(.+?)\_turnOn"(.+?)>/uis',$rec['XML'],$m)) {
             $total = count($m[0]);
             for($i=0;$i<$total;$i++) {
                 $new_line = $m[0][$i];
@@ -271,7 +277,7 @@ class blockly_code extends module
             }
         }
 
-        if (!$rec['ID'] && !$this->type) {
+        if (!isset($rec['ID']) && !$this->type) {
             $rec['CODE_TYPE'] = 0;
             $rec['CODE_TYPE_UNKNOWN'] = 1;
         }
@@ -300,13 +306,15 @@ class blockly_code extends module
 
         }
 
-        $rec['XML'] = preg_replace('/id="\?/', 'id="Q', $rec['XML']);
-        $out['XML'] = $rec['XML'];
+        if (isset($rec['XML'])) {
+            $rec['XML'] = preg_replace('/id="\?/', 'id="Q', $rec['XML']);
+            $out['XML'] = $rec['XML'];
+        }
         //$out['XML']='';
 
         //dprint($rec);
 
-        $out['CODE_TYPE'] = (int)$rec['CODE_TYPE'];
+        $out['CODE_TYPE'] = isset($rec['CODE_TYPE'])?(int)$rec['CODE_TYPE']:0;
 
 
         $out['DEVICES'] = SQLSelect("SELECT ID,TITLE,TYPE,LINKED_OBJECT FROM devices WHERE TYPE IN ('relay','dimmer','button','thermostat') ORDER BY TITLE");
