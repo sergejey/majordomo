@@ -90,7 +90,7 @@ class phpMQTT
      * @param $clientid
      * @param null $cafile
      */
-    public function broker($address, $port, $clientid, $cafile = null): void
+    public function broker($address, $port, $clientid, $cafile = null)
     {
         $this->address = $address;
         $this->port = $port;
@@ -315,7 +315,7 @@ class phpMQTT
      * @param $topics
      * @param int $qos
      */
-    public function subscribe($topics, $qos = 0): void
+    public function subscribe($topics, $qos = 0)
     {
         $i = 0;
         $buffer = '';
@@ -350,7 +350,7 @@ class phpMQTT
     /**
      * Sends a keep alive ping
      */
-    public function ping(): void
+    public function ping()
     {
         $head = chr(0xc0);
         $head .= chr(0x00);
@@ -362,7 +362,7 @@ class phpMQTT
     /**
      *  sends a proper disconnect cmd
      */
-    public function disconnect(): void
+    public function disconnect()
     {
         $head = ' ';
         $head[0] = chr(0xe0);
@@ -373,7 +373,7 @@ class phpMQTT
     /**
      * Sends a proper disconnect, then closes the socket
      */
-    public function close(): void
+    public function close()
     {
         $this->disconnect();
         stream_socket_shutdown($this->socket, STREAM_SHUT_WR);
@@ -387,7 +387,7 @@ class phpMQTT
      * @param int $qos
      * @param bool $retain
      */
-    public function publish($topic, $content, $qos = 0, $retain = false): void
+    public function publish($topic, $content, $qos = 0, $retain = false)
     {
         $i = 0;
         $buffer = '';
@@ -637,7 +637,7 @@ class phpMQTT
      *
      * @param $string
      */
-    public function printstr($string): void
+    public function printstr($string)
     {
         $strlen = strlen($string);
         for ($j = 0; $j < $strlen; $j++) {
@@ -654,7 +654,7 @@ class phpMQTT
     /**
      * @param string $message
      */
-    protected function _debugMessage(string $message): void
+    protected function _debugMessage(string $message)
     {
         if ($this->debug === true) {
             echo date('r: ') . $message . PHP_EOL;
@@ -664,7 +664,7 @@ class phpMQTT
     /**
      * @param string $message
      */
-    protected function _errorMessage(string $message): void
+    protected function _errorMessage(string $message)
     {
         error_log('Error:' . $message);
     }
