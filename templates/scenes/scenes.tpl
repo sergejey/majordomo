@@ -647,25 +647,41 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
 
 
             function sceneZoom() {
-                var zoomMode = parseInt('{$SCENE_AUTO_SCALE}');
-                var zoomw = $(window).width();
+                let zoomMode = parseInt('{$SCENE_AUTO_SCALE}');
+                let zoomw = $(window).width();
                 if(window.innerWidth > 0 && window.innerWidth < zoomw) zoomw = window.innerWidth;
-                zoomw = zoomw/$("#slider").width()*100;
-                var zoomh = $(window).height();
+
+                let maxElementX = 0;
+                let maxElementY = 0;
+
+
+                $('.element_state').each(function() {
+                    let x = $( this ).position().left+$( this ).width()+10;
+                    let y = $( this ).position().top+$( this ).height()+10;
+                    if (x>maxElementX) maxElementX=x;
+                    if (y>maxElementY) maxElementY=y;
+                });
+
+                zoomw = Math.round(zoomw/maxElementX*100);
+                let zoomh = $(window).height();
                 if(window.innerHeight > 0 && window.innerHeight < zoomh) zoomh = window.innerHeight;
-                zoomh = zoomh/$("#slider").height()*100;
+                zoomh = Math.round(zoomh/maxElementY*100);
+                let newZoom = '';
                 if (zoomMode == 3) { // height
-                    document.body.style.zoom = zoomh+"%"
+                    newZoom = zoomh+"%";
                 }
                 if (zoomMode == 2) { // width
-                    document.body.style.zoom = zoomw+"%"
+                    newZoom = zoomw+"%";
                 }
                 if (zoomMode == 1) { // both
                     if(zoomh < zoomw) {
-                        document.body.style.zoom = zoomh+"%"
+                        newZoom = zoomh+"%";
                     } else {
-                        document.body.style.zoom = zoomw+"%"
+                        newZoom = zoomw+"%";
                     }
+                }
+                if (newZoom!='') {
+                    document.body.style.zoom = newZoom;
                 }
 
             }
@@ -702,14 +718,14 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
          <source src="{$SCENE.VIDEO_WALLPAPER}" type="video/mp4">
      </video>
  {/if}
- <div id="scene_wallpaper_{$SCENE.ID}" style="{if $SCENE.WALLPAPER!=""}background-image:url({$SCENE.WALLPAPER});{if $SCENE.WALLPAPER_FIXED=="1"}background-attachment: fixed;{/if}{if $SCENE.WALLPAPER_NOREPEAT=="1"}background-repeat: no-repeat;{/if}{/if};">
+ <div id="scene_wallpaper_{$SCENE.ID}" style="{if $SCENE.WALLPAPER!=""}background-image:url({$SCENE.WALLPAPER});{if $SCENE.WALLPAPER_FIXED=="1"}background-attachment: fixed;{/if}{if $SCENE.WALLPAPER_NOREPEAT=="1"}background-repeat: no-repeat;{/if}width:100%;height:100%;{/if};">
  <div id="scene_background_{$SCENE.ID}" style="position:relative;">
  {function name=elements}
  {foreach $items as $ELEMENT}
  <!-- element {$ELEMENT.ID} -->
  {if isset($ELEMENT.ELEMENTS)}
  <div
-   class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE}{if isset($ELEMENT.CSS_STYLE) && $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if}{if isset($ELEMENT.BACKGROUND) && $ELEMENT.BACKGROUND=="1"} container_background{/if}{if isset($DRAGGABLE)} draggable{/if}"
+   class="scene_element element_{$ELEMENT.ID} type_{$ELEMENT.TYPE}{if isset($ELEMENT.CSS_STYLE) && $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if}{if isset($ELEMENT.BACKGROUND) && $ELEMENT.BACKGROUND=="1"} container_background{/if}{if isset($DRAGGABLE)} draggable{/if}"
    style="{if isset($ELEMENT.POSITION_TYPE) && $ELEMENT.POSITION_TYPE=="0"}position:absolute;left:{$ELEMENT.LEFT}px;top:{$ELEMENT.TOP}px;{/if}
    {if isset($ELEMENT.ZINDEX) && $ELEMENT.ZINDEX!=""}z-index:{$ELEMENT.ZINDEX};{/if}
    {if isset($ELEMENT.WIDTH) && $ELEMENT.WIDTH!="0"}width:{$ELEMENT.WIDTH}px;{/if}{if isset($ELEMENT.HEIGHT) && $ELEMENT.HEIGHT!="0"}height:{$ELEMENT.HEIGHT}px;{/if}
@@ -832,7 +848,8 @@ function onDocumentMouseDown( event ) {
 
  {foreach $ELEMENT.STATES as $STATE}
      <div
-             class="element_{$ELEMENT.ID}
+          class="element_{$ELEMENT.ID}
+          element_state
           type_{$ELEMENT.TYPE}
           {if $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if}
           state_{$STATE.TITLE}
@@ -874,7 +891,11 @@ function onDocumentMouseDown( event ) {
 
  {elements items=$SCENE.ELEMENTS}
 
- {if $SCENE.BACKGROUND!=""}<div class="scene_background"><img src="{$SCENE.BACKGROUND}" border="0"></div>{/if}
+ {if $SCENE.BACKGROUND!=""}
+     <div class="scene_background">
+         <img src="{$SCENE.BACKGROUND}" border="0">
+     </div>
+ {/if}
  </div>
  </div>
  {if $TOTAL_SCENES!="1"}</li>{/if}
