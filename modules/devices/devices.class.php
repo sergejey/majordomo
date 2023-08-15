@@ -1129,6 +1129,13 @@ class devices extends module
                 $rec['TITLE'] = $rec['LINKED_OBJECT'];
             }
             SQLUpdate('devices', $rec);
+
+            $object_rec = SQLSelectOne("SELECT * FROM objects WHERE ID=" . $object_id);
+            if (isset($object_rec['ID'])) {
+                $object_rec['DESCRIPTION'] = $rec['TITLE'];
+                SQLUpdate('objects', $object_rec);
+            }
+
         }
 
         if ($table_rec['ID']) {

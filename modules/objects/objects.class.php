@@ -295,6 +295,34 @@ class objects extends module
     function delete_objects($id)
     {
         $rec = SQLSelectOne("SELECT * FROM objects WHERE ID='$id'");
+
+        // DELETE LINKED OBJECT FROM ALL TABLES
+        if (function_exists('array_key_first')) {
+            $tables = SQLSelect("SHOW TABLES;");
+            $total = count($tables);
+            for ($i = 0; $i < $total; $i++) {
+                $table_name = $tables[$i][array_key_first($tables[$i])];
+                $row = SQLSelectOne("SELECT * FROM " . $table_name);
+                if (!isset($row['LINKED_OBJECT'])) continue;
+                $rows = SQLSelect("SELECT * FROM $table_name WHERE LINKED_OBJECT = '" . DBSafe($rec['TITLE']) . "'");
+                if (isset($rows[0]['ID'])) {
+                    $total_rows = count($rows);
+                    for ($ir = 0; $ir < $total_rows; $ir++) {
+                        $rows[$ir]['LINKED_OBJECT'] = '';
+                        if (isset($rows[$ir]['LINKED_PROPERTY'])) {
+                            $rows[$ir]['LINKED_PROPERTY'] = '';
+                        }
+                        if (isset($rows[$ir]['LINKED_METHOD'])) {
+                            $rows[$ir]['LINKED_METHOD'] = '';
+                        }
+                        if (isset($rows[$ir]['ID'])) {
+                            SQLUpdate($table_name, $rows[$ir]);
+                        }
+                    }
+                }
+            }
+        }
+
         // some action for related tables
         SQLExec("DELETE FROM history WHERE OBJECT_ID='" . $rec['ID'] . "'");
         SQLExec("DELETE FROM methods WHERE OBJECT_ID='" . $rec['ID'] . "'");
