@@ -140,7 +140,7 @@ class linkedobject extends module
         if ($op == 'redirect') {
             $device_id = gr('device_id', 'int');
             if ($device_id) {
-                redirect(ROOTHTML . 'panel/devices/' . $device_id . '.html?tab=settings');
+                redirect(ROOTHTML . 'panel/devices/' . $device_id . '.html?tab=settings','',1);
             }
 
             $object = gr('object');

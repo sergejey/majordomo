@@ -295,6 +295,28 @@ class objects extends module
     function delete_objects($id)
     {
         $rec = SQLSelectOne("SELECT * FROM objects WHERE ID='$id'");
+
+        // DELETE LINKED OBJECT FROM ALL TABLES
+        $tables = SQLSelect("SELECT DISTINCT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME IN ('LINKED_OBJECT') AND TABLE_SCHEMA='" . DB_NAME . "';");
+        $total = count($tables);
+        for ($i = 0; $i < $total; $i++) {
+            $table_name = $tables[$i]['TABLE_NAME'];
+            $rows = SQLSelect("SELECT * FROM $table_name WHERE LINKED_OBJECT = '" . DBSafe($rec['TITLE']) . "'");
+            if (isset($rows[0]['ID'])) {
+                $total_rows = count($rows);
+                for ($ir = 0; $ir < $total_rows; $ir++) {
+                    $rows[$ir]['LINKED_OBJECT'] = '';
+                    if (isset($rows[$ir]['LINKED_PROPERTY'])) {
+                        $rows[$ir]['LINKED_PROPERTY'] = '';
+                    }
+                    if (isset($rows[$ir]['LINKED_METHOD'])) {
+                        $rows[$ir]['LINKED_METHOD'] = '';
+                    }
+                    SQLUpdate($table_name, $rows[$ir]);
+                }
+            }
+        }
+
         // some action for related tables
         SQLExec("DELETE FROM history WHERE OBJECT_ID='" . $rec['ID'] . "'");
         SQLExec("DELETE FROM methods WHERE OBJECT_ID='" . $rec['ID'] . "'");
