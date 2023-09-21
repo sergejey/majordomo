@@ -655,9 +655,9 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
                 let maxElementY = 0;
 
 
-                $('.element_state').each(function() {
-                    let x = $( this ).position().left+$( this ).width()+10;
-                    let y = $( this ).position().top+$( this ).height()+10;
+                $('.scene_element').each(function() {
+                    let x = $( this ).get(0).getBoundingClientRect().right+20;
+                    let y = $( this ).get(0).getBoundingClientRect().bottom+20;
                     if (x>maxElementX) maxElementX=x;
                     if (y>maxElementY) maxElementY=y;
                 });
