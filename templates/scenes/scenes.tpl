@@ -655,7 +655,7 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
                 let maxElementY = 0;
 
 
-                $('.scene_element').each(function() {
+                $('.scene_element, .element_state, .scene_wallpaper').each(function() {
                     let x = $( this ).get(0).getBoundingClientRect().right+20;
                     let y = $( this ).get(0).getBoundingClientRect().bottom+20;
                     if (x>maxElementX) maxElementX=x;
@@ -718,7 +718,7 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
          <source src="{$SCENE.VIDEO_WALLPAPER}" type="video/mp4">
      </video>
  {/if}
- <div id="scene_wallpaper_{$SCENE.ID}" style="{if $SCENE.WALLPAPER!=""}background-image:url({$SCENE.WALLPAPER});{if $SCENE.WALLPAPER_FIXED=="1"}background-attachment: fixed;{/if}{if $SCENE.WALLPAPER_NOREPEAT=="1"}background-repeat: no-repeat;{/if}width:100%;height:100%;{/if};">
+ <div class="scene_wallpaper" id="scene_wallpaper_{$SCENE.ID}" style="{if $SCENE.WALLPAPER!=""}background-image:url({$SCENE.WALLPAPER});{if $SCENE.WALLPAPER_FIXED=="1"}background-attachment: fixed;{/if}{if $SCENE.WALLPAPER_NOREPEAT=="1"}background-repeat: no-repeat;{/if}width:100%;height:100%;{/if};">
  <div id="scene_background_{$SCENE.ID}" style="position:relative;">
  {function name=elements}
  {foreach $items as $ELEMENT}
