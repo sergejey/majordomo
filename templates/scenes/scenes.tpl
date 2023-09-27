@@ -652,15 +652,25 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
                 if(window.innerWidth > 0 && window.innerWidth < zoomw) zoomw = window.innerWidth;
 
                 let maxElementX = 0;
+                let maxElementXTitle = '';
+
                 let maxElementY = 0;
+                let maxElementYTitle = '';
 
 
                 $('.scene_element, .element_state, .scene_wallpaper').each(function() {
                     let x = $( this ).get(0).getBoundingClientRect().right+20;
                     let y = $( this ).get(0).getBoundingClientRect().bottom+20;
-                    if (x>maxElementX) maxElementX=x;
-                    if (y>maxElementY) maxElementY=y;
+                    if (x>maxElementX) {
+                        maxElementX = x;
+                        maxElementXTitle = this.id;
+                    }
+                    if (y>maxElementY) {
+                        maxElementY = y;
+                        maxElementYTitle = this.id;
+                    }
                 });
+
 
                 zoomw = Math.round(zoomw/maxElementX*100);
                 let zoomh = $(window).height();
@@ -681,6 +691,9 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
                     }
                 }
                 if (newZoom!='') {
+                    console.log('Max element X: ' + maxElementX + ' (' + maxElementXTitle + ')');
+                    console.log('Max element Y: ' + maxElementY + ' (' + maxElementYTitle + ')');
+                    console.log('Zoom: '+newZoom);
                     document.body.style.zoom = newZoom;
                 }
 
