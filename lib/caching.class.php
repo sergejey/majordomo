@@ -304,3 +304,41 @@ function moveDataFromTableToMainHistory($value_id)
     SQLDropTable($table_name);
     return true;
 }
+
+function addToCashQueue($queueName, $value, $data)
+{
+    if (defined('USE_REDIS')) {
+		$value = $value."|".$data;
+		$queueName = "mjd:queue:".$queueName;
+        global $redisConnection;
+        if (!isset($redisConnection)) {
+            $redisConnection = new Redis();
+            $redisConnection->pconnect(USE_REDIS);
+        }
+		$data = $redisConnection->rPush($queueName, $value);
+		return $data;
+    }
+}
+
+function readCashQueue($queueName)
+{
+    if (defined('USE_REDIS')) {
+		$queueName = "mjd:queue:".$queueName;
+        global $redisConnection;
+		$array = array();
+        if (!isset($redisConnection)) {
+            $redisConnection = new Redis();
+            $redisConnection->pconnect(USE_REDIS);
+        }
+		$i = 0;
+		while($redisConnection->lLen($queueName)){
+			$data = $redisConnection->lPop($queueName);
+			$data = explode("|", $data);
+			$array[$i]['TOPIC'] = $queueName;
+			$array[$i]['DATANAME'] = $data['0'];
+			$array[$i]['DATAVALUE'] = $data['1'];
+			$i++;
+		}
+		return $array;
+    }
+}

@@ -1481,6 +1481,10 @@ function objectClassChanged($object_id)
 
 function checkOperationsQueue($topic)
 {
+	if (defined('USE_REDIS')) {
+		$data = readCashQueue($topic);
+		return $data;
+	}
     $data = SQLSelect("SELECT * FROM operations_queue WHERE TOPIC='" . DBSafe($topic) . "' ORDER BY EXPIRE");
     if (isset($data[0]['TOPIC'])) {
         SQLExec("DELETE FROM operations_queue WHERE TOPIC='" . DBSafe($topic) . "'");
@@ -1490,6 +1494,10 @@ function checkOperationsQueue($topic)
 
 function addToOperationsQueue($topic, $dataname, $datavalue = '', $uniq = false, $ttl = 60)
 {
+	if (defined('USE_REDIS')) {
+		$data = addToCashQueue($topic, $dataname, $datavalue);
+		return $data;
+	}
     $rec = array();
     $rec['TOPIC'] = $topic;
     $rec['DATANAME'] = $dataname;
