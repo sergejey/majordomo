@@ -595,7 +595,7 @@ function modalRestoreCode() {
     <script type="text/javascript">
         var devices_data=[];
         var savedJson=$('#xml_code').val();
-        if (savedJson!='') {
+        if (typeof(savedJson) != "undefined" && savedJson!='') {
             var tmp=JSON.parse(savedJson);
             if (typeof tmp === 'object') {
                 devices_data=tmp;
