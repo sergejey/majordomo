@@ -37,6 +37,8 @@ $this->device_links=array(
                     'PARAM_OPTIONS'=>array(
                         array('TITLE'=>LANG_DEVICES_LINK_TYPE_TURN_ON,'VALUE'=>'turnon'),
                         array('TITLE'=>LANG_DEVICES_LINK_TYPE_TURN_OFF,'VALUE'=>'turnoff'),
+                        array('TITLE'=>LANG_DEVICES_LINK_TYPE_SYNC,'VALUE'=>'sync'),
+                        array('TITLE'=>LANG_DEVICES_LINK_TYPE_SYNC_INVERTED,'VALUE'=>'sync_inverted'),
                         array('TITLE'=>LANG_DEVICES_LINK_TYPE_SWITCH,'VALUE'=>'switch'),
                         array('TITLE'=>LANG_DEVICES_LINK_TYPE_OPEN,'VALUE'=>'open'),
                         array('TITLE'=>LANG_DEVICES_LINK_TYPE_CLOSE,'VALUE'=>'close'),

@@ -20,11 +20,11 @@ $links = SQLSelect("SELECT devices_linked.*, devices.LINKED_OBJECT FROM devices_
 $total = count($links);
 for ($i = 0; $i < $total; $i++) {
     if (!checkAccess('sdevice', $links[$i]['ID'])) continue;
-    if ($device1['TYPE'] == 'motion' && !$status) continue;
-    if ($device1['TYPE'] == 'button' && !$status) continue;
     $link_type = $links[$i]['LINK_TYPE'];
-    $object = $links[$i]['LINKED_OBJECT'];
     $settings = unserialize($links[$i]['LINK_SETTINGS']);
+    if ($device1['TYPE'] == 'button' && !$status) continue;
+    if ($device1['TYPE'] == 'motion' && $settings['action_type'] != 'sync' && $settings['action_type'] != 'sync_inverted' && !$status) continue;
+    $object = $links[$i]['LINKED_OBJECT'];
     $timer_name = 'linkTimer' . $links[$i]['ID'];
     $action_string = '';
     // -----------------------------------------------------------------
@@ -39,6 +39,18 @@ for ($i = 0; $i < $total; $i++) {
             $action_string = 'callMethodSafe("' . $object . '.close' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
         } elseif ($settings['action_type'] == 'open') {
             $action_string = 'callMethodSafe("' . $object . '.open' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
+        } elseif ($settings['action_type'] == 'sync') {
+            if ($status) {
+                $action_string = 'callMethodSafe("' . $object . '.turnOn' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
+            } else {
+                $action_string = 'callMethodSafe("' . $object . '.turnOff' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
+            }
+        } elseif ($settings['action_type'] == 'sync_inverted') {
+            if (!$status) {
+                $action_string = 'callMethodSafe("' . $object . '.turnOn' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
+            } else {
+                $action_string = 'callMethodSafe("' . $object . '.turnOff' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
+            }
         }
         if ($settings['action_delay'] != '') {
             $settings['action_delay'] = (int)processTitle($settings['action_delay']);
@@ -116,8 +128,6 @@ for ($i = 0; $i < $total; $i++) {
         } else {
             $set_value = $current_relay_status;
         }
-        DebMes("Set value: $set_value, Current status: $current_target_status", $link_type);
-
         if ($set_value && !$current_target_status) {
             // turn on
             $action_string = 'callMethodSafe("' . $object . '.turnOn' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
@@ -125,8 +135,6 @@ for ($i = 0; $i < $total; $i++) {
             // turn off
             $action_string = 'callMethodSafe("' . $object . '.turnOff' . '",array("link_source"=>"' . $device1['LINKED_OBJECT'] . '"));';
         }
-
-        DebMes("Action string: $action_string", $link_type);
     }
 
     $addons_dir = dirname(__FILE__) . '/addons';

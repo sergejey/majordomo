@@ -1129,6 +1129,12 @@ function callAPI($api_url, $method = 'GET', $params = 0)
     curl_setopt($api_ch, CURLOPT_URL, $url);
     curl_exec($api_ch);
 
+    if (curl_errno($api_ch)) {
+        $errorInfo = curl_error($api_ch);
+        $info = curl_getinfo($api_ch);
+        //DebMes("Call to $url finished with error: \n" . $errorInfo . "\n" . json_encode($info), 'callAPI_errors');
+    }
+
     endMeasure('callAPI');
 
     if ($is_child) {
