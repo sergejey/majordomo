@@ -237,6 +237,7 @@ $this->device_types = array(
         'PARENT_CLASS' => 'SDevices',
         'CLASS' => 'SMotions',
         'PROPERTIES' => array(
+            'isPresenceSensor' => array('DESCRIPTION' => LANG_DEVICES_MOTION_PRESENCE, '_CONFIG_TYPE' => 'yesno', '_CONFIG_HELP' => 'SdMotionPrecence'),
             'ignoreNobodysHome' => array('DESCRIPTION' => LANG_DEVICES_MOTION_IGNORE, '_CONFIG_TYPE' => 'yesno', '_CONFIG_HELP' => 'SdIgnoreNobodysHome'),
             'resetNobodysHome' => array('DESCRIPTION' => LANG_DEVICES_MOTION_RESET, '_CONFIG_TYPE' => 'yesno', '_CONFIG_HELP' => 'SdResetNobodysHome'),
             'timeout' => array('DESCRIPTION' => LANG_DEVICES_MOTION_TIMEOUT, '_CONFIG_TYPE' => 'num', '_CONFIG_HELP' => 'SdMotionTimeout'),
