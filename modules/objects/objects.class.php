@@ -616,7 +616,7 @@ class objects extends module
                 $source = urldecode($_SERVER['REQUEST_URI']);
             }
             if (strlen($source) > 250) {
-                $source = substr($source, 0, 250) . '...';
+                $source = mb_substr($source, 0, 250) . '...';
             }
             $update_rec['EXECUTED_SRC'] = $source;
 
@@ -634,7 +634,7 @@ class objects extends module
                 unset($saved_params['SOURCE']);
                 $update_rec['EXECUTED_PARAMS'] = json_encode($saved_params, JSON_UNESCAPED_UNICODE);
                 if (strlen($update_rec['EXECUTED_PARAMS']) > 250) {
-                    $update_rec['EXECUTED_PARAMS'] = substr($update_rec['EXECUTED_PARAMS'], 0, 250);
+                    $update_rec['EXECUTED_PARAMS'] = mb_substr($update_rec['EXECUTED_PARAMS'], 0, 250);
                 }
             }
             SQLUpdate('methods', $update_rec);
@@ -848,7 +848,7 @@ class objects extends module
             $source = urldecode($_SERVER['REQUEST_URI']);
         }
         if (strlen($source) > 250) {
-            $source = substr($source, 0, 250) . '...';
+            $source = mb_substr($source, 0, 250) . '...';
         }
 
         if (defined('TRACK_DATA_CHANGES') && TRACK_DATA_CHANGES == 1) {
@@ -1118,7 +1118,7 @@ class objects extends module
             }
             if (is_array($props)) {
                 foreach ($props as $k => $v) {
-                    if (substr($v['TITLE'], 0, 1) == '_') continue;
+                    if (mb_substr($v['TITLE'], 0, 1) == '_') continue;
                     $properties[] = array('PROPERTY' => mb_strtolower($this->object_title . '.' . $v['TITLE'], 'UTF-8'), 'OBJECT_ID' => $object_id);
                 }
             }
