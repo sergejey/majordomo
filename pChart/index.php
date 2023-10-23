@@ -208,7 +208,7 @@ if ($total > 0) {
             }
             //OPTIMIZE_LOG
             if ($_GET['subop'] == 'optimize') {
-                $data = SQLSelect("SELECT * FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC");
+                $data = SQLSelect("SELECT * FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC, ID DESC");
                 $total = count($data);
                 $old_value = $data[0]['VALUE'];
                 for ($i = 1; $i < $total; $i++) {
@@ -223,7 +223,7 @@ if ($total > 0) {
             }
 
             if ($_GET['export']) {
-                $data = SQLSelect("SELECT * FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED");
+                $data = SQLSelect("SELECT * FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED, ID");
                 //dprint($data);
 
                 $csv = implode("\t", array('ADDED', 'VALUE')) . PHP_EOL;
