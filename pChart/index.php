@@ -144,7 +144,7 @@ if ($total > 0) {
     } else {
         $history = SQLSelect("SELECT ID, VALUE, ADDED, SOURCE FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $end_time) . "')"); // ORDER BY ADDED
         if (!isset($history[0]['ID']) && $op == 'log') {
-            $history = SQLSelect("SELECT ID, VALUE, ADDED, SOURCE FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC LIMIT 20");
+            $history = SQLSelect("SELECT ID, VALUE, ADDED, SOURCE FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC, ID DESC LIMIT 20");
             $history = array_reverse($history);
         }
 
@@ -155,7 +155,7 @@ if ($total > 0) {
             }
             usort($history, function ($a, $b) {
                 if ($a['UNX'] == $b['UNX']) {
-                    return 0;
+                    return ($a['ID'] < $b['ID']) ? -1: 1;
                 }
                 return ($a['UNX'] < $b['UNX']) ? -1 : 1;
             });
