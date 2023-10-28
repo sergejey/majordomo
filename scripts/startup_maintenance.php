@@ -258,7 +258,7 @@ for ($i = 0; $i < $total; $i++) {
             }
         }
     }
-    echo ("Found in db $found_in_db / found in dir: $found_in_dir\n");
+    echo("Found in db $found_in_db / found in dir: $found_in_dir\n");
     foreach ($found_files as $k => $v) {
         $path = $folder . $k;
         if (is_file($path)) {
@@ -326,3 +326,14 @@ if (IsWindowsOS()) {
 if ($serial_data != '') {
     sg('ThisComputer.Serial', $serial_data);
 }
+
+
+// caching some data
+include_once DIR_MODULES . 'market/market.class.php';
+$mkt = new market();
+$mkt->marketRequest('op=didyouknow');
+$mkt->marketRequest('op=news');
+
+include_once DIR_MODULES . 'saverestore/saverestore.class.php';
+$sv = new saverestore();
+$sv->admin($out);
