@@ -1029,6 +1029,7 @@ $dictionary = array(
     'POSITION_TYPE_SIDE' => 'Side by side',
 
     'CONTAINER' => 'Container',
+    'SLIDER' => 'Slider',
     'INFORMER' => 'Informer',
     'NAV_LINK' => 'Nav. link (window)',
 

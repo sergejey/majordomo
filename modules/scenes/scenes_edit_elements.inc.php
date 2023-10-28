@@ -75,6 +75,7 @@ if ($this->mode == 'update') {
         $element['EASY_CONFIG'] = 0;
     }
 
+
     if ($element['TYPE'] == 'device' || $element['TYPE'] == 'widget') {
         $element['EASY_CONFIG'] = 1;
     }
@@ -133,10 +134,10 @@ if ($this->mode == 'update') {
     $menu_item_id_new = gr('menu_item_id_new', 'int');
     $action_object_new = gr('action_object_new');
     $action_method_new = gr('action_method_new');
-    $is_dynamic_new = gr('is_dynamic_new');
+    $is_dynamic_new = gr('is_dynamic_new','int');
     $linked_object_new = gr('linked_object_new');
     $linked_property_new = gr('linked_property_new');
-    $condition_new = gr('condition_new');
+    $condition_new = gr('condition_new','int');
     $condition_value_new = gr('condition_value_new');
     $condition_advanced_new = gr('condition_advanced_new');
     $switch_scene_new = gr('switch_scene_new');
@@ -229,6 +230,13 @@ if ($this->mode == 'update') {
         if ($state_rec['ID']) {
             SQLUpdate('elm_states', $state_rec);
         } else {
+            $state_rec['ID'] = SQLInsert('elm_states', $state_rec);
+            $state_id = $state_rec['ID'];
+        }
+    } elseif ($element['TYPE'] == 'slider') {
+        if (!$state_rec['ID']) {
+            $state_rec['TITLE'] = '1';
+            $state_rec['ELEMENT_ID'] = $element['ID'];
             $state_rec['ID'] = SQLInsert('elm_states', $state_rec);
             $state_id = $state_rec['ID'];
         }

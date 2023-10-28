@@ -138,11 +138,11 @@
                         <option value="img"[#if ELEMENT_TYPE=="img"#] selected[#endif#]><#LANG_IMAGE#>
                         <option value="html"[#if ELEMENT_TYPE=="html"#] selected[#endif#]>HTML
                         <option value="container"[#if ELEMENT_TYPE=="container"#] selected[#endif#]><#LANG_CONTAINER#>
+                        <option value="slider"[#if ELEMENT_TYPE=="slider"#] selected[#endif#]><#LANG_SLIDER#>
                         <option value="mode"[#if ELEMENT_TYPE=="mode"#] selected[#endif#]><#LANG_MODE_SWITCH#>
                         <option value="button"[#if ELEMENT_TYPE=="button"#] selected[#endif#]><#LANG_BUTTON#>
                         <option value="nav"[#if ELEMENT_TYPE=="nav"#] selected[#endif#]><#LANG_NAV_LINK#>
                         <option value="navgo"[#if ELEMENT_TYPE=="navgo"#] selected[#endif#]><#LANG_NAV_LINK_GO#>
-                        <option value="s3d"[#if ELEMENT_TYPE=="s3d"#] selected[#endif#]>3D scene
                         <option value="menuitem"[#if ELEMENT_TYPE=="menuitem"#] selected[#endif#]>Menu Control
                         <option value="object"[#if ELEMENT_TYPE=="object"#] selected[#endif#]><#LANG_OBJECT#>
                     </select>
@@ -151,6 +151,7 @@
                     [#if ELEMENT_TYPE=="img"#]<#LANG_IMAGE#>[#endif#]
                     [#if ELEMENT_TYPE=="html"#]HTML[#endif#]
                     [#if ELEMENT_TYPE=="container"#]<#LANG_CONTAINER#>[#endif#]
+                    [#if ELEMENT_TYPE=="slider"#]<#LANG_SLIDER#>[#endif#]
                     [#if ELEMENT_TYPE=="informer"#]<#LANG_INFORMER#>[#endif#]
                     [#if ELEMENT_TYPE=="switch"#]<#LANG_ON_OFF_SWITCH#>[#endif#]
                     [#if ELEMENT_TYPE=="mode"#]<#LANG_MODE_SWITCH#>[#endif#]
@@ -158,7 +159,6 @@
                     [#if ELEMENT_TYPE=="button"#]<#LANG_BUTTON#>[#endif#]
                     [#if ELEMENT_TYPE=="nav"#]<#LANG_NAV_LINK#>[#endif#]
                     [#if ELEMENT_TYPE=="navgo"#]<#LANG_NAV_LINK_GO#>[#endif#]
-                    [#if ELEMENT_TYPE=="s3d"#]3D scene[#endif#]
                     [#if ELEMENT_TYPE=="menuitem"#]Menu Control[#endif#]
                     [#if ELEMENT_TYPE=="object"#]<#LANG_OBJECT#>[#endif#]
                     <input type="hidden" name="type" value="[#ELEMENT_TYPE#]">
@@ -261,7 +261,7 @@
             <!--#
             [#if (ELEMENT_TYPE=="informer" || ELEMENT_TYPE=="switch" || ELEMENT_TYPE=="button" || ELEMENT_TYPE=="navgo" || ELEMENT_TYPE=="nav" || ELEMENT_TYPE=="warning")#]
             #-->
-            [#if ELEMENT_TYPE!="device"#]
+            [#if ELEMENT_TYPE!="device" && ELEMENT_TYPE!="slider"#]
             [#if (STYLES) || (COMMON_STYLES)#]
             <div class="form-group">
                 <label class="col-lg-4 control-label"><#LANG_STYLE#><#LANG_HCB#>elemen_style<#LANG_HCE#></label>
@@ -292,24 +292,32 @@
             [#else STYLES#]
             <input type="hidden" name="css_style" value='default'>
             [#endif STYLES#]
-            [#else ELEMET_TYPE#]
+            [#else ELEMENT_TYPE#]
             <input type="hidden" name="css_style" value='default'>
             [#endif ELEMENT_TYPE#]
+
 
             <div class="form-group">
                 <label class="col-lg-4 control-label"><#LANG_APPEAR_ANIMATION#><#LANG_HCB#>appear_animation<#LANG_HCE#></label>
                 <div class="controls">
                     <select name="appear_animation" class="form-control">
+                        [#if ELEMENT_TYPE!="slider"#]
                         <option value="0">None
                         <option value="1"[#if ELEMENT_APPEAR_ANIMATION="1"#] selected[#endif#]><#LANG_APPEAR_LEFTTORIGHT#>
+                        [#endif ELEMENT_TYPE#]
                         <option value="2"[#if ELEMENT_APPEAR_ANIMATION="2"#] selected[#endif#]><#LANG_APPEAR_RIGHTTOLEFT#>
+                        [#if ELEMENT_TYPE!="slider"#]
                         <option value="3"[#if ELEMENT_APPEAR_ANIMATION="3"#] selected[#endif#]><#LANG_APPEAR_TOPTOBOTTOM#>
+                        [#endif ELEMENT_TYPE#]
                         <option value="4"[#if ELEMENT_APPEAR_ANIMATION="4"#] selected[#endif#]><#LANG_APPEAR_BOTTOMTOTOP#>
                         <option value="5"[#if ELEMENT_APPEAR_ANIMATION="5"#] selected[#endif#]><#LANG_APPEAR_BLINK#>
+                        [#if ELEMENT_TYPE!="slider"#]
                         <option value="6"[#if ELEMENT_APPEAR_ANIMATION="6"#] selected[#endif#]><#LANG_APPEAR_SCALE#>
+                        [#endif ELEMENT_TYPE#]
                     </select>
                 </div>
             </div>
+
 
 
             <script language="javascript">
@@ -369,7 +377,7 @@
             <div class='advanced_options' [#if ELEMENT_EASY_CONFIG="1" || ELEMENT_ID=""#]style="display:none"[#endif#]>
 
 
-                [#if (ELEMENT_TYPE!="container")#]
+                [#if (ELEMENT_TYPE!="container") && (ELEMENT_TYPE!="slider")#]
                 <div class="form-group">
                     <label class="col-lg-4 control-label"><#LANG_PLACE_IN_CONTAINER#><#LANG_HCB#>element_placeincontainer<#LANG_HCE#></label>
                     <div class="controls">
@@ -384,7 +392,7 @@
                 [#endif ELEMENT_TYPE#]
 
 
-                [#if ELEMENT_TYPE=="html" || ELEMENT_TYPE=="s3d" || ELEMENT_TYPE=="container" || ELEMENT_TYPE=="menuitem"#]
+                [#if ELEMENT_TYPE=="html" || ELEMENT_TYPE=="container" || ELEMENT_TYPE=="slider" || ELEMENT_TYPE=="menuitem"#]
                 <!-- WIDTH (int) -->
                 <div class="form-group">
                     <label class="col-lg-4 control-label"><#LANG_WIDTH#></label>
@@ -402,16 +410,7 @@
                 </div>
                 [#endif ELEMENT_TYPE#]
 
-                [#if "<#ELEMENT_TYPE#>"=="s3d"#]
-                <div class="form-group">
-                    <label class="col-lg-4 control-label">3D Scene (json)</label>
-                    <div class="controls">
-                        <input type="text" name="s3d_scene" class="form-control" id="s3d_scene" value="[#ELEMENT_S3D_SCENE#]" onclick="openFileBrowser('s3d_scene');" size="40">
-                    </div>
-                </div>
-                [#endif ELEMENT_TYPE#]
-
-                [#if (ELEMENT_TYPE=="html") || (ELEMENT_TYPE=="container") || (ELEMENT_TYPE=="s3d") || (ELEMENT_TYPE=="menuitem") || (ELEMENT_TYPE=="device")#]
+                [#if (ELEMENT_TYPE=="html") || (ELEMENT_TYPE=="container") || (ELEMENT_TYPE=="menuitem") || (ELEMENT_TYPE=="device") || (ELEMENT_TYPE=="slider")#]
                 <div class="form-group">
                     <label class="col-lg-4 control-label"><#LANG_USE_BACKGROUND#><#LANG_HCB#>element_usebackgound<#LANG_HCE#></label>
                     <div class="controls">
@@ -422,17 +421,25 @@
                 </div>
                 [#endif ELEMENT_TYPE#]
 
-                [#if (ELEMENT_TYPE=="html") || (ELEMENT_TYPE=="s3d")#]
+                [#if ELEMENT_TYPE="html" || ELEMENT_TYPE="slider"#]
                 <div class="form-group">
                     <label class="col-lg-4 control-label"><#LANG_USE_JAVASCRIPT#><#LANG_HCB#>element_usejavascript<#LANG_HCE#></label>
                     <div class="controls">
                         <input  type="checkbox" name="use_javascript" value="1"[#if ELEMENT_JAVASCRIPT!=""#] checked[#endif#] onClick='$("#element_javascript").toggle();'> <#LANG_YES#>
                         <div id="element_javascript"[#if ELEMENT_JAVASCRIPT=""#] style="display:none"[#endif#]>
                             <textarea  name="javascript" rows="6" class="form-control">[#ELEMENT_JAVASCRIPT#]</textarea>
+                            [#if ELEMENT_TYPE="slider"#]
+                            <#LANG_EXAMPLE#>:
+<pre class="code">speed: 800,
+autoplay: false,
+controls: true</pre><div class="help-block"><a href="http://ganlanyuan.github.io/tiny-slider/#options" target="blank"><#LANG_MORE_INFO#>...</a></div>
+                            [#endif#]
                         </div>
                     </div>
                 </div>
+                [#endif ELEMENT_TYPE#]
 
+                [#if ELEMENT_TYPE="html"#]
                 <div class="form-group">
                     <label class="col-lg-4 control-label"><#LANG_USE_CSS#><#LANG_HCB#>element_usecss<#LANG_HCE#></label>
                     <div class="controls">
@@ -444,7 +451,7 @@
                 </div>
                 [#endif ELEMENT_TYPE#]
 
-                [#if (ELEMENT_TYPE!="container") && (ELEMENT_TYPE!="s3d") && (ELEMENT_TYPE!="device")#]
+                [#if (ELEMENT_TYPE!="container") && (ELEMENT_TYPE!="device") && (ELEMENT_TYPE!="slider")#]
                 <div class="form-group">
                     <label class="col-lg-4 control-label"><#LANG_SMART_REPEAT#><#LANG_HCB#>element_smartrepeat<#LANG_HCE#></label>
                     <div class="controls">

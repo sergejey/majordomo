@@ -1023,6 +1023,7 @@ $dictionary = array(
     'POSITION_TYPE_SIDE' => 'Друг за другом',
 
     'CONTAINER' => 'Контейнер',
+    'SLIDER' => 'Слайдер',
     'INFORMER' => 'Информер',
 
     'NAV_LINK' => 'Нав. ссылка (новое окно)',
