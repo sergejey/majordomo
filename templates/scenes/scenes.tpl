@@ -53,6 +53,7 @@
 
 {foreach $RESULT as $SCENE}
 {foreach $SCENE.ALL_ELEMENTS as $ELEMENT}
+{if $ELEMENT.TYPE!='slider'}
 {if $ELEMENT.APPEAR_ANIMATION=='1'}
 .element_{$ELEMENT.ID} { animation: lefttoright 1s ease-out; }
 {/if}
@@ -71,8 +72,7 @@
 {if $ELEMENT.APPEAR_ANIMATION=='6'}
 .element_{$ELEMENT.ID} { animation: scale 0.5s ease-out; }
 {/if}
-
-
+{/if}
 {/foreach}
 {/foreach}
 
@@ -107,24 +107,11 @@
 </div>
 {/if}
         {if $TOTAL_SCENES!="1"}
-        <style>{include './slider.css'}</style>
-        <script type="text/javascript" src="{$smarty.const.ROOTHTML}js/easySlider1.7.js?v=2019-02-27"></script>
+            <style>{include './slider.css'}</style>
+            <script type="text/javascript" src="{$smarty.const.ROOTHTML}js/easySlider1.7.js?v=2019-02-27"></script>
         {/if}
 
         <script type="text/javascript" language="javascript">
-
-            /*
-$.fn.customContextMenu = function(callBack){
-    $(this).each(function(){
-        $(this).bind("contextmenu",function(e){
-             e.preventDefault();
-             callBack(e);
-        });
-    }); 
-}
-*/
-
-
 
         var codeHash=new Object();
         var firstRun=1;
@@ -384,53 +371,7 @@ $.fn.customContextMenu = function(callBack){
               }
 
 
-              if (elem.hasClass('s3d_state')) {
 
-
-               if (elem.data('s3d_object')) {
-                var object3d = scene.getObjectByName( elem.data('s3d_object'), true );
-                if (obj[i].STATE=='1') {
-                 object3d.visible=true;
-                } else {
-                 object3d.visible=false;
-                }
-               }
-
-
-               if (elem.data('s3d_camera')) {
-                if (obj[i].STATE=='1') {
-                  new_camera = scene.getObjectByName( elem.data('s3d_camera'), true );;
-                 }else {
-                  new_camera = default_camera;
-                 }
-
-                        var new_position = new_camera.position.clone();
-                        var new_rotation = new_camera.rotation.clone();
-                        var new_quaternion = new_camera.quaternion.clone();
-
-                        //newlookAtVector = new THREE.Vector3(new_camera.matrix[8], new_camera.matrix[9], new_camera.matrix[10]);
-
-                        camera.rotation.clone(new_rotation);
-                        camera.quaternion.clone(new_quaternion);
-
-                        newlookAtVector = new THREE.Vector3(0, 0, -1);
-                        newlookAtVector.applyEuler(new_camera.rotation, new_camera.eulerOrder);
-
-
-                        new TWEEN.Tween( camera.position ).to( {
-                                x: new_position.x,
-                                y: new_position.y,
-                                z: new_position.z}, 600 ).onUpdate(function () {
-
-                         camera.lookAt(newlookAtVector);
-
-                        }).onComplete(function () {
-
-                         camera.lookAt(newlookAtVector);
-        
-                        }).easing( TWEEN.Easing.Sinusoidal.Out).start();
-               }
-              }
 
 
              }
@@ -469,7 +410,6 @@ $.fn.customContextMenu = function(callBack){
            processCheckStates(data);
            firstRun=0;
            refreshRun=0;
-           //tryWebSockets();
            refreshTimer=setTimeout('refreshRun=1;', 5*60*1000);
            checkTimer=setTimeout('checkAllStates();', 3000);
           });
@@ -535,8 +475,6 @@ $.fn.customContextMenu = function(callBack){
                             if (key == 'addwidget') {
                                 addWidgetClicked();
                             }
-                            //var m = "clicked: " + key;
-                            //window.console && console.log(m) || alert(m);
                         },
                         items: {
                             {literal}"add": {name:{/literal}"{$smarty.const.LANG_ADD_NEW_ELEMENT}", icon: "add"},
@@ -572,7 +510,6 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
             if ( $(this).is('.ui-draggable-dragging')) {
                   return;
             }
-            // click action here
             return stateClickedEdit($(this).attr("id"));
       });
 
@@ -602,19 +539,6 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
                         }});
 
 
-      {foreach $RESULT as $SCENE}
-                    /*
-      $("#scene_wallpaper_{$SCENE.ID}").customContextMenu(function(e){
-       contextTop=e.pageY;
-       contextLeft=e.pageX;
-       $("#contextMenuDiv").css({ "top": e.pageY+"px", "left": e.pageX+"px" });
-       $('#contextMenuDiv').show();
-       contextTimeout=setTimeout("$('#contextMenuDiv').hide();", 3*1000);
-       return false;
-      });
-      */
-      {/foreach}
- 
                  {/if}
 
                  {if $SCENE_WALLPAPER!=""}
@@ -749,115 +673,68 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
   {elements items=$ELEMENT.ELEMENTS}
  </div>
  {else}
- {if $ELEMENT.TYPE=="s3d"}
-  <div
-   class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE}{if $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if} state_{$TITLE}{if $ELEMENT.BACKGROUND=="1"} html_background{/if}{if $ELEMENT.POSITION_TYPE=="1"} inlineblock{/if}{if isset($DRAGGABLE) && $ELEMENT.POSITION_TYPE=="0"} draggable{/if}"
-   id='canvas_{$ELEMENT.ID}'
-   style="
-   background-color:red;
-   {if isset($ELEMENT.POSITION_TYPE) && $ELEMENT.POSITION_TYPE=="0"}position:absolute;left:{$ELEMENT.LEFT}px;top:{$ELEMENT.TOP}px;{/if}
-   {if isset($ELEMENT.ZINDEX) && $ELEMENT.ZINDEX!=""}z-index:{$ELEMENT.ZINDEX};{/if}
-   {if isset($ELEMENT.WIDTH) && $ELEMENT.WIDTH!="0"}width:{$ELEMENT.WIDTH}px;{/if}{if isset($ELEMENT.HEIGHT) && $ELEMENT.HEIGHT!="0"}height:{$ELEMENT.HEIGHT}px;{/if}
-   display:inline-block;"></div>
 
-<script language="javascript" src="{$smarty.const.ROOTHTML}3rdparty/threejs/libs/tween.min.js"></script>
-<script language="javascript" src="{$smarty.const.ROOTHTML}3rdparty/threejs/three.min.js"></script>
-<script src="{$smarty.const.ROOTHTML}3rdparty/threejs/loaders/SceneLoader.js" language="javascript"></script>
-   <script language="javascript">
-
-                        var container;
-                        var camera, scene, loaded;
-                        var renderer;
-                        var mixers = [];
-                        var rotatingObjects = [];
-                        var clock = new THREE.Clock();
-                        var objects = [];
-
-    var container = document.getElementById('canvas_{$ELEMENT.ID}');
-    var camera = new THREE.PerspectiveCamera( 75, {$ELEMENT.WIDTH}/{$ELEMENT.HEIGHT}, 0.1, 1000 );
-    var default_camera = new THREE.PerspectiveCamera( 75, {$ELEMENT.WIDTH}/{$ELEMENT.HEIGHT}, 0.1, 1000 );
-
-    var renderer = new THREE.WebGLRenderer();
-    renderer.setSize( {$ELEMENT.WIDTH}, {$ELEMENT.HEIGHT} );
-    renderer.domElement.style.position = "relative";
-    container.appendChild( renderer.domElement );
-    renderer.gammaInput = true;
-    renderer.gammaOutput = true;
-
-    var scene = new THREE.Scene();
-
-
-var loader = new THREE.SceneLoader();
-var sceneURL='{$ELEMENT.S3D_SCENE}'; //
-
-// load a resource
-loader.load(
-        sceneURL,
-        function ( result ) {
-           loaded = result;
-           scene = loaded.scene;
-           for (var obj in loaded.objects ) {
-            objects.push(loaded.objects[obj]);
-           }
-           if (loaded.currentCamera) {
-            loaded.currentCamera.aspect = {$ELEMENT.WIDTH}/{$ELEMENT.HEIGHT};
-            loaded.currentCamera.updateProjectionMatrix();
-            default_camera=loaded.currentCamera;
-            camera = default_camera.clone();
-           }
-
-        }
-);
-
-
-                        function render() {
-                                requestAnimationFrame( render );
-                                renderer.render( scene, camera );
-                                TWEEN.update();
-                        }
-
-
-     render();
-
-
-// projector
-raycaster = new THREE.Raycaster();
-
-// listeners
-document.addEventListener( 'mousedown', onDocumentMouseDown, false)
-
-function onDocumentMouseDown( event ) {
-    event.preventDefault();
-                var mouse = new THREE.Vector2();
-                mouse.x = ( (event.clientX-{$ELEMENT.LEFT}) / renderer.domElement.width ) * 2 - 1;
-                mouse.y = - ( (event.clientY-{$ELEMENT.TOP}) / renderer.domElement.height ) * 2 + 1;
-                raycaster.setFromCamera( mouse, camera );
-
-        var intersects = raycaster.intersectObjects( objects );
-
-    if ( intersects.length > 0 ) {
-     console.log('Clicked on '+intersects[0].object.name);
-     {foreach $STATES as $STATE}
-      {if $STATE.S3D_OBJECT!=""}
-      if (intersects[0].object.name=='{$STATE.S3D_OBJECT}') {
-       stateClicked('{$STATE.ID}');
-      }{/if}
-     {/foreach}
-    }
-}
-
-
-   </script>
-   <div style="display:none">
-    {foreach $ELEMENT.STATES as $STATE}
-    <div class="element_{$ELEMENT.ID} type_{$ELEMENT.TYPE} state_{$STATE.TITLE} s3d_state" id="state_{$STATE.ID}"
-    {if $STATE.S3D_OBJECT!=""} data-s3d_object='{$STATE.S3D_OBJECT}'{/if}
-    {if $STATE.S3D_CAMERA!=""} data-s3d_camera='{$STATE.S3D_CAMERA}'{/if}
-    {if !isset($DRAGGABLE)}onClick="stateClicked('{$STATE.ID}');"{/if}
-    ></div>{/foreach}
-   </div>
-
- {else}
+     {if $ELEMENT.TYPE=='slider'}
+     {if $sliderLoaded!='1'}
+        <link rel="stylesheet" href="{$smarty.const.ROOTHTML}3rdparty/tinyslider/tiny-slider.css">
+        <script src="{$smarty.const.ROOTHTML}3rdparty/tinyslider/tiny-slider.js"></script>
+        {assign var="sliderLoaded" value="1"}
+     {/if}
+     <div
+          class="element_{$ELEMENT.ID}
+          element_state
+          type_{$ELEMENT.TYPE}
+          {if $ELEMENT.CSS_STYLE!=""} style_{$ELEMENT.CSS_STYLE}{/if}
+          state_{$STATE.TITLE}
+          {if $ELEMENT.BACKGROUND=="1"} html_background{/if}
+          {if $ELEMENT.POSITION_TYPE=="1"} inlineblock{/if}
+          {if isset($DRAGGABLE) && $ELEMENT.POSITION_TYPE=="0"} draggable
+           {if $ELEMENT.RESIZABLE=="1"} resizable {$ELEMENT.RESIZABLE}{/if}
+          {/if}"
+          id = "state_element_{$ELEMENT.ID}"
+             style="
+             {if $ELEMENT.POSITION_TYPE=="0"}position:absolute;left:{$ELEMENT.LEFT}px;top:{$ELEMENT.TOP}px;{/if}
+             {if isset($ELEMENT.ZINDEX) && $ELEMENT.ZINDEX!=""}z-index:{$ELEMENT.ZINDEX};{/if}
+             {if $ELEMENT.WIDTH!="0"}width:{$ELEMENT.WIDTH}px;{/if}{if $ELEMENT.HEIGHT!="0"}height:{$ELEMENT.HEIGHT}px;{/if}
+             ">
+         <div id="slider_body_{$ELEMENT.ID}" style="width:100%">
+         {foreach $ELEMENT.STATES as $STATE}
+             <div
+                     class="element_{$ELEMENT.ID}
+                     state_{$STATE.TITLE}"
+                     id="state_{$STATE.ID}"
+                     {if $STATE.SCRIPT_ID!="0" || $STATE.HOMEPAGE_ID!="0" || $STATE.OPEN_SCENE_ID!="0" || $STATE.EXT_URL!="" || $STATE.MENU_ITEM_ID!="0" || $STATE.ACTION_METHOD!="" || $STATE.CODE!=""}
+                         {if !isset($DRAGGABLE)}
+                             onClick="stateClicked('{$STATE.ID}');"
+                         {/if}
+                     {/if}
+                     style="{if $STATE.SCRIPT_ID!="0" || $STATE.MENU_ITEM_ID!="0" || $STATE.ACTION_METHOD!="" || $STATE.EXT_URL!="" || $STATE.HOMEPAGE_ID!="0" || $STATE.OPEN_SCENE_ID!="0" || $STATE.CODE!=""}cursor:pointer;{/if}"
+             >{$STATE.HTML}</div>
+         {/foreach}
+         </div>
+     </div>
+     <script type="text/javascript">
+         $(document).ready(function() {
+             // http://ganlanyuan.github.io/tiny-slider/
+             var slider_{$ELEMENT.ID} = tns({
+                 container: '#slider_body_{$ELEMENT.ID}',
+                 {if $ELEMENT.APPEAR_ANIMATION=='4'} // bottom-to-top
+                 axis: 'vertical',
+                 {/if}
+                 {if $ELEMENT.APPEAR_ANIMATION=='5'} // blink
+                 mode: 'gallery',
+                 {/if}
+                 controls: false,
+                 nav: false,
+                 autoplay: true,
+                 autoplayButtonOutput: false,
+                 {if $ELEMENT.JAVASCRIPT!=""}
+                 {$ELEMENT.JAVASCRIPT}
+                 {/if}
+             });
+         });
+     </script>
+     {else}
 
  {foreach $ELEMENT.STATES as $STATE}
      <div
@@ -885,19 +762,23 @@ function onDocumentMouseDown( event ) {
                      {if $STATE.STATE!="1"}display:none;{else}display:inline-block;{/if}">{if $ELEMENT.TYPE=="img"}<img src="{$STATE.IMAGE}" border="0">{/if}<span>{$STATE.HTML}</span></div>
  {/foreach}
 
- {/if}
- {/if}
-
  {if $ELEMENT.CSS!=""}
- <style>
-  {$ELEMENT.CSS}
- </style>
+     <style>
+         {$ELEMENT.CSS}
+     </style>
  {/if}
  {if $ELEMENT.JAVASCRIPT!=""}
- <script language="javascript">
-  {$ELEMENT.JAVASCRIPT}
- </script>
+     <script language="javascript">
+         {$ELEMENT.JAVASCRIPT}
+     </script>
  {/if}
+
+     {/if}
+
+
+ {/if}
+
+
  <!-- /element {$ELEMENT.ID} -->
  {/foreach}
  {/function}
