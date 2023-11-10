@@ -62,7 +62,7 @@ while (1) {
                 $latest_sent = time();
                 // saveToCache("MJD:$cycleVarName", $latest_sent);
                 setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', $latest_sent, 1);
-                setTimeout('restartWebSocket', 'sg("cycle_websocketsRun","");sg("cycle_websocketsControl","restart");', 5 * 60);
+              //  setTimeout('restartWebSocket', 'sg("cycle_websocketsRun","");sg("cycle_websocketsControl","restart");', 5 * 60);
             } else {
                 echo date("H:i:s") . ' Error while posting to websocket.' . "\n";
             }

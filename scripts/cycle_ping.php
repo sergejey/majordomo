@@ -25,12 +25,15 @@ echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 
 while (1)
 {
-   if (time() - $checked_time > 10)
+    $time = time();
+   if ( $time - $checked_time_cycle > 50)
    {
-      $checked_time = time();
-      setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-      // saveToCache("MJD:$cycleVarName", $checked_time);
-      // checking all hosts
+      $checked_time_cycle = $time;
+      setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', $checked_time_cycle, 1);
+   }
+      if ( $time - $checked_time > 10)
+   {
+      $checked_time = $time;
       $pinghosts->checkAllHosts();
    }
 

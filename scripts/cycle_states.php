@@ -46,15 +46,21 @@ if (isset($_GET['once'])) {
     echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 
     while (1) {
-        if (time() - $checked_time > 10) {
-            setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-            $checked_time = time();
-            // saveToCache("MJD:$cycleVarName", $checked_time);
+        $time = time();
+        if ($time - $checked_time > 10) {
+            $checked_time = $time;
 
             for ($i = 0; $i < $total; $i++) {
                 callMethod($objects[$i]['TITLE'] . '.checkState');
             }
         }
+        
+        if ($time - $checked_time_cycle > 50) {
+            $checked_time_cycle = $time;
+            setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', $time, 1);
+         
+        }
+
 
         if (isRebootRequired() || isset($_GET['onetime'])) {
             exit;
