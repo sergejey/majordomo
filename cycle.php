@@ -6,7 +6,7 @@
  * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
  * @version 1.4
  */
-
+//DebMes("Starting service", 'Cycle_c');
 chdir(dirname(__FILE__));
 
 include_once("./config.php");
@@ -305,7 +305,8 @@ $reboot_timer = 0;
 if (is_dir("./scripts")) {
     if ($lib_dir = opendir("./scripts")) {
         while (($lib_file = readdir($lib_dir)) !== false) {
-            if ((preg_match("/^cycle_.+?\.php$/", $lib_file)))
+            if ((preg_match("/^cycle_.+?\.(php|py)$/", $lib_file)))
+            
                 $cycles[] = './scripts/' . $lib_file;
         }
         closedir($lib_dir);
@@ -319,11 +320,17 @@ if (defined('PATH_TO_PHP'))
 else
     $threads->phpPath = IsWindowsOS() ? '..\server\php\php.exe' : 'php';
 
+//Define('PYTHON_PATH','python'); // path to python
+if (defined('PYTHON_PATH'))
+    $threads->pyPath = PYTHON_PATH;
+
+
 foreach ($cycles as $path) {
 
     if (file_exists($path)) {
 
-        if (preg_match('/(cycle_.+?)\.php/is', $path, $m)) {
+        //if (preg_match('/(cycle_.+?)\.php/is', $path, $m)) {
+        if (preg_match('/(cycle_.+?)\.(php|py)/is', $path, $m)) {
             $title = $m[1];
             if (getGlobal($title . 'Disabled')) {
                 DebMes("Cycle " . $title . " disabled. Skipping.");
@@ -334,7 +341,7 @@ foreach ($cycles as $path) {
             }
         }
 
-
+        DebMes("Starting service "  . $path , 'Cycle_c');
         DebMes("Starting " . $path . " ... ", 'threads');
         echo "Starting " . $path . " ... \n";
 
@@ -389,8 +396,9 @@ $thisComputerObject = getObject('Computer.ThisComputer');
 
 while (false !== ($result = $threads->iteration())) {
 
-    if ((time() - $last_cycles_control_check) >= 5 || !empty($result)) {
-
+//    if ((time() - $last_cycles_control_check) >= 5 || !empty($result)) {
+    if ((time() - $last_cycles_control_check) >= 60 || !empty($result)) {
+        
         $last_cycles_control_check = time();
         $cyclesControls = $cyclesTimestamps = array();
         $tmpcyclesTimestamps = SQLSelect("SELECT * FROM cached_cycles;");
@@ -422,7 +430,8 @@ while (false !== ($result = $threads->iteration())) {
                     $to_stop[$title] = time();
                 } elseif ($control == 'restart' || $control == 'start') {
                     $to_stop[$title] = time();
-                    $to_start[$title] = time() + 30;
+                   // $to_start[$title] = time() + 30;
+                    $to_start[$title] = time() + 60;
                 }
                 setGlobal($title . 'Control', '');
             }
@@ -432,17 +441,18 @@ while (false !== ($result = $threads->iteration())) {
         $is_running = array();
 
         foreach ($threads->commandLines as $id => $cmd) {
-            if (preg_match('/(cycle_.+?)\.php/is', $cmd, $m)) {
+            if (preg_match('/(cycle_.+?)\.(php|py)/is', $cmd, $m)) {
                 $title = $m[1];
                 $is_running[$title] = $id;
                 if (!isset($started_when[$title])) $started_when[$title] = time();
-                if ((time() - $started_when[$title]) > 30 && !in_array($title, $auto_restarts)) {
+               // if ((time() - $started_when[$title]) > 30 && !in_array($title, $auto_restarts)) {
+                if ((time() - $started_when[$title]) > 60 && !in_array($title, $auto_restarts)) {
                     DebMes("Adding $title to auto-recovery list", 'threads');
                     $auto_restarts[] = $title;
                 }
                 $cycle_updated_timestamp = $cyclesTimestamps[$title . 'Run'];
 
-                if (!isset($to_start[$title]) && $cycle_updated_timestamp && in_array($title, $auto_restarts) && ((time() - $cycle_updated_timestamp) > 30 * 60)) { //
+                if (!isset($to_start[$title]) && $cycle_updated_timestamp && in_array($title, $auto_restarts) && ((time() - $cycle_updated_timestamp) > 30 * 60)) { 
                     DebMes("Looks like $title is dead (updated: " . date('Y-m-d H:i:s', $cycle_updated_timestamp) . "). Need to recovery", 'threads');
                     registerError('cycle_hang', $title);
                     setGlobal($title . 'Control', 'restart');
@@ -485,10 +495,14 @@ while (false !== ($result = $threads->iteration())) {
         }
     }
 
+
+
     foreach ($to_start as $title => $tm) {
         if ($tm <= time()) {
             if (!isset($is_running[$title])) {
                 $cmd = './scripts/' . $title . '.php';
+                if (!file_exists($cmd)) 
+                    $cmd = './scripts/' . $title . '.py';
                 DebMes("Starting service " . $title . ' (' . $cmd . ')', 'threads');
                 $pipe_id = $threads->newThread($cmd);
                 $is_running[$title] = $pipe_id;
@@ -502,14 +516,16 @@ while (false !== ($result = $threads->iteration())) {
     }
 
     if (!empty($result)) {
-        $closePattern = '/THREAD CLOSED:.+?(\.\/scripts\/cycle\_.+?\.php)/is';
+        //$closePattern = '/THREAD CLOSED:.+?(\.\/scripts\/cycle\_.+?\.php)/is';
+        $closePattern = '/THREAD CLOSED:.+?(\.\/scripts\/cycle\_.+?\.(php|py))/is';
         if (preg_match_all($closePattern, $result, $matches) && !isRebootRequired()) {
             $total_m = count($matches[1]);
             for ($im = 0; $im < $total_m; $im++) {
                 $closed_thread = $matches[1][$im];
                 $cycle_title = '';
                 $need_restart = 0;
-                if (preg_match('/(cycle_.+?)\.php/is', $closed_thread, $m)) {
+                //if (preg_match('/(cycle_.+?)\.php/is', $closed_thread, $m)) {
+                if (preg_match('/(cycle_.+?)\.(php|py)/is', $closed_thread, $m)) {
                     $cycle_title = $m[1];
                     DebMes("Thread closed: " . $cycle_title, 'threads');
                     unset($to_stop[$cycle_title]);
