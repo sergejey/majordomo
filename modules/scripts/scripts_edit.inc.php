@@ -8,10 +8,10 @@ if ($this->owner->name == 'panel') {
 $table_name = 'scripts';
 $rec = SQLSelectOne("SELECT * FROM $table_name WHERE ID='$id'");
 
-if(defined('SETTINGS_CODEEDITOR_TURNONSETTINGS')) {
-	$out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = SETTINGS_CODEEDITOR_TURNONSETTINGS;
-	$out['SETTINGS_CODEEDITOR_UPTOLINE'] = SETTINGS_CODEEDITOR_UPTOLINE;
-	$out['SETTINGS_CODEEDITOR_SHOWERROR'] = SETTINGS_CODEEDITOR_SHOWERROR;
+if (defined('SETTINGS_CODEEDITOR_TURNONSETTINGS')) {
+    $out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = SETTINGS_CODEEDITOR_TURNONSETTINGS;
+    $out['SETTINGS_CODEEDITOR_UPTOLINE'] = SETTINGS_CODEEDITOR_UPTOLINE;
+    $out['SETTINGS_CODEEDITOR_SHOWERROR'] = SETTINGS_CODEEDITOR_SHOWERROR;
 }
 if ($this->mode == 'update') {
 
@@ -43,28 +43,28 @@ if ($this->mode == 'update') {
 
     //echo $code;exit;
 
-    $old_code=$rec['CODE'];
+    $old_code = $rec['CODE'];
     $rec['CODE'] = $code;
-	
+
     if ($rec['CODE'] != '') {
         //echo $content;
-		
+
         $errors = php_syntax_error($rec['CODE']);
 
         if ($errors) {
-            $out['ERR_LINE'] = preg_replace('/[^0-9]/', '', substr(stristr($errors, 'php on line '), 0, 18))-2;
+            $out['ERR_LINE'] = preg_replace('/[^0-9]/', '', substr(stristr($errors, 'php on line '), 0, 18)) - 2;
             $out['ERR_CODE'] = 1;
-			$errorStr = explode('Parse error: ', htmlspecialchars(strip_tags(nl2br($errors))));
-			$errorStr = explode('Errors parsing', $errorStr[1]);
-			$errorStr = explode(' in ', $errorStr[0]);
+            $errorStr = explode('Parse error: ', htmlspecialchars(strip_tags(nl2br($errors))));
+            $errorStr = explode('Errors parsing', $errorStr[1]);
+            $errorStr = explode(' in ', $errorStr[0]);
             if ($errorStr[0]) {
                 $out['ERRORS'] = $errorStr[0];
-                $out['ERR_FULL'] = $errorStr[0].' '.$errorStr[1];
+                $out['ERR_FULL'] = $errorStr[0] . ' ' . $errorStr[1];
             } else {
                 $out['ERRORS'] = $errors;
                 $out['ERR_FULL'] = nl2br($errors);
             }
-			$out['ERR_OLD_CODE'] = $old_code;
+            $out['ERR_OLD_CODE'] = $old_code;
             $ok = 0;
         }
     }
@@ -72,8 +72,8 @@ if ($this->mode == 'update') {
     global $run_periodically;
     global $run_days;
     global $run_minutes;
-    global $run_hours;	
- 
+    global $run_hours;
+
     if ($run_periodically && isset($run_days)) {
         $rec['RUN_PERIODICALLY'] = (int)$run_periodically;
         $rec['RUN_DAYS'] = @implode(',', $run_days);
@@ -85,54 +85,54 @@ if ($this->mode == 'update') {
         $rec['RUN_PERIODICALLY'] = 0;
         $rec['RUN_DAYS'] = false;
         $rec['RUN_TIME'] = false;
-	}
-	
+    }
+
     //$rec['EXECUTED']='0000-00-00 00:00:00';
     unset($rec['EXECUTED']);
 
     global $auto_link;
-    $rec['AUTO_LINK']=(int)$auto_link;
+    $rec['AUTO_LINK'] = (int)$auto_link;
 
     //UPDATING RECORD
     if ($ok) {
         $linked_object = '';
         $linked_property = '';
 
-        if (!isset($_REQUEST['auto_link']) || $_REQUEST['auto_link']==1) {
-            if (preg_match('/^if(.+?){/is', $rec['CODE'], $m)) {
-                $conditions = trim($m[1], '()');
-                if (preg_match('/getglobal\(["\'](\w+)\.(\w+)["\']\)/is', $conditions, $m2)) {
-                    $linked_object=$m2[1];
-                    $linked_property=$m2[2];
-                } elseif (preg_match('/gg\(["\'](\w+)\.(\w+)["\']\)/is', $conditions, $m2)) {
-                    $linked_object=$m2[1];
-                    $linked_property=$m2[2];
-                } elseif (preg_match('/timeis/is', $conditions) ||
-                    preg_match('/timebefore/is', $conditions) ||
-                    preg_match('/timeafter/is', $conditions) ||
-                    preg_match('/timebetween/is', $conditions)) {
-                    $linked_object='ClockChime';
-                    $linked_property='time';
-                }
+        if (preg_match('/^if(.+?){/is', $rec['CODE'], $m)) {
+            $conditions = trim($m[1], '()');
+            if (preg_match('/getglobal\(["\'](\w+)\.(\w+)["\']\)/is', $conditions, $m2)) {
+                $linked_object = $m2[1];
+                $linked_property = $m2[2];
+            } elseif (preg_match('/gg\(["\'](\w+)\.(\w+)["\']\)/is', $conditions, $m2)) {
+                $linked_object = $m2[1];
+                $linked_property = $m2[2];
+            } elseif (preg_match('/timeis/is', $conditions) ||
+                preg_match('/timebefore/is', $conditions) ||
+                preg_match('/timeafter/is', $conditions) ||
+                preg_match('/timebetween/is', $conditions)) {
+                $linked_object = 'ClockChime';
+                $linked_property = 'time';
             }
-
-            if ($linked_object!='' && $linked_property!='') {
-                $rec['AUTO_LINK_AVAILABLE']=1;
-                $rec['AUTO_LINK']=1;
-            } else {
-                $rec['AUTO_LINK_AVAILABLE']=0;
-            }
-        } else {
-            $rec['AUTO_LINK']=0;
         }
 
+        if ($linked_object != '' && $linked_property != '') {
+            $rec['AUTO_LINK_AVAILABLE'] = 1;
+        } else {
+            $rec['AUTO_LINK_AVAILABLE'] = 0;
+        }
+
+        $rec['AUTO_LINK'] = gr('auto_link', 'int');
         $rec['LINKED_OBJECT'] = $linked_object;
         $rec['LINKED_PROPERTY'] = $linked_property;
-        if ($linked_object != '' && $linked_property != '') {
+
+        if ($rec['AUTO_LINK'] && $rec['LINKED_OBJECT'] != '' && $rec['LINKED_PROPERTY'] != '') {
             addLinkedProperty($linked_object, $linked_property, $this->name);
+        } else {
+            $rec['AUTO_LINK'] = 0;
+            removeLinkedPropertyIfNotUsed('scripts', $rec['LINKED_OBJECT'], $rec['LINKED_PROPERTY'], $this->name);
         }
 
-        $rec['UPDATED']=date('Y-m-d H:i:s');
+        $rec['UPDATED'] = date('Y-m-d H:i:s');
 
         if ($rec['ID']) {
             SQLUpdate($table_name, $rec); // update
@@ -144,13 +144,13 @@ if ($this->mode == 'update') {
 
         global $edit_run;
         if ($edit_run) {
-			echo '<div style="margin: 30px 0px;border: 1px solid #dddddd;padding: 10px;border-left: 10px solid #4d96d3;resize: vertical;height: 400px;min-height: 100px;overflow: auto;">
-			<h3 style="margin: 0px;border-bottom: 1px solid #dddddd;padding-bottom: 5px;margin-bottom: 10px;">'.LANG_NEWDASH_RESULT.':</h3>
+            echo '<div style="margin: 30px 0px;border: 1px solid #dddddd;padding: 10px;border-left: 10px solid #4d96d3;resize: vertical;height: 400px;min-height: 100px;overflow: auto;">
+			<h3 style="margin: 0px;border-bottom: 1px solid #dddddd;padding-bottom: 5px;margin-bottom: 10px;">' . LANG_NEWDASH_RESULT . ':</h3>
 			<pre>';
-			$this->runScript($rec['ID']);
-			echo '</pre></div>';
-           
-			$rec['EDIT_RUN'] = $edit_run;
+            $this->runScript($rec['ID']);
+            echo '</pre></div>';
+
+            $rec['EDIT_RUN'] = $edit_run;
         }
 
 
@@ -206,7 +206,7 @@ for ($i = 0; $i < $total; $i++) {
 }
 
 $run_days = array();
-if ($rec['RUN_DAYS']!=='') {
+if ($rec['RUN_DAYS'] !== '') {
     $run_days = explode(',', $rec['RUN_DAYS']);
 }
 

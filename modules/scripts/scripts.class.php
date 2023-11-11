@@ -449,7 +449,7 @@ class scripts extends module
 
     function propertySetHandle($object, $property, $value)
     {
-        $scripts = SQLSelect("SELECT ID FROM scripts WHERE LINKED_OBJECT LIKE '" . DBSafe($object) . "' AND LINKED_PROPERTY LIKE '" . DBSafe($property) . "'");
+        $scripts = SQLSelect("SELECT ID FROM scripts WHERE AUTO_LINK=1 AND LINKED_OBJECT LIKE '" . DBSafe($object) . "' AND LINKED_PROPERTY LIKE '" . DBSafe($property) . "'");
         $total = count($scripts);
         if ($total) {
             for ($i = 0; $i < $total; $i++) {
