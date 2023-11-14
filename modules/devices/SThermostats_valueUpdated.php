@@ -28,16 +28,16 @@ $this->setProperty('currentTargetValue',$targetTemperature);
 if ($currentTemperature > ($targetTemperature+$threshold)) { // temperature too high
     //$need_action = 1;
     if ($ncno == 'no') {
-        $this->setProperty('relay_status',1); // turn on
+        $this->setProperty('relay_status',1); // turn on (cooling on)
     } else {
-        $this->setProperty('relay_status',0); // turn off
+        $this->setProperty('relay_status',0); // turn off (heating off)
     }
 } elseif ($currentTemperature < ($targetTemperature-$threshold)) { // temperature too low
     //$need_action = 1;
     if ($ncno == 'no') {
-        $this->setProperty('relay_status',0); // turn off
+        $this->setProperty('relay_status',0); // turn off (cooling off)
     } else {
-        $this->setProperty('relay_status',1); // turn on
+        $this->setProperty('relay_status',1); // turn on (heating on)
     }
 }
 //echo "current: $currentTemperature target: $targetTemperature action: $need_action <br/>";

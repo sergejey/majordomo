@@ -236,7 +236,7 @@ class market extends module
         }
 
         if ($this->ajax && $op == 'didyouknow') {
-            $result = $this->marketRequest('op=didyouknow', 0);
+            $result = $this->marketRequest('op=didyouknow', 7 * 24 * 60 * 60);
             $data = json_decode($result, true);
             if ($data['BODY']) {
                 echo nl2br(htmlspecialchars($data['BODY']));
@@ -253,7 +253,7 @@ class market extends module
         }
 
         if ($this->ajax && $op == 'news') {
-            $result = $this->marketRequest('op=news', 15 * 60); //15*60
+            $result = $this->marketRequest('op=news', 7 * 24 * 60 * 60);
             $data = json_decode($result, true);
             //echo json_encode($data);
             if (is_array($data)) {
@@ -300,20 +300,6 @@ class market extends module
                     echo '<div class="fullTextNewsClass" id="news_title_' . $i . '" style="display: none;margin-top: 10px;padding-top: 10px;border-top: 1px solid lightgray;"><blockquote style="border-left: 5px solid #4d96d3;">' . $body . ' ' . $linkDetail . '</blockquote></div>';
                     echo '</li>';
 
-
-                    //echo '<a href="javascript://" onclick="$(\'#news_title_'.$i.'\').toggle(\'slow\');" class="list-group-item" style="padding-top: 10px;padding-bottom: 5px;">';
-                    //echo '<h5 id="news_head_'.$i.'" class="list-group-item-heading">'.(htmlspecialchars($data[$i]['TITLE'])).'</h5>';
-                    //$body = nl2br(htmlspecialchars($data[$i]['BODY']));
-                    //$body = str_replace('&amp;', '&', $body);
-                    //$body = preg_replace('/(https?:\/\/[\w\d\-\/\.\?&=#]+)/', '<a href="$1" target=_blank>$1</a>', $body);
-
-                    //echo '<p id="news_title_'.$i.'" style="display: none;" class="list-group-item-text">'.(htmlspecialchars($data[$i]['BODY'])).'</p>';
-                    //echo '</a>';
-
-
-                    /* if ($data[$i]['LINK'] != '') {
-                        echo "<br/><a href='" . $data[$i]['LINK'] . "' target='_blank'>" . LANG_DETAILS . "</a>";
-                    } */
                 }
                 echo '</ul>';
             }

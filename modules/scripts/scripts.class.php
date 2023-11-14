@@ -146,14 +146,14 @@ class scripts extends module
             } else {
                 $source = urldecode($_SERVER['REQUEST_URI']);
             }
-            if (strlen($source) > 250) {
-                $source = substr($source, 0, 250) . '...';
+            if (mb_strlen($source) > 250) {
+                $source = mb_substr($source, 0, 250) . '...';
             }
             $update_rec['EXECUTED_SRC'] = $source;
             if ($params) {
                 $update_rec['EXECUTED_PARAMS'] = json_encode($params, JSON_UNESCAPED_UNICODE);
-                if (strlen($update_rec['EXECUTED_PARAMS']) > 250) {
-                    $update_rec['EXECUTED_PARAMS'] = substr($update_rec['EXECUTED_PARAMS'], 0, 250);
+                if (mb_strlen($update_rec['EXECUTED_PARAMS']) > 250) {
+                    $update_rec['EXECUTED_PARAMS'] = mb_substr($update_rec['EXECUTED_PARAMS'], 0, 250);
                 }
             }
             SQLUpdate('scripts', $update_rec);
@@ -449,7 +449,7 @@ class scripts extends module
 
     function propertySetHandle($object, $property, $value)
     {
-        $scripts = SQLSelect("SELECT ID FROM scripts WHERE LINKED_OBJECT LIKE '" . DBSafe($object) . "' AND LINKED_PROPERTY LIKE '" . DBSafe($property) . "'");
+        $scripts = SQLSelect("SELECT ID FROM scripts WHERE AUTO_LINK=1 AND LINKED_OBJECT LIKE '" . DBSafe($object) . "' AND LINKED_PROPERTY LIKE '" . DBSafe($property) . "'");
         $total = count($scripts);
         if ($total) {
             for ($i = 0; $i < $total; $i++) {

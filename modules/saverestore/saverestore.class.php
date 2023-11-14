@@ -196,7 +196,13 @@ class saverestore extends module
         $github_feed_url = $update_url;
         $github_feed_url = str_replace('/archive/', '/commits/', $github_feed_url);
         $github_feed_url = str_replace('.tar.gz', '.atom', $github_feed_url);
-        $github_feed = getURL($github_feed_url, 30 * 60);
+
+        if ($_GET['op'] == 'check_updates') {
+            $cache_timeout = 3 * 24 * 60 * 60;
+        } else {
+            $cache_timeout = 30 * 60;
+        }
+        $github_feed = getURL($github_feed_url, $cache_timeout);
 
         if ($github_feed != '') {
             $tmp = GetXMLTree($github_feed);
