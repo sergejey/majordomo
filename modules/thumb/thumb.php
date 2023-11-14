@@ -18,11 +18,19 @@ define("_I_CACHE_PATH", "./cms/cached/"); //    Path to cache dir
 define("_I_CACHE_EXPIRED", "2592000");   //    Expired time for images in seconds, 0 - never expired
 
 
-//$img=($_REQUEST['img']);
+$url = gr('url');
+$img = gr('img');
+$username = gr('username');
+$password = gr('password');
+$transport = gr('transport');
 
-//$img=urldecode($_REQUEST['img']);
+$w = gr('w', 'int');
+$h = gr('h', 'int');
+$live = gr('live', 'int');
 
-if (IsSet($url) && $url != '') {
+$debug_mode = gr('debug', 'int');
+
+if (isset($url) && $url != '') {
     $tmp_url = base64_decode($url);
     if (!$img) {
         $filename = 'thumb_' . md5($tmp_url) . basename(preg_replace('/\W/', '', $tmp_url));
@@ -36,8 +44,8 @@ if (IsSet($url) && $url != '') {
             $resolution = $w . 'x' . $h;
         }
         //-re -f v4l2 -video_size 1280x720 -i /dev/video0
-        $cmd = 'fswebcam -r ' . $resolution . ' ' . $img_tmp;
-        if ($_GET['debug']) {
+        $cmd = 'fswebcam -r ' . escapeshellarg($resolution) . ' ' . escapeshellarg($img_tmp);
+        if ($debug_mode) {
             echo $cmd . '<br/>';
         } else {
             exec($cmd);
@@ -48,11 +56,11 @@ if (IsSet($url) && $url != '') {
     }
 }
 
-if ($_GET['debug']) {
+if ($debug_mode) {
     $live = 0;
 }
 
-if (IsSet($url) && $url != '') {
+if (isset($url) && $url != '') {
 
     $resize = '';
     if ($w && $h) {
@@ -68,16 +76,16 @@ if (IsSet($url) && $url != '') {
         $url = str_replace('://', '://' . $username . ':' . $password . '@', $url);
     }
 
-    if (preg_match('/^rtsp:/is', $url) || preg_match('/\/dev/',$url)) {
+    if (preg_match('/^rtsp:/is', $url) || preg_match('/\/dev/', $url)) {
         //-rtsp_transport tcp // -rtsp_transport tcp
-        $stream_options = '-timelimit 15 -y -i "' . $url . '"' . $resize . ' -r 5 -f image2 -vframes 1'; //-ss 00:00:01.500
-        if ($_GET['debug']) {
-            $stream_options = '-v verbose ' . $stream_options;
+        $stream_options = '-timelimit 15 -y -i ' . escapeshellarg($url) . ($resize) . ' -r 5 -f image2 -vframes 1'; //-ss 00:00:01.500
+        if ($debug_mode) {
+            $stream_options = '-v verbose ' . escapeshellarg($stream_options);
         }
-        if ($_GET['transport']) {
-            $stream_options = '-rtsp_transport ' . $_GET['transport'] . ' ' . $stream_options;
+        if ($transport) {
+            $stream_options = '-rtsp_transport ' . escapeshellarg($transport) . ' ' . escapeshellarg($stream_options);
         }
-        $cmd = PATH_TO_FFMPEG . ' ' . $stream_options . ' ' . $img;
+        $cmd = PATH_TO_FFMPEG . ' ' . $stream_options . ' ' . escapeshellarg($img);
 
         if ($live) {
             $boundary = "my_mjpeg";
@@ -105,7 +113,7 @@ if (IsSet($url) && $url != '') {
             $output = array();
             $res = exec($cmd . ' 2>&1', $output);
 
-            if ($_GET['debug']) {
+            if ($debug_mode) {
                 echo $cmd;
                 echo "<hr><pre>" . implode("\n", $output) . "</pre>";
                 exit;
@@ -139,10 +147,9 @@ if (IsSet($url) && $url != '') {
         $result = @mjpeg_grab_frame($url);
 
         if (!$result) {
-            $url = preg_replace('/\/\/(.+?)@/','//',$url);
+            $url = preg_replace('/\/\/(.+?)@/', '//', $url);
             $result = getURL($url, 0, $username, $password, false, array(CURLOPT_HTTPAUTH => CURLAUTH_ANY));
         }
-
 
 
         if ($result) {
@@ -163,7 +170,7 @@ if (IsSet($url) && $url != '') {
                 for ($i = 0; $i < ob_get_level(); $i++) ob_end_flush();
                 ob_implicit_flush(1);
                 ob_end_flush();
-                $counter=0;
+                $counter = 0;
                 print "Content-type: image/jpeg\n\n";
                 while (true) {
                     $counter++;
@@ -190,23 +197,16 @@ if (IsSet($url) && $url != '') {
 }
 
 
-//$img=str_replace('\\\\', '\\', $img);
-
-//echo $img;exit;
-
-$type = (IsSet($_REQUEST['t']) ? $_REQUEST['t'] : 0);
+$type = gr('t', 'int');
 
 /*
    Allowed types:
     0 - fit
     2 - exact size
 */
-//$img='./../../'.$img;
-
 if (file_exists($img)) {
-
-    $new_width = (int)$_REQUEST['w'];
-    $new_height = (int)$_REQUEST['h'];
+    $new_width = $w;
+    $new_height = $h;
 
     $cached_filename = md5($img . filemtime($img) . $new_width . $new_height) . '.jpg';
     $path_to_cache_file = _I_CACHE_PATH . substr($cached_filename, 0, 2);
@@ -215,12 +215,7 @@ if (file_exists($img)) {
     //   Check the cache
     if (_I_CACHING == "1" && !$dc)
 
-        //$cache = _I_CACHE_PATH.md5($img.filemtime($img).$image_width.$image_height).".pic";
         if (file_exists($cache)) {
-            //  $resc=GetImageSize($cache);
-            //  list($w_o,$h_o,$t_o) = $resc;
-            //  if ($w_o == $image_width && $h_o == $image_height && $t_o == $image_format)
-            //  {
             header("Content-Type:image/jpeg");
             header("Content-Length: " . filesize($cache));
             header("Cache-Control: public"); // HTTP/1.1
@@ -228,7 +223,6 @@ if (file_exists($img)) {
             header('Last-Modified: ' . gmdate('D, d M Y H:i:s', @filemtime($cache)) . ' GMT');
             readfile($cache);
             exit;
-            //   }
         }
 
     $filename = $img;
@@ -249,7 +243,6 @@ if (file_exists($img)) {
                 $image_height = $new_height;
             }
             break;
-
         case 1:
             $image_width = $new_width;
             $image_height = $image_height;
@@ -257,23 +250,7 @@ if (file_exists($img)) {
     }
 
 
-    // Remove old cached images
-    /*
-    if ($handle = opendir(_I_CACHE_PATH)) {
-       while (false !== ($file = readdir($handle))) {
-           if ($file != "." && $file != ".." && time() - filemtime(_I_CACHE_PATH.$file) > _I_CACHE_EXPIRED)
-             @unlink(_I_CACHE_PATH.$file);
-       }
-       closedir($handle);
-    }
-    */
-    //
-
-    //   endof check
     if ($image_format == 1) {
-//   Header("Content-Type:image/gif");
-//   readfile($filename);
-//   exit;
         $old_image = imagecreatefromgif($filename);
     } elseif ($image_format == 2) {
         $old_image = imagecreatefromjpeg($filename);
@@ -283,28 +260,19 @@ if (file_exists($img)) {
         return;
     }
 
-// echo("$image_width x $image_height");
     $new_image = imageCreateTrueColor($image_width, $image_height);
     $white = ImageColorAllocate($new_image, 255, 255, 255);
     ImageFill($new_image, 0, 0, $white);
 
-    /*imageCopyResized*/
     imagecopyresampled($new_image, $old_image, 0, 0, 0, 0, $image_width, $image_height, imageSX($old_image), imageSY($old_image));
 
     //   Save to cache
     if (_I_CACHING == "1" && !$_REQUEST['dc']) {
-        //if (!file_exists(_I_CACHE_PATH)) {
-        // @mkdir(_I_CACHE_PATH, 0777);
-        //}
         if (!is_dir($path_to_cache_file)) {
             @mkdir($path_to_cache_file);
         }
-
         imageJpeg($new_image, $cache);
-        //@chmod($cache, '0666');
     }
-    //   Endof save
-
 
     Header("Content-type:image/jpeg");
     imageJpeg($new_image);
