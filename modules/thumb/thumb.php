@@ -80,10 +80,10 @@ if (isset($url) && $url != '') {
         //-rtsp_transport tcp // -rtsp_transport tcp
         $stream_options = '-timelimit 15 -y -i ' . escapeshellarg($url) . ($resize) . ' -r 5 -f image2 -vframes 1'; //-ss 00:00:01.500
         if ($debug_mode) {
-            $stream_options = '-v verbose ' . escapeshellarg($stream_options);
+            $stream_options = '-v verbose ' . $stream_options;
         }
         if ($transport) {
-            $stream_options = '-rtsp_transport ' . escapeshellarg($transport) . ' ' . escapeshellarg($stream_options);
+            $stream_options = '-rtsp_transport ' . escapeshellarg($transport) . ' ' . $stream_options;
         }
         $cmd = PATH_TO_FFMPEG . ' ' . $stream_options . ' ' . escapeshellarg($img);
 
