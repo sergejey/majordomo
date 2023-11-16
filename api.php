@@ -240,6 +240,32 @@ if (!isset($request[0])) {
     }
 	else
 		$result['error']="Not found module";
+} elseif (strtolower($request[0]) == 'modulefunction') {
+    $module_name = find_module($request[1]);
+    $module_file = DIR_MODULES.$module_name.'/'.$module_name.'.class.php';
+    if (file_exists($module_file)) {
+        include_once($module_file);
+        $module = new $module_name;
+        $methodName = $request[2];
+        if (method_exists($module,$methodName)) {
+            $args = [];
+            if (isset($_REQUEST['args']))
+                if (is_string($_REQUEST['args']))
+                    $args = json_decode($_REQUEST['args'],true);
+                else
+                    $args = $_REQUEST['args'];
+            //$result['args'] = $args;
+            $res=$module->$methodName(...$args);
+            if($res)
+                $result['apiHandleResult']=$res;
+            else
+                $result['apiHandleResult']=$args;
+        }
+        else
+            $result['error']="Not found function";
+    }
+    else
+        $result['error']="Not found module";
 } elseif (strtolower($request[0]) == 'modulepropertyset' && isset($request[1])) {
     $module_name = find_module($request[1]);
     $module_file = DIR_MODULES.$module_name.'/'.$module_name.'.class.php';
@@ -333,12 +359,10 @@ if (!isset($request[0])) {
             }
         }
     } elseif ($method == 'POST') {
-        if (isset($tmp[1])) {
-            if (isset($_POST['data'])) {
-                setGlobal($request[1], $_POST['data']);
-            } else {
-                setGlobal($request[1], $input['data']);
-            }
+        if (isset($_POST['data'])) {
+            setGlobal($request[1], $_POST['data']);
+        } else {
+            setGlobal($request[1], $input['data']);
         }
     }
 } elseif (strtolower($request[0]) == 'history' && isset($request[1])) {
