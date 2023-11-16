@@ -52,32 +52,27 @@ class jTemplate
     public function __construct($template, &$data, &$owner = '')
     {
 
-        // set current directory for template includes
-        if (strpos($template, "/") !== false) {
-            $root = preg_replace("/\/[^\/]*?$/", "", $template) . "/";
-        } else {
-            $root = "";
-        }
-
-        $this->data = &$data;
-        $this->template = $template;
-
-        if (is_object($owner))
-            $this->owner = &$owner;
-
-        if (defined('ALTERNATIVE_TEMPLATES')) {
-            $alt_path = str_replace('templates/', ALTERNATIVE_TEMPLATES . '/', $template);
-
-            if (file_exists($alt_path))
-                $template = $alt_path;
-        }
-
+        $root = "";
         if (is_file($template)) {
+            // set current directory for template includes
+            if (strpos($template, "/") !== false) {
+                $root = preg_replace("/\/[^\/]*?$/", "", $template) . "/";
+            }
+            if (defined('ALTERNATIVE_TEMPLATES')) {
+                $alt_path = str_replace('templates/', ALTERNATIVE_TEMPLATES . '/', $template);
+                if (file_exists($alt_path))
+                    $template = $alt_path;
+            }
             $template_file = $this->loadfile($template);
         } else {
             $template_file = $template;
             $template = 'inner_code';
         }
+
+        $this->data = &$data;
+        $this->template = $template;
+
+        if (is_object($owner)) $this->owner = &$owner;
 
         $res = "";
         if (defined("DEBUG_MODE")) {
