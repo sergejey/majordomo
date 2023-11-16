@@ -7,6 +7,7 @@
 class Threads
 {
    public $phpPath = 'php';
+   public $pyPath = PYTHON_PATH;
    private $lastId = 0;
    
    private $descriptorSpec = array(
@@ -62,6 +63,10 @@ class Threads
       }
 
       $params = addcslashes(serialize($params), '"');
+      
+      $cmd = $this->phpPath;
+      if (substr($filename, -3) == ".py")
+          $cmd = $this->pyPath;
 
       if (defined('LOG_CYCLES') && LOG_CYCLES == '1') {
          if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH!='') {
@@ -72,9 +77,9 @@ class Threads
             $path = ROOT . 'cms/debmes';
          }
          $fileToWrite = $path.'/log_' . date('Y-m-d') . '-' . basename($filename) . '.txt';
-         $command = $this->phpPath . ' -q ' . $filename . ' --params "' . $params . '">>' . $fileToWrite;
+         $command = $cmd . ' -q ' . $filename . ' --params "' . $params . '">>' . $fileToWrite;
       } else {
-         $command = $this->phpPath . ' -q ' . $filename . ' --params "' . $params . '"';
+         $command = $cmd . ' -q ' . $filename . ' --params "' . $params . '"';
          if (IsWindowsOS()) {
             $command.=' > NUL';
          } else {
@@ -119,8 +124,12 @@ class Threads
          return false;
       }
 
+      $cmd = $this->phpPath;
+      if (substr($filename, -3) == ".py")
+          $cmd = $this->pyPath;
+      
       $params  = addcslashes(serialize($params), '"');
-      $command = 'DISPLAY=:' . $display . ' ' . $this->phpPath . ' ' . $filename . ' --params "' . $params . '"';
+      $command = 'DISPLAY=:' . $display . ' ' . $cmd . ' ' . $filename . ' --params "' . $params . '"';
       
       ++$this->lastId;
 
@@ -201,7 +210,7 @@ class Threads
             
             $name = $this->commandLines[$id];
             
-            if (preg_match('/cycle_.+?\.php/', $name, $m))
+            if (preg_match('/cycle_.+?\.(php|py)/', $name, $m))
             {
                $name = $m[0];
             }
