@@ -331,18 +331,8 @@ class module
      */
     public function checkInstalled()
     {
-
-        $flag_filename = ROOT . 'cms/modules_installed/' . $this->name . '.installed';
-        if (!file_exists($flag_filename)) {
+        if (!isModuleInstalled($this->name)) {
             $this->install();
-        } else {
-            /*
-            $sqlQuery = "SELECT ID FROM project_modules WHERE NAME = '" . $this->name . "'";
-            $rec = SQLSelectOne($sqlQuery);
-            if (!isset($rec["ID"])) {
-                $this->install();
-            }
-            */
         }
     }
 

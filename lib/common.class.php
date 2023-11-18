@@ -1206,6 +1206,8 @@ function hsvToHex($h, $s, $v)
 
 function logAction($action_type, $details = '')
 {
+    if (!isModuleInstalled('actions_log')) return;
+
     global $session;
     $rec = array();
     $rec['ADDED'] = date('Y-m-d H:i:s');
