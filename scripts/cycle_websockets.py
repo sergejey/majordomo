@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 import logging
 import asyncio
 import websockets
@@ -9,18 +7,13 @@ import time
 import re
 import sys
 import threading
-import MySQLdb as mdb
 
 from pathlib import Path
 root_path = str(Path( __file__ ).parent.parent.absolute())
 
 sys.path.insert(0, root_path+'/lib/python')
 sys.path.insert(0, root_path+'/cms/python')
-
-# -*- coding: utf-8 -*-
-from mjd_constants import *
-
-
+import mjd_constants
 from general import getGlobal
 from general import setGlobal
 from general import callAPI
@@ -103,8 +96,6 @@ for match in matches:
 
 WEBSOCKETS_PORT = config["WEBSOCKETS_PORT"]
 
-
-
 # Время старта
 started = datetime.now()
 logger.info("Cycle started")
@@ -113,6 +104,7 @@ logger.info("Cycle started")
 clients = ThreadSafeDict()
 # Словарь для хранения кэша значений
 cachedProperties = {}
+cacheStates = {}
 
 async def sendData(client, action, data):
     message = {"action":action,"data":json.dumps(data, default=list)}
@@ -141,6 +133,7 @@ async def statusAction(client):
         data['WATCHED_PROPERTIES'] = cl['properties']
         data['WATCHED_DEVICES'] = cl['devices']
         data['WATCHED_COMMANDS'] = cl['commands']
+        data['WATCHED_SCENES'] = cl['scenes']
         traffic = {}
         traffic['IN_PACKET'] = cl['inPacket']
         traffic['OUT_PACKET'] = cl['outPacket']
@@ -200,11 +193,38 @@ async def subscribeAction(client,data):
                 clients[str(client.id)]['commands'][name] = set()
             clients[str(client.id)]['commands'][name].add(int(prop['COMMAND_ID']))
         await sendData(client,"subscribed",data)
+    elif (data['TYPE'] == 'scenes'):
+        updateStates()
+        scene_id = "all"
+        if 'SCENE_ID' in data.keys():
+            if data['SCENE_ID'] !="":
+                scene_id = data['SCENE_ID']
+        scene_id = json.dumps({scene_id:"1"})
+        res = callAPI("/api/modulefunction/scenes/getWatchedProperties", "POST", {"args": f"[{scene_id}]"})
+        #logger.debug(res)
+        props = json.loads(res)['apiHandleResult']
+        for prop in props:
+            if 'PROPERTY' in prop:
+                name = prop['PROPERTY'].lower()
+                if name not in clients[str(client.id)]['scenes']:
+                    clients[str(client.id)]['scenes'][name] = set()
+                clients[str(client.id)]['scenes'][name].add(prop['STATE_ID'])
+        await sendData(client,"subscribed",data)
     else:
         logger.warning(data)
 
-
+def updateStates():
+    cacheStates.clear()
+    res = callAPI("/api/modulefunction/scenes/getDynamicElements", "POST", {"args": []})
+    res = json.loads(res)['apiHandleResult']
+    for el in res:
+        for state in el['STATES']:
+            cacheStates[state['ID']] = state
+    
 async def postPropertyAction(client,data):
+    if not isinstance(data, list):
+        data = [data]
+        #logger.debug(data)
     for prop in data:
         if isinstance(prop, str): 
             logger.warning(prop)
@@ -240,6 +260,17 @@ async def postPropertyAction(client,data):
                         data_value.append({"ID":res['ID'], "DATA":res['VALUE']})
                 send_data = {'LABELS' : data_label, "VALUES" : data_value}
                 await sendData(subscriber['client'],"commands",send_data)
+            if name in subscriber["scenes"]:
+                data = []
+                states = subscriber["scenes"][name]
+                for state_id in states:
+                    if state_id in cacheStates:
+                        q = json.dumps(cacheStates[state_id])
+                        res = callAPI("/api/modulefunction/scenes/processState", "POST", {"args": f'[{q}]'})
+                        res = json.loads(res)['apiHandleResult']
+                        #logger.debug(res)
+                        data.append(res[0])
+                await sendData(subscriber['client'],"states",data)
 
 async def postEventAction(client,data):
     logger.debug("Event: "+str(data["NAME"])+" - "+str(data["VALUE"]))
@@ -254,7 +285,7 @@ async def postEventAction(client,data):
 async def handle_client(websocket, path):
     try:
         # Добавляем клиента в список подключенных
-        clients[str(websocket.id)]={'client':websocket, 'connected': datetime.now(),'updated':datetime.now(), 'events':[], 'properties':[],'devices':{},'commands':{},'inPacket':0,'outPacket':0,'inBytes':0,'outBytes':0}
+        clients[str(websocket.id)]={'client':websocket, 'connected': datetime.now(),'updated':datetime.now(), 'events':[], 'properties':[],'devices':{},'commands':{},'scenes':{},'inPacket':0,'outPacket':0,'inBytes':0,'outBytes':0}
         logger.info(f"Подключился клиент - {websocket.id}")
         setGlobal("WSClientsTotal", len(clients))
         
@@ -309,24 +340,17 @@ async def updateStatus():
         logger.debug("UpdateStatus")
         ts = int(time.time())
         try:
-            #setGlobal(cycleName, ts)
-            tsstr = str(int(time.time()))
-            cycleName = 'cycle_websocketsRun'
-            con = mdb.connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, charset='utf8')
-            cur = con.cursor()
-            statement = "REPLACE INTO cached_cycles (TITLE, VALUE) VALUES ('cycle_websocketsRun',"+tsstr+")"
-            cur.execute(statement)
-            con.close()
+            setGlobal(cycleName, ts)
         except Exception as e:
             logger.error(f'Произошло исключение: {e}', exc_info=True)
-        await asyncio.sleep(30)
+        await asyncio.sleep(15)
 
 # Создаем асинхронный цикл событий
 async def main():
     # Создаем задачу для периодического выполнения updateStatus()
     task = asyncio.create_task(updateStatus())
     # Создаем WebSocket сервер
-    logger.info("Start server on "+WEBSOCKETS_PORT)
+    logger.info(f'Start server on {WEBSOCKETS_PORT}')
     server = await websockets.serve(handle_client, "0.0.0.0", WEBSOCKETS_PORT, ping_interval=None)
 
     await asyncio.gather(task, server.wait_closed())
