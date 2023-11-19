@@ -20,9 +20,17 @@ if (!function_exists('DebMes')) {
     include_once("./load_settings.php");
 }
 
+if (isset($_SERVER['REQUEST_URI'])) {
+    DebMes("Running by URL: " . $_SERVER['REQUEST_URI'], 'maintenance');
+} elseif (isset($argv[0])) {
+    DebMes("Running from command line: " . implode(' ', $argv), 'maintenance');
+}
+
+set_time_limit(10 * 60);
+
 echo "<pre>\n";
 
-DebMes("Running maintenance script");
+DebMes("Running maintenance script", 'maintenance');
 
 // BACKUP DATABASE AND FILES
 
@@ -70,17 +78,17 @@ if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH != '')
     $path = ROOT . 'cms/debmes';
 }
 
+DebMes("Checking log files.", 'maintenance');
 $dir = $path . "/";
-
 foreach (glob($dir . "*") as $file) {
     if (filemtime($file) < time() - LOG_FILES_EXPIRE * 24 * 60 * 60) {
-        DebMes("Removing log file " . $file, 'backup');
+        DebMes("Removing log file " . $file, 'maintenance');
         @unlink($file);
     }
 }
 
 if ($full_backup) {
-    DebMes("Backing up files...", 'backup');
+    DebMes("Backing up files...", 'maintenance');
     echo "Backing up files...";
 
     if (!is_dir($target_dir . '/cms')) {
@@ -94,7 +102,7 @@ if ($full_backup) {
             $d == 'debmes' ||
             $d == 'saverestore'
         ) continue;
-        DebMes("Backing up dir " . ROOT . 'cms/' . $d . ' to ' . $target_dir . '/cms/' . $d, 'backup');
+        DebMes("Backing up dir " . ROOT . 'cms/' . $d . ' to ' . $target_dir . '/cms/' . $d, 'maintenance');
         copyTree(ROOT . 'cms/' . $d, $target_dir . '/cms/' . $d, 1);
     }
 
@@ -112,15 +120,15 @@ if ($full_backup) {
     $mysqlDumpParam .= " --no-create-db --add-drop-table --databases " . DB_NAME;
     $mysqlDumpParam .= " > " . $target_dir . "/" . DB_NAME . ".sql";
 
-    DebMes("Backing up database " . DB_NAME . ' to ' . $target_dir . "/" . DB_NAME . ".sql", 'backup');
+    DebMes("Backing up database " . DB_NAME . ' to ' . $target_dir . "/" . DB_NAME . ".sql", 'maintenance');
     exec($mysqlDumpPath . $mysqlDumpParam);
-
-
+    DebMes("Backup done.", 'maintenance');
     echo "OK\n";
 }
 
 
 // removing old files from cms/saverestore
+DebMes("Checking cms/saverestore files.", 'maintenance');
 if (is_dir(ROOT . 'cms/saverestore')) {
     $files = scandir(ROOT . 'cms/saverestore');
     foreach ($files as $file) {
@@ -129,31 +137,36 @@ if (is_dir(ROOT . 'cms/saverestore')) {
             && (preg_match('/\.tgz$/', $file) || preg_match('/\.tar\.gz$/', $file) || preg_match('/\.zip\.gz$/', $file))
             && filemtime($path) < time() - BACKUP_FILES_EXPIRE * 24 * 60 * 60
         ) {
-            echonow("Removing $path");
-            DebMes("Removing $path.", 'backup');
+            echo("Removing $path");
+            DebMes("Removing $path.", 'maintenance');
             @unlink($path);
         }
     }
+} else {
+    DebMes(ROOT . 'cms/saverestore - NOT FOUND', 'maintenance');
 }
 // removing old backus
+DebMes('Checking old backups.', 'maintenance');
 if (is_dir($backups_dir)) {
     $backups = scandir($backups_dir);
     foreach ($backups as $file) {
         if ($file == '.' || $file == '..') continue;
         $path = $backups_dir . '/' . $file;
         if (is_dir($path) && filemtime($path) < time() - BACKUP_FILES_EXPIRE * 24 * 60 * 60) {
-            echonow("Removing $path");
-            DebMes("Removing $path.", 'backup');
+            echo("Removing $path");
+            DebMes("Removing $path.", 'maintenance');
             removeTree($path);
         }
     }
     echo "OK";
 } else {
+    DebMes($backups_dir . ' - NOT FOUND', 'maintenance');
     echo $backups_dir . " not found";
 }
 
 
 // CHECK/REPAIR/OPTIMIZE TABLES
+DebMes('Checking database tables.', 'maintenance');
 $tables = SQLSelect("SHOW TABLES FROM `" . DB_NAME . "`");
 $total = count($tables);
 for ($i = 0; $i < $total; $i++) {
@@ -163,6 +176,7 @@ for ($i = 0; $i < $total; $i++) {
         echo "OK\n";
     } else {
         echo " broken ... repair ...";
+        DebMes("Repairing: $table", 'maintenance');
         SQLExec("REPAIR TABLE " . $table . ";");
         echo "OK\n";
     }
@@ -170,6 +184,7 @@ for ($i = 0; $i < $total; $i++) {
 
 setGlobal('ThisComputer.started_time', time());
 if (time() >= getGlobal('ThisComputer.started_time')) {
+    DebMes("Incorrect date on start, fixing.", 'maintenance');
     SQLExec("DELETE FROM events WHERE ADDED > NOW()");
     SQLExec("DELETE FROM phistory WHERE ADDED > NOW()");
     SQLExec("DELETE FROM history WHERE ADDED > NOW()");
@@ -180,6 +195,7 @@ if (time() >= getGlobal('ThisComputer.started_time')) {
 
 
 // removing incorrect pvalues
+DebMes("Checking for incorrect pvalues.", 'maintenance');
 $sqlQuery = "SELECT pvalues.*, properties.ID AS PROP_ID, objects.ID as OBJ_ID  FROM `pvalues` LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID";
 $data = SQLSelect($sqlQuery);
 $total = count($data);
@@ -187,6 +203,7 @@ $found_pvalues = array();
 for ($i = 0; $i < $total; $i++) {
     if (!$data[$i]['PROP_ID'] || !$data[$i]['OBJ_ID']) {
         echo "Removing incorrect property value: " . $data[$i]['PROPERTY_NAME'] . PHP_EOL;
+        DebMes("Removing incorrect property value: " . $data[$i]['PROPERTY_NAME'], 'maintenance');
         SQLExec("DELETE FROM phistory WHERE VALUE_ID=" . $data[$i]['ID']);
         SQLExec("DELETE FROM pvalues WHERE ID=" . $data[$i]['ID']);
     } else {
@@ -199,6 +216,7 @@ if (isset($found_pvalues[0])) {
 }
 
 // fixing property names
+DebMes("Checking for incorrect property names.", 'maintenance');
 $sqlQuery = "SELECT pvalues.*, objects.TITLE AS OBJECT_TITLE, properties.TITLE AS PROPERTY_TITLE
                FROM pvalues
                JOIN objects ON pvalues.OBJECT_ID = objects.id
@@ -210,10 +228,13 @@ $total = count($data);
 
 for ($i = 0; $i < $total; $i++) {
     $objectProperty = $data[$i]['OBJECT_TITLE'] . "." . $data[$i]['PROPERTY_TITLE'];
-    if ($data[$i]['PROPERTY_NAME'])
+    if ($data[$i]['PROPERTY_NAME']) {
         echo "Incorrect: " . $data[$i]['PROPERTY_NAME'] . " should be $objectProperty" . PHP_EOL;
-    else
+        DebMes("Incorrect: " . $data[$i]['PROPERTY_NAME'] . " should be $objectProperty", 'maintenance');
+    } else {
         echo "Missing: " . $objectProperty . PHP_EOL;
+        DebMes("Missing: " . $objectProperty, 'maintenance');
+    }
 
     $sqlQuery = "SELECT *
                   FROM pvalues
@@ -227,6 +248,7 @@ for ($i = 0; $i < $total; $i++) {
 }
 
 // Removing incorrect history for images
+DebMes('Checking incorrect history images', 'maintenance');
 $folder = ROOT . 'cms/images/';
 $properties = SQLSelect("SELECT * FROM properties WHERE DATA_TYPE=5");
 $total = count($properties);
@@ -262,6 +284,7 @@ for ($i = 0; $i < $total; $i++) {
     foreach ($found_files as $k => $v) {
         $path = $folder . $k;
         if (is_file($path)) {
+            DebMes('Removing ' . $path, 'maintenance');
             echo "Removing $path<br/>";
             unlink($path);
         }
@@ -270,6 +293,8 @@ for ($i = 0; $i < $total; $i++) {
 
 
 // Removing duplicates when we have both class property and object property with the same name
+DebMes('Checking duplicates with both class property and object property.', 'maintenance');
+
 include_once(DIR_MODULES . 'classes/classes.class.php');
 $cls_module = new classes();
 
@@ -291,6 +316,7 @@ for ($i = 0; $i < $total; $i++) {
             }
         }
         if (isset($class_property['ID'])) {
+            DebMes('Fixing ' . json_encode($properties[$i]), 'maintenance');
             $object_pvalue = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID=" . $properties[$i]['ID'] . " AND OBJECT_ID=" . $properties[$i]['OBJECT_ID']);
             $class_pvalue = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID=" . $class_property['ID'] . " AND OBJECT_ID=" . $properties[$i]['OBJECT_ID']);
             if (!$class_pvalue['ID']) {
@@ -310,6 +336,7 @@ clearCacheData();
 
 // removing old errors
 if (defined('SETTINGS_ERRORS_KEEP_HISTORY') && SETTINGS_ERRORS_KEEP_HISTORY > 0) {
+    DebMes("Deleting old system_errors_data", 'maintenance');
     SQLExec("DELETE FROM system_errors_data WHERE ADDED<'" . date('Y-m-d H:i:s', time() - SETTINGS_ERRORS_KEEP_HISTORY * 24 * 60 * 60) . "'");
 }
 
@@ -324,11 +351,13 @@ if (IsWindowsOS()) {
 }
 
 if ($serial_data != '') {
+    DebMes("Setting serial to: " . $serial_data, 'maintenance');
     sg('ThisComputer.Serial', $serial_data);
 }
 
 
 // caching some data
+DebMes("Caching market data.", 'maintenance');
 include_once DIR_MODULES . 'market/market.class.php';
 $mkt = new market();
 $mkt->marketRequest('op=didyouknow');
@@ -337,3 +366,5 @@ $mkt->marketRequest('op=news');
 include_once DIR_MODULES . 'saverestore/saverestore.class.php';
 $sv = new saverestore();
 $sv->admin($out);
+
+DebMes("Maintenance complete.", 'maintenance');
