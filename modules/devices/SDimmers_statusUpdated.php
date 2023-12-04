@@ -4,6 +4,7 @@ $status = $this->getProperty('status');
 $level = $this->getProperty('level');
 $levelSaved = $this->getProperty('levelSaved');
 $linked_room = $this->getProperty('linkedRoom');
+$switchLevel=$this->getProperty('switchLevel');
 
 if ($this->getProperty('setMaxTurnOn')) {
     $levelSaved = 100;
@@ -13,6 +14,9 @@ if ($this->getProperty('setMaxTurnOn')) {
 if ($status > 0 && !$level && $levelSaved) {
     $this->setProperty('level', $levelSaved);
 } else {
+    if (!$status && !$switchLevel) {
+        $this->setProperty('level', 0);
+    }
     $this->callMethod('logicAction');
     include_once(dirname(__FILE__) . '/devices.class.php');
     $dv = new devices();

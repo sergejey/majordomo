@@ -208,7 +208,7 @@ $this->device_types = array(
             'setMaxTurnOn' => array('DESCRIPTION' => LANG_DEVICES_DIMMER_SET_MAX, '_CONFIG_TYPE' => 'yesno', '_CONFIG_HELP' => 'SdDimmerSetMax'),
         ),
         'METHODS' => array(
-            'setLevel' => array('DESCRIPTION' => 'Set brightness level'),
+            'setLevel' => array('DESCRIPTION' => LANG_DEVICES_DIMMER_SET_TARGET_LEVEL, '_CONFIG_SHOW' => 1, '_CONFIG_REQ_VALUE' => 1),
             'statusUpdated' => array('DESCRIPTION' => 'Status Updated'),
             'levelUpdated' => array('DESCRIPTION' => 'Level Updated'),
             'levelWorkUpdated' => array('DESCRIPTION' => 'Level Work Updated'),

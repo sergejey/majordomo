@@ -1369,6 +1369,7 @@ $dictionary = array(
     'DEVICES_DIMMER_MAX_WORK' => 'Max level (work)',
     'DEVICES_DIMMER_SWITCH_LEVEL' => 'Do not change level on switch',
     'DEVICES_DIMMER_SET_MAX' => 'Set maximum level when turning on',
+    'DEVICES_DIMMER_SET_TARGET_LEVEL' => 'Set target level, %',
 
     'DEVICES_COLLECTION_IS_ON' => 'Is turned on now',
     'DEVICES_COLLECTION_IS_OPEN' => 'Is open now',
