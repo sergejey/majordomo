@@ -356,24 +356,49 @@ class plans extends module
         xml_parse_into_struct($p, $content, $vals, $index);
         xml_parser_free($p);
         foreach($vals as $val) {
-            if (isset($val['value']) && preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)%/',$val['value'],$m) && isset($val['attributes'])) {
+            if (isset($val['attributes'])) {
+                $item=array();
                 $id = '';
+                $dynamic = false;
+                $props=array();
+                $attributes=array();
                 foreach($val['attributes'] as $attr=>$attr_v) {
                     if (strtolower($attr)=='id') {
                         $id=$attr_v;
+                    } else if(preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)%/',$attr_v, $m)) {
+                        $dynamic = true;
+                        foreach($m[0] as $prop) {
+                            $prop=trim($prop,'%');
+                            $props[]=$prop;
+                        }
+                        $attribute=array('NAME'=>strtolower($attr),'TEMPLATE'=>$attr_v);
+                        if($process) {
+                            $attribute['CONTENT']=processTitle($attribute['TEMPLATE']);
+                        }
+                        $attributes[]=$attribute;
                     }
                 }
-                if ($id!='') {
-                    $props=array();
-                    foreach($m[0] as $prop) {
-                        $prop=trim($prop,'%');
-                        $props[]=$prop;
+                if($id!=''){
+                    $item['ITEM']=$id;
+                    
+                    if (isset($val['value']) && preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)%/',$val['value'], $m)) {
+                        $dynamic = true;
+                        foreach($m[0] as $prop) {
+                            $prop=trim($prop,'%');
+                            $props[]=$prop;
+                        }
+                        $item['TEMPLATE']=$val['value'];
+                        if ($process) {
+                            $item['CONTENT']=processTitle($item['TEMPLATE']);
+                        }
                     }
-                    $item=array('ITEM'=>$id,'TEMPLATE'=>$val['value'],'PROPERTIES'=>$props);
-                    if ($process) {
-                        $item['CONTENT']=processTitle($item['TEMPLATE']);
+                    if($dynamic) {
+                        if(!empty($attributes)) {
+                            $item['ATTRIBUTES'] = $attributes;
+                        }
+                        $item['PROPERTIES']=$props;
+                        $result[]=$item;
                     }
-                    $result[]=$item;
                 }
             }
         }
@@ -448,7 +473,7 @@ class plans extends module
                 foreach($dynData as $dynItem) {
                     //$content = str_replace($dynItem['TEMPLATE'],$dynItem['CONTENT'],$content);
                     foreach($dynItem['PROPERTIES'] as $property) {
-                        $properties[]=array('PROPERTY'=>mb_strtolower($property,'UTF-8'),'STATE_ID'=>$dynItem['ITEM'],'TEMPLATE'=>$dynItem['TEMPLATE']);
+                        $properties[]=array('PROPERTY'=>mb_strtolower($property,'UTF-8'),'STATE_ID'=>$dynItem['ITEM'],'TEMPLATE'=>$dynItem['TEMPLATE'],'ATTRIBUTES'=>$dynItem['ATTRIBUTES']);
                     }
                 }
             }
@@ -474,8 +499,18 @@ class plans extends module
             if ($component['ID']) {
                 //...
             }
-        } elseif ($state['TEMPLATE']) {
-            $state['CONTENT']=processTitle($state['TEMPLATE']);
+        } else {
+            if ($state['TEMPLATE']) {
+                $state['CONTENT']=processTitle($state['TEMPLATE']);
+            }
+            if ($state['ATTRIBUTES'] && is_array($state['ATTRIBUTES'])) {
+                foreach($state['ATTRIBUTES'] as &$attribute) {
+                    if ($attribute['TEMPLATE'] != '') {
+                        $attribute['CONTENT']=processTitle($attribute['TEMPLATE']);
+                    }
+                }
+                unset($attribute);
+            }
         }
     }
 
