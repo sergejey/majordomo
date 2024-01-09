@@ -727,3 +727,12 @@ function CreateDir($dirPath)
     if (!is_dir($dirPath))
         @mkdir($dirPath, 0777);
 }
+
+function isModuleInstalled($module_name) {
+    $flag_filename = ROOT . 'cms/modules_installed/'.$module_name.'.installed';
+    if (file_exists($flag_filename)) {
+        return true;
+    } else {
+        return false;
+    }
+}

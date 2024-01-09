@@ -407,6 +407,10 @@ class MajordomoApplication extends Application
                                 $state['TEMPLATE']=$v['TEMPLATE'];
                                 $state['ITEM']=$k;
                             }
+                            if ($v['ATTRIBUTES']) {
+                                $state['ATTRIBUTES'] = $v['ATTRIBUTES'];
+                                $state['ITEM']=$k;
+                            }
                             if (preg_match('/^component(\d+)$/',$k,$m)) {
                                 $state['COMPONENT_ID']=$m[1];
                                 $state['ITEM']=$k;
@@ -414,6 +418,14 @@ class MajordomoApplication extends Application
                             $plans->processState($state);
                             if ($state['TEMPLATE']) {
                                 unset($state['TEMPLATE']);
+                            }
+                            if ($state['ATTRIBUTES'] && is_array($state['ATTRIBUTES'])) {
+                                foreach($state['ATTRIBUTES'] as &$attribute) {
+                                    if ($attribute['TEMPLATE'] != '') {
+                                        unset($attribute['TEMPLATE']);
+                                    }
+                                }
+                                unset($attribute);
                             }
                             $send_plan_states[] = $state;
                         }

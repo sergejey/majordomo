@@ -106,9 +106,13 @@ function majordomoExceptionHandler($e)
         $url = $_SERVER['REQUEST_URI'];
     } else {
         $url = 'commandline';
+        global $argv;
+        if (isset($argv[0])) {
+            $url .= ': ' . implode(' ', $argv);
+        }
     }
     $message = $url . "\nPHP exception: " . $e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine() . "\nBacktrace: " . $e->getTraceAsString();
-    DebMes($message,'php_exceptions');
+    DebMes($message, 'php_exceptions');
     majordomoSaveError($message, 'exceptions');
     return true;
 }
@@ -121,13 +125,17 @@ function majordomoErrorHandler($errno, $errmsg, $filename, $linenum)
         $url = $_SERVER['REQUEST_URI'];
     } else {
         $url = 'commandline';
+        global $argv;
+        if (isset($argv[0])) {
+            $url .= ': ' . implode(' ', $argv);
+        }
     }
 
     $message = $url . "\nPHP error level $errno in $filename (line $linenum): " . $errmsg;
     if ($errno == E_WARNING) {
-        //DebMes($message, 'php_warning');
+        DebMes($message, 'php_warnings');
     } else {
-        DebMes($message, 'php_error');
+        DebMes($message, 'php_errors');
     }
     majordomoSaveError($message, 'errors', $filename);
 }
