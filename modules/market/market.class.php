@@ -421,7 +421,10 @@ class market extends module
                 if (!isset($rec['LATEST_VERSION_URL'])) {
                     if (preg_match('/github\.com/is', $rec['REPOSITORY_URL']) && (isset($rec['EXISTS']) || $rec['MODULE_NAME'] == $name)) {
                         $git_url = str_replace('archive/master.tar.gz', 'commits/master.atom', $rec['REPOSITORY_URL']);
-                        $github_feed = getURL($git_url, 5 * 60);
+                        $options = array(
+                            CURLOPT_HTTPHEADER => array('Accept: application/xml')
+                        );
+                        $github_feed = getURL($git_url, 5 * 60, '', '', false, $options);
                         $tmp = GetXMLTree($github_feed);
                         if (is_array($tmp)) {
                             $items_data = XMLTreeToArray($tmp);
@@ -571,7 +574,10 @@ class market extends module
             if (!isset($rec['LATEST_VERSION_URL'])) {
                 if (preg_match('/github\.com/is', $rec['REPOSITORY_URL']) && ($rec['EXISTS'] || $rec['MODULE_NAME'] == $name)) {
                     $git_url = str_replace('archive/master.tar.gz', 'commits/master.atom', $rec['REPOSITORY_URL']);
-                    $github_feed = getURL($git_url, 5 * 60);
+                    $options = array(
+                        CURLOPT_HTTPHEADER => array('Accept: application/xml')
+                    );
+                    $github_feed = getURL($git_url, 5 * 60, '', '', false, $options);
                     $tmp = GetXMLTree($github_feed);
                     if (is_array($tmp)) {
                         $items_data = XMLTreeToArray($tmp);
