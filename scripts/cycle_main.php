@@ -6,8 +6,6 @@ include_once("./config.php");
 include_once("./lib/loader.php");
 include_once("./lib/threads.php");
 
-set_time_limit(0);
-
 include_once("./load_settings.php");
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
@@ -53,7 +51,7 @@ $checked_time = 0;
 $started_time = time();
 
 echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
-
+set_time_limit(0);
 while (1) {
     if (time() - $checked_time > 5) {
         $checked_time = time();
