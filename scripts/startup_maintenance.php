@@ -1,15 +1,6 @@
 <?php
 
 /*
-chdir('../');
-include_once("./config.php");
-include_once("./lib/loader.php");
-
-
-$db=new mysql(DB_HOST, '', DB_USER, DB_PASSWORD, DB_NAME); // connecting to database
-include_once("./load_settings.php");
-*/
-/*
  * @version 0.1 (auto-set)
  */
 
@@ -18,6 +9,7 @@ if (!function_exists('DebMes')) {
     include_once("./config.php");
     include_once("./lib/loader.php");
     include_once("./load_settings.php");
+    set_time_limit(10 * 60);
 }
 
 if (isset($_SERVER['REQUEST_URI'])) {
@@ -25,8 +17,6 @@ if (isset($_SERVER['REQUEST_URI'])) {
 } elseif (isset($argv[0])) {
     DebMes("Running from command line: " . implode(' ', $argv), 'maintenance');
 }
-
-set_time_limit(10 * 60);
 
 echo "<pre>\n";
 
