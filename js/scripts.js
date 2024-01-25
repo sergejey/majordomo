@@ -338,6 +338,22 @@ function startFlashing(block_id) {
   ajaxSetGlobal(varname, value);
  }
 
+function getGlobal(varname) {
+ var url=ROOTHTML;
+ url+='?md=application&action=ajaxgetglobal&var='+encodeURIComponent(varname);
+ $.ajax({
+  url: url
+ }).done(function(data) {
+  var obj=jQuery.parseJSON(data);
+  if (obj.DATA) {
+   return obj.DATA;
+  }
+ }).error(function(data) {
+      return false;
+     }
+ );
+}
+
 function getCookie(Name) {
  var search = Name + "="
  if (document.cookie.length > 0)
