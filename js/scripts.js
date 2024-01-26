@@ -334,8 +334,40 @@ function startFlashing(block_id) {
   return false;
  }
 
+function getGlobal(varname) {
+ var url=ROOTHTML;
+ var result = false;
+ url+='?md=application&action=ajaxgetglobal&var='+encodeURIComponent(varname);
+ $.ajax({
+  type: "POST",
+  async: false,
+  url: url,
+  success: function (data) {
+   var obj = jQuery.parseJSON(data);
+   if (obj.DATA) {
+    result = obj.DATA;
+   }
+  }
+ });
+ return result;
+}
+
  function setGlobal(varname, value) {
-  ajaxSetGlobal(varname, value);
+  var url=ROOTHTML;
+  var result = false;
+  url+='?md=application&action=ajaxsetglobal&var='+encodeURIComponent(varname)+'&value='+encodeURIComponent(value);
+  $.ajax({
+   type: "POST",
+   async: false,
+   url: url,
+   success: function (data) {
+    var obj = jQuery.parseJSON(data);
+    if (obj.DATA) {
+     result = true;
+    }
+   }
+  });
+  return result;
  }
 
 function getCookie(Name) {
