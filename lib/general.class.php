@@ -28,24 +28,23 @@ if (defined('HOME_NETWORK')
         $local_ip = '127.0.0.1';
     }
 
-    if ((($_SERVER["REMOTE_ADDR"] == $local_ip) || (trim($_SERVER["REMOTE_ADDR"]) == '::1')) && (getenv('HTTP_X_FORWARDED_FOR') != '')) {
+    if (getenv('HTTP_X_FORWARDED_FOR') != '') {
         $remoteAddr = getenv('HTTP_X_FORWARDED_FOR');
     }
 
-
     if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != $local_ip && trim($remoteAddr) != '::1') {
         if (defined('EXT_ACCESS_USERNAME') && defined('EXT_ACCESS_PASSWORD') && $_SERVER['PHP_AUTH_USER'] == EXT_ACCESS_USERNAME && $_SERVER['PHP_AUTH_PW'] == EXT_ACCESS_PASSWORD) {
-            $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password valid. Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
+            $data = $remoteAddr . " " . date("[d/m/Y:H:i:s]") . " Username and/or password valid. Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
             DebMes($data, 'auth');
         } elseif (!defined('EXT_ACCESS_USERNAME') && !defined('EXT_ACCESS_PASSWORD')) {
-            $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password dont defined and dont needed" . "\n";
+            $data = $remoteAddr . " " . date("[d/m/Y:H:i:s]") . " Username and/or password dont defined and dont needed" . "\n";
             DebMes($data, 'auth');
         } else {
             // header("Location:$PHP_SELF\n\n");
             header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
             header("HTTP/1.0 401 Unauthorized");
             echo "Authorization required\n";
-            $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password invalid. Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
+            $data = $remoteAddr . " " . date("[d/m/Y:H:i:s]") . " Username and/or password invalid. Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
             DebMes($data, 'auth');
             exit;
         }
