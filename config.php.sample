@@ -88,7 +88,7 @@ Define('GETURL_WARNING_TIMEOUT',5);                   // TIMEOUT LIMIT FOR getUR
 //Define('LOG_MAX_SIZE', 2);                 // MAXIMUM LOG FILE SIZE, MB
 //Define('LOG_CYCLES',1);             // Save working cycle log (or send to /dev/null if not defined)
 //Define('PATH_TO_FFMPEG','avconv');
-//Define('DISABLE_PANEL_ACCELERATION', 1);
+//Define('ENABLE_PANEL_ACCELERATION', 1);
 //Define('VERBOSE_LOG',1); // STORE SYSTEM ACTIVITY IN VERBOSE LOG
 //Define('VERBOSE_LOG_IGNORE','.checkstate, ThisComputer.uptime'); // IGNORE SOME DATA
 //Define('DISABLE_SIMPLE_DEVICES',1); // disables simple devices behavior
