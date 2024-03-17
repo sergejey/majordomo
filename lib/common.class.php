@@ -307,11 +307,9 @@ function runScheduledJobs()
     $total = count($jobs);
 
     for ($i = 0; $i < $total; $i++) {
-        //echo "Running job: " . $jobs[$i]['TITLE'] . "\n";
         $jobs[$i]['PROCESSED'] = 1;
         $jobs[$i]['STARTED'] = date('Y-m-d H:i:s');
 
-        //SQLUpdate('jobs', $jobs[$i], array('PROCESSED', 'STARTED'));
         SQLExec("UPDATE jobs SET PROCESSED=" . $jobs[$i]['PROCESSED'] . ", STARTED='" . $jobs[$i]['STARTED'] . "' WHERE ID=" . $jobs[$i]['ID']);
 
         if ($jobs[$i]['COMMANDS'] != '') {
@@ -319,7 +317,6 @@ function runScheduledJobs()
             $result = trim(getURL($url, 0));
             $result = preg_replace('/<!--.+-->/is', '', $result);
             if (!preg_match('/OK$/', $result)) {
-                //getLogger(__FILE__)->error(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result));
                 DebMes(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result) . ' (' . __FILE__ . ')', 'errors');
             }
         }

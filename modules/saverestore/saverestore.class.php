@@ -396,12 +396,10 @@ class saverestore extends module
 
         if ($this->mode == 'upload') {
             $this->upload($out);
-            //$this->redirect("?mode=clear");
         }
         if ($this->mode == 'dump') {
             $this->dump($out);
             $this->redirect("?mode=clear");
-            //$this->redirect("?");
         }
 
         if ($this->mode == 'delete') {
@@ -1349,14 +1347,23 @@ class saverestore extends module
             } else {
                 $result = exec('tar xzvf ../' . $file, $output, $res);
             }
+
             if (!$result) {
                 echonow("Unpack failed", 'red');
                 return false;
             }
 
 
-            $UpdatesDir = scandir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp', 1);
-            $folder = DIRECTORY_SEPARATOR . $UpdatesDir[0];
+            if (file_exists(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/index.php')) {
+                $folder = '/.';
+            } else {
+                $UpdatesDir = scandir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp', 1);
+                $folder = DIRECTORY_SEPARATOR . $UpdatesDir[0];
+                if (!is_dir($folder)) {
+                    echonow("Unpack failed", 'red');
+                    return false;
+                }
+            }
 
             if ($iframe) {
                 echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> ' . LANG_UPDATEBACKUP_DONE . '</div>');
@@ -1392,11 +1399,11 @@ class saverestore extends module
             $total = count($ignores);
             for ($i = 0; $i < $total; $i++) {
                 $name = $ignores[$i]['NAME'];
-                if (is_dir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/modules/' . $name)) {
-                    removeTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/modules/' . $name);
+                if (is_dir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . '/modules/' . $name)) {
+                    removeTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . '/modules/' . $name);
                 }
-                if (is_dir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/templates/' . $name)) {
-                    removeTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/templates/' . $name);
+                if (is_dir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . '/templates/' . $name)) {
+                    removeTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . '/templates/' . $name);
                 }
             }
 
@@ -1436,7 +1443,6 @@ class saverestore extends module
             if ($iframe) {
                 echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> ' . LANG_UPDATEBACKUP_DONE . '</div>');
             }
-
 
             if ($iframe) {
                 return 1;
