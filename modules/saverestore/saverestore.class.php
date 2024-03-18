@@ -1359,8 +1359,8 @@ class saverestore extends module
             } else {
                 $UpdatesDir = scandir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp', 1);
                 $folder = DIRECTORY_SEPARATOR . $UpdatesDir[0];
-                if (!is_dir($folder)) {
-                    echonow("Unpack failed", 'red');
+                if (!is_dir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder)) {
+                    echonow("Unpack failed!", 'red');
                     return false;
                 }
             }

@@ -22,9 +22,6 @@ $cycleVarName = 'ThisComputer.' . str_replace('.php', '', basename(__FILE__)) . 
 
 echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 
-// on start up - delete timers scheduled for nearest 15 minutes
-SQLExec("DELETE FROM jobs WHERE RUNTIME <='" . date('Y-m-d H:i:s', time() + 15 * 60) . "'");
-
 while (1) {
     if ((time() - $checked_time) > 5) {
         $checked_time = time();
