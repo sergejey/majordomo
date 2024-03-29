@@ -53,7 +53,7 @@ function clearCacheData($prefix = '')
         }
         if (!$prefix) $redisConnection->flushDB();
         else {
-            $list = $redisConnection->getKeys($prefix . "*");
+            $list = $redisConnection->keys($prefix . "*");
             foreach ($list as $key1)
                 $redisConnection->del($key1);
         }
@@ -79,7 +79,7 @@ function getAllCache($prefix = '')
             $redisConnection = new Redis();
             $redisConnection->pconnect(USE_REDIS);
         }
-        $list = $redisConnection->getKeys($prefix . "*");
+        $list = $redisConnection->keys($prefix . "*");
         foreach ($list as $key1)
             $out[$key1] = $redisConnection->get($key1);
     } else $out = SQLExec("select * from cached_values where KEYWORD like '$prefix%'");
