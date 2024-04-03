@@ -1266,7 +1266,6 @@ class saverestore extends module
      */
     function upload(&$out, $iframe = 0)
     {
-
         set_time_limit(0);
         global $restore;
         global $file;
@@ -1289,7 +1288,6 @@ class saverestore extends module
             move_uploaded_file($file, DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/' . $file_name);
             $file = $file_name;
         }
-
 
         if ($iframe) {
             echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> ' . LANG_UPDATEBACKUP_APPLY_UPDATE . '</div>');
@@ -1333,6 +1331,9 @@ class saverestore extends module
                 $this->redirect("?mode=clear&ok_msg=" . urlencode(LANG_UPDATEBACKUP_RESTORE_DB_DONE));
             }
         } elseif ($file != '') {
+
+            DebMes("Trying to unpack $file", "restore");
+
             logAction('system_restore', $file);
             // unpack archive
             umask(0);
@@ -1350,11 +1351,12 @@ class saverestore extends module
 
             if (!$result) {
                 echonow("Unpack failed", 'red');
+                DebMes("Unpack failed: " . 'tar xzvf ../' . $file, "restore");
                 return false;
             }
 
 
-            if (file_exists(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/index.php')) {
+            if (file_exists(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/index.php') || file_exists(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/dump.sql')) {
                 $folder = '/.';
             } else {
                 $UpdatesDir = scandir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp', 1);
@@ -1364,6 +1366,7 @@ class saverestore extends module
                     return false;
                 }
             }
+            DebMes("Restore folder: $folder", "restore");
 
             if ($iframe) {
                 echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> ' . LANG_UPDATEBACKUP_DONE . '</div>');
@@ -1427,8 +1430,10 @@ class saverestore extends module
                 if ($iframe) {
                     echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> ' . LANG_UPDATEBACKUP_RESTORE_DB . '</div>');
                 }
-                $this->restoredatabase(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . '/dump.sql');
-                echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> ' . LANG_UPDATEBACKUP_DONE . '</div>');
+                $result = $this->restoredatabase(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp' . $folder . '/dump.sql');
+                if ($iframe) {
+                    echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> ' . LANG_UPDATEBACKUP_DONE . '</div>');
+                }
             }
 
             $this->config['LATEST_UPDATED_ID'] = $out['LATEST_ID'];
@@ -1629,11 +1634,19 @@ class saverestore extends module
     {
         $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
         $mysqlParam = " -u " . DB_USER;
-        if (DB_PASSWORD != '') $mysqlParam .= " -p" . DB_PASSWORD;
+        if (DB_PASSWORD != '') $mysqlParam .= " --password=\"" . DB_PASSWORD . "\"";
         $mysqlParam .= " " . DB_NAME . " <" . $filename;
-        exec($mysql_path . $mysqlParam);
-        SQLExec("DELETE FROM cached_values");
-        setGlobal('cycle_mainRun', time());
+        $cmd = $mysql_path . $mysqlParam;
+        $result = exec($cmd, $output, $result_code);
+        if ($result !== false) {
+            DebMes("DB restored", "restore");
+            SQLExec("DELETE FROM cached_values");
+            setGlobal('cycle_mainRun', time());
+            return true;
+        } else {
+            DebMes("Failed to restore DB:\n" . implode("\n", $output), "restore");
+            return false;
+        }
     }
 
     /**

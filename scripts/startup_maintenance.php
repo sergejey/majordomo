@@ -106,7 +106,7 @@ if ($full_backup) {
             $mysqlDumpPath = "/usr/bin/mysqldump";
     }
 
-    $mysqlDumpParam = " -h " . DB_HOST . " --user=" . DB_USER . " --password=" . DB_PASSWORD;
+    $mysqlDumpParam = " -h " . DB_HOST . " --user=\"" . DB_USER . "\" --password=\"" . DB_PASSWORD . "\"";
     $mysqlDumpParam .= " --no-create-db --add-drop-table --databases " . DB_NAME;
     $mysqlDumpParam .= " > " . $target_dir . "/" . DB_NAME . ".sql";
 
