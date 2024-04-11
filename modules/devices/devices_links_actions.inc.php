@@ -3,12 +3,16 @@
 startMeasure('homebridge_update');
 
 $debug_sync = 0;
-
 //DebMes("homebridgesync for ".$device1['TITLE'],'homebridge');
-
-if (!$device1['SYSTEM_DEVICE'] && !$device1['ARCHIVED'] && $this->isHomeBridgeAvailable()) {
-    // send updated status to HomeKit
-    require DIR_MODULES . 'devices/homebridgeSendUpdate.inc.php';
+if (!$device1['SYSTEM_DEVICE'] && !$device1['ARCHIVED']) {
+	if($this->isHomeBridgeAvailable()){
+		// send updated status to HomeKit
+		include DIR_MODULES . 'devices/homebridgeSendUpdate.inc.php';
+	}
+	else if(isModuleInstalled('homekit')){
+		// send updated status to module HomeKit
+		include DIR_MODULES . 'homekit/homebridgeSendUpdate.inc.php';
+	}
 }
 endMeasure('homebridge_update');
 

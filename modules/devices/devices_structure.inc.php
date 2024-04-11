@@ -139,7 +139,7 @@ $this->device_types = array(
         'PARENT_CLASS' => 'SControllers',
         'CLASS' => 'SThermostats',
         'PROPERTIES' => array(
-            'relay_status' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_RELAY_STATUS, 'KEEP_HISTORY' => 365, 'DATA_KEY' => 1),
+            'relay_status' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_RELAY_STATUS, 'ONCHANGE' => 'relay_statusUpdated', 'KEEP_HISTORY' => 365, 'DATA_KEY' => 1),
             'value' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_CURRENT_TEMP, 'ONCHANGE' => 'valueUpdated', 'KEEP_HISTORY' => 365, 'DATA_KEY' => 1),
             'currentTargetValue' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP, 'DATA_KEY' => 1, '_CONFIG_DEFAULT' => 22),
             'normalTargetValue' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_NORMAL_TEMP, '_CONFIG_TYPE' => 'text', 'ONCHANGE' => 'valueUpdated', '_CONFIG_HELP' => 'SdThermostat', '_CONFIG_DEFAULT' => 22),
@@ -151,7 +151,8 @@ $this->device_types = array(
         'METHODS' => array(
             'setTargetTemperature' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_SET_TARGET_TEMPERATURE, '_CONFIG_SHOW' => 1, '_CONFIG_REQ_VALUE' => 1),
             'valueUpdated' => array('DESCRIPTION' => 'Value Updated'),
-            'statusUpdated' => array('DESCRIPTION' => 'Status Updated'),
+            'relay_statusUpdated' => array('DESCRIPTION' => 'Relay Status Updated'),
+			'statusUpdated' => array('DESCRIPTION' => 'Status Updated'),
             'tempUp' => array('DESCRIPTION' => 'Increase target temperature'),
             'tempDown' => array('DESCRIPTION' => 'Descrease target temperature'),
             'switchEnable' => array('DESCRIPTION' => 'Switch Enable'),

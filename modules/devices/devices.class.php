@@ -576,6 +576,9 @@ class devices extends module
         if ($this->isHomeBridgeAvailable()) {
             include_once(dirname(__FILE__) . '/homebridgeSync.inc.php');
         }
+		else if(isModuleInstalled('homekit')){
+			include_once(DIR_MODULES . 'homekit/homebridgeSync.inc.php');
+		}
     }
 
     /**
@@ -599,7 +602,7 @@ class devices extends module
 
             if ($this->view_mode == '' || $this->view_mode == 'search_devices') {
                 $this->search_devices($out);
-                if ($this->isHomeBridgeAvailable()) {
+                if ($this->isHomeBridgeAvailable() || isModuleInstalled('homekit')) {
                     $out['ENABLE_HOMEBRIDGE'] = 1;
                 }
             }
@@ -1458,7 +1461,7 @@ class devices extends module
     }
 
 
-    function checkLinkedDevicesAction($object_title, $value = 0)
+    function checkLinkedDevicesAction($object_title, $params=array())
     {
         startMeasure('checkLinkedDevicesAction');
         $device1 = SQLSelectOne("SELECT * FROM devices WHERE LINKED_OBJECT LIKE '" . $object_title . "'");

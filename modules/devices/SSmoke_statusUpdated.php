@@ -27,4 +27,4 @@ $this->callMethodSafe('logicAction');
 
 include_once(dirname(__FILE__) . '/devices.class.php');
 $dv=new devices();
-$dv->checkLinkedDevicesAction($ot, $this->getProperty('status'));
+$dv->checkLinkedDevicesAction($ot, $params);

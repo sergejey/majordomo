@@ -42,7 +42,7 @@ if ($new_value != $old_value) {
 }
 
 $this->callMethodSafe('keepAlive');
-$this->callMethodSafe('statusUpdated');
+//$this->callMethodSafe('statusUpdated');
 $this->callMethodSafe('logicAction');
 
 $history_values = array(
@@ -74,4 +74,4 @@ foreach ($history_values as $history_value => $time) {
 
 include_once(dirname(__FILE__) . '/devices.class.php');
 $dv = new devices();
-$dv->checkLinkedDevicesAction($this->object_title, $new_value);
+$dv->checkLinkedDevicesAction($this->object_title, $params);
