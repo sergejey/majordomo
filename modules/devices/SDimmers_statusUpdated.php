@@ -25,7 +25,7 @@ if ($status > 0 && !$level && $levelSaved) {
     $this->callMethod('logicAction');
     include_once(dirname(__FILE__) . '/devices.class.php');
     $dv = new devices();
-    $dv->checkLinkedDevicesAction($this->object_title, $level);
+    $dv->checkLinkedDevicesAction($this->object_title, $params);
 }
 
 if ($params['NEW_VALUE'] && $linked_room && $this->getProperty('isActivity')) {
