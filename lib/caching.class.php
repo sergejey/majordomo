@@ -96,11 +96,7 @@ function getAllCache($prefix = '')
 function saveToCache($key, $value)
 {
     $key = strtolower($key);
-    if (is_array($value) || strlen($value) > 255) {
-        deleteFromCache($key);
-        return;
-    }
-
+    
     if (defined('USE_REDIS')) {
         global $redisConnection;
         if (!isset($redisConnection)) {
@@ -108,6 +104,11 @@ function saveToCache($key, $value)
             $redisConnection->pconnect(USE_REDIS);
         }
         $redisConnection->set($key, (string)$value);
+        return;
+    }
+
+    if (is_array($value) || strlen($value) > 2048) {
+        deleteFromCache($key);
         return;
     }
 

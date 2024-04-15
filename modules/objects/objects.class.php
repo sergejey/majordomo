@@ -1175,10 +1175,11 @@ class objects extends module
         //SQLDropTable('cached_values');
         $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_values`
                (`KEYWORD`   CHAR(100) NOT NULL,
-                `DATAVALUE` CHAR(255) NOT NULL,
+                `DATAVALUE` VARCHAR(2048) NOT NULL,
                 PRIMARY KEY (`KEYWORD`)
                ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
         SQLExec($sqlQuery);
+        SQLExec("ALTER TABLE `cached_values` CHANGE COLUMN `DATAVALUE` `DATAVALUE` VARCHAR(2048) NOT NULL DEFAULT ''");
 
         $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_ws`
                (`PROPERTY`   CHAR(100) NOT NULL,
