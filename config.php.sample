@@ -103,3 +103,4 @@ Define('GETURL_WARNING_TIMEOUT',5);                   // TIMEOUT LIMIT FOR getUR
 //define('BACKUP_FILES_EXPIRE', 10); // for delete backup files
 //define('CACHED_FILES_EXPIRE', 30); // for delete cached files
 //define('SETTINGS_ERRORS_KEEP_HISTORY', 1); // for delete errors history
+//define('CACHE_VALUE_MAX_SIZE', 255); // max length of caching value
