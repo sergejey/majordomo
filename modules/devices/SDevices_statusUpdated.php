@@ -7,7 +7,6 @@ if ($this->class_title != 'SMotions' || $params['NEW_VALUE']) {
     $this->setProperty('updated', time());
 }
 
-
 //$need_call_logic_action = 1;
 
 $is_blocked = (int)$this->getProperty('blocked');
@@ -41,5 +40,4 @@ if ($params['NEW_VALUE'] && $linked_room && $this->getProperty('isActivity')) {
 $this->callMethod('logicAction');
 include_once(dirname(__FILE__) . '/devices.class.php');
 $dv = new devices();
-$dv->checkLinkedDevicesAction($ot, $params['NEW_VALUE']);
-
+$dv->checkLinkedDevicesAction($ot, $params);

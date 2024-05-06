@@ -53,7 +53,7 @@ function clearCacheData($prefix = '')
         }
         if (!$prefix) $redisConnection->flushDB();
         else {
-            $list = $redisConnection->getKeys($prefix . "*");
+            $list = $redisConnection->keys($prefix . "*");
             foreach ($list as $key1)
                 $redisConnection->del($key1);
         }
@@ -79,7 +79,7 @@ function getAllCache($prefix = '')
             $redisConnection = new Redis();
             $redisConnection->pconnect(USE_REDIS);
         }
-        $list = $redisConnection->getKeys($prefix . "*");
+        $list = $redisConnection->keys($prefix . "*");
         foreach ($list as $key1)
             $out[$key1] = $redisConnection->get($key1);
     } else $out = SQLExec("select * from cached_values where KEYWORD like '$prefix%'");
@@ -96,11 +96,7 @@ function getAllCache($prefix = '')
 function saveToCache($key, $value)
 {
     $key = strtolower($key);
-    if (is_array($value) || strlen($value) > 255) {
-        deleteFromCache($key);
-        return;
-    }
-
+    
     if (defined('USE_REDIS')) {
         global $redisConnection;
         if (!isset($redisConnection)) {
@@ -108,6 +104,17 @@ function saveToCache($key, $value)
             $redisConnection->pconnect(USE_REDIS);
         }
         $redisConnection->set($key, (string)$value);
+        return;
+    }
+
+    if (defined('CACHE_VALUE_MAX_SIZE')) {
+        $cache_value_max_size = CACHE_VALUE_MAX_SIZE;
+    } else {
+        $cache_value_max_size = 255;
+    }
+
+    if (is_array($value) || strlen($value) > $cache_value_max_size) {
+        deleteFromCache($key);
         return;
     }
 

@@ -77,11 +77,11 @@ require(ROOT . 'lib/utils/postprocess_subscriptions.inc.php');
 endMeasure('postProcessSubscriptions');
 endMeasure('part2');
 
-startMeasure('accelerationProcess');
-if ((!defined('DISABLE_PANEL_ACCELERATION') || DISABLE_PANEL_ACCELERATION != 1)) {
+if ((defined('ENABLE_PANEL_ACCELERATION') && ENABLE_PANEL_ACCELERATION)) {
+    startMeasure('accelerationProcess');
     $result = preg_replace('/href="(\/admin\.php.+?)">/is', 'href="\1" onclick="return partLoad(this.href);">', $result);
+    endMeasure('accelerationProcess');
 }
-endMeasure('accelerationProcess');
 
 
 if (isset($_GET['part_load'])) {

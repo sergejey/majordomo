@@ -142,7 +142,6 @@ switch ($device1['TYPE']) {
         break;
     case 'rgb':
         $payload['service'] = 'Lightbulb';
-        sg('HomeBridge.to_add', json_encode($payload));
 
         $payload['characteristic'] = 'On';
         if (gg($device1['LINKED_OBJECT'] . '.status')) {
@@ -167,7 +166,6 @@ switch ($device1['TYPE']) {
         break;
     case 'ledlamp':
         $payload['service'] = 'Lightbulb';
-        sg('HomeBridge.to_add', json_encode($payload));
 
         $payload['characteristic'] = 'On';
         if (gg($device1['LINKED_OBJECT'] . '.status')) {
@@ -206,7 +204,7 @@ switch ($device1['TYPE']) {
     /*
     case 'sensor_battery':
        $payload['service']='BatteryService';
-       sg('HomeBridge.to_add',json_encode($payload));
+
        // Characteristic.BatteryLevel;
        // Characteristic.ChargingState; 0 - NOT_CHARGING, 1 - CHARGING, 2 - NOT_CHARGEABLE
        // Characteristic.StatusLowBattery;

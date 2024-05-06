@@ -12,7 +12,12 @@ if ($this->getProperty('setMaxTurnOn')) {
 
 //DebMes("DimmerStatusUpdated: Status $status; Level $level; LevelSaved $levelSaved",'dimming');
 if ($status > 0 && !$level && $levelSaved) {
-    $this->setProperty('level', $levelSaved);
+    if ($switchLevel) {
+        $this->setProperty('level', $levelSaved, 1, 'SDimmers_statusUpdated');
+    } else {
+        $this->setProperty('level', $levelSaved);
+    }
+
 } else {
     if (!$status && !$switchLevel) {
         $this->setProperty('level', 0);
@@ -20,7 +25,7 @@ if ($status > 0 && !$level && $levelSaved) {
     $this->callMethod('logicAction');
     include_once(dirname(__FILE__) . '/devices.class.php');
     $dv = new devices();
-    $dv->checkLinkedDevicesAction($this->object_title, $level);
+    $dv->checkLinkedDevicesAction($this->object_title, $params);
 }
 
 if ($params['NEW_VALUE'] && $linked_room && $this->getProperty('isActivity')) {
