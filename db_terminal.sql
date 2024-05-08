@@ -1228,7 +1228,7 @@ CREATE TABLE `pinghosts` (
 --
 
 INSERT INTO `pinghosts` (`ID`, `HOSTNAME`, `TYPE`, `STATUS`, `SEARCH_WORD`, `CHECK_LATEST`, `CHECK_NEXT`, `SCRIPT_ID_ONLINE`, `CODE_ONLINE`, `SCRIPT_ID_OFFLINE`, `CODE_OFFLINE`, `OFFLINE_INTERVAL`, `ONLINE_INTERVAL`, `TITLE`, `LOG`, `LINKED_OBJECT`, `LINKED_PROPERTY`, `COUNTER_CURRENT`, `COUNTER_REQUIRED`, `STATUS_EXPECTED`) VALUES
-(1, 'tut.by', 0, 1, '', '2015-12-03 14:42:32', '2015-12-03 14:52:32', 0, '', 0, '', 600, 600, 'Internet', '', '', '', 0, 0, 1);
+(1, 'www.google.com', 0, 1, '', '2015-12-03 14:42:32', '2015-12-03 14:52:32', 0, '', 0, '', 600, 600, 'Internet', '', '', '', 0, 0, 1);
 -- --------------------------------------------------------
 
 --
