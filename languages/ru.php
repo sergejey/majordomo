@@ -34,6 +34,7 @@ $dictionary = array(
     'TAKES_TOO_LONG' => ', если процесс загрузки занимает слишком много времени.',
     'SUBMIT_DIAGNOSTIC'=>'Отправка данных диагностики',
 
+    'GENERAL_HOME_NETWORK' => 'Домашняя сеть',
     'GENERAL_SENSORS' => 'Сенсоры',
     'GENERAL_OPERATIONAL_MODES' => 'Режимы работы',
     'GENERAL_ENERGY_SAVING_MODE' => 'Энергосбережение',
@@ -993,6 +994,7 @@ $dictionary = array(
     'SETTINGS_SECTION_BEHAVIOR' => 'Поведение',
     'SETTINGS_SECTION_BACKUP' => 'Резервное копирование',
     'SETTINGS_SECTION_SCENES' => 'Сцены',
+    'SETTINGS_SECTION_REMOTE' => 'Внешний доступ',
 
     'DEVICE_ID' => 'ID устройства',
     'REQUEST_TYPE' => 'Тип запроса',

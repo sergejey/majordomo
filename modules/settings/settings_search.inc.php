@@ -24,9 +24,8 @@ if ($clear_codeeditor) {
 }
 
 
-
 $sections = array();
-$filters = array('', 'system', 'behavior', 'hook', 'backup', 'scenes', 'calendar', 'codeeditor');
+$filters = array('', 'system', 'behavior', 'hook', 'backup', 'remote', 'scenes', 'calendar', 'codeeditor');
 $total = count($filters);
 for ($i = 0; $i < $total; $i++) {
     $rec = array();
@@ -48,318 +47,35 @@ for ($i = 0; $i < $total; $i++) {
 }
 $out['SECTIONS'] = $sections;
 
-if ($this->filter_name == '' && !defined('SETTINGS_GENERAL_ALICE_NAME')) {
-    $options = array(
-        'GENERAL_ALICE_NAME' => 'Computer\'s name'
-    );
-    foreach ($options as $k => $v) {
-        $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
-        if (!$tmp['ID']) {
-            $tmp = array();
-            $tmp['NAME'] = $k;
-            $tmp['TITLE'] = $v;
-            $tmp['TYPE'] = 'text';
-            $tmp['DEFAULTVALUE'] = '';
-            $tmp['NOTES'] = '';
-            $tmp['DATA'] = '';
-            SQLInsert('settings', $tmp);
-        }
-    }
+include_once DIR_MODULES . 'settings/settings_structure.inc.php';
+if ($this->filter_name == '') {
+    $options = $settings_structure['default'];
+} elseif (isset($settings_structure[$this->filter_name])) {
+    $options = $settings_structure[$this->filter_name];
+} else {
+    $options = array();
 }
 
-if ($this->filter_name == '' && !defined('SETTINGS_GENERAL_START_LAYOUT')) {
-    $options = array(
-        'GENERAL_START_LAYOUT' => 'Homepage Layout'
-    );
-    foreach ($options as $k => $v) {
-        $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
-        if (!isset($tmp['ID'])) {
-            $tmp = array();
-            $tmp['NAME'] = $k;
-            $tmp['TITLE'] = $v;
-            $tmp['TYPE'] = 'select';
-            $tmp['DEFAULTVALUE'] = '';
-            $tmp['NOTES'] = '';
-            $tmp['DATA'] = '=Default|homepages=Home Pages|menu=Menu|apps=Applications|cp=Control Panel';
-            SQLInsert('settings', $tmp);
-        }
+foreach ($options as $k => $v) {
+    $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
+    if (!$tmp['ID']) {
+        $tmp = array();
+        $tmp['NAME'] = $k;
+        $tmp['TITLE'] = $v['title'] ?? $k;
+        $tmp['TYPE'] = $v['type'] ?? 'text';
+        $tmp['DEFAULTVALUE'] = $v['default'] ?? '';
+        $tmp['NOTES'] = $v['notes'] ?? '';
+        $tmp['DATA'] = $v['data'] ?? '';
+        $tmp['PRIORITY'] = $v['priority'] ?? 0;
+        SQLInsert('settings', $tmp);
     }
 }
-
-if ($this->filter_name == 'system' && !defined('SETTINGS_SYSTEM_DISABLE_DEBMES')) {
-    $options = array(
-        'SYSTEM_DISABLE_DEBMES' => 'Disable logging (DebMes)'
-    );
-    foreach ($options as $k => $v) {
-        $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
-        if (!$tmp['ID']) {
-            $tmp = array();
-            $tmp['NAME'] = $k;
-            $tmp['TITLE'] = $v;
-            $tmp['TYPE'] = 'onoff';
-            $tmp['DEFAULTVALUE'] = '0';
-            $tmp['NOTES'] = '';
-            $tmp['DATA'] = '';
-            SQLInsert('settings', $tmp);
-        }
-    }
-}
-
-if ($this->filter_name == 'system' && !defined('SETTINGS_SYSTEM_DEBMES_PATH')) {
-    $options = array(
-        'SYSTEM_DEBMES_PATH' => 'Path to DebMes logs'
-    );
-    foreach ($options as $k => $v) {
-        $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
-        if (!$tmp['ID']) {
-            $tmp = array();
-            $tmp['NAME'] = $k;
-            $tmp['TITLE'] = $v;
-            $tmp['TYPE'] = 'text';
-            $tmp['DEFAULTVALUE'] = '';
-            $tmp['NOTES'] = '';
-            $tmp['DATA'] = '';
-            SQLInsert('settings', $tmp);
-        }
-    }
-}
-
-if ($this->filter_name == 'system' && !defined('SETTINGS_SYSTEM_DB_MAIN_SAVE_PERIOD')) {
-    $options = array(
-        'SYSTEM_DB_MAIN_SAVE_PERIOD' => array(
-            'TITLE' => 'Database save period (main data), minutes',
-            'DEFAULTVALUE' => 15,
-            'NOTES' => ''
-        ),
-        'SYSTEM_DB_HISTORY_SAVE_PERIOD' => array(
-            'TITLE' => 'Database save period (history data), minutes',
-            'DEFAULTVALUE' => 60,
-            'NOTES' => ''
-        )
-    );
-
-    foreach ($options as $k => $v) {
-        $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
-        if (!$tmp['ID']) {
-            $tmp = array();
-            $tmp['NAME'] = $k;
-            $tmp['TITLE'] = $v['TITLE'];
-            $tmp['TYPE'] = 'text';
-            $tmp['DEFAULTVALUE'] = $v['DEFAULTVALUE'];
-            $tmp['NOTES'] = '';
-            $tmp['DATA'] = '';
-            SQLInsert('settings', $tmp);
-        }
-    }
-}
-
-if ($this->filter_name == 'behavior' && !defined('SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT')) {
-
-    $options = array(
-        'BEHAVIOR_NOBODYHOME_TIMEOUT' => array(
-            'TITLE' => 'NobodyHome mode activation timeout (minutes)',
-            'DEFAULTVALUE' => 60,
-            'NOTES' => 'Set 0 to disable'
-        )
-    );
-
-    foreach ($options as $k => $v) {
-        $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
-        if (!$tmp['ID']) {
-            $tmp = array();
-            $tmp['NAME'] = $k;
-            $tmp['TITLE'] = $v['TITLE'];
-            $tmp['TYPE'] = 'text';
-            $tmp['DEFAULTVALUE'] = $v['DEFAULTVALUE'];
-            $tmp['NOTES'] = $v['NOTES'];
-            $tmp['DATA'] = '';
-            SQLInsert('settings', $tmp);
-        }
-    }
-
-}
-
-if ($this->filter_name == 'hook' && !defined('SETTINGS_HOOK_BARCODE')) {
-    //SETTINGS_HOOK_BEFORE_PLAYSOUND
-    //SETTINGS_HOOK_AFTER_PLAYSOUND
-    $options = array(
-        'HOOK_BARCODE' => 'Bar-code reading (code)',
-        'HOOK_PLAYMEDIA' => 'Playmedia (code)',
-        'HOOK_BEFORE_PLAYSOUND' => 'Before PlaySound (code)',
-        'HOOK_AFTER_PLAYSOUND' => 'After PlaySound (code)'
-    );
-
-    foreach ($options as $k => $v) {
-        $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
-        if (!$tmp['ID']) {
-            $tmp = array();
-            $tmp['NAME'] = $k;
-            $tmp['TITLE'] = $v;
-            $tmp['TYPE'] = 'text';
-            $tmp['DEFAULTVALUE'] = '';
-            $tmp['NOTES'] = '';
-            $tmp['DATA'] = '';
-            SQLInsert('settings', $tmp);
-        }
-    }
-}
-
-if ($this->filter_name == 'codeeditor') {
-
-    if (!defined('SETTINGS_CODEEDITOR_TURNONSETTINGS') || !defined('SETTINGS_CODEEDITOR_SHOWLINE') ||
-        !defined('SETTINGS_CODEEDITOR_MIXLINE') || !defined('SETTINGS_CODEEDITOR_UPTOLINE') ||
-        !defined('SETTINGS_CODEEDITOR_SHOWERROR') || !defined('SETTINGS_CODEEDITOR_AUTOCLOSEQUOTES') ||
-        !defined('SETTINGS_CODEEDITOR_WRAPLINES') || !defined('SETTINGS_CODEEDITOR_AUTOCOMPLETE') ||
-        !defined('SETTINGS_CODEEDITOR_AUTOCOMPLETE_TYPE') || !defined('SETTINGS_CODEEDITOR_THEME') || !defined('SETTINGS_CODEEDITOR_AUTOSAVE')) {
-
-        $cmd = "DELETE FROM `settings` WHERE `NAME` LIKE '%CODEEDITOR_%'";
-        SQLExec($cmd);
-    }
-
-    $options = array(
-        'CODEEDITOR_TURNONSETTINGS' => LANG_CODEEDITOR_TURNONSETTINGS,
-        'CODEEDITOR_SHOWLINE' => LANG_CODEEDITOR_SHOWLINE,
-        'CODEEDITOR_MIXLINE' => LANG_CODEEDITOR_MIXLINE,
-        'CODEEDITOR_UPTOLINE' => LANG_CODEEDITOR_UPTOLINE,
-        'CODEEDITOR_SHOWERROR' => LANG_CODEEDITOR_SHOWERROR,
-        'CODEEDITOR_AUTOCLOSEQUOTES' => LANG_CODEEDITOR_AUTOCLOSEQUOTES,
-        'CODEEDITOR_WRAPLINES' => LANG_CODEEDITOR_WRAPLINES,
-        'CODEEDITOR_AUTOCOMPLETE' => LANG_CODEEDITOR_AUTOCOMPLETE,
-        'CODEEDITOR_AUTOCOMPLETE_TYPE' => LANG_CODEEDITOR_AUTOCOMPLETE_TYPE,
-        'CODEEDITOR_THEME' => LANG_CODEEDITOR_THEME,
-        'CODEEDITOR_AUTOSAVE' => LANG_CODEEDITOR_AUTOSAVE,
-    );
-
-
-    foreach ($options as $k => $v) {
-        $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
-        if (!$tmp['ID']) {
-            $tmp = array();
-            $tmp['NAME'] = $k;
-            $tmp['TITLE'] = $v;
-            $tmp['DATA'] = '';
-            $tmp['DEFAULTVALUE'] = '';
-
-            if ($k == 'CODEEDITOR_SHOWLINE') {
-                $tmp['TYPE'] = 'select';
-                $tmp['DATA'] = '10=10|35=35|45=45|100=100|500=500|1000=1000|99999=' . LANG_CODEEDITOR_BYCODEHEIGHT;
-            } elseif ($k == 'CODEEDITOR_MIXLINE') {
-                $tmp['TYPE'] = 'select';
-                $tmp['DATA'] = '5=5|10=10|25=25|40=40|1=' . LANG_CODEEDITOR_BYCODEHEIGHT;
-            } elseif ($k == 'CODEEDITOR_AUTOSAVE') {
-                $tmp['TYPE'] = 'select';
-                $tmp['DATA'] = '0=' . LANG_CODEEDITOR_AUTOSAVE_PARAMS_ONLY_HANDS . '|5=' . LANG_CODEEDITOR_AUTOSAVE_PARAMS_EVERY_5 . '|10=' . LANG_CODEEDITOR_AUTOSAVE_PARAMS_EVERY_10 . '|15=' . LANG_CODEEDITOR_AUTOSAVE_PARAMS_EVERY_15 . '|30=' . LANG_CODEEDITOR_AUTOSAVE_PARAMS_EVERY_30 . '|60=' . LANG_CODEEDITOR_AUTOSAVE_PARAMS_EVERY_60;
-            } elseif ($k == 'CODEEDITOR_THEME') {
-                $tmp['TYPE'] = 'select';
-                $tmp['DATA'] = 'codemirror=' . LANG_DEFAULT . '|smoke_theme=SmoKE xD Theme|ambiance=Ambiance|base16-light=base16-light|dracula=Dracula|icecoder=Icecoder|material=Material|moxer=Moxer|neat=Neat';
-                $tmp['DEFAULTVALUE'] = 'codemirror';
-            } elseif ($k == 'CODEEDITOR_AUTOCOMPLETE_TYPE') {
-                $tmp['TYPE'] = 'select';
-                $tmp['DATA'] = 'none=' . LANG_DEFAULT . '|php=' . LANG_CODEEDITOR_AUTOCOMPLETE_TYPE_ONLYPHP . '|phpmjdm=' . LANG_CODEEDITOR_AUTOCOMPLETE_TYPE_PHPMJDM . '|mjdmuser=' . LANG_CODEEDITOR_AUTOCOMPLETE_TYPE_MJDMUSER . '|user=' . LANG_CODEEDITOR_AUTOCOMPLETE_TYPE_USER . '|all=' . LANG_CODEEDITOR_AUTOCOMPLETE_TYPE_PHPMJDMUSER . '';
-                $tmp['DEFAULTVALUE'] = 'codemirror';
-            } else {
-                $tmp['TYPE'] = 'onoff';
-            }
-
-
-            $tmp['NOTES'] = '';
-            SQLInsert('settings', $tmp);
-        }
-    }
-}
-
-if ($this->filter_name == 'scenes' && !defined('SETTINGS_SCENES_VERTICAL_NAV')) {
-    $options = array(
-        'SCENES_VERTICAL_NAV' => 'Vertical navigation'
-    );
-    foreach ($options as $k => $v) {
-        $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
-        if (!$tmp['ID']) {
-            $tmp = array();
-            $tmp['NAME'] = $k;
-            $tmp['TITLE'] = $v;
-            $tmp['TYPE'] = 'onoff';
-            $tmp['DEFAULTVALUE'] = '0';
-            $tmp['NOTES'] = '';
-            $tmp['DATA'] = '';
-            SQLInsert('settings', $tmp);
-        }
-    }
-}
-
-if ($this->filter_name == 'scenes' && !defined('SETTINGS_SCENES_BACKGROUND_VIDEO')) {
-
-    $options = array(
-        'SCENES_BACKGROUND' => 'Path to background',
-        'SCENES_BACKGROUND_VIDEO' => 'Path to video background',
-        'SCENES_CLICKSOUND' => 'Path to click-sound file'
-    );
-    foreach ($options as $k => $v) {
-        $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
-        if (!$tmp['ID']) {
-            $tmp = array();
-            $tmp['NAME'] = $k;
-            $tmp['TITLE'] = $v;
-            $tmp['TYPE'] = 'path';
-            $tmp['NOTES'] = '';
-            $tmp['DATA'] = '';
-            SQLInsert('settings', $tmp);
-        }
-    }
-
-    $options = array(
-        'SCENES_BACKGROUND_FIXED' => 'Backround Fixed',
-        'SCENES_BACKGROUND_NOREPEAT' => 'Background No repeat'
-    );
-
-    foreach ($options as $k => $v) {
-        $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
-        if (!$tmp['ID']) {
-            $tmp = array();
-            $tmp['NAME'] = $k;
-            $tmp['TITLE'] = $v;
-            $tmp['TYPE'] = 'onoff';
-            $tmp['DEFAULTVALUE'] = '0';
-            $tmp['NOTES'] = '';
-            $tmp['DATA'] = '';
-            SQLInsert('settings', $tmp);
-        }
-    }
-
-
-}
-
-if ($this->filter_name == 'backup' && !defined('SETTINGS_BACKUP_PATH')) {
-
-    $options = array(
-        'BACKUP_PATH' => 'Path to store backup'
-    );
-    foreach ($options as $k => $v) {
-        $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
-        if (!$tmp['ID']) {
-            $tmp = array();
-            $tmp['NAME'] = $k;
-            $tmp['TITLE'] = $v;
-            $tmp['TYPE'] = 'text';
-            $tmp['NOTES'] = '';
-            $tmp['DATA'] = '';
-            SQLInsert('settings', $tmp);
-        }
-    }
-
-}
-
-// if (!empty($options)) {
-// }
-
 
 global $session;
 if ($this->owner->name == 'panel') {
     $out['CONTROLPANEL'] = 1;
 }
 $qry = "1";
-// search filters
-
 
 // search filters
 if ($this->filter_name != '') {
@@ -430,13 +146,10 @@ $out['SORTBY'] = $sortby;
 
 $sql = "SELECT * FROM settings WHERE $qry ORDER BY $sortby";
 $res = SQLSelect($sql);
-debmes($sql, 'settings');
 
 if ($res[0]['ID']) {
     $total = count($res);
     for ($i = 0; $i < $total; $i++) {
-        // some action for every record if required
-
 
         // some action for every record if required
         if ($this->mode == 'update') {
@@ -476,7 +189,7 @@ if ($res[0]['ID']) {
             $data = json_decode($res[$i]['VALUE'], true);
             if (is_array($data)) {
                 foreach ($data as $k => $v) {
-                    $row = array('OPTION_TITLE' => $k, 'FILTER' => isset($v['filter'])?$v['filter']:'', 'PRIORITY' => isset($v['priority'])?$v['priority']:0);
+                    $row = array('OPTION_TITLE' => $k, 'FILTER' => isset($v['filter']) ? $v['filter'] : '', 'PRIORITY' => isset($v['priority']) ? $v['priority'] : 0);
                     $res[$i]['OPTIONS'][] = $row;
                 }
             }
