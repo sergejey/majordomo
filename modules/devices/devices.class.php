@@ -396,7 +396,7 @@ class devices extends module
                         if (is_array($pv)) {
                             foreach ($pv as $ppk => $ppv) {
                                 if (substr($ppk, 0, 1) == '_') continue;
-                                if ($ppk == 'KEEP_HISTORY' && $property[$ppk]) continue;
+                                if ($ppk == 'KEEP_HISTORY') continue;
                                 $property[$ppk] = $ppv;
                             }
                             SQLUpdate('properties', $property);
