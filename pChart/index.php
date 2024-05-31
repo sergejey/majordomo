@@ -75,6 +75,7 @@ if ($px) $px_per_point = $px;
 // Dataset definition   
 $DataSet = new pData;
 
+$p = gr('p');
 if (is_array($p)) {
     $p = $p[0];
 }

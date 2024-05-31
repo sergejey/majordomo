@@ -147,11 +147,11 @@ if ($home_network != ''
     && !isset($argv[0])
     && isset($_SERVER['REQUEST_URI'])
 ) {
-    $p = preg_quote($home_network);
-    $p = str_replace('\*', '\d+?', $p);
-    $p = str_replace(',', ' ', $p);
-    $p = str_replace('  ', ' ', $p);
-    $p = str_replace(' ', '|', $p);
+    $home_network_pattern = preg_quote($home_network);
+    $home_network_pattern = str_replace('\*', '\d+?', $home_network_pattern);
+    $home_network_pattern = str_replace(',', ' ', $home_network_pattern);
+    $home_network_pattern = str_replace('  ', ' ', $home_network_pattern);
+    $home_network_pattern = str_replace(' ', '|', $home_network_pattern);
 
     $remoteAddr = $_SERVER["REMOTE_ADDR"];
 
@@ -165,7 +165,7 @@ if ($home_network != ''
         $remoteAddr = getenv('HTTP_X_FORWARDED_FOR');
     }
 
-    if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != $local_ip && trim($remoteAddr) != '::1') {
+    if (!preg_match('/' . $home_network_pattern . '/is', $remoteAddr) && $remoteAddr != $local_ip && trim($remoteAddr) != '::1') {
         if ($ext_access_username && $ext_access_password && $_SERVER['PHP_AUTH_USER'] == $ext_access_username && $_SERVER['PHP_AUTH_PW'] == $ext_access_password) {
             $data = $remoteAddr . " " . date("[d/m/Y:H:i:s]") . " Username and/or password valid. Login: " . $_SERVER['PHP_AUTH_USER'] . "\n";
             DebMes($data, 'auth');
