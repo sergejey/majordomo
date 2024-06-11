@@ -38,6 +38,16 @@
         <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_USERNAME#]alert-danger[#endif#]"  name="username" value="[#USERNAME#]" required="true"></div>
 </div>
 
+[#if PASSWORD!=""#]
+        <div class="form-group ">
+                <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PASSWORD#>:</label>
+                <div class="col-lg-5">
+                        <input type="radio" name="use_password" value="1" checked> <#LANG_YES#>
+                        <input type="radio" name="use_password" value="0"> <#LANG_NO#>
+                </div>
+        </div>
+        [#endif PASSWORD#]
+
 <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PASSWORD#> (<#LANG_OPTIONAL#>):</label>
         <div class="col-lg-5"><input type="password"  class="form-control"  name="passwordnew" ></div>

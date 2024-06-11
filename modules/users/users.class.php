@@ -154,13 +154,40 @@ class users extends module
     function usual(&$out)
     {
         global $session;
-        $users = SQLSelect("SELECT * FROM users ORDER BY NAME");
-        $total = count($users);
-        for ($i = 0; $i < $total; $i++) {
-            if ($users[$i]['ID'] == $session->data['SITE_USER_ID']) {
-                $users[$i]['SELECTED'] = 1;
+
+        if (!defined('DISABLE_USERS_LIST') || DISABLE_USERS_LIST==0) {
+            $users = SQLSelect("SELECT * FROM users ORDER BY NAME");
+            $total = count($users);
+            for ($i = 0; $i < $total; $i++) {
+                if ($users[$i]['ID'] == $session->data['SITE_USER_ID']) {
+                    $users[$i]['SELECTED'] = 1;
+                }
+            }
+        } else {
+            $out['SHOW_FORM'] = 1;
+        }
+
+        $username = gr('username');
+
+        if ($username!='') {
+            $out['SHOW_FORM']=1;
+        }
+
+        $password = gr('password');
+
+        if ($username != '' && $password != '') {
+            $user = SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '" . DBSafe($username) . "'");
+            if (hash('sha512', $password) == $user['PASSWORD'] || $user['PASSWORD']=='') {
+                $session->data['SITE_USERNAME'] = $user['USERNAME'];
+                $session->data['SITE_USER_ID'] = $user['ID'];
+                $this->redirect(ROOTHTML);
+            } else {
+                $out['INCORRECT'] = 1;
             }
         }
+
+        $out['USERNAME'] = $username;
+
         $out['USERS'] = $users;
     }
 

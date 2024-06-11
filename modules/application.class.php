@@ -163,26 +163,10 @@ class application extends module
         $username = gr('username');
         if ($username) {
             $user = SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '" . DBSafe($username) . "'");
-            if (hash('sha512', '') == $user['PASSWORD']) {
+            if (hash('sha512', '') == $user['PASSWORD'] || $user['PASSWORD'] == '') {
                 $session->data['SITE_USERNAME'] = $user['USERNAME'];
                 $session->data['SITE_USER_ID'] = $user['ID'];
-            } else {
-                if (!isset($_SERVER['PHP_AUTH_USER'])) {
-                    header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
-                    header('HTTP/1.0 401 Unauthorized');
-                    echo 'Password required!';
-                    exit;
-                } else {
-                    if ($_SERVER['PHP_AUTH_USER'] == $user['USERNAME'] && hash('sha512', $_SERVER['PHP_AUTH_PW']) == $user['PASSWORD']) {
-                        $session->data['SITE_USERNAME'] = $user['USERNAME'];
-                        $session->data['SITE_USER_ID'] = $user['ID'];
-                    } else {
-                        header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
-                        header('HTTP/1.0 401 Unauthorized');
-                        echo 'Incorrect username/password!';
-                        exit;
-                    }
-                }
+                $this->redirect(ROOTHTML);
             }
         }
 
@@ -197,12 +181,12 @@ class application extends module
                 $out['APP_ACTION'] = 1;
             }
 
-            if (isset($this->app_action) && $this->app_action && $this->action!='') {
+            if (isset($this->app_action) && $this->app_action && $this->action != '') {
                 $out['APP_ACTION'] = 1;
             }
         }
 
-        if (isset($this->app_action)  && $this->app_action == 'panel') {
+        if (isset($this->app_action) && $this->app_action == 'panel') {
             $this->redirect(ROOTHTML . 'admin.php');
         }
 
@@ -253,39 +237,46 @@ class application extends module
             $session->data['TERMINAL'] = $terminals[0]['NAME'];
         }
 
-        $users = SQLSelect("SELECT * FROM users ORDER BY NAME");
-        $total = count($users);
-        for ($i = 0; $i < $total; $i++) {
-            if ($users[$i]['USERNAME'] == (isset($session->data['SITE_USERNAME']) ? $session->data['SITE_USERNAME'] : '')) {
-                $users[$i]['SELECTED'] = 1;
-                $out['USER_TITLE'] = $users[$i]['NAME'];
-                $out['USER_AVATAR'] = $users[$i]['AVATAR'];
-            } elseif (!isset($session->data['SITE_USERNAME']) && $users[$i]['HOST'] && $users[$i]['HOST'] == $_SERVER['REMOTE_ADDR']) {
-                $session->data['SITE_USERNAME'] = $users[$i]['USERNAME'];
-                $session->data['SITE_USER_ID'] = $users[$i]['ID'];
-                $out['USER_TITLE'] = $users[$i]['NAME'];
-                $out['USER_AVATAR'] = $users[$i]['AVATAR'];
-            }
-            if ($users[$i]['IS_DEFAULT'] == 1) {
-                $out['DEFAULT_USERNAME'] = $users[$i]['USERNAME'];
-                $out['DEFAULT_USER_ID'] = $users[$i]['ID'];
-            }
-        }
-        $out['USERS'] = $users;
-        if ($total == 1) {
+        $site_username = isset($session->data['SITE_USERNAME']) ? $session->data['SITE_USERNAME'] : '';
+        $all_users = SQLSelect("SELECT * FROM users ORDER BY USERNAME");
+        if (count($all_users) == 1) {
             $out['HIDE_USERS'] = 1;
-            $session->data['SITE_USERNAME'] = $users[0]['USERNAME'];
-            $session->data['SITE_USER_ID'] = $users[0]['ID'];
         }
-        if (!isset($session->data['SITE_USERNAME']) && (isset($out['DEFAULT_USERNAME']))) {
-            $session->data['SITE_USERNAME'] = $out['DEFAULT_USERNAME'];
-            $session->data['SITE_USER_ID'] = $out['DEFAULT_USER_ID'];
-            for ($i = 0; $i < $total; $i++) {
-                if ($users[$i]['USERNAME'] == (isset($session->data['USERNAME']) ? $session->data['USERNAME'] : '')) {
-                    $users[$i]['SELECTED'] = 1;
-                    $out['USER_TITLE'] = $users[$i]['NAME'];
-                    $out['USER_AVATAR'] = $users[$i]['AVATAR'];
-                }
+        if (!$site_username) {
+            $host_user = SQLSelectOne("SELECT * FROM users WHERE HOST!='' AND HOST='" . DBSafe($_SERVER['REMOTE_ADDR']) . "'");
+            if ($host_user['ID']) {
+                $session->data['SITE_USERNAME'] = $host_user['USERNAME'];
+                $session->data['SITE_USER_ID'] = $host_user['ID'];
+                $this->redirect(ROOTHTML);
+            }
+            $default_user = SQLSelectOne("SELECT * FROM users WHERE IS_DEFAULT=1");
+            if (!$default_user['ID']) {
+                $default_user = $all_users[0];
+            }
+            if ($default_user['PASSWORD'] == '' || $user['PASSWORD'] == hash('sha512', '')) {
+                $session->data['SITE_USERNAME'] = $default_user['USERNAME'];
+                $session->data['SITE_USER_ID'] = $default_user['ID'];
+                $this->redirect(ROOTHTML);
+            } elseif ($this->action != 'users') {
+                $this->redirect(ROOTHTML . 'popup/users.html');
+            }
+        }
+
+        if (gr('logoff')) {
+            unset($session->data['AUTHORIZED']);
+            unset($session->data['USER_NAME']);
+            unset($session->data['USERNAME']);
+            unset($session->data['SITE_USERNAME']);
+            unset($session->data['SITE_USER_ID']);
+            unset($session->data["cp_requested_url"]);
+            $this->redirect(ROOTHTML);
+        }
+
+        if ($site_username != '') {
+            $user = SQLSelectOne("SELECT * FROM users WHERE USERNAME = '" . DBSafe($site_username) . "'");
+            if ($user['ID']) {
+                $out['USER_TITLE'] = $user['NAME'];
+                $out['USER_AVATAR'] = $user['AVATAR'];
             }
         }
 
@@ -414,4 +405,4 @@ class application extends module
 
 }
 
-?>
+

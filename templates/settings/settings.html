@@ -3,7 +3,13 @@
 #-->
 [#if ACTION=""#]
 <!-- Frontend -->
- [#inc action_usual.html#]
+<div class=" container">
+ &nbsp;
+ <p>
+  <a href="<#ROOTHTML#>" class="btn btn-default">&laquo; <#LANG_CANCEL#></a>
+ </p>
+ [#inc action_admin.html#]
+</div>
 [#endif#]
 [#if ACTION="admin"#]
 <!-- Control Panel -->

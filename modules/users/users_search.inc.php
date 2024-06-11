@@ -10,17 +10,12 @@
   $qry="1";
   // search filters
   // QUERY READY
-  global $save_qry;
-  if ($save_qry) {
-   $qry=$session->data['users_qry'];
-  } else {
-   $session->data['users_qry']=$qry;
-  }
   if (!$qry) $qry="1";
   // FIELDS ORDER
 
   $sortby="NAME";
-  $out['SORTBY']=$sortby;
+
+
   // SEARCH RESULTS
   $res=SQLSelect("SELECT * FROM users WHERE $qry ORDER BY $sortby");
   if ($res[0]['ID']) {
