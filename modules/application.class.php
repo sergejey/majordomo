@@ -102,36 +102,19 @@ class application extends module
         if ($this->action == 'getlatestmp3') {
             header("HTTP/1.0: 200 OK\n");
             header('Content-Type: text/html; charset=utf-8');
-
             if ($dir = @opendir(ROOT . "cms/cached/voice")) {
                 while (($file = readdir($dir)) !== false) {
                     if (preg_match('/\.mp3$/', $file)) {
                         $mtime = filemtime(ROOT . "cms/cached/voice/" . $file);
-                        /*
-                        if ((time()-$mtime)>60*60*24 && $mtime>0) {
-                         //old file, delete?
-                         unlink(ROOT."cms/cached/voice".$file);
-                        } else {
-                        }
-                        */
                         $files[] = array('FILENAME' => $file, 'MTIME' => $mtime);
                     }
-
                     if (preg_match('/\.wav$/', $file)) {
                         $mtime = filemtime(ROOT . "cms/cached/voice/" . $file);
-                        /*
-                        if ((time()-$mtime)>60*60*24 && $mtime>0) {
-                         //old file, delete?
-                         unlink(ROOT."cms/cached/voice/".$file);
-                        }
-                        */
                     }
 
                 }
                 closedir($dir);
             }
-
-            //print_r($files);exit;
 
             if (is_array($files)) {
                 function sortFiles($a, $b)
@@ -159,16 +142,6 @@ class application extends module
 
         $out["ACTION"] = $this->action;
         $out["TODAY"] = date('l, F d, Y');
-
-        $username = gr('username');
-        if ($username) {
-            $user = SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '" . DBSafe($username) . "'");
-            if (hash('sha512', '') == $user['PASSWORD'] || $user['PASSWORD'] == '') {
-                $session->data['SITE_USERNAME'] = $user['USERNAME'];
-                $session->data['SITE_USER_ID'] = $user['ID'];
-                $this->redirect(ROOTHTML);
-            }
-        }
 
         $terminal = gr('terminal');
         if ($terminal) {
@@ -238,6 +211,19 @@ class application extends module
         }
 
         $site_username = isset($session->data['SITE_USERNAME']) ? $session->data['SITE_USERNAME'] : '';
+
+        $username = gr('username');
+        if ($username) {
+            $user = SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '" . DBSafe($username) . "'");
+            if (hash('sha512', '') == $user['PASSWORD'] || $user['PASSWORD'] == '') {
+                $session->data['SITE_USERNAME'] = $user['USERNAME'];
+                $session->data['SITE_USER_ID'] = $user['ID'];
+                $site_username = $session->data['SITE_USERNAME'];
+            } else {
+                $this->redirect(ROOTHTML . 'popup/users.html');
+            }
+        }
+
         $all_users = SQLSelect("SELECT * FROM users ORDER BY USERNAME");
         if (count($all_users) == 1) {
             $out['HIDE_USERS'] = 1;
@@ -247,8 +233,10 @@ class application extends module
             if ($host_user['ID']) {
                 $session->data['SITE_USERNAME'] = $host_user['USERNAME'];
                 $session->data['SITE_USER_ID'] = $host_user['ID'];
-                $this->redirect(ROOTHTML);
+                $site_username = $session->data['SITE_USERNAME'];
             }
+        }
+        if (!$site_username) {
             $default_user = SQLSelectOne("SELECT * FROM users WHERE IS_DEFAULT=1");
             if (!$default_user['ID']) {
                 $default_user = $all_users[0];
@@ -256,7 +244,7 @@ class application extends module
             if ($default_user['PASSWORD'] == '' || $user['PASSWORD'] == hash('sha512', '')) {
                 $session->data['SITE_USERNAME'] = $default_user['USERNAME'];
                 $session->data['SITE_USER_ID'] = $default_user['ID'];
-                $this->redirect(ROOTHTML);
+                $site_username = $session->data['SITE_USERNAME'];
             } elseif ($this->action != 'users') {
                 $this->redirect(ROOTHTML . 'popup/users.html');
             }
