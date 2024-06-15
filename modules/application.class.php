@@ -243,7 +243,7 @@ class application extends module
                 $session->data['SITE_USERNAME'] = $default_user['USERNAME'];
                 $session->data['SITE_USER_ID'] = $default_user['ID'];
                 $site_username = $session->data['SITE_USERNAME'];
-            } elseif ($this->action != 'users') {
+            } elseif ($this->action != 'users' && !$session->data['AUTHORIZED']) {
                 $this->redirect(ROOTHTML . 'popup/users.html');
             }
         }
