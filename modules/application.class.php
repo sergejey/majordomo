@@ -219,8 +219,6 @@ class application extends module
                 $session->data['SITE_USERNAME'] = $user['USERNAME'];
                 $session->data['SITE_USER_ID'] = $user['ID'];
                 $site_username = $session->data['SITE_USERNAME'];
-            } else {
-                $this->redirect(ROOTHTML . 'popup/users.html');
             }
         }
 
