@@ -85,5 +85,10 @@ if (is_array($rec)) {
         }
     }
 }
+
+if ($rec['PASSWORD']!='' && hash('sha512','')==$rec['PASSWORD']) {
+    $rec['PASSWORD'] = '';
+}
+
 outHash($rec, $out);
 

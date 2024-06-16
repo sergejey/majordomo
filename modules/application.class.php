@@ -239,11 +239,11 @@ class application extends module
             if (!$default_user['ID']) {
                 $default_user = $all_users[0];
             }
-            if ($default_user['PASSWORD'] == '' || $user['PASSWORD'] == hash('sha512', '')) {
+            if ($default_user['PASSWORD'] == '' || $default_user['PASSWORD'] == hash('sha512', '')) {
                 $session->data['SITE_USERNAME'] = $default_user['USERNAME'];
                 $session->data['SITE_USER_ID'] = $default_user['ID'];
                 $site_username = $session->data['SITE_USERNAME'];
-            } elseif ($this->action != 'users' && !$session->data['AUTHORIZED']) {
+            } elseif ($this->action == '' && !$session->data['SITE_USERNAME']) {
                 $this->redirect(ROOTHTML . 'popup/users.html');
             }
         }

@@ -155,7 +155,7 @@ class users extends module
     {
         global $session;
 
-        if (!defined('DISABLE_USERS_LIST') || DISABLE_USERS_LIST==0) {
+        if (!defined('DISABLE_USERS_LIST') || DISABLE_USERS_LIST == 0) {
             $users = SQLSelect("SELECT * FROM users ORDER BY NAME");
             $total = count($users);
             for ($i = 0; $i < $total; $i++) {
@@ -169,21 +169,29 @@ class users extends module
 
         $username = gr('username');
 
-        if ($username!='') {
-            $out['SHOW_FORM']=1;
+        if ($username != '') {
+            $out['SHOW_FORM'] = 1;
         }
 
         $password = gr('password');
 
         if ($username != '' && $password != '') {
             $user = SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '" . DBSafe($username) . "'");
-            if (hash('sha512', $password) == $user['PASSWORD'] || $user['PASSWORD']=='') {
+            if (hash('sha512', $password) == $user['PASSWORD'] || $user['PASSWORD'] == '') {
                 $session->data['SITE_USERNAME'] = $user['USERNAME'];
                 $session->data['SITE_USER_ID'] = $user['ID'];
                 $this->redirect(ROOTHTML);
             } else {
                 $out['INCORRECT'] = 1;
             }
+        } elseif ($username != '') {
+            $user = SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '" . DBSafe($username) . "'");
+            if ($user['PASSWORD'] == '' || hash('sha512', '') == $user['PASSWORD']) {
+                $session->data['SITE_USERNAME'] = $user['USERNAME'];
+                $session->data['SITE_USER_ID'] = $user['ID'];
+                $this->redirect(ROOTHTML);
+            }
+
         }
 
         $out['USERNAME'] = $username;

@@ -24,7 +24,9 @@
    $total=count($res);
    for($i=0;$i<$total;$i++) {
     // some action for every record if required
+       if ($res[$i]['PASSWORD']!='' && hash('sha512','')==$res[$i]['PASSWORD']) {
+           $res[$i]['PASSWORD'] = '';
+       }
    }
    $out['RESULT']=$res;
   }
-?>
