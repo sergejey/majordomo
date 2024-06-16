@@ -61,12 +61,12 @@ foreach ($options as $k => $v) {
     if (!$tmp['ID']) {
         $tmp = array();
         $tmp['NAME'] = $k;
-        $tmp['TITLE'] = $v['title'] ?? $k;
-        $tmp['TYPE'] = $v['type'] ?? 'text';
-        $tmp['DEFAULTVALUE'] = $v['default'] ?? '';
-        $tmp['NOTES'] = $v['notes'] ?? '';
-        $tmp['DATA'] = $v['data'] ?? '';
-        $tmp['PRIORITY'] = $v['priority'] ?? 0;
+        $tmp['TITLE'] = isset($v['title']) ? $v['title'] : $k;
+        $tmp['TYPE'] = isset($v['type']) ? $v['type'] : 'text';
+        $tmp['DEFAULTVALUE'] = isset($v['default']) ? $v['default'] : '';
+        $tmp['NOTES'] = isset($v['notes']) ? $v['notes'] : '';
+        $tmp['DATA'] = isset($v['data']) ? $v['data'] : '';
+        $tmp['PRIORITY'] = isset($v['priority']) ? $v['priority'] : 0;
         SQLInsert('settings', $tmp);
     }
 }
