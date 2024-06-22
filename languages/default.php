@@ -34,7 +34,7 @@ $dictionary = array(
     'TAKES_TOO_LONG' => 'if it takes too long.',
     'SUBMIT_DIAGNOSTIC' => 'Submit Diagnostic Details',
 
-
+    'GENERAL_HOME_NETWORK' => 'Home network',
     'GENERAL_SENSORS' => 'Sensors',
     'GENERAL_OPERATIONAL_MODES' => 'Operational modes',
     'GENERAL_ENERGY_SAVING_MODE' => 'Energy saving mode',
@@ -993,6 +993,7 @@ $dictionary = array(
     'SETTINGS_SECTION_BEHAVIOR' => 'Behavior',
     'SETTINGS_SECTION_BACKUP' => 'Backup',
     'SETTINGS_SECTION_SCENES' => 'Scenes',
+    'SETTINGS_SECTION_REMOTE' => 'Remote access',
 
     'DEVICE_ID' => 'Device ID',
     'REQUEST_TYPE' => 'Request type',

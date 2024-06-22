@@ -140,6 +140,7 @@ class settings extends module {
 */
  function usual(&$out) {
  $this->admin($out);
+ $out['HIDE_FILTERS'] = 1;
 }
 /**
 * settings search

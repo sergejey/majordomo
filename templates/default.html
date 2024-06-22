@@ -55,19 +55,17 @@
                     [#endif#]
                     <td align="center">
                         [#if USER_AVATAR!=""#]
-                        <a onClick="return openModalTWindow('usersWindow', '<#LANG_USERS#>', '/popup/users.html', 500, 500);"
-                                href="#"
+                        <a href="<#ROOTHTML#>popup/users.html"
                            title="[#USER_TITLE#]"><img src="<#ROOTHTML#>cms/avatars/[#USER_AVATAR#]" border="0"
                                                        height="50" alt="[#USER_TITLE#]"></a>
                         [#else#]
-                        <a onClick="return openModalTWindow('usersWindow', '<#LANG_USERS#>', '/popup/users.html', 500, 500);"
-                           href="#"
+                        <a href="<#ROOTHTML#>popup/users.html"
                            title="[#USER_TITLE#]"><img src="<#ROOTHTML#>img/icons/user.png" border="0"
                                                        alt="[#USER_TITLE#]"></a>
                         [#endif#]
                     </td>
                     <td align="center">
-					                 	    <a href="<#ROOTHTML#>admin.php?pd=pz_&amp;md=panel&amp;inst=&amp;action=control_access&amp;mode=logoff" onclick="return partLoad(this.href);"><i class="glyphicon glyphicon-log-out"></i> Выйти</a>
+					                 	    <a href="<#ROOTHTML#>?logoff=1" onclick="return partLoad(this.href);"><i class="glyphicon glyphicon-log-out"></i> Выйти</a>
 					                </td>
                 </tr>
             </table>

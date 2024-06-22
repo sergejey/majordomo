@@ -9,48 +9,6 @@
  * @version 1.3
  */
 
-if (defined('HOME_NETWORK')
-    && HOME_NETWORK != ''
-    && !isset($argv[0])
-    && isset($_SERVER['REQUEST_URI'])
-) {
-    $p = preg_quote(HOME_NETWORK);
-    $p = str_replace('\*', '\d+?', $p);
-    $p = str_replace(',', ' ', $p);
-    $p = str_replace('  ', ' ', $p);
-    $p = str_replace(' ', '|', $p);
-
-    $remoteAddr = $_SERVER["REMOTE_ADDR"];
-
-    if (defined('LOCAL_IP') && LOCAL_IP != '') {
-        $local_ip = LOCAL_IP;
-    } else {
-        $local_ip = '127.0.0.1';
-    }
-
-    if (getenv('HTTP_X_FORWARDED_FOR') != '') {
-        $remoteAddr = getenv('HTTP_X_FORWARDED_FOR');
-    }
-
-    if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != $local_ip && trim($remoteAddr) != '::1') {
-        if (defined('EXT_ACCESS_USERNAME') && defined('EXT_ACCESS_PASSWORD') && $_SERVER['PHP_AUTH_USER'] == EXT_ACCESS_USERNAME && $_SERVER['PHP_AUTH_PW'] == EXT_ACCESS_PASSWORD) {
-            $data = $remoteAddr . " " . date("[d/m/Y:H:i:s]") . " Username and/or password valid. Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
-            DebMes($data, 'auth');
-        } elseif (!defined('EXT_ACCESS_USERNAME') && !defined('EXT_ACCESS_PASSWORD')) {
-            $data = $remoteAddr . " " . date("[d/m/Y:H:i:s]") . " Username and/or password dont defined and dont needed" . "\n";
-            DebMes($data, 'auth');
-        } else {
-            // header("Location:$PHP_SELF\n\n");
-            header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
-            header("HTTP/1.0 401 Unauthorized");
-            echo "Authorization required\n";
-            $data = $remoteAddr . " " . date("[d/m/Y:H:i:s]") . " Username and/or password invalid. Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
-            DebMes($data, 'auth');
-            exit;
-        }
-    }
-}
-
 if (isset($_SERVER['REQUEST_METHOD'])) {
     $blocked = array('_SERVER', '_COOKIE', 'HTTP_POST_VARS', 'HTTP_GET_VARS', 'HTTP_SERVER_VARS',
         '_FILES', '_REQUEST', '_ENV');
@@ -727,8 +685,9 @@ function CreateDir($dirPath)
         @mkdir($dirPath, 0777);
 }
 
-function isModuleInstalled($module_name) {
-    $flag_filename = ROOT . 'cms/modules_installed/'.$module_name.'.installed';
+function isModuleInstalled($module_name)
+{
+    $flag_filename = ROOT . 'cms/modules_installed/' . $module_name . '.installed';
     if (file_exists($flag_filename)) {
         return true;
     } else {
