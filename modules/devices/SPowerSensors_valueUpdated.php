@@ -11,7 +11,7 @@ $loadTimeout = $this->getProperty('loadStatusTimeout');
 $tmp = explode(',', $loadTimeout);
 $tmp = array_map('trim', $tmp);
 $onTimeout = (int)$tmp[0];
-if ($tmp[1]) {
+if (isset($tmp[1])) {
     $offTimeout = (int)$tmp[1];
 } else {
     $offTimeout = $onTimeout;

@@ -3,6 +3,7 @@
 $linked_room=$this->getProperty('linkedRoom');
 
 if ($params['PROPERTY'] == "valueHumidity"){
+	$value=(float)$params['NEW_VALUE'];
 	$ot=$this->object_title;
 	$description = $this->description;
 	if (!$description) {
@@ -30,7 +31,6 @@ if ($params['PROPERTY'] == "valueHumidity"){
 		return;
 	}
 	
-	$value=(float)$this->getProperty('valueHumidity');
 	$minValue=(float)$this->getProperty('minHumidityValue');
 	$maxValue=(float)$this->getProperty('maxHumidityValue');
 	$is_normal=(int)$this->getProperty('normalHumidityValue');

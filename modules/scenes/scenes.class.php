@@ -1581,7 +1581,7 @@ class scenes extends module
                             $has_na = $entry;
                         }
 
-                        if (is_array($this->all_styles) && !isset($this->all_styles[$style]))
+                        if (isset($this->all_styles) && is_array($this->all_styles) && !isset($this->all_styles[$style]))
                             continue;
 
                         $styles_recs[$style]['TITLE'] = $style;

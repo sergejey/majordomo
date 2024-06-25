@@ -119,6 +119,7 @@ function majordomoExceptionHandler($e)
 
 function majordomoErrorHandler($errno, $errmsg, $filename, $linenum)
 {
+	if (error_reporting() === 0 || error_reporting() == 4437) return; //whitevast: отключаем ошибки, заглушенные @
     if (in_array($errno, array(E_NOTICE, E_DEPRECATED))) return;
 
     if (isset($_SERVER['REQUEST_URI'])) {
