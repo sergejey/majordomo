@@ -186,7 +186,7 @@ function usual(&$out) {
  function checkAllHosts($limit=1000) {
 
   // ping hosts
-  $pings=SQLSelect("SELECT * FROM pinghosts WHERE CHECK_NEXT<=NOW() ORDER BY CHECK_NEXT LIMIT ".$limit);
+  $pings=SQLSelect("SELECT * FROM pinghosts WHERE CHECK_NEXT<='".date('Y-m-d H:i:s')."' ORDER BY CHECK_NEXT LIMIT ".$limit);
   $total=count($pings);
   for($i=0;$i<$total;$i++) {
    $host=$pings[$i];
@@ -199,7 +199,7 @@ function usual(&$out) {
    if (!$offline_interval) {
     $offline_interval=$online_interval;
    }
-
+   $host['CHECK_LATEST']=date('Y-m-d H:i:s');
    if ($host['STATUS']=='1') {
     $host['CHECK_NEXT']=date('Y-m-d H:i:s', time()+$online_interval);
    } else {

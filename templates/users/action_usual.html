@@ -1,31 +1,41 @@
-<script language="javascript">
- function switchTo(username) {
-  $.ajax({                                      
-    url: ROOTHTML+'index.php',       
-    type: "POST",
-    data: { "username": username } 
-}).done(function( msg ) {
-    window.parent.location=ROOTHTML;
-  
-});
-}
-</script>
-<table width="100%" border="0" cellpadding="5">
- [#begin USERS#]
- <tr>
-  <td valign="top" align="center"[#if SELECTED="1"#] style="border:1px solid white"[#endif#]>
-   [#if AVATAR!=""#]
-   <a href="#" onClick="return switchTo('[#USERNAME#]');"><img src="<#ROOTHTML#>cms/avatars/[#AVATAR#]" border="0" height="100"></a>
-   [#else#]
-   <a href="#" onClick="return switchTo('[#USERNAME#]');"><img src="<#ROOTHTML#>img/icons/user.png" border="0"></a>
-   [#endif#]
-  </td>
-  <td valign="top" width="99%"[#if SELECTED="1"#] style="border:1px solid white"[#endif#]><h1>[#NAME#]</h1>
-  [#if IS_ADMIN="1"#]<#LANG_IS_ADMIN#><br>[#endif#]
-  [#if MOBILE!=""#]Mobile: [#MOBILE#]<br>[#endif#]
-  [#if SKYPE!=""#]Skype: [#SKYPE#]<br>[#endif#]
-  [#if EMAIL!=""#]E-mail: [#EMAIL#]<br>[#endif#]
-  </td>
- </tr>
- [#end USERS#]
-</table>
+<div class="container">
+ <h1><#LANG_PLEASE_LOGIN#></h1>
+ &nbsp;
+ [#if SHOW_FORM="1"#]
+ <div class="panel-body" style="max-width: 400px">
+  [#if INCORRECT#]
+  <div class="alert alert-error"><#LANG_STRING_ERROR#></div>
+  [#endif#]
+ <form class="form" method="post">
+  <div class="form-group[#if INCORRECT#] has-error[#endif#]">
+   <label for="username" class="control-label"><#LANG_USERNAME#>:</label>
+   <input type="text" id="username" name="username" value="<#USERNAME#>" class="form-control">
+ </div>
+ <div class="form-group[#if INCORRECT#] has-error[#endif#]"">
+   <label for="password" class="control-label"><#LANG_PASSWORD#>:</label>
+   <input type="password" id="password" name="password" value="" class="form-control">
+ </div>
+ <div class="form-group">
+  <input type="submit" value="<#LANG_CONTINUE#>" class="btn btn-default btn-primary">
+  <a href="<#ROOTHTML#>" class="btn btn-default"><#LANG_CANCEL#></a>
+ </div>
+ </form>
+ </div>
+ [#else USERNAME#]
+<p><a href="<#ROOTHTML#>" class="btn btn-default"><#LANG_CANCEL#></a></p>&nbsp;
+ <div class="row">
+  [#begin USERS#]
+  <div class="col-sm-2"[#if SELECTED#] style="border:4px solid"[#endif SELECTED#]>
+   <div align="center">
+    [#if AVATAR!=""#]
+    <a href="?username=[#USERNAME#]"><img src="<#ROOTHTML#>cms/avatars/[#AVATAR#]" height="100"></a>
+    [#else#]
+    <a href="?username=[#USERNAME#]"><img src="<#ROOTHTML#>img/icons/user.png" height="100"></a>
+    [#endif#]<br/>
+    [#NAME#]
+   </div>
+  </div>
+  [#end USERS#]
+</div>
+ [#endif USERNAME#]
+</div>

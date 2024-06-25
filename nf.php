@@ -76,6 +76,7 @@ $requests = array(
    '/^'.$rootHTML.'getlatestnote\.html/is'         => '?(application:{action=getlatestnote})',
    '/^'.$rootHTML.'getlatestmp3\.html/is'          => '?(application:{action=getlatestmp3})',
    '/^'.$rootHTML.'design_sample\.html/is'         => '?(application:{action=design_sample})',
+    '/^'.$rootHTML.'settings\/(.+?)\.html/is'         => '?(application:{app_action=1, action=settings}settings:{filter_name=\1})',
    '/^'.$rootHTML.'docs\/(\d+)\.html/is'           => '?(application:{action=docs, doc_id=\1})',
    '/^'.$rootHTML.'([\w-]+)\.html/is'              => '?(application:{action=docs, doc_name=\1})'
 );

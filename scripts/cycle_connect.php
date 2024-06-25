@@ -64,13 +64,18 @@ while (1) {
         $ca_file = dirname(__FILE__) . '/../modules/connect/fullchain.pem';
     }
 
-    $topics = array(
-        $username . '/incoming_urls',
-        $username . '/menu_session',
-        $username . '/reverse_requests',
-        $username . '/forward/#',
-        $connect->config['CONNECT_USERNAME'] . '/forward/#',
+    $connect_topics = array(
+        '/incoming_urls', '/menu_session', '/reverse_requests', '/forward/#'
     );
+
+
+    $topics = array();
+    foreach ($connect_topics as $topic) {
+        $topics[] = $username . $topic;
+        if ($username != $connect->config['CONNECT_USERNAME']) {
+            $topics[] = $connect->config['CONNECT_USERNAME'] . $topic;
+        }
+    }
 
     $query = implode(',', $topics);
     $ping_topic = $username . '/ping';
@@ -193,6 +198,9 @@ function procmsg($topic, $msg)
         $url = BASE_URL . '/ajax/connect.html?no_session=1&op=reverse_request_full&msg=' . urlencode($msg);
         echo date("Y-m-d H:i:s") . " Incoming reverse request: $msg\n";
         getURLBackground($url, 0);
+        //echo "URL: ".$url."\n";
+        //$result = getURL($url, 0);
+        //echo "Result: ".$result."\n";
     }
     //DebMes("Processing complete.",'connect');
 

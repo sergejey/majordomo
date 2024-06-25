@@ -107,7 +107,13 @@ function saveToCache($key, $value)
         return;
     }
 
-    if (is_array($value) || strlen($value) > 2048) {
+    if (defined('CACHE_VALUE_MAX_SIZE')) {
+        $cache_value_max_size = CACHE_VALUE_MAX_SIZE;
+    } else {
+        $cache_value_max_size = 255;
+    }
+
+    if (is_array($value) || strlen($value) > $cache_value_max_size) {
         deleteFromCache($key);
         return;
     }
