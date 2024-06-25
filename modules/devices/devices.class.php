@@ -130,22 +130,22 @@ class devices extends module
     function link(&$out)
     {
         $ok = 1;
-        if ($this->type) {
+        if (isset($this->type)) {
             $out['TYPE'] = $this->type;
         } else {
             $ok = 0;
         }
-        if ($this->source_table) {
+        if (isset($this->source_table)) {
             $out['SOURCE_TABLE'] = $this->source_table;
         } else {
             $ok = 0;
         }
-        if ($this->source_table_id) {
+        if (isset($this->source_table_id)) {
             $out['SOURCE_TABLE_ID'] = $this->source_table_id;
         } else {
             $ok = 0;
         }
-        if ($this->prefix) {
+        if (isset($this->prefix)) {
             $out['PREFIX'] = $this->prefix;
         }
 
@@ -153,11 +153,11 @@ class devices extends module
             $out['ADD_TITLE'] = urlencode($this->add_title);
         }
 
-        if ($this->linked_object) {
+        if (isset($this->linked_object)) {
             $device_rec = SQLSelectOne("SELECT ID,TITLE FROM devices WHERE LINKED_OBJECT LIKE '" . DBSafe($this->linked_object) . "'");
             if (isset($device_rec['TITLE'])) {
                 $out['TITLE'] = $device_rec['TITLE'];
-                if ($this->preview) {
+                if (isset($this->preview)) {
                     $data = $this->processDevice($device_rec['ID']);
                     $out['HTML'] = $data['HTML'];
                 }
@@ -219,7 +219,7 @@ class devices extends module
 
     function getAllProperties($type)
     {
-        $properties = $this->device_types[$type]['PROPERTIES'];
+        $properties = isset($this->device_types[$type]['PROPERTIES']) ? $this->device_types[$type]['PROPERTIES'] : [];
         $parent_class = isset($this->device_types[$type]['PARENT_CLASS']) ? $this->device_types[$type]['PARENT_CLASS'] : '';
         if ($parent_class != '') {
             foreach ($this->device_types as $k => $v) {
@@ -396,7 +396,7 @@ class devices extends module
                         if (is_array($pv)) {
                             foreach ($pv as $ppk => $ppv) {
                                 if (substr($ppk, 0, 1) == '_') continue;
-                                if ($ppk == 'KEEP_HISTORY' && $property[$ppk]) continue;
+                                if ($ppk == 'KEEP_HISTORY') continue;
                                 $property[$ppk] = $ppv;
                             }
                             SQLUpdate('properties', $property);
@@ -1465,7 +1465,7 @@ class devices extends module
     {
         startMeasure('checkLinkedDevicesAction');
         $device1 = SQLSelectOne("SELECT * FROM devices WHERE LINKED_OBJECT LIKE '" . $object_title . "'");
-        if (!$device1['ID']) {
+        if (!isset($device1['ID'])) {
             endMeasure('checkLinkedDevicesAction');
             return 0;
         }

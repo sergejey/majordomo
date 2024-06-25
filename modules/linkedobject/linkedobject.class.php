@@ -185,7 +185,7 @@ class linkedobject extends module
                     if (!$object) break;
                     if ($object == 'AllScripts') break;
                     $obj = getObject($object);
-                    if ($obj->device_id) {
+                    if (isset($obj->device_id)) {
                         $res['DEVICE_ID'] = $obj->device_id;
                     }
                     if (!$obj) break;
@@ -221,7 +221,7 @@ class linkedobject extends module
                     $parent_properties = $obj->getParentMethods($obj->class_id, '', 1);
                     if ($parent_properties && is_array($parent_properties)) {
                         foreach ($parent_properties as $v) {
-                            if (!$seen[$v['TITLE']]) {
+                            if (!isset($seen[$v['TITLE']])) {
                                 $properties[] = $v;
                                 $seen[$v['TITLE']] = 1;
                             }
@@ -230,7 +230,7 @@ class linkedobject extends module
                     $tmp = SQLSelect("SELECT * FROM methods WHERE OBJECT_ID='" . (int)$obj->id . "'");
                     if ($tmp && is_array($tmp)) {
                         foreach ($tmp as $i) {
-                            if (!$seen[$i['TITLE']]) {
+                            if (!isset($seen[$i['TITLE']])) {
                                 $properties[] = $i;
                                 $seen[$i['TITLE']] = 1;
                             }
