@@ -228,7 +228,7 @@ class application extends module
         }
         if (!$site_username) {
             $host_user = SQLSelectOne("SELECT * FROM users WHERE HOST!='' AND HOST='" . DBSafe($_SERVER['REMOTE_ADDR']) . "'");
-            if ($host_user['ID']) {
+            if (isset($host_user['ID'])) {
                 $session->data['SITE_USERNAME'] = $host_user['USERNAME'];
                 $session->data['SITE_USER_ID'] = $host_user['ID'];
                 $site_username = $session->data['SITE_USERNAME'];
