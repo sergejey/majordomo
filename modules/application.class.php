@@ -364,6 +364,13 @@ class application extends module
             $ajax = 1;
             if (file_exists(DIR_MODULES . $this->action)) {
                 ignore_user_abort(1);
+
+                if (defined('SETTINGS_SITE_LANGUAGE') && file_exists(ROOT . 'languages/' . $this->action . '_' . SETTINGS_SITE_LANGUAGE . '.php'))
+                    include_once(ROOT . 'languages/' . $this->action . '_' . SETTINGS_SITE_LANGUAGE . '.php');
+
+                if (file_exists(ROOT . 'languages/' . $this->action . '_default.php'))
+                    include_once(ROOT . 'languages/' . $this->action . '_default.php');
+
                 include_once(DIR_MODULES . $this->action . '/' . $this->action . '.class.php');
                 $obj = "\$object$i";
                 $code = "";

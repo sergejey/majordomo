@@ -267,7 +267,9 @@ class devices extends module
         $index = 0;
         $total = count($objects);
         for ($i = 0; $i < $total; $i++) {
-            if (preg_match('/(\d+)/', $objects[$i]['TITLE'], $m)) {
+            $object_title = $objects[$i]['TITLE'];
+            $object_title = preg_replace("/" . preg_quote($prefix) . "/is", '', $object_title);
+            if (preg_match('/(\d+)/', $object_title, $m)) {
                 $current_index = (int)$m[1];
                 if ($current_index > $index) {
                     $index = $current_index;
@@ -575,10 +577,9 @@ class devices extends module
     {
         if ($this->isHomeBridgeAvailable()) {
             include_once(dirname(__FILE__) . '/homebridgeSync.inc.php');
+        } else if (isModuleInstalled('homekit')) {
+            include_once(DIR_MODULES . 'homekit/homebridgeSync.inc.php');
         }
-		else if(isModuleInstalled('homekit')){
-			include_once(DIR_MODULES . 'homekit/homebridgeSync.inc.php');
-		}
     }
 
     /**
@@ -1461,7 +1462,7 @@ class devices extends module
     }
 
 
-    function checkLinkedDevicesAction($object_title, $params=array())
+    function checkLinkedDevicesAction($object_title, $params = array())
     {
         startMeasure('checkLinkedDevicesAction');
         $device1 = SQLSelectOne("SELECT * FROM devices WHERE LINKED_OBJECT LIKE '" . $object_title . "'");
