@@ -75,6 +75,8 @@ class WebsocketClient
                 $header.= "Sec-WebSocket-Version: 13\r\n\r\n";                      
                 
                 $this->_Socket = fsockopen($host, $port, $errno, $errstr, 2);
+                if(!empty($this->_Socket))
+                {
                 socket_set_timeout($this->_Socket, 0, 10000);
                 @fwrite($this->_Socket, $header);
                 $response = @fread($this->_Socket, 1500);
@@ -89,7 +91,7 @@ class WebsocketClient
 
                 return $this->_connected;
         }
-        
+        }
         public function checkConnection()
         {
                 $this->_connected = false;
