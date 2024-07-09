@@ -154,7 +154,7 @@ class textfiles extends module
         } elseif ($this->view_mode == 'edit_file') {
 
             if ($this->mode == 'update' && $file != '') {
-                global $data;
+                $data = gr('data');
                 SaveFile(ROOT . 'cms/texts/' . $file . ".txt", trim($data));
                 $out['OK'] = 1;
             }
