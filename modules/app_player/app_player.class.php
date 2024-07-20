@@ -180,7 +180,7 @@ class app_player extends module
             $terminal = getTerminalsByName($play_terminal, 1, 'LATEST_ACTIVITY', 'DESC')[0];
         } elseif ($terminal_id) { // id in request
             $terminal = getTerminalByID($terminal_id);
-        } elseif ($session->data['TERMINAL'] != '') { // session -> data -> terminal
+        } elseif (isset($session->data['TERMINAL']) && $session->data['TERMINAL'] != '') { // session -> data -> terminal
             $terminal = getTerminalsByName($session->data['TERMINAL'], 1, 'LATEST_ACTIVITY', 'DESC')[0];
         } else { // default
             if (!$terminal = getTerminalsByHost($_SERVER['REMOTE_ADDR'], 1, 'LATEST_ACTIVITY', 'DESC')[0]) {

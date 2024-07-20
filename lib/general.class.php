@@ -172,7 +172,7 @@ function paging(&$data, $onPage, &$out)
         $page = ceil($total_data / $onPage);
 
     $out['PAGE'] = $page;
-    $from = ($page - 1) * $onPage;
+    $from = ((int)$page - 1) * (int)$onPage;
     $selPage = 9999;
     $pages = array();
 

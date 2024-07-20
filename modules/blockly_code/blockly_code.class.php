@@ -197,6 +197,7 @@ class blockly_code extends module
 				$out['CODEEDITOR_AUTOCOMPLETE_WORDS'] = $wordsMJDM;
 				$out['CODEEDITOR_AUTOCOMPLETE_WORDS'] .= $wordsPHP;
 			} else {
+				$words = "";
 				if($typeAutocomplete != 'user') $words .= $wordsMJDM;
 				if($typeAutocomplete != 'mjdmuser' && $typeAutocomplete != 'user') $words .= $wordsPHP;
 				

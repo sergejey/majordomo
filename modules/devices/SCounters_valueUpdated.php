@@ -59,7 +59,7 @@ foreach ($history_values as $history_value => $time) {
         $table_name = 'phistory';
     }
     $val1 = SQLSelectOne("SELECT ID, VALUE FROM pvalues WHERE ID='" . $value_id . "' AND UPDATED>=('" . $time . "')");
-    if ($val1['ID']) {
+    if (isset($val1['ID'])) {
         SQLExec("DELETE FROM $table_name WHERE VALUE_ID=$value_id AND ADDED>=('" . $time . "')");
         $set_value = $val1['VALUE'] + ($new_value - $old_value);
         $set_value = round($set_value, 2);

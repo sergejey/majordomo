@@ -881,6 +881,7 @@ function getHistoryAvg($varname, $start_time, $stop_time = 0)
  */
 function getHistoryValue($varname, $time, $nerest = false)
 {
+	$time = (int)$time;
     if ($time <= 0) $time = (time() + $time);
 
     // Get hist val id
@@ -914,16 +915,16 @@ function getHistoryValue($varname, $time, $nerest = false)
 
     // Nerest
     if ($nerest) {
-        if (($time - $val1['ADDED']) < ($val2['ADDED'] - $time))
+        if (($time - (int)$val1['ADDED']) < ((int)$val2['ADDED'] - $time))
             return $val1['VALUE'];
         else
             return $val2['VALUE'];
     } // Interpolation
     else {
-        if ($val2['ADDED'] - $val1['ADDED'] == 0)
+        if ((int)$val2['ADDED'] - (int)$val1['ADDED'] == 0)
             return $val1['VALUE'];
         else
-            return $val1['VALUE'] + ($val2['VALUE'] - $val1['VALUE']) * ($time - $val1['ADDED']) / ($val2['ADDED'] - $val1['ADDED']);
+            return (int)$val1['VALUE'] + ((int)$val2['VALUE'] - (int)$val1['VALUE']) * ($time - (int)$val1['ADDED']) / ((int)$val2['ADDED'] - (int)$val1['ADDED']);
     }
 }
 

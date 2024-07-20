@@ -228,7 +228,7 @@ class application extends module
         }
         if (!$site_username) {
             $host_user = SQLSelectOne("SELECT * FROM users WHERE HOST!='' AND HOST='" . DBSafe($_SERVER['REMOTE_ADDR']) . "'");
-            if ($host_user['ID']) {
+            if (isset($host_user['ID'])) {
                 $session->data['SITE_USERNAME'] = $host_user['USERNAME'];
                 $session->data['SITE_USER_ID'] = $host_user['ID'];
                 $site_username = $session->data['SITE_USERNAME'];
@@ -364,6 +364,13 @@ class application extends module
             $ajax = 1;
             if (file_exists(DIR_MODULES . $this->action)) {
                 ignore_user_abort(1);
+
+                if (defined('SETTINGS_SITE_LANGUAGE') && file_exists(ROOT . 'languages/' . $this->action . '_' . SETTINGS_SITE_LANGUAGE . '.php'))
+                    include_once(ROOT . 'languages/' . $this->action . '_' . SETTINGS_SITE_LANGUAGE . '.php');
+
+                if (file_exists(ROOT . 'languages/' . $this->action . '_default.php'))
+                    include_once(ROOT . 'languages/' . $this->action . '_default.php');
+
                 include_once(DIR_MODULES . $this->action . '/' . $this->action . '.class.php');
                 $obj = "\$object$i";
                 $code = "";

@@ -18,7 +18,9 @@ function context_getuser()
 
     $user = SQLSelectOne("SELECT ID FROM users WHERE IS_DEFAULT=1");
     $user_id = isset($user['ID']) ? (int)$user['ID'] : 0;
-    $session->data['SITE_USER_ID'] = $user_id;
+    if(isset($session->data)){
+        $session->data['SITE_USER_ID'] = $user_id;
+    }
 
     return $user_id;
 }

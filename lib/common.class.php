@@ -286,6 +286,7 @@ function clearTimeOut($title)
 function timeOutExists($title)
 {
     $job = SQLSelectOne("SELECT ID FROM jobs WHERE PROCESSED = 0 AND TITLE = '" . DBSafe($title) . "'");
+	if(!isset($job)) return false;
     return (int)$job['ID'];
 }
 
@@ -593,7 +594,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
 
             startMeasure('curl_post');
             if (!$background && curl_errno($ch)) {
-                $errorInfo = curl_error($ch);
+                $errorInfo = curl_strerror(curl_errno($ch));
                 $info = curl_getinfo($ch);
                 $backtrace = debug_backtrace();
                 $callSource = $backtrace[1]['function'];
