@@ -1200,6 +1200,9 @@ $dictionary = array(
     'DEVICES_BATTERY_LEVEL' => 'Уровень заряда батареи',
     'DEVICES_BATTERY_WARNING' => 'Предупреждение о низком заряде батареи',
     'DEVICES_LOW_BATTERY' => 'низкий уровень заряда',
+    'DEVICES_GROUP_STATE' => 'Состояние группы',
+    'DEVICES_GROUP_STATE_SAVE' => 'Сохранить',
+    'DEVICES_GROUP_STATE_RESTORE' => 'Восстановить',
 
     'DEVICES_IS_ON' => 'Включено',
     'DEVICES_IS_CLOSED' => 'Закрыто',

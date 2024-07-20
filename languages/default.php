@@ -1202,6 +1202,9 @@ $dictionary = array(
     'DEVICES_BATTERY_LEVEL' => 'Battery level',
     'DEVICES_BATTERY_WARNING' => 'Low battery warning',
     'DEVICES_LOW_BATTERY' => 'low battery level',
+    'DEVICES_GROUP_STATE' => 'Group state',
+    'DEVICES_GROUP_STATE_SAVE' => 'Save',
+    'DEVICES_GROUP_STATE_RESTORE' => 'Restore',
 
     'DEVICES_IS_ON' => 'is ON',
     'DEVICES_IS_CLOSED' => 'is Closed',

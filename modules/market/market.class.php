@@ -396,7 +396,7 @@ class market extends module
         }
 
 
-        if (!$data->PLUGINS) {
+        if (!isset($data->PLUGINS) || !is_array($data->PLUGINS)) {
             $out['ERR'] = 1;
         } else {
             $this->can_be_updated = array();

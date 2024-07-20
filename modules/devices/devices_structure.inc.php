@@ -233,6 +233,20 @@ $this->device_types = array(
             'turnOff' => array('DESCRIPTION' => LANG_DEVICES_TURN_OFF, '_CONFIG_SHOW' => 1),
         )
     ),
+    'group_state' => array(
+        'TITLE' => LANG_DEVICES_GROUP_STATE,
+        'PARENT_CLASS' => 'SDevices',
+        'CLASS' => 'SGroupStates',
+        'PROPERTIES' => array(
+            'groupObject' => array('DESCRIPTION' => LANG_DEVICES, '_CONFIG_TYPE' => 'devices', '_CONFIG_HELP' => 'SdGroupStateDevices'),
+            'groupState' => array('DESCRIPTION' => 'Group state'),
+            'icon' => array('DESCRIPTION' => LANG_IMAGE, '_CONFIG_TYPE' => 'style_image', '_CONFIG_HELP' => 'SdIcon'),
+        ),
+        'METHODS' => array(
+            'restore' => array('DESCRIPTION' => 'Restore state', '_CONFIG_SHOW' => 1),
+            'save' => array('DESCRIPTION' => 'Save state', '_CONFIG_SHOW' => 1),
+        )
+    ),
     'motion' => array(
         'TITLE' => LANG_DEVICES_MOTION,
         'PARENT_CLASS' => 'SDevices',
