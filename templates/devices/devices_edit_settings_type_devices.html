@@ -1,0 +1,80 @@
+<link href="<#ROOTHTML#>3rdparty/select2/css/select2.min.css" rel="stylesheet" />
+<script src="<#ROOTHTML#>3rdparty/select2/js/select2.min.js"></script>
+
+
+<textarea name="[#NAME#]_value" id="[#NAME#]_value" rows="5" cols="50" class="form-control" style="display:none">[#VALUE#]</textarea>
+<table id="devices_table" cellpadding="5" cellspacing="5">
+
+</table>
+
+<input type="button" class="btn btn-primary btn-sm" value="<#LANG_PERIOD_CUSTOM#> <#LANG_DEVICE#>" onclick="$('#add_device_id').select2();$(this).hide();$('#choice_device').show();">
+
+<div id="choice_device" style="display: none;">
+    <select name="add_device_id" id="add_device_id" onchange="addDevice();" style="width:300px">
+        <option value="0"><#LANG_DEVICE#></option>
+        [#begin DEVICES#]
+        <option value="[#ID#]" device-type="[#TYPE#]" device-object="[#LINKED_OBJECT#]">[#TITLE#]</option>
+        [#end DEVICES#]
+    </select>
+    <input type="button" name="add_device" class="btn btn-default btn-sm" value="<#LANG_ADD#>" onclick="return addDevice();">
+</div>
+
+<script type="text/javascript">
+    var devices_data=[];
+    var savedJson=$('#[#NAME#]_value').val();
+    if (savedJson!='') {
+        var tmp=JSON.parse(savedJson);
+        if (typeof tmp === 'object') {
+            devices_data=tmp;
+            renderCode();
+            renderView();
+        }
+    }
+
+    function renderCode() {
+        /*
+        var result_code='';
+        for(var i=0;i<devices_data.length;i++) {
+            if (devices_data[i].object!='') {
+                result_code+=""+devices_data[i].object+"' '";
+            }
+        }
+        //$('#[#NAME#]_value').val(result_code);
+         */
+        $('#[#NAME#]_value').val(JSON.stringify(devices_data));
+    }
+    function renderView() {
+        $("#devices_table tr").remove();
+        for(var i=0;i<devices_data.length;i++) {
+            var row = $("<tr />")
+            $("#devices_table").append(row);
+            row.append($("<td>" + devices_data[i].title + "</td>"));
+            row.append($("<td><a href='#' class='btn btn-default' onclick='deleteDevice("+devices_data[i].id+");return false;'><i class='glyphicon glyphicon-trash'></i></a></td>"));
+        }
+    }
+    function addDevice() {
+        var device_id=$('#add_device_id').val();
+        var device_title = $("#add_device_id option:selected").text();
+        var device_type = $("#add_device_id option:selected").attr('device-type');
+        var device_object= $("#add_device_id option:selected").attr('device-object');
+        if (device_id==0) return false;
+        devices_data.push({
+            id: device_id,
+            title: device_title,
+            type: device_type,
+            object: device_object,
+        });
+        renderCode();
+        renderView();
+        return false;
+    }
+    function deleteDevice(device_id) {
+        for(var i=0;i<devices_data.length;i++) {
+            if (devices_data[i].id==device_id) {
+                devices_data.splice(i, 1);
+            }
+        }
+        renderCode();
+        renderView();
+    }
+</script>
