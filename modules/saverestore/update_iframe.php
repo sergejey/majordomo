@@ -1,6 +1,6 @@
 <?php
 
-
+Define('ALLOW_RUNNING_WITH_ERRORS', 1);
 chdir(dirname(__FILE__) . '/../../');
 
 include_once("./config.php");

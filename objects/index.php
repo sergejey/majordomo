@@ -11,6 +11,7 @@
 list($usec, $sec) = explode(" ", microtime());
 $script_started_time = ((float)$usec + (float)$sec);
 
+Define('ALLOW_RUNNING_WITH_ERRORS', 1);
 
 //Define('MASTER_HOST', 'homenetserver.jbk'); // uncomment to use master host
 if (defined('MASTER_URL') && MASTER_URL != '') {

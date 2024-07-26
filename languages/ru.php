@@ -1117,6 +1117,7 @@ $dictionary = array(
     'MODULES_UPDATES_AVAILABLE'=>'Доступны обновления модулей',
     'SYSTEM_UPDATES_AVAILABLE'=>'Доступны обновления системы',
     'ERRORS_SAVED'=>'Сохранены ошибки',
+    'RUNNING_WITH_ERRORS' => 'Внимание! Система работает с ошибками.',
 
 // DEVICES
     'DEVICES_MODULE_TITLE' => 'Простые устройства',

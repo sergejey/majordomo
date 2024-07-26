@@ -1118,6 +1118,7 @@ $dictionary = array(
     'MODULES_UPDATES_AVAILABLE' => 'Modules updates available',
     'SYSTEM_UPDATES_AVAILABLE' => 'System updates available',
     'ERRORS_SAVED' => 'Errors detected',
+    'RUNNING_WITH_ERRORS' => 'Warning! System is running with errors.',
 
 // DEVICES
     'DEVICES_MODULE_TITLE' => 'Simple Devices',

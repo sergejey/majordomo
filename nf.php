@@ -25,6 +25,10 @@ if ($ext == 'jpg' || $ext == 'gif' || $ext == 'css')
    exit;
 }
 
+if (preg_match('/\/ajax\//',$_SERVER["REQUEST_URI"])) {
+    Define('ALLOW_RUNNING_WITH_ERRORS', 1);
+}
+
 if (preg_match("/\?(.*?)$/", $_SERVER["REQUEST_URI"], $matches))
    $redir_qry = $matches[1];
 
@@ -119,7 +123,7 @@ if (isset($link))
 {
    $mdl       = new module();
    $param_str = $mdl->parseLinks("<a href=\"$link\">");
- 
+
    if (preg_match("/<a href=\".+?\?pd=(.*?)&(.+)\">/", $param_str, $matches))
    {
       $pd    = $matches[1];

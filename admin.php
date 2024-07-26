@@ -6,6 +6,7 @@
  * @author Serge Dzheigalo <jey@tut.by>
  * @version 1.3
  */
+Define('ALLOW_RUNNING_WITH_ERRORS', 1);
 
 include_once("./config.php");
 include_once("./lib/perfmonitor.class.php");
