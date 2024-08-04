@@ -73,6 +73,12 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
 
 function gr($var_name, $type = 'trim')
 {
+
+    if ($_SERVER['REQUEST_METHOD']=='DELETE') {
+        $content = file_get_contents('php://input');
+        parse_str($content, $_REQUEST );
+    }
+
     if (isset($_REQUEST[$var_name])) {
         $value = $_REQUEST[$var_name];
     } else {
