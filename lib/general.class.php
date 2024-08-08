@@ -74,7 +74,7 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
 function gr($var_name, $type = 'trim')
 {
 
-    if ($_SERVER['REQUEST_METHOD']=='DELETE') {
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD']=='DELETE') {
         $content = file_get_contents('php://input');
         parse_str($content, $_REQUEST );
     }
