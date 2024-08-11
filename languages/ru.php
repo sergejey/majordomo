@@ -1173,6 +1173,7 @@ $dictionary = array(
 
     'DEVICES_LOGIC_ACTION' => 'Действия',
     'DEVICES_SCHEDULE' => 'Расписание',
+    'DEVICES_IS_ADDED' => 'Добавлено новое устройство',
 
     'DEVICES_CURRENT_VALUE' => 'Текущее значение',
     'DEVICES_CURRENT_HUMIDITY' => 'Влажность',

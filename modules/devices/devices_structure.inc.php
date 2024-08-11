@@ -213,6 +213,9 @@ $this->device_types = array(
             'statusUpdated' => array('DESCRIPTION' => 'Status Updated'),
             'levelUpdated' => array('DESCRIPTION' => 'Level Updated'),
             'levelWorkUpdated' => array('DESCRIPTION' => 'Level Work Updated'),
+            'startLevelUp' => array('DESCRIPTION' => 'Level move up'),
+            'startLevelDown' => array('DESCRIPTION' => 'Level move down'),
+            'stopLevelMove' => array('DESCRIPTION' => 'Stop level move'),
             'turnOn' => array('DESCRIPTION' => LANG_DEVICES_TURN_ON, '_CONFIG_SHOW' => 1),
             'turnOff' => array('DESCRIPTION' => LANG_DEVICES_TURN_OFF, '_CONFIG_SHOW' => 1),
         )

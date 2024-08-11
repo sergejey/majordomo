@@ -1176,6 +1176,7 @@ $dictionary = array(
 
     'DEVICES_LOGIC_ACTION' => 'Action',
     'DEVICES_SCHEDULE' => 'Schedule',
+    'DEVICES_IS_ADDED' => 'New device added',
 
     'DEVICES_CURRENT_VALUE' => 'Current value',
     'DEVICES_CURRENT_HUMIDITY' => 'Humidity',
