@@ -90,15 +90,23 @@ if (!isset($request[0])) {
             $link['DEVICE1_ID'] = gr('device1_id', 'int');
             $link['DEVICE2_ID'] = gr('device2_id', 'int');
             $link['LINK_TYPE'] = gr('link_type');
-            $settings = json_decode(gr('link_settings'), true);
-            $link['LINK_SETTINGS'] = serialize($settings);
-            $link['IS_ACTIVE'] = 1;
-            if ($link['ID']) {
-                SQLUpdate('devices_linked', $link);
-            } else {
-                $link['ID'] = SQLInsert('devices_linked', $link);
+            $settings = gr('link_settings');
+            if ($settings != '') {
+                $settings = json_decode($settings, true);
+                $link['LINK_SETTINGS'] = serialize($settings);
             }
-            $result['result'] = true;
+            $link['IS_ACTIVE'] = gr('active', 'int');
+            if ($link['DEVICE1_ID'] && $link['DEVICE2_ID'] && $link['LINK_TYPE']) {
+                if ($link['ID']) {
+                    SQLUpdate('devices_linked', $link);
+                } else {
+                    $link['ID'] = SQLInsert('devices_linked', $link);
+                }
+                $result['result'] = true;
+            } else {
+                $result['result'] = false;
+                $result['error'] = 'Incorrect data for the link';
+            }
         }
         if ($method == 'GET') {
 
@@ -115,6 +123,11 @@ if (!isset($request[0])) {
                     $links[$i]['DEVICE2_TITLE'] = $device2['TITLE'];
                     if ($links[$i]['LINK_SETTINGS'] != '') {
                         $links[$i]['LINK_SETTINGS'] = unserialize($links[$i]['LINK_SETTINGS']);
+                        if (count(array_keys($links[$i]['LINK_SETTINGS'])) == 0) {
+                            unset($links[$i]['LINK_SETTINGS']);
+                        }
+                    } else {
+                        unset($links[$i]['LINK_SETTINGS']);
                     }
                 }
             }
@@ -155,7 +168,7 @@ if (!isset($request[0])) {
                 $result['result'] = true;
             } else {
                 $result['result'] = false;
-                $result['error'] = 'Cannot delete: point (id: '.$point_id.') not found';
+                $result['error'] = 'Cannot delete: point (id: ' . $point_id . ') not found';
             }
         }
         if ($method == 'POST') {
@@ -179,7 +192,7 @@ if (!isset($request[0])) {
             }
         }
         if ($method == 'GET') {
-            $points = SQLSelect("SELECT ID, LINKED_METHOD, VALUE, SET_TIME, SET_DAYS, LATEST_RUN FROM devices_scheduler_points WHERE DEVICE_ID=" . (int)$device['ID']." ORDER BY ID");
+            $points = SQLSelect("SELECT ID, LINKED_METHOD, VALUE, SET_TIME, SET_DAYS, LATEST_RUN FROM devices_scheduler_points WHERE DEVICE_ID=" . (int)$device['ID'] . " ORDER BY ID");
             $result['schedule_points'] = $points;
             $show_methods = array();
             include_once(DIR_MODULES . 'devices/devices.class.php');
@@ -218,6 +231,12 @@ if (!isset($request[0])) {
     foreach ($properties as $p) {
         $device[$p['TITLE']] = getGlobal($device['object'] . '.' . $p['TITLE']);
     }
+    $linksTotal = (int)current(SQLSelectOne("SELECT COUNT(*) as TOTAL FROM devices_linked WHERE DEVICE1_ID=".$device['id']." OR DEVICE2_ID=".$device['id']));
+    $device['linksTotal'] = $linksTotal;
+
+    $schedulePointsTotal = (int)current(SQLSelectOne("SELECT COUNT(*) as TOTAL FROM devices_scheduler_points WHERE DEVICE_ID=".$device['id']));
+    $device['scheduleTotal'] = $schedulePointsTotal;
+
     $result['device'] = $device;
 } elseif (strtolower($request[0]) == 'devices' && $request[1] && $method == 'POST') {
     $device = SQLSelectOne("SELECT * FROM devices WHERE ID='" . (int)$request[1] . "'");

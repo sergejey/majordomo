@@ -510,6 +510,8 @@ if ($this->mode == 'update' && $this->tab == '') {
 
         if ($location_title) {
             setGlobal($object_rec['TITLE'] . '.linkedRoom', $location_title);
+        } else {
+            setGlobal($object_rec['TITLE'] . '.linkedRoom', '');
         }
 
         if ($added && is_array($type_details['PROPERTIES'])) {

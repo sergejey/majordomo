@@ -21,30 +21,34 @@ if ($status) {
 }
 
 
-$this->setProperty('currentTargetValue',$targetTemperature);
+$this->setProperty('currentTargetValue', $targetTemperature);
 
 //$need_action = 0;
+$currentRelayStatus = $this->getProperty('relay_status');
+$targetRelayStatus = $currentRelayStatus;
 
-if ($currentTemperature > ($targetTemperature+$threshold)) { // temperature too high
-    //$need_action = 1;
+if ($currentTemperature > ($targetTemperature + $threshold)) { // temperature too high
     if ($ncno == 'no') {
-        $this->setProperty('relay_status',1); // turn on (cooling on)
+        $targetRelayStatus = 1; // turn on (cooling on)
     } else {
-        $this->setProperty('relay_status',0); // turn off (heating off)
+        $targetRelayStatus = 0; // turn off (heating off)
     }
-} elseif ($currentTemperature < ($targetTemperature-$threshold)) { // temperature too low
-    //$need_action = 1;
+} elseif ($currentTemperature < ($targetTemperature - $threshold)) { // temperature too low
     if ($ncno == 'no') {
-        $this->setProperty('relay_status',0); // turn off (cooling off)
+        $targetRelayStatus = 0; // turn off (cooling off)
     } else {
-        $this->setProperty('relay_status',1); // turn on (heating on)
+        $targetRelayStatus = 1; // turn on (heating on)
     }
 }
+
+if ($targetRelayStatus != $currentRelayStatus) {
+    $this->setProperty('relay_status', $targetRelayStatus);
+}
+
 //echo "current: $currentTemperature target: $targetTemperature action: $need_action <br/>";
 
-//if ($need_action) {
-    include_once(dirname(__FILE__).'/devices.class.php');
-    $dv=new devices();
-    $dv->checkLinkedDevicesAction($this->object_title, $params);
-    $this->callMethod('logicAction');
-//}
+include_once(dirname(__FILE__) . '/devices.class.php');
+$dv = new devices();
+$dv->checkLinkedDevicesAction($this->object_title, $params);
+$this->callMethod('logicAction');
+
