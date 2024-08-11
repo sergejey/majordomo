@@ -1117,6 +1117,7 @@ $dictionary = array(
     'MODULES_UPDATES_AVAILABLE'=>'Доступны обновления модулей',
     'SYSTEM_UPDATES_AVAILABLE'=>'Доступны обновления системы',
     'ERRORS_SAVED'=>'Сохранены ошибки',
+    'RUNNING_WITH_ERRORS' => 'Внимание! Система работает с ошибками.',
 
 // DEVICES
     'DEVICES_MODULE_TITLE' => 'Простые устройства',
@@ -1172,6 +1173,7 @@ $dictionary = array(
 
     'DEVICES_LOGIC_ACTION' => 'Действия',
     'DEVICES_SCHEDULE' => 'Расписание',
+    'DEVICES_IS_ADDED' => 'Добавлено новое устройство',
 
     'DEVICES_CURRENT_VALUE' => 'Текущее значение',
     'DEVICES_CURRENT_HUMIDITY' => 'Влажность',
@@ -1200,6 +1202,9 @@ $dictionary = array(
     'DEVICES_BATTERY_LEVEL' => 'Уровень заряда батареи',
     'DEVICES_BATTERY_WARNING' => 'Предупреждение о низком заряде батареи',
     'DEVICES_LOW_BATTERY' => 'низкий уровень заряда',
+    'DEVICES_GROUP_STATE' => 'Состояние группы',
+    'DEVICES_GROUP_STATE_SAVE' => 'Сохранить',
+    'DEVICES_GROUP_STATE_RESTORE' => 'Восстановить',
 
     'DEVICES_IS_ON' => 'Включено',
     'DEVICES_IS_CLOSED' => 'Закрыто',

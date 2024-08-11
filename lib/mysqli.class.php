@@ -156,7 +156,9 @@ class mysql
         $db_select = true;
         if (!$db_select) {
             Define('NO_DATABASE_CONNECTION', 1);
-            die("Selecting db: " . $this->dbName);
+            if (!defined('ALLOW_RUNNING_WITH_ERRORS')) {
+                die("Selecting db: " . $this->dbName);
+            }
         } else {
             $this->latestTransaction = time();
             $this->Exec("set NAMES 'utf8', CHARACTER SET 'utf8', character_set_client='utf8', character_set_results='utf8', collation_connection='utf8_unicode_ci';");

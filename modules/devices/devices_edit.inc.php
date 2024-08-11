@@ -79,9 +79,9 @@ if ($this->tab == 'logic') {
             $methods[$i]['DESCRIPTION'] = $methods[$i]['TITLE'];
         }
         if (isset($object_rec['ID'])) {
-            $object_method = SQLSelectOne("SELECT * FROM methods WHERE TITLE='".$methods[$i]['TITLE']."' AND OBJECT_ID=".$object_rec['ID']." ORDER BY TITLE");
+            $object_method = SQLSelectOne("SELECT * FROM methods WHERE TITLE='" . $methods[$i]['TITLE'] . "' AND OBJECT_ID=" . $object_rec['ID'] . " ORDER BY TITLE");
             if (isset($object_method['ID'])) {
-                $methods[$i]['DESCRIPTION'].=' (*)';
+                $methods[$i]['DESCRIPTION'] .= ' (*)';
                 if (!$method_name) {
                     $method_name = $object_method['TITLE'];
                 }
@@ -144,9 +144,9 @@ if ($this->tab == 'logic') {
             }
         } else {
             if ($method_rec['ID']) {
-                SQLExec("DELETE FROM methods WHERE ID=".$method_rec['ID']);
+                SQLExec("DELETE FROM methods WHERE ID=" . $method_rec['ID']);
             }
-            $this->redirect("?id=".$rec['ID']."&view_mode=".$this->view_mode."&tab=".$this->tab."&method=".urlencode($method_rec['TITLE']));
+            $this->redirect("?id=" . $rec['ID'] . "&view_mode=" . $this->view_mode . "&tab=" . $this->tab . "&method=" . urlencode($method_rec['TITLE']));
         }
         if ($ok) {
             SQLUpdate('methods', $method_rec);
@@ -208,6 +208,19 @@ if ($this->tab == 'settings') {
                 if (isset($v['_CONFIG_HELP'])) $v['CONFIG_HELP'] = $v['_CONFIG_HELP'];
                 $v['CONFIG_TYPE'] = $v['_CONFIG_TYPE'];
                 $v['VALUE'] = getGlobal($rec['LINKED_OBJECT'] . '.' . $k);
+                if ($v['CONFIG_TYPE'] == 'devices') {
+                    $second_devices = array();
+                    $target_classes = array('SControllers', 'SOpenable');
+                    $other_devices = SQLSelect("SELECT ID, TITLE, `TYPE`, LINKED_OBJECT FROM devices WHERE ID!=" . (int)$rec['ID'] . " ORDER BY TITLE");
+                    $total = count($other_devices);
+                    for ($i = 0; $i < $total; $i++) {
+                        $type_details = $this->getTypeDetails($other_devices[$i]['TYPE']);
+                        if (in_array($type_details['CLASS'], $target_classes) || in_array($type_details['PARENT_CLASS'], $target_classes)) {
+                            $second_devices[] = $other_devices[$i];
+                        }
+                    }
+                    $v['DEVICES'] = $second_devices;
+                }
                 if ($v['CONFIG_TYPE'] == 'select' || $v['CONFIG_TYPE'] == 'multi_select') {
                     $selected_options = explode(',', gg($rec['LINKED_OBJECT'] . '.' . $k));
                     $tmp = explode(',', $v['_CONFIG_OPTIONS']);
@@ -497,6 +510,8 @@ if ($this->mode == 'update' && $this->tab == '') {
 
         if ($location_title) {
             setGlobal($object_rec['TITLE'] . '.linkedRoom', $location_title);
+        } else {
+            setGlobal($object_rec['TITLE'] . '.linkedRoom', '');
         }
 
         if ($added && is_array($type_details['PROPERTIES'])) {

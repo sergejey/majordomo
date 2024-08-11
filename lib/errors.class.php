@@ -47,6 +47,13 @@ class custom_error
             $description = iconv('windows-1251', 'UTF-8', $description);
         }
 
+        if (defined('ALLOW_RUNNING_WITH_ERRORS')) {
+            global $system_errors_detected;
+            if (!isset($system_errors_detected)) $system_errors_detected = array();
+            if (!in_array($description,$system_errors_detected)) $system_errors_detected[] = $description;
+            return;
+        }
+
         $e = new \Exception;
         if (defined("DEBUG_MODE")) {
             if (isset($_SERVER['REQUEST_URI'])) {
@@ -119,7 +126,7 @@ function majordomoExceptionHandler($e)
 
 function majordomoErrorHandler($errno, $errmsg, $filename, $linenum)
 {
-	if (error_reporting() === 0 || error_reporting() == 4437) return; //whitevast: отключаем ошибки, заглушенные @
+    if (error_reporting() === 0 || error_reporting() == 4437) return; //whitevast: отключаем ошибки, заглушенные @
     if (in_array($errno, array(E_NOTICE, E_DEPRECATED))) return;
 
     if (isset($_SERVER['REQUEST_URI'])) {

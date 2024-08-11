@@ -298,6 +298,25 @@
 	[#end MODULE_NOTIFICATIONS#]
 	[#endif MODULE_NOTIFICATIONS#]
 
+	[#if RUNNING_WITH_ERRORS#]
+	<div class="alert alert-danger">
+		<div class="row">
+			<div class="col-md-6">
+				<b><#LANG_RUNNING_WITH_ERRORS#></b>
+			</div>
+			<div class="col-md-6 text-right">
+				<a href="?action=saverestore" class="btn btn-default btn-sm"><#LANG_NEWSAVERESTORE_UPDATE_BTN#> / <#LANG_RESTORE#></a>
+				<a href="#" onclick="$('#system_erorrs_details').toggle();return false;" class="btn btn-default btn-sm"><#LANG_MORE_DETAILS#></a>
+ 			</div>
+  		</div>
+	</div>
+	<div class="panel panel-body" style="display:none" id="system_erorrs_details">
+		[#begin SYSTEM_ERRORS#]
+		<div style="color:red;">[#BODY#]</div><hr/>
+		[#end SYSTEM_ERRORS#]
+	</div>
+	[#endif RUNNING_WITH_ERRORS#]
+
 						[#module name="<#ACTION#>" action="admin" instance="adm"#]
 				[#else ACTION#]
 					[#inc panel_default.html#]

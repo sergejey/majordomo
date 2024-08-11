@@ -1081,6 +1081,8 @@ class devices extends module
         }
         SQLExec("DELETE FROM devices_linked WHERE DEVICE1_ID='" . $rec['ID'] . "' OR DEVICE2_ID='" . $rec['ID'] . "'");
         SQLExec("DELETE FROM devices WHERE ID='" . $rec['ID'] . "'");
+
+
     }
 
     function addDevice($device_type, $options = 0)
@@ -1152,6 +1154,10 @@ class devices extends module
 
         if ($options['ADD_SCENE']) {
             $this->addDeviceToScene($rec['ID']);
+        }
+
+        if ($rec['ID']) {
+            say(LANG_DEVICES_IS_ADDED.' '.$rec['TITLE'],2);
         }
 
         return 1;

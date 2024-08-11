@@ -140,7 +140,6 @@ class market extends module
      */
     function admin(&$out)
     {
-
         $name = gr('name');
         $mode = gr('mode');
         if (!$this->mode && $mode) {
@@ -333,7 +332,6 @@ class market extends module
             return;
         }
 
-
         if (isset($this->category_id)) {
             $category_id = $this->category_id;
         } else {
@@ -346,7 +344,6 @@ class market extends module
         $missing = array();
 
         $data = new stdClass();
-
         if ($category_id == 'owned') {
             $params = 'own=1';
         } elseif ($category_id == 'all') {
@@ -395,8 +392,7 @@ class market extends module
             $data = json_decode($result);
         }
 
-
-        if (!$data->PLUGINS) {
+        if (!isset($data->PLUGINS) || !is_array($data->PLUGINS)) {
             $out['ERR'] = 1;
         } else {
             $this->can_be_updated = array();

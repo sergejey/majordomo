@@ -1118,6 +1118,7 @@ $dictionary = array(
     'MODULES_UPDATES_AVAILABLE' => 'Modules updates available',
     'SYSTEM_UPDATES_AVAILABLE' => 'System updates available',
     'ERRORS_SAVED' => 'Errors detected',
+    'RUNNING_WITH_ERRORS' => 'Warning! System is running with errors.',
 
 // DEVICES
     'DEVICES_MODULE_TITLE' => 'Simple Devices',
@@ -1175,6 +1176,7 @@ $dictionary = array(
 
     'DEVICES_LOGIC_ACTION' => 'Action',
     'DEVICES_SCHEDULE' => 'Schedule',
+    'DEVICES_IS_ADDED' => 'New device added',
 
     'DEVICES_CURRENT_VALUE' => 'Current value',
     'DEVICES_CURRENT_HUMIDITY' => 'Humidity',
@@ -1202,6 +1204,9 @@ $dictionary = array(
     'DEVICES_BATTERY_LEVEL' => 'Battery level',
     'DEVICES_BATTERY_WARNING' => 'Low battery warning',
     'DEVICES_LOW_BATTERY' => 'low battery level',
+    'DEVICES_GROUP_STATE' => 'Group state',
+    'DEVICES_GROUP_STATE_SAVE' => 'Save',
+    'DEVICES_GROUP_STATE_RESTORE' => 'Restore',
 
     'DEVICES_IS_ON' => 'is ON',
     'DEVICES_IS_CLOSED' => 'is Closed',

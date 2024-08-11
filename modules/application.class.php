@@ -130,13 +130,14 @@ class application extends module
             exit;
         }
 
-        if (!defined('SETTINGS_SITE_LANGUAGE') || !defined('SETTINGS_SITE_TIMEZONE') || !defined('SETTINGS_HOOK_BEFORE_SAY')) {
+        if (!$this->action && (!defined('SETTINGS_SITE_LANGUAGE') || !defined('SETTINGS_SITE_TIMEZONE') || !defined('SETTINGS_HOOK_BEFORE_SAY'))) {
             $this->action = 'first_start';
         }
 
         if ($this->action == 'first_start') {
             include(DIR_MODULES . 'first_start.php');
-        } elseif ($this->action == 'apps') {
+        } elseif
+        ($this->action == 'apps') {
             include(DIR_MODULES . 'apps.php');
         }
 
@@ -312,6 +313,7 @@ class application extends module
 
         $out['AJAX'] = $this->ajax;
         $out['POPUP'] = $this->popup;
+
 
         $days = array(LANG_WEEK_SUN, LANG_WEEK_MON, LANG_WEEK_TUE, LANG_WEEK_WED, LANG_WEEK_THU, LANG_WEEK_FRI, LANG_WEEK_SAT);
 

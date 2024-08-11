@@ -213,6 +213,9 @@ $this->device_types = array(
             'statusUpdated' => array('DESCRIPTION' => 'Status Updated'),
             'levelUpdated' => array('DESCRIPTION' => 'Level Updated'),
             'levelWorkUpdated' => array('DESCRIPTION' => 'Level Work Updated'),
+            'startLevelUp' => array('DESCRIPTION' => 'Level move up'),
+            'startLevelDown' => array('DESCRIPTION' => 'Level move down'),
+            'stopLevelMove' => array('DESCRIPTION' => 'Stop level move'),
             'turnOn' => array('DESCRIPTION' => LANG_DEVICES_TURN_ON, '_CONFIG_SHOW' => 1),
             'turnOff' => array('DESCRIPTION' => LANG_DEVICES_TURN_OFF, '_CONFIG_SHOW' => 1),
         )
@@ -231,6 +234,20 @@ $this->device_types = array(
             'setColor' => array('DESCRIPTION' => 'Color Set'),
             'turnOn' => array('DESCRIPTION' => LANG_DEVICES_TURN_ON, '_CONFIG_SHOW' => 1),
             'turnOff' => array('DESCRIPTION' => LANG_DEVICES_TURN_OFF, '_CONFIG_SHOW' => 1),
+        )
+    ),
+    'group_state' => array(
+        'TITLE' => LANG_DEVICES_GROUP_STATE,
+        'PARENT_CLASS' => 'SDevices',
+        'CLASS' => 'SGroupStates',
+        'PROPERTIES' => array(
+            'groupObject' => array('DESCRIPTION' => LANG_DEVICES, '_CONFIG_TYPE' => 'devices', '_CONFIG_HELP' => 'SdGroupStateDevices'),
+            'groupState' => array('DESCRIPTION' => 'Group state'),
+            'icon' => array('DESCRIPTION' => LANG_IMAGE, '_CONFIG_TYPE' => 'style_image', '_CONFIG_HELP' => 'SdIcon'),
+        ),
+        'METHODS' => array(
+            'restore' => array('DESCRIPTION' => 'Restore state', '_CONFIG_SHOW' => 1),
+            'save' => array('DESCRIPTION' => 'Save state', '_CONFIG_SHOW' => 1),
         )
     ),
     'motion' => array(

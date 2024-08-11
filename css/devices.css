@@ -154,6 +154,14 @@
     background-image: url(../cms/scenes/styles/button/i_knopka.png);
 }
 
+.device-icon.group_state {
+    background-image: url(../cms/scenes/styles/button/i_knopka.png);
+}
+
+.device-icon.group_state.on {
+    background-color:yellow;
+}
+
 .device-icon.button.on {
     background-color:yellow;
 }
