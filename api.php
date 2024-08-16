@@ -231,10 +231,10 @@ if (!isset($request[0])) {
     foreach ($properties as $p) {
         $device[$p['TITLE']] = getGlobal($device['object'] . '.' . $p['TITLE']);
     }
-    $linksTotal = (int)current(SQLSelectOne("SELECT COUNT(*) as TOTAL FROM devices_linked WHERE DEVICE1_ID=".$device['id']." OR DEVICE2_ID=".$device['id']));
+    $linksTotal = (int)current(SQLSelectOne("SELECT COUNT(*) as TOTAL FROM devices_linked WHERE DEVICE1_ID=" . $device['id'] . " OR DEVICE2_ID=" . $device['id']));
     $device['linksTotal'] = $linksTotal;
 
-    $schedulePointsTotal = (int)current(SQLSelectOne("SELECT COUNT(*) as TOTAL FROM devices_scheduler_points WHERE DEVICE_ID=".$device['id']));
+    $schedulePointsTotal = (int)current(SQLSelectOne("SELECT COUNT(*) as TOTAL FROM devices_scheduler_points WHERE DEVICE_ID=" . $device['id']));
     $device['scheduleTotal'] = $schedulePointsTotal;
 
     $result['device'] = $device;
@@ -569,6 +569,61 @@ if (!isset($request[0])) {
     } else {
         $result['result'] = 'OK';
     }
+} elseif (strtolower($request[0]) == 'messages') {
+    if ($method == 'GET') {
+        $limit = gr('limit', 'int');
+        if (!$limit) $limit = 50;
+        $qry = '1';
+        $sqlQuery = "SELECT shouts.ID, shouts.MEMBER_ID as USER_ID, shouts.ADDED, shouts.MESSAGE, users.NAME
+               FROM shouts
+               LEFT JOIN users ON shouts.MEMBER_ID = users.ID
+              WHERE $qry
+              ORDER BY shouts.ADDED DESC, shouts.ID DESC
+              LIMIT " . (int)$limit;
+        $res = SQLSelect($sqlQuery);
+        if (defined('SETTINGS_GENERAL_ALICE_NAME') && SETTINGS_GENERAL_ALICE_NAME != '') {
+            $system_name = SETTINGS_GENERAL_ALICE_NAME;
+        } else {
+            $system_name = 'System';
+        }
+        $total = count($res);
+        if ($total > 0) {
+            $res = array_reverse($res);
+            for ($i = 0; $i < $total; $i++) {
+                if (!$res[$i]['USER_ID']) {
+                    $res[$i]['NAME'] = $system_name;
+                }
+                if (!$res[$i]['NAME']) {
+                    $res[$i]['NAME'] = 'User';
+                }
+            }
+        }
+        $result['messages'] = $res;
+
+        $user = SQLSelectOne("SELECT ID, `NAME`, USERNAME FROM users ORDER BY ID");
+        if ($user['ID']) {
+            if (!$user['NAME']) $user['NAME']=$user['USERNAME'];
+            $result['user'] = $user;
+        } else {
+            $result['user']['ID'] = "0";
+            $result['user']['NAME'] = "System";
+        }
+
+    }
+    if ($method == 'POST') {
+        $user = SQLSelectOne("SELECT ID FROM users ORDER BY ID");
+        $user_id = $user['ID'];
+        $say_source = 'API';
+        $message = gr('message');
+        if ($message && $user_id) {
+            say(htmlspecialchars($message), 0, $user_id, $say_source);
+            $result['result'] = 'OK';
+        } else {
+            $result['result'] = 'Error';
+            $result['error'] = 'Incorrect setup';
+        }
+    }
+
 } else {
     $result['error'] = 'Incorrect usage';
 }
