@@ -296,6 +296,8 @@ class objects extends module
     {
         $rec = SQLSelectOne("SELECT * FROM objects WHERE ID='$id'");
 
+        if (!isset($rec['ID'])) return false;
+
         // DELETE LINKED OBJECT FROM ALL TABLES
         $tables = SQLSelect("SELECT DISTINCT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME IN ('LINKED_OBJECT') AND TABLE_SCHEMA='" . DB_NAME . "';");
         $total = count($tables);
