@@ -1053,6 +1053,8 @@ class devices extends module
     {
         $rec = SQLSelectOne("SELECT * FROM devices WHERE ID='$id'");
 
+        if (!isset($rec['ID'])) return false;
+
         $payload = array();
         $payload['name'] = $rec['LINKED_OBJECT'];
         sg('HomeBridge.to_remove', json_encode($payload));
