@@ -1595,6 +1595,7 @@ $dictionary = array(
 	'NEWDASH_DB_REQ_SEC' => 'Запросов к БД в секунду',
 	'NEWDASH_DB_REQ_MIN' => 'Запросов к БД в минуту',
 	'NEWDASH_DB_REQ_HOUR' => 'Запросов к БД в час',
+    'NEWDASH_DB_CONNECTIONS' => 'Соединений с БД',
 	
 	'NEWDASH_DMB_TITLE' => 'Добавить свой блок',
 	'NEWDASH_DMB_TITLE_MODAL' => 'Добавление своего блока',

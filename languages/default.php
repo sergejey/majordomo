@@ -1593,6 +1593,7 @@ $dictionary = array(
 	'NEWDASH_DB_REQ_SEC' => 'Database requests per second',
 	'NEWDASH_DB_REQ_MIN' => 'Database requests per minute',
 	'NEWDASH_DB_REQ_HOUR' => 'Database requests per hour',
+    'NEWDASH_DB_CONNECTIONS' => 'Database connections',
 
 	'NEWDASH_DMB_TITLE' => 'Add your own block',
 	'NEWDASH_DMB_TITLE_MODAL' => 'Add your own block',

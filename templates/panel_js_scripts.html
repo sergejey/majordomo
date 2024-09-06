@@ -407,6 +407,8 @@
                 $('#dashInfoDBReqS').html(data.second);
                 $('#dashInfoDBReqM').html(data.minute);
                 $('#dashInfoDBReqH').html(data.hours);
+                $('#dashInfoDBConnections').html(data.connections);
+                $('#dashInfoDBConnections').attr('style', 'cursor: help;background: #5cb85c');
 
                 //Секунды
                 if(data.second <= 170) {
