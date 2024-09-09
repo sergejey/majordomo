@@ -769,6 +769,7 @@ class market extends module
                     if ($files_list != '') {
                         SaveFile(ROOT . 'cms/modules_installed/' . $name . '.files', $files_list);
                     }
+
                     if ($frame) {
                         $this->echonow("OK<br/>", 'green');
                     }
@@ -800,6 +801,11 @@ class market extends module
                 if (file_exists($installed_filename) && Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..')) {
                     unlink($installed_filename);
                 }
+                $errorFile = ROOT . 'cms/modules_installed/' . $file . ".error";
+                if (file_exists($errorFile)) {
+                    unlink($errorFile);
+                }
+
             }
         }
 

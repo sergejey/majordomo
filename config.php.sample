@@ -105,3 +105,4 @@ Define('GETURL_WARNING_TIMEOUT',5);                   // TIMEOUT LIMIT FOR getUR
 //define('SETTINGS_ERRORS_KEEP_HISTORY', 1); // for delete errors history
 //define('CACHE_VALUE_MAX_SIZE', 255); // max length of caching value
 //define('DISABLE_USERS_LIST',1); // hide list of users for login
+//define('LOG_PHP_WARNINGS',1); // Log php warnings

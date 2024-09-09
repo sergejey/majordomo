@@ -257,27 +257,35 @@ class control_modules extends module
                     continue;
 
                 $installedFile = ROOT . 'cms/modules_installed/' . $lst[$i]['FILENAME'] . ".installed";
-                if (file_exists($installedFile))
-                    @unlink($installedFile);
-                startMeasure('Installing ' . $lst[$i]['FILENAME']);
+                $errorFile = ROOT . 'cms/modules_installed/' . $lst[$i]['FILENAME'] . ".error";
 
-                if (!isset($_SERVER['REQUEST_METHOD'])) {
-                    echo 'Installing ' . $lst[$i]['FILENAME'] . " ...";
+                if (file_exists($installedFile)) unlink($installedFile);
+                if (file_exists($errorFile) && (time()-filemtime($errorFile))>1*60*60) {
+                    // reset error file in about an hour
+                    unlink($errorFile);
                 }
-                DebMes('Installing ' . $lst[$i]['FILENAME'] . " ...", 'reinstall');
-                //$url = BASE_URL . '/api.php/module/'.$lst[$i]['FILENAME'];
-                //$data = getURL($url);
 
-                include_once(DIR_MODULES . $lst[$i]['FILENAME'] . "/" . $lst[$i]['FILENAME'] . ".class.php");
-                $obj = "\$object$i";
-                $code = "$obj=new " . $lst[$i]['FILENAME'] . ";\n";
-                //echo "Installing ".$lst[$i]['FILENAME']."\n";
-                @eval("$code");
-                
+                if (!file_exists($errorFile)) {
 
-                endMeasure('Installing ' . $lst[$i]['FILENAME']);
-                if (!isset($_SERVER['REQUEST_METHOD'])) {
-                    echo " OK\n";
+                    startMeasure('Installing ' . $lst[$i]['FILENAME']);
+                    if (!isset($_SERVER['REQUEST_METHOD'])) {
+                        echo 'Installing ' . $lst[$i]['FILENAME'] . " ...";
+                    }
+
+                    DebMes('Installing ' . $lst[$i]['FILENAME'] . " ...", 'reinstall');
+                    SaveFile($errorFile, date('Y-m-d H:i:s'));
+                    include_once(DIR_MODULES . $lst[$i]['FILENAME'] . "/" . $lst[$i]['FILENAME'] . ".class.php");
+                    $obj = "\$object$i";
+                    $code = "$obj=new " . $lst[$i]['FILENAME'] . ";\n";
+                    @eval("$code");
+                    endMeasure('Installing ' . $lst[$i]['FILENAME']);
+                    if (!isset($_SERVER['REQUEST_METHOD'])) {
+                        echo " OK\n";
+                    }
+                    if (file_exists($errorFile)) {
+                        // all good, removing error file
+                        unlink($errorFile);
+                    }
                 }
             }
         }

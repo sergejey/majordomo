@@ -227,9 +227,9 @@ if ($total > 0) {
                 $data = SQLSelect("SELECT * FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED, ID");
                 //dprint($data);
 
-                $csv = implode("\t", array('ADDED', 'VALUE')) . PHP_EOL;
+                $csv = implode("\t", array('ADDED', 'VALUE', 'SOURCE')) . PHP_EOL;
                 foreach ($data as $row) {
-                    $csv .= $row['ADDED'] . "\t" . $row['VALUE'];
+                    $csv .= $row['ADDED'] . "\t" . $row['VALUE'] . "\t" . $row['SOURCE'];
                     $csv .= PHP_EOL;
                 }
 

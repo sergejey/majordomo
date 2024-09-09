@@ -141,7 +141,9 @@ function majordomoErrorHandler($errno, $errmsg, $filename, $linenum)
 
     $message = $url . "\nPHP error level $errno in $filename (line $linenum): " . $errmsg;
     if ($errno == E_WARNING) {
-        DebMes($message, 'php_warnings');
+        if (defined('LOG_PHP_WARNINGS') && LOG_PHP_WARNINGS) {
+            DebMes($message, 'php_warnings');
+        }
     } else {
         DebMes($message, 'php_errors');
     }

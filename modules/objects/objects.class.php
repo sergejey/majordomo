@@ -839,15 +839,19 @@ class objects extends module
             $value = '';
         }
 
+        if (!$source && is_array($no_linked)) {
+            $source = implode(',', array_keys($no_linked));
+        }
+
         if (!$source && is_string($no_linked)) {
             $source = $no_linked;
             $no_linked = 0;
         }
-        if (!$source && defined('CALL_SOURCE')) {
-            $source = CALL_SOURCE;
+        if (defined('CALL_SOURCE')) {
+            $source .= ' '.CALL_SOURCE;
         }
-        if (!$source && isset($_SERVER['REQUEST_URI'])) {
-            $source = urldecode($_SERVER['REQUEST_URI']);
+        if (isset($_SERVER['REQUEST_URI'])) {
+            $source .= ' '.urldecode($_SERVER['REQUEST_URI']);
         }
         if (mb_strlen($source) > 250) {
             $source = mb_substr($source, 0, 250) . '...';
@@ -1180,14 +1184,14 @@ class objects extends module
             $cache_value_max_size = 255;
         }
 
-        //SQLDropTable('cached_values');
+        SQLDropTable('cached_values');
         $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_values`
                (`KEYWORD`   CHAR(100) NOT NULL,
                 `DATAVALUE` VARCHAR($cache_value_max_size) NOT NULL,
                 PRIMARY KEY (`KEYWORD`)
                ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
         SQLExec($sqlQuery);
-        SQLExec("ALTER TABLE `cached_values` CHANGE COLUMN `DATAVALUE` `DATAVALUE` VARCHAR($cache_value_max_size) NOT NULL DEFAULT ''");
+        //SQLExec("ALTER TABLE `cached_values` CHANGE COLUMN `DATAVALUE` `DATAVALUE` VARCHAR($cache_value_max_size) NOT NULL DEFAULT ''");
 
         $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_ws`
                (`PROPERTY`   CHAR(100) NOT NULL,
@@ -1198,7 +1202,7 @@ class objects extends module
                ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
         SQLExec($sqlQuery);
 
-        SQLExec("DROP TABLE IF EXISTS `operations_queue`;");
+        SQLDropTable('operations_queue');
         $sqlQuery = "CREATE TABLE IF NOT EXISTS `operations_queue` 
               (`TOPIC`   CHAR(255) NOT NULL,
                `DATANAME` VARCHAR(1024) NOT NULL,
