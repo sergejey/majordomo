@@ -493,13 +493,6 @@ class devices extends module
                 if ($diff < 0 || $diff >= 10 * 60 || $diff2 <= 10 * 60) {
                     continue;
                 }
-                /*
-                $tmlr = strtotime($rec['LATEST_RUN']);
-                $diff_run = time() - $tmlr;
-                if ($diff_run <= 20 * 60) {
-                    continue;
-                }
-                */
 
                 if (!checkAccess('spoint', $rec['ID'])) continue;
 
@@ -507,11 +500,16 @@ class devices extends module
                 unset($rec['LINKED_OBJECT']);
                 $rec['LATEST_RUN'] = date('Y-m-d H:i:s');
                 SQLUpdate('devices_scheduler_points', $rec);
-                DebMes("Running point: " . $linked_object . '.' . $rec['LINKED_METHOD'] . ' (' . $rec['VALUE'] . ')', 'devices_schedule');
-                if ($rec['VALUE'] != '') {
-                    callMethodSafe($linked_object . '.' . $rec['LINKED_METHOD'], array('value' => $rec['VALUE']));
+
+                DebMes("Running point (device " . $rec['DEVICE_ID'] . "): " . $linked_object . '.' . $rec['LINKED_METHOD'] . ' (' . $rec['VALUE'] . ')', 'devices_schedule');
+                if ($linked_object != '' && $rec['LINKED_METHOD'] != '') {
+                    if ($rec['VALUE'] != '') {
+                        callMethodSafe($linked_object . '.' . $rec['LINKED_METHOD'], array('value' => $rec['VALUE']));
+                    } else {
+                        callMethodSafe($linked_object . '.' . $rec['LINKED_METHOD']);
+                    }
                 } else {
-                    callMethodSafe($linked_object . '.' . $rec['LINKED_METHOD']);
+                    DebMes("Incorrect linked object and/or method", 'devices_schedule');
                 }
             }
         }
@@ -1082,6 +1080,7 @@ class devices extends module
             SQLExec("DELETE FROM " . $tables[$i] . " WHERE `SYSTEM`='sdevice" . $rec['ID'] . "'");
         }
         SQLExec("DELETE FROM devices_linked WHERE DEVICE1_ID='" . $rec['ID'] . "' OR DEVICE2_ID='" . $rec['ID'] . "'");
+        SQLExec("DELETE FROM devices_scheduler_points WHERE DEVICE_ID='" . $rec['ID'] . "'");
         SQLExec("DELETE FROM devices WHERE ID='" . $rec['ID'] . "'");
 
 
@@ -1159,7 +1158,7 @@ class devices extends module
         }
 
         if ($rec['ID']) {
-            say(LANG_DEVICES_IS_ADDED.' '.$rec['TITLE'],2);
+            say(LANG_DEVICES_IS_ADDED . ' ' . $rec['TITLE'], 2);
         }
 
         return 1;

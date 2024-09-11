@@ -901,6 +901,7 @@ class market extends module
                 $this->echonow(" OK<br/>", 'green');
             }
             $code = '$plugin = new ' . $name . ';$plugin->uninstall();';
+            setEvalCode($code);
             eval($code);
             $this->removeTree(ROOT . 'modules/' . $name);
             $this->removeTree(ROOT . 'templates/' . $name);
@@ -965,8 +966,6 @@ class market extends module
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_TIMEOUT, 600);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_FILE, $f);
 
         if (preg_match('/\?op=download/', $url)) {

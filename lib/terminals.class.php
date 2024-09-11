@@ -244,6 +244,7 @@ function getPlayerStatus($host = 'localhost')
 function playMedia($path, $host = 'localhost', $safe_play = FALSE)
 {
     if (defined('SETTINGS_HOOK_PLAYMEDIA') && SETTINGS_HOOK_PLAYMEDIA != '') {
+        setEvalCode(SETTINGS_HOOK_PLAYMEDIA);
         eval(SETTINGS_HOOK_PLAYMEDIA);
     }
 

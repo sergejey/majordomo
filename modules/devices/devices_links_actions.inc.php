@@ -156,6 +156,7 @@ for ($i = 0; $i < $total; $i++) {
         //DebMes("Action string: ".$action_string,'logic_test');
         try {
             $code = $action_string;
+            setEvalCode($code);
             $success = eval($code);
             if ($success === false) {
                 registerError('linked_device', sprintf('Error in linked device code "%s". Code: %s', $link_type, $code));

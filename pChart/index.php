@@ -281,7 +281,7 @@ if ($total > 0) {
      }); 
  });
  function dateChanged(dt) {
-     let url = "{$url}";
+     url = "{$url}";
      window.location.href = url + '&end='+encodeURI(dt);
  }
 </script>

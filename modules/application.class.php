@@ -382,6 +382,7 @@ class application extends module
                 $code .= $obj . "->ajax=1;\n";
                 $code .= $obj . "->run();\n";
                 startMeasure("module_" . $this->action);
+                setEvalCode($code);
                 eval($code);
                 endMeasure("module_" . $this->action);
 

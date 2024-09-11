@@ -180,6 +180,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     if ($last_say_time != time() || $last_say_message != $ph) {
 
         if (defined('SETTINGS_HOOK_BEFORE_SAY') && SETTINGS_HOOK_BEFORE_SAY != '') {
+            setEvalCode(SETTINGS_HOOK_BEFORE_SAY);
             eval(SETTINGS_HOOK_BEFORE_SAY);
         }
 
@@ -197,6 +198,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
         processSubscriptionsSafe('SAY', array('id' => $rec['ID'], 'level' => $level, 'message' => $ph, 'member_id' => $member_id, 'image' => $image)); //, 'ignoreVoice'=>$ignoreVoice
 
         if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY != '') {
+            setEvalCode(SETTINGS_HOOK_AFTER_SAY);
             eval(SETTINGS_HOOK_AFTER_SAY);
         }
     }

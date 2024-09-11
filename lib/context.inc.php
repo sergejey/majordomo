@@ -206,6 +206,7 @@ function context_timeout($id, $user_id = 0)
     if ($context['TIMEOUT_SCRIPT']) {
         try {
             $code = $context['TIMEOUT_SCRIPT'];
+            setEvalCode($code);
             $success = eval($code);
 
             if ($success === false) {

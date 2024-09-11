@@ -247,9 +247,6 @@ if (isset($_POST['send'])) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
     curl_setopt($ch, CURLOPT_TIMEOUT, 120);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-
     $result = curl_exec($ch);
 
     if (curl_errno($ch) && !$background) {

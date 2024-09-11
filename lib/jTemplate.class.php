@@ -526,6 +526,7 @@ class jTemplate
                     $str = "if ($condition) {\$res1=\$true_part;} else {\$res1=\$false_part;}";
 
                     try {
+                        setEvalCode($str);
                         $result = @eval($str);
                     } catch (Exception $e) {
                         registerError('jTemplate', sprintf('Error in script "%s": ' . $e->getMessage()));
@@ -641,6 +642,7 @@ class jTemplate
                     $code .= "\$tmp=" . $obj . "->result;\n";
 
                     try {
+                        setEvalCode($code);
                         eval($code);
                     } catch (Exception $e) {
                         echo "Error: " . $e->getMessage();

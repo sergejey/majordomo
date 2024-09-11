@@ -42,6 +42,7 @@ while (1) {
         if ($exclusive['ON_COMPLETE']) {
             //DebMes("On complete code: ".$exclusive['ON_COMPLETE'], 'execs');
             try {
+                setEvalCode($exclusive['ON_COMPLETE']);
                 eval($exclusive['ON_COMPLETE']);
             } catch (Exception $e) {
                 DebMes('ON_COMPLETE command - '. $exclusive['ON_COMPLETE'] . ' for command - '.$command.' have error. Error: exception ' . get_class($e) . ', ' . $e->getMessage() ,'execs');
@@ -62,6 +63,7 @@ while (1) {
         if ($safe_execs['ON_COMPLETE']) {
             //DebMes("On complete code: ".$safe_execs['ON_COMPLETE'], 'execs');
             try {
+                setEvalCode($safe_execs['ON_COMPLETE']);
                 eval($safe_execs['ON_COMPLETE']);
             } catch (Exception $e) {
                 DebMes('ON_COMPLETE command - '. $safe_execs['ON_COMPLETE'] . ' for command - '.$command.' have error. Error: exception ' . get_class($e) . ', ' . $e->getMessage() ,'execs');

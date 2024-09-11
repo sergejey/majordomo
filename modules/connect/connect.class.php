@@ -169,8 +169,6 @@ class connect extends module
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
         curl_setopt($ch, CURLOPT_TIMEOUT, 120);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_USERPWD, $connect_username . ":" . $connect_password);
         if (defined('USE_PROXY') && USE_PROXY != '') {
             curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
@@ -225,8 +223,6 @@ class connect extends module
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
             curl_setopt($ch, CURLOPT_TIMEOUT, 120);
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
             curl_setopt($ch, CURLOPT_USERPWD, $connect_username . ":" . $connect_password);
             if (defined('USE_PROXY') && USE_PROXY != '') {
                 curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
@@ -422,8 +418,6 @@ class connect extends module
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
         if (defined('USE_PROXY') && USE_PROXY != '') {
@@ -465,12 +459,8 @@ class connect extends module
         }
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
-        //curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
-        //@curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         @curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
         curl_setopt($ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         $tmpfname = ROOT . 'cms/cached/cookie.txt';
         curl_setopt($ch, CURLOPT_COOKIEJAR, $tmpfname);
         curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
@@ -559,8 +549,6 @@ class connect extends module
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
         if (defined('USE_PROXY') && USE_PROXY != '') {
@@ -608,7 +596,7 @@ class connect extends module
         $fields['devices_data'] = json_encode($devices);
         $fields['local_url'] = getLocalIp();
 
-        //DebMes("Posting all devices to $url",'device_sync');
+        DebMes("Posting all devices to $url",'device_sync');
         //DebMes($fields['devices_data'],'device_sync');
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -616,9 +604,8 @@ class connect extends module
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 30000);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
         if (defined('USE_PROXY') && USE_PROXY != '') {
@@ -665,8 +652,6 @@ class connect extends module
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_TIMEOUT, 5);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
@@ -680,7 +665,7 @@ class connect extends module
         if (curl_errno($ch) && !$background) {
             $errorInfo = curl_error($ch);
             $info = curl_getinfo($ch);
-            DebMes("Error: " . $errorInfo, 'device_sync');
+            DebMes("Send device property error: " . $errorInfo, 'device_sync');
         } else {
             //DebMes("Result : ".$result,'device_sync');
         }
@@ -709,8 +694,6 @@ class connect extends module
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
         if (defined('USE_PROXY') && USE_PROXY != '') {
@@ -784,8 +767,6 @@ class connect extends module
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ch, CURLOPT_HEADER, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
 
@@ -857,8 +838,6 @@ class connect extends module
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
         if (defined('USE_PROXY') && USE_PROXY != '') {
@@ -995,8 +974,6 @@ class connect extends module
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
         curl_setopt($ch, CURLOPT_TIMEOUT, 120);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
         if (defined('USE_PROXY') && USE_PROXY != '') {
             curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);

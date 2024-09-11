@@ -1112,8 +1112,6 @@ function callAPI($api_url, $method = 'GET', $params = 0)
         curl_setopt($api_ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
         curl_setopt($api_ch, CURLOPT_MAXREDIRS, 2);
         curl_setopt($api_ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
-        curl_setopt($api_ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($api_ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($api_ch, CURLOPT_NOSIGNAL, 1);
         if (!$is_child) {
             curl_setopt($api_ch, CURLOPT_TIMEOUT_MS, 50);

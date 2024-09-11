@@ -94,6 +94,7 @@ class control_modules extends module
                 include_once(DIR_MODULES . $name . "/" . $name . ".class.php");
                 $obj = "\$object$i";
                 $code .= "$obj=new " . $name . ";\n";
+                setEvalCode($code);
                 @eval($code);
                 // add module to control access
                 global $session;
@@ -116,6 +117,7 @@ class control_modules extends module
                     include_once(DIR_MODULES . $name . '/' . $name . '.class.php');
                     SQLExec("DELETE FROM project_modules WHERE NAME LIKE '" . DBSafe($name) . "'");
                     $code = '$plugin = new ' . $name . '();$plugin->uninstall();';
+                    setEvalCode($code);
                     eval($code);
                     removeTree(DIR_MODULES . $name);
                     removeTree(DIR_TEMPLATES . $name);
@@ -277,6 +279,7 @@ class control_modules extends module
                     include_once(DIR_MODULES . $lst[$i]['FILENAME'] . "/" . $lst[$i]['FILENAME'] . ".class.php");
                     $obj = "\$object$i";
                     $code = "$obj=new " . $lst[$i]['FILENAME'] . ";\n";
+                    setEvalCode($code);
                     @eval("$code");
                     endMeasure('Installing ' . $lst[$i]['FILENAME']);
                     if (!isset($_SERVER['REQUEST_METHOD'])) {

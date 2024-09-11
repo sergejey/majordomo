@@ -672,6 +672,7 @@ class objects extends module
                     python_run_code($code, $params, $this->object_title);
                 } else {
                     try {
+                        setEvalCode($code);
                         $success = eval($code);
                         if ($success === false) {
                             //getLogger($this)->error(sprintf('Error in "%s.%s" method.', $this->object_title, $name));
@@ -932,6 +933,7 @@ class objects extends module
                 if (!in_array(mb_strtolower($value, 'UTF-8'), $items)) return false;
             }
             if ($prop['VALIDATION_TYPE'] == 100) {
+                setEvalCode($prop['VALIDATION_CODE']);
                 eval($prop['VALIDATION_CODE']);
                 if (is_null($value)) return false;
             }

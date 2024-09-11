@@ -710,6 +710,7 @@ class scenes extends module
                 if ($state['CODE']) {
                     try {
                         $code = $state['CODE'];
+                        setEvalCode($code);
                         $success = eval($code);
                         if ($success === false) {
                             DebMes("Error scene item code: " . $code);
@@ -1174,6 +1175,7 @@ class scenes extends module
             try {
                 $code = $rec['CONDITION_ADVANCED'];
                 if ($code != '') {
+                    setEvalCode($code);
                     $success = eval($code);
                 } else {
                     $success = true;

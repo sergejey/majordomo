@@ -151,6 +151,7 @@ if ($object != '') {
             verbose_log("Scheduled job [" . $job['TITLE'] . "]");
             $code = $job['COMMANDS'];
             if ($code != '') {
+                setEvalCode($code);
                 $success = eval($code);
             } else {
                 $success = true;

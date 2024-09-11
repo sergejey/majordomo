@@ -531,9 +531,6 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
             curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
             @curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
             curl_setopt($ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-
             if ($background) {
                 curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
                 curl_setopt($ch, CURLOPT_TIMEOUT_MS, 50);
@@ -662,8 +659,6 @@ function postURL($url, $query = array(), $cache = 0, $username = '', $password =
             curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
             @curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
             curl_setopt($ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
             if ($background) {
                 curl_setopt($ch, CURLOPT_NOSIGNAL, 1);

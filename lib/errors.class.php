@@ -50,7 +50,7 @@ class custom_error
         if (defined('ALLOW_RUNNING_WITH_ERRORS')) {
             global $system_errors_detected;
             if (!isset($system_errors_detected)) $system_errors_detected = array();
-            if (!in_array($description,$system_errors_detected)) $system_errors_detected[] = $description;
+            if (!in_array($description, $system_errors_detected)) $system_errors_detected[] = $description;
             return;
         }
 
@@ -96,15 +96,13 @@ FF;
 
 }
 
-function majordomoSaveError($details, $type, $filename = '')
+function majordomoSaveError($details, $type)
 {
+    DebMes($details, $type);
     if (isset($_SERVER['REQUEST_URI'])) {
         return false; // to-do: comment for debug
     }
-    dprint($filename . ' ' . $type . ': ' . $details, false);
-    if ($filename) {
-        //DebMes($details, $type . '_' . basename($filename));
-    }
+    dprint($type . ': ' . $details, false);
 }
 
 function majordomoExceptionHandler($e)
@@ -119,8 +117,11 @@ function majordomoExceptionHandler($e)
         }
     }
     $message = $url . "\nPHP exception: " . $e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine() . "\nBacktrace: " . $e->getTraceAsString();
-    DebMes($message, 'php_exceptions');
-    majordomoSaveError($message, 'exceptions');
+    $evalCode = getEvalCode();
+    if ($evalCode != '') {
+        $message .= "\nCode:\n" . $evalCode;
+    }
+    majordomoSaveError($message, 'php_exceptions');
     return true;
 }
 
@@ -133,6 +134,10 @@ function majordomoErrorHandler($errno, $errmsg, $filename, $linenum)
         $url = $_SERVER['REQUEST_URI'];
     } else {
         $url = 'commandline';
+        list($scriptPath) = get_included_files();
+        if ($scriptPath != '') {
+            $url .= $scriptPath;
+        }
         global $argv;
         if (isset($argv[0])) {
             $url .= ': ' . implode(' ', $argv);
@@ -140,14 +145,27 @@ function majordomoErrorHandler($errno, $errmsg, $filename, $linenum)
     }
 
     $message = $url . "\nPHP error level $errno in $filename (line $linenum): " . $errmsg;
+
+    $error = error_get_last();
+    if (is_array($error)) {
+        $backtrace = $e->getTraceAsString();
+        $message .= "\n" . $backtrace;
+    }
+
+    if (is_integer(strpos($message, 'eval()'))) {
+        $evalCode = getEvalCode();
+        if ($evalCode != '') {
+            $message .= "\nCode:\n" . $evalCode;
+        }
+    }
+
     if ($errno == E_WARNING) {
         if (defined('LOG_PHP_WARNINGS') && LOG_PHP_WARNINGS) {
-            DebMes($message, 'php_warnings');
+            majordomoSaveError($message, 'php_warnings');
         }
     } else {
-        DebMes($message, 'php_errors');
+        majordomoSaveError($message, 'php_errors');
     }
-    majordomoSaveError($message, 'errors', $filename);
 }
 
 function phpShutDownFunction()
@@ -162,14 +180,26 @@ function phpShutDownFunction()
         $url = $_SERVER['REQUEST_URI'];
     } else {
         $url = 'commandline';
+        list($scriptPath) = get_included_files();
+        if ($scriptPath != '') {
+            $url .= $scriptPath;
+        }
+        global $argv;
+        if (isset($argv[0])) {
+            $url .= ': ' . implode(' ', $argv);
+        }
+    }
+
+    $message = $url . "\nPHP error: " . $error['message'] . "\nBacktrace: " . $backtrace;
+    $evalCode = getEvalCode();
+    if ($evalCode != '') {
+        $message .= "\nCode:\n" . $evalCode;
     }
     if ($error['type'] === E_ERROR) {
-        $message = $url . "\nPHP error: " . $error['message'] . "\nBacktrace: " . $backtrace;
-        DebMes($message, 'php_errors');
-        majordomoSaveError($message, 'errors');
-        $err = new custom_error(nl2br($error['message']));
+        majordomoSaveError($message, 'php_errors_shutdown');
+        $err = new custom_error(nl2br($message));
     } elseif ($error['type'] === E_WARNING) {
-        majordomoSaveError($url . "\nPHP warning: " . $error['message'] . "\nBacktrace: " . $backtrace, 'warnings');
+        majordomoSaveError($message, 'php_warnings_shutdown');
     }
 }
 
