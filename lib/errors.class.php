@@ -148,6 +148,7 @@ function majordomoErrorHandler($errno, $errmsg, $filename, $linenum)
 
     $error = error_get_last();
     if (is_array($error)) {
+        $e = new \Exception;
         $backtrace = $e->getTraceAsString();
         $message .= "\n" . $backtrace;
     }
