@@ -1407,8 +1407,6 @@ class scenes extends module
                 $positions[$elements[$ie]['ID']]['LEFT'] = $elements[$ie]['LEFT'];
             }
         }
-
-
         return $elements;
     }
 

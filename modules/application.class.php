@@ -384,6 +384,7 @@ class application extends module
                 startMeasure("module_" . $this->action);
                 setEvalCode($code);
                 eval($code);
+                setEvalCode();
                 endMeasure("module_" . $this->action);
 
             }

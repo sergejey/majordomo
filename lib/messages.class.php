@@ -182,6 +182,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
         if (defined('SETTINGS_HOOK_BEFORE_SAY') && SETTINGS_HOOK_BEFORE_SAY != '') {
             setEvalCode(SETTINGS_HOOK_BEFORE_SAY);
             eval(SETTINGS_HOOK_BEFORE_SAY);
+            setEvalCode();
         }
 
 
@@ -200,6 +201,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
         if (defined('SETTINGS_HOOK_AFTER_SAY') && SETTINGS_HOOK_AFTER_SAY != '') {
             setEvalCode(SETTINGS_HOOK_AFTER_SAY);
             eval(SETTINGS_HOOK_AFTER_SAY);
+            setEvalCode();
         }
     }
     //dprint(date('Y-m-d H:i:s')." Say OK",false);

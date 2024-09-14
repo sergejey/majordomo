@@ -96,6 +96,7 @@ class control_modules extends module
                 $code .= "$obj=new " . $name . ";\n";
                 setEvalCode($code);
                 @eval($code);
+                setEvalCode();
                 // add module to control access
                 global $session;
                 $user = SQLSelectOne("SELECT * FROM admin_users WHERE LOGIN='" . DBSafe($session->data["USER_NAME"]) . "'");
@@ -119,6 +120,7 @@ class control_modules extends module
                     $code = '$plugin = new ' . $name . '();$plugin->uninstall();';
                     setEvalCode($code);
                     eval($code);
+                    setEvalCode();
                     removeTree(DIR_MODULES . $name);
                     removeTree(DIR_TEMPLATES . $name);
                     $cycle_name = ROOT . 'scripts/cycle_' . $name . '.php';
@@ -281,6 +283,7 @@ class control_modules extends module
                     $code = "$obj=new " . $lst[$i]['FILENAME'] . ";\n";
                     setEvalCode($code);
                     @eval("$code");
+                    setEvalCode();
                     endMeasure('Installing ' . $lst[$i]['FILENAME']);
                     if (!isset($_SERVER['REQUEST_METHOD'])) {
                         echo " OK\n";

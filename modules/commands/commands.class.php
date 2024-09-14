@@ -395,6 +395,7 @@ class commands extends module
                             $code = $item['CODE'];
                             setEvalCode($code);
                             $success = eval($code);
+                            setEvalCode();
                             if ($success === false) {
                                 DebMes("Error menu item code: " . $code);
                                 registerError('menu_item', "Error menu item code: " . $code);

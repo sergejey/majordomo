@@ -674,6 +674,7 @@ class objects extends module
                     try {
                         setEvalCode($code);
                         $success = eval($code);
+                        setEvalCode();
                         if ($success === false) {
                             //getLogger($this)->error(sprintf('Error in "%s.%s" method.', $this->object_title, $name));
                             registerError('method', sprintf('Exception in "%s.%s" method.', $this->object_title, $name));
@@ -935,6 +936,7 @@ class objects extends module
             if ($prop['VALIDATION_TYPE'] == 100) {
                 setEvalCode($prop['VALIDATION_CODE']);
                 eval($prop['VALIDATION_CODE']);
+                setEvalCode();
                 if (is_null($value)) return false;
             }
 

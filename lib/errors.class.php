@@ -96,31 +96,87 @@ FF;
 
 }
 
+function majordomoGetErrorType($error_level = 0) {
+    $error_names = [
+        E_ERROR => 'E_ERROR',
+        E_WARNING => 'E_WARNING',
+        E_PARSE => 'E_PARSE',
+        E_NOTICE => 'E_NOTICE',
+        E_CORE_ERROR => 'E_CORE_ERROR',
+        E_CORE_WARNING => 'E_CORE_WARNING',
+        E_COMPILE_ERROR => 'E_COMPILE_ERROR',
+        E_COMPILE_WARNING => 'E_COMPILE_WARNING',
+        E_USER_ERROR => 'E_USER_ERROR',
+        E_USER_WARNING => 'E_USER_WARNING',
+        E_USER_NOTICE => 'E_USER_NOTICE',
+        E_STRICT => 'E_STRICT',
+        E_RECOVERABLE_ERROR => 'E_RECOVERABLE_ERROR',
+        E_DEPRECATED => 'E_DEPRECATED',
+        E_USER_DEPRECATED => 'E_USER_DEPRECATED',
+    ];
+    if (isset($error_names[$error_level])) {
+        return $error_names[$error_level];
+    } else {
+        return '';
+    }
+}
+
+function majordomoGetErrorDetails($e = 0)
+{
+
+    if (isset($_SERVER['REQUEST_URI'])) {
+        $message = "URL: " . $_SERVER['REQUEST_URI'];
+    } else {
+        $message = 'commandline';
+        global $argv;
+        if (isset($argv[0])) {
+            $message .= "\nArguments:" . implode(' ', $argv);
+        }
+    }
+
+
+
+    $error = error_get_last();
+    if (is_array($error)) {
+        $errorCode = $error['type'];
+        $errorType = majordomoGetErrorType($errorCode);
+        $message .= "\nPHP exception (code $errorCode, $errorType):\n" . $error['message'] . " in " . $error['file'] . " on line " . $error['line'];
+    }
+
+    if (is_object($e)) {
+        $errorCode = $e->getCode();
+        $errorType = majordomoGetErrorType($errorCode);
+        $message .= "\nPHP exception (code $errorCode, $errorType): " . $e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine() . "\nBacktrace: " . $e->getTraceAsString();
+    }
+
+    $included_files = get_included_files();
+    if (is_array($included_files)) {
+        $message .= "\nLatest file included: " . end($included_files);
+    }
+
+    $evalCode = getEvalCode();
+    if ($evalCode != '') {
+        $message .= "\nEval code:\n" . $evalCode;
+    }
+
+    $performance_data = PerformanceReport(0);
+    $message .= "\nPerformance:\n" . implode("\n", $performance_data);
+
+    return $message;
+}
+
 function majordomoSaveError($details, $type)
 {
     DebMes($details, $type);
     if (isset($_SERVER['REQUEST_URI'])) {
-        return false; // to-do: comment for debug
+        return;
     }
     dprint($type . ': ' . $details, false);
 }
 
 function majordomoExceptionHandler($e)
 {
-    if (isset($_SERVER['REQUEST_URI'])) {
-        $url = $_SERVER['REQUEST_URI'];
-    } else {
-        $url = 'commandline';
-        global $argv;
-        if (isset($argv[0])) {
-            $url .= ': ' . implode(' ', $argv);
-        }
-    }
-    $message = $url . "\nPHP exception: " . $e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine() . "\nBacktrace: " . $e->getTraceAsString();
-    $evalCode = getEvalCode();
-    if ($evalCode != '') {
-        $message .= "\nCode:\n" . $evalCode;
-    }
+    $message = majordomoGetErrorDetails($e);
     majordomoSaveError($message, 'php_exceptions');
     return true;
 }
@@ -130,36 +186,10 @@ function majordomoErrorHandler($errno, $errmsg, $filename, $linenum)
     if (error_reporting() === 0 || error_reporting() == 4437) return; //whitevast: отключаем ошибки, заглушенные @
     if (in_array($errno, array(E_NOTICE, E_DEPRECATED))) return;
 
-    if (isset($_SERVER['REQUEST_URI'])) {
-        $url = $_SERVER['REQUEST_URI'];
-    } else {
-        $url = 'commandline';
-        list($scriptPath) = get_included_files();
-        if ($scriptPath != '') {
-            $url .= $scriptPath;
-        }
-        global $argv;
-        if (isset($argv[0])) {
-            $url .= ': ' . implode(' ', $argv);
-        }
-    }
-
-    $message = $url . "\nPHP error level $errno in $filename (line $linenum): " . $errmsg;
-
-    $error = error_get_last();
-    if (is_array($error)) {
-        $e = new \Exception;
-        $backtrace = $e->getTraceAsString();
-        $message .= "\n" . $backtrace;
-    }
-
-    if (is_integer(strpos($message, 'eval()'))) {
-        $evalCode = getEvalCode();
-        if ($evalCode != '') {
-            $message .= "\nCode:\n" . $evalCode;
-        }
-    }
-
+    $errorCode = $errno;
+    $errorType = majordomoGetErrorType($errorCode);
+    $message = "PHP error level $errorCode $errorType in $filename (line $linenum):\n" . $errmsg . "\n";
+    $message .= majordomoGetErrorDetails();
     if ($errno == E_WARNING) {
         if (defined('LOG_PHP_WARNINGS') && LOG_PHP_WARNINGS) {
             majordomoSaveError($message, 'php_warnings');
@@ -175,32 +205,14 @@ function phpShutDownFunction()
     if (!is_array($error)) {
         return;
     }
-    $e = new \Exception;
-    $backtrace = $e->getTraceAsString();
-    if (isset($_SERVER['REQUEST_URI'])) {
-        $url = $_SERVER['REQUEST_URI'];
-    } else {
-        $url = 'commandline';
-        list($scriptPath) = get_included_files();
-        if ($scriptPath != '') {
-            $url .= $scriptPath;
-        }
-        global $argv;
-        if (isset($argv[0])) {
-            $url .= ': ' . implode(' ', $argv);
-        }
-    }
-
-    $message = $url . "\nPHP error: " . $error['message'] . "\nBacktrace: " . $backtrace;
-    $evalCode = getEvalCode();
-    if ($evalCode != '') {
-        $message .= "\nCode:\n" . $evalCode;
-    }
-    if ($error['type'] === E_ERROR) {
+    $message = majordomoGetErrorDetails();
+    if ($error['type'] === E_ERROR || $error['type'] === E_PARSE || $error['type'] === E_COMPILE_ERROR) {
         majordomoSaveError($message, 'php_errors_shutdown');
         $err = new custom_error(nl2br($message));
     } elseif ($error['type'] === E_WARNING) {
-        majordomoSaveError($message, 'php_warnings_shutdown');
+        if (defined('LOG_PHP_WARNINGS') && LOG_PHP_WARNINGS) {
+            majordomoSaveError($message, 'php_warnings_shutdown');
+        }
     }
 }
 

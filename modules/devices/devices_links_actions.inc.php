@@ -158,6 +158,7 @@ for ($i = 0; $i < $total; $i++) {
             $code = $action_string;
             setEvalCode($code);
             $success = eval($code);
+            setEvalCode();
             if ($success === false) {
                 registerError('linked_device', sprintf('Error in linked device code "%s". Code: %s', $link_type, $code));
             }

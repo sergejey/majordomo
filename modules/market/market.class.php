@@ -903,6 +903,7 @@ class market extends module
             $code = '$plugin = new ' . $name . ';$plugin->uninstall();';
             setEvalCode($code);
             eval($code);
+            setEvalCode();
             $this->removeTree(ROOT . 'modules/' . $name);
             $this->removeTree(ROOT . 'templates/' . $name);
             if ($name == 'scheduler') {

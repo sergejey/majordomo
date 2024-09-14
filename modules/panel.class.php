@@ -223,7 +223,11 @@ class panel extends module
                         require DIR_MODULES . 'devices/devices_structure.inc.php';
 
                         foreach ($devices as &$device) {
-                            $device['TITLE'] = processTitle($this->device_types[$device['TYPE']]['TITLE']);
+                            if (!isset($this->device_types[$device['TYPE']])) {
+                                $device['TITLE'] = '';
+                            } else {
+                                $device['TITLE'] = processTitle($this->device_types[$device['TYPE']]['TITLE']);
+                            }
                         }
                         usort($devices, function ($a, $b) {
                             return strcmp($a["TITLE"], $b["TITLE"]);

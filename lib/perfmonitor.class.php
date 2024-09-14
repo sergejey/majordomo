@@ -124,7 +124,7 @@ function PerformanceReport($visible = 0)
     }
 
     foreach ($perf_data as $k => $v) {
-        if (!$v['NUM']) {
+        if (!isset($v['NUM']) || !$v['NUM']) {
             EndMeasure($k);
         }
     }
