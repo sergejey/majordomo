@@ -137,11 +137,11 @@ class saverestore extends module
     {
 
 
-        global $err_msg;
+        $err_msg = gr('err_msg');
         if ($err_msg) {
             $out['ERR_MSG'] = $err_msg;
         }
-        global $ok_msg;
+        $ok_msg = gr('ok_msg');
         if ($ok_msg) {
             $out['OK_MSG'] = $ok_msg;
         }
@@ -197,7 +197,7 @@ class saverestore extends module
         $out['UPDATE_AUTO_TIME'] = $this->config['UPDATE_AUTO_TIME'];
         $out['UPDATE_AUTO_PLUGINS'] = $this->config['UPDATE_AUTO_PLUGINS'];
 
-        global $aditional_git_urls;
+        $aditional_git_urls = gr('aditional_git_urls');
         $out['ADITIONAL_GIT_URLS'] = array();
         foreach ($aditional_git_urls as $url => $title) {
             $tmp = array();
@@ -211,7 +211,8 @@ class saverestore extends module
         $github_feed_url = str_replace('/archive/', '/commits/', $github_feed_url);
         $github_feed_url = str_replace('.tar.gz', '.atom', $github_feed_url);
 
-        if ($_GET['op'] == 'check_updates') {
+        $op = isset($_GET['op'])?$_GET['op']:'';
+        if ($op == 'check_updates') {
             $cache_timeout = 3 * 24 * 60 * 60;
         } else {
             $cache_timeout = 30 * 60;
@@ -280,7 +281,8 @@ class saverestore extends module
                     if ($out['LATEST_ID'] != '' && $out['LATEST_ID'] == $out['LATEST_UPDATED_ID'] && $out['LATEST_CURR_BRANCH'] == $out['UPDATE_CURR_BRANCH']) {
                         $out['NO_NEED_TO_UPDATE'] = 1;
                     }
-                    if ($this->ajax && $_GET['op'] == 'check_updates') {
+                    $op = isset($_GET['op'])?$_GET['op']:'';
+                    if ($this->ajax && $op == 'check_updates') {
                         if (!isset($out['NO_NEED_TO_UPDATE'])) {
                             echo json_encode(array('needUpdate' => '1', 'currBranch' => $out['LATEST_CURR_BRANCH'], 'current_version' => $this->config['LATEST_UPDATED_ID']));
                         } else {

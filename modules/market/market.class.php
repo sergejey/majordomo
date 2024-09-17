@@ -630,7 +630,11 @@ class market extends module
                 }
             }
         }
-        $locale = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+        if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            $locale = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+        } else {
+            $locale = '';
+        }
         $data_url = 'https://connect.smartliving.ru/market/?lang=' . SETTINGS_SITE_LANGUAGE . "&serial=" . urlencode($serial) . "&locale=" . urlencode($locale) . "&os=" . urlencode($os) . "&" . $details;
 
         $username = '';

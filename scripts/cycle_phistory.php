@@ -117,7 +117,7 @@ while (1) {
                 //debug_echo(" Done ");
 
                 if ($prev_value == $prev_prev_value && $tmp_history[0]['ID']) {
-                    debug_echo(" Update same value " . $h['VALUE_ID']);
+                    debug_echo(" Update same value " . $q_rec['VALUE_ID']);
                     SQLExec("UPDATE $table_name SET ADDED='" . $q_rec['ADDED'] . "' WHERE ID=" . $tmp_history[0]['ID']);
                     /*
                     $tmp_history[0]['ADDED'] = $q_rec['ADDED'];

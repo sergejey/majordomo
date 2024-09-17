@@ -619,10 +619,13 @@ class module
             exit;
         }
 
-        if (!headers_sent()) {
+        if (!headers_sent($filename, $linenum)) {
             header("Location: $new_url\n\n");
         } else {
-            print "Headers already sent in $filename on line $linenum<br>\n" . "Cannot redirect instead\n";
+            $message = "Headers already sent in $filename on line $linenum";
+            $details = majordomoGetErrorDetails();
+            majordomoSaveError($message . "\n" . $details, 'php_errors_redirect');
+            echo "<p>$message</p><p>Click <a href='$new_url'>here</a> to continue</p>";
         }
 
         exit;
@@ -702,7 +705,7 @@ class module
             $url .= "?ajt=" . $h;
         }
 
-        $res .= "<div id='aj_" . $h . "'>Loading...</div>";
+        $res = "<div id='aj_" . $h . "'>Loading...</div>";
         $res .= "<script language='javascript' type='text/JavaScript'>getBlockData('aj_" . $h . "', '" . $url . "')</script>";
 
         return $res;

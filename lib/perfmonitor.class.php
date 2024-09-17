@@ -130,8 +130,10 @@ function PerformanceReport($visible = 0)
     }
 
     foreach ($perf_data as $k => $v) {
-        if ($perf_data['TOTAL']['TIME']) {
+        if (isset($perf_data['TOTAL']) && $perf_data['TOTAL']['TIME']) {
             $v['PROC'] = ((int)($v['TIME'] / $perf_data['TOTAL']['TIME'] * 100 * 100)) / 100;
+        } else {
+            $v['PROC'] = 0;
         }
 
         $rs = "$k (" . $v['NUM'] . "): " . round($v['TIME'], 4) . " " . round($v['PROC'], 2) . "%";

@@ -985,10 +985,10 @@ class objects extends module
 
             $v['VALUE'] = $value . '';
             $v['SOURCE'] = $source . '';
-            if (!$v['PROPERTY_NAME']) {
+            if (!isset($v['PROPERTY_NAME'])) {
                 $v['PROPERTY_NAME'] = $this->object_title . '.' . $property;
             }
-            if ($v['ID']) {
+            if (isset($v['ID'])) {
                 $v['UPDATED'] = date('Y-m-d H:i:s');
                 SQLUpdate('pvalues', $v);
             } else {

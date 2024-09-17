@@ -241,7 +241,7 @@ function addClassObject($class_name, $object_name, $system = '')
                   FROM objects
                  WHERE TITLE = '" . DBSafe($object_name) . "'";
     $object = SQLSelectOne($sqlQuery);
-    if ($object['ID'])
+    if (isset($object['ID']))
         return $object['ID'];
 
     if ($system != '') {
@@ -249,7 +249,7 @@ function addClassObject($class_name, $object_name, $system = '')
                   FROM objects
                  WHERE `SYSTEM` = '" . DBSafe($system) . "'";
         $object = SQLSelectOne($sqlQuery);
-        if ($object['ID'])
+        if (isset($object['ID']))
             return $object['ID'];
     }
 
