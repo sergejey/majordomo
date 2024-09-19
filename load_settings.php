@@ -8,7 +8,7 @@ mb_internal_encoding("UTF-8");
 $settings = SQLSelect('SELECT NAME, VALUE FROM settings');
 $total = count($settings);
 
-if (isset($_GET['theme'])) {
+if (isset($_GET['theme']) && !defined('SETTINGS_THEME')) {
     Define('SETTINGS_THEME', $_GET['theme']);
 }
 
