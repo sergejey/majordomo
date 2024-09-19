@@ -170,4 +170,4 @@ $session->save();
 endMeasure('TOTAL');
 
 // print performance report
-performanceReport(gr('debug'));
+performanceReport();
