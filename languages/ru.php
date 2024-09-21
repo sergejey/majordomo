@@ -1352,6 +1352,7 @@ $dictionary = array(
     'DEVICES_THERMOSTAT_THRESHOLD' => 'Порог срабатывания термостата (0.25 по-умолчанию)',
     'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Статус реле',
     'DEVICES_THERMOSTAT_SET_TARGET_TEMPERATURE' => 'Установить желаемую температуру',
+    'DEVICES_THERMOSTAT_OPENABLE' => 'Окна/двери',
     'DEVICES_ALL_BY_TYPE' => 'Все по типам',
     'DEVICES_ALL_BY_ROOM' => 'Все по комнатам',
     'DEVICES_LOAD_TIMEOUT'=>'Таймер изменения статуса нагрузки',

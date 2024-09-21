@@ -208,9 +208,14 @@ if ($this->tab == 'settings') {
                 if (isset($v['_CONFIG_HELP'])) $v['CONFIG_HELP'] = $v['_CONFIG_HELP'];
                 $v['CONFIG_TYPE'] = $v['_CONFIG_TYPE'];
                 $v['VALUE'] = getGlobal($rec['LINKED_OBJECT'] . '.' . $k);
-                if ($v['CONFIG_TYPE'] == 'devices') {
+                if (preg_match('/^devices/is', $v['CONFIG_TYPE'])) {
                     $second_devices = array();
-                    $target_classes = array('SControllers', 'SOpenable');
+                    if (preg_match('/^devices:(.+)/', $v['CONFIG_TYPE'], $m)) {
+                        $target_classes = array_map('trim', explode(',', $m[1]));
+                    } else {
+                        $target_classes = array('SControllers', 'SOpenable');
+                    }
+                    $v['CONFIG_TYPE'] = 'devices';
                     $other_devices = SQLSelect("SELECT ID, TITLE, `TYPE`, LINKED_OBJECT FROM devices WHERE ID!=" . (int)$rec['ID'] . " ORDER BY TITLE");
                     $total = count($other_devices);
                     for ($i = 0; $i < $total; $i++) {

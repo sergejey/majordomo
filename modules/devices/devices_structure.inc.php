@@ -146,13 +146,15 @@ $this->device_types = array(
             'ecoTargetValue' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_ECO_TEMP, '_CONFIG_TYPE' => 'text', 'ONCHANGE' => 'valueUpdated', '_CONFIG_HELP' => 'SdThermostat', '_CONFIG_DEFAULT' => 18),
             'threshold' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_THRESHOLD, '_CONFIG_TYPE' => 'text', 'ONCHANGE' => 'valueUpdated', '_CONFIG_HELP' => 'SdThermostat'),
             'ncno' => array('DESCRIPTION' => LANG_DEVICES_NCNO, '_CONFIG_TYPE' => 'select', '_CONFIG_OPTIONS' => 'nc=Normal Close (Heating),no=Normal Open (Cooling)', '_CONFIG_HELP' => 'SdThermostat'),
+            'openableSensors' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_OPENABLE, '_CONFIG_TYPE' => 'devices:SOpenable, SOpenClose', '_CONFIG_HELP' => 'SdOpenableSensors'),
+            'windowIsOpen' => array('KEEP_HISTORY' => 30),
             'disabled' => array('DESCRIPTION' => 'Disabled'),
         ),
         'METHODS' => array(
             'setTargetTemperature' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_SET_TARGET_TEMPERATURE, '_CONFIG_SHOW' => 1, '_CONFIG_REQ_VALUE' => 1),
             'valueUpdated' => array('DESCRIPTION' => 'Value Updated'),
             'relay_statusUpdated' => array('DESCRIPTION' => 'Relay Status Updated'),
-			'statusUpdated' => array('DESCRIPTION' => 'Status Updated'),
+            'statusUpdated' => array('DESCRIPTION' => 'Status Updated'),
             'tempUp' => array('DESCRIPTION' => 'Increase target temperature'),
             'tempDown' => array('DESCRIPTION' => 'Descrease target temperature'),
             'switchEnable' => array('DESCRIPTION' => 'Switch Enable'),
@@ -160,6 +162,7 @@ $this->device_types = array(
             'disable' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_MODE . ': ' . LANG_DEVICES_THERMOSTAT_MODE_OFF, '_CONFIG_SHOW' => 1),
             'turnOn' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_MODE . ': ' . LANG_DEVICES_THERMOSTAT_MODE_NORMAL, '_CONFIG_SHOW' => 1),
             'turnOff' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_MODE . ': ' . LANG_DEVICES_THERMOSTAT_MODE_ECO, '_CONFIG_SHOW' => 1),
+            'checkWindows' => array('DESCRIPTION' => 'Check if any windows/doors are open'),
         )
     ),
     'ac' => array(
