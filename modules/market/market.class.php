@@ -271,7 +271,7 @@ class market extends module
                         $postType = '<i>Новость</i> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i>';
                     }
 
-                    if (time() - 950400 <= $data[$i]['ADDED_TM']) {
+                    if (isset($data[$i]['ADDED_TM']) && time() - 950400 <= $data[$i]['ADDED_TM']) {
                         $actualNews = 'background-color: #dff0d8;';
                         $actualNews_Label = '<span class="label label-success" style="margin-right: 10px;">New</span>';
                         $bgColor = '';
@@ -294,7 +294,7 @@ class market extends module
                     }
 
                     echo '<li class="list-group-item ' . $bgColor . '" style="margin-bottom: 5px;' . $actualNews . '">';
-                    echo '<span class="badge">' . date('d.m.Y H:i:s', $data[$i]['ADDED_TM']) . '</span>';
+                    if (isset($data[$i]['ADDED_TM'])) echo '<span class="badge">' . date('d.m.Y H:i:s', $data[$i]['ADDED_TM']) . '</span>';
                     echo '<div onclick="$(\'#news_title_' . $i . '\').toggle(\'slow\');" style="cursor:pointer;">' . $actualNews_Label . $postType . ' ' . htmlspecialchars($data[$i]['TITLE']) . '</div>';
                     echo '<div class="fullTextNewsClass" id="news_title_' . $i . '" style="display: none;margin-top: 10px;padding-top: 10px;border-top: 1px solid lightgray;"><blockquote style="border-left: 5px solid #4d96d3;">' . $body . ' ' . $linkDetail . '</blockquote></div>';
                     echo '</li>';
@@ -424,7 +424,7 @@ class market extends module
                         $tmp = GetXMLTree($github_feed);
                         if (is_array($tmp)) {
                             $items_data = XMLTreeToArray($tmp);
-                            $items = $items_data['feed']['entry'];
+                            $items = isset($items_data['feed']['entry']) ? $items_data['feed']['entry'] : false;
                         } else {
                             $items = false;
                         }
