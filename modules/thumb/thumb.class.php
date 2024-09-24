@@ -55,7 +55,7 @@ class thumb extends module
             $this->username = processTitle($this->username);
             $this->password = processTitle($this->password);
 
-            $filename = 'thumb_' . md5($this->url) . basename(preg_replace('/\W/', '', $this->url));
+            $filename = 'thumb_' . md5($this->url);
             if (preg_match('/\.cgi$/is', $filename)) {
                 $filename = str_replace('.cgi', '.jpg', $filename);
             }
