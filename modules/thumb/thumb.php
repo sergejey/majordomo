@@ -33,7 +33,7 @@ $debug_mode = gr('debug', 'int');
 if (isset($url) && $url != '') {
     $tmp_url = base64_decode($url);
     if (!$img) {
-        $filename = 'thumb_' . md5($tmp_url) . basename(preg_replace('/\W/', '', $tmp_url));
+        $filename = 'thumb_' . md5($tmp_url);
         $img = _I_CACHE_PATH . $filename;
     }
     if ($tmp_url == 'usb') {
