@@ -159,7 +159,7 @@ function majordomoGetErrorDetails($e = 0)
         $message .= "\nEval code:\n" . $evalCode;
     }
 
-    $performance_data = PerformanceReport(0);
+    $performance_data = PerformanceReport(1);
     $message .= "\nPerformance:\n" . implode("\n", $performance_data);
 
     return $message;
@@ -189,6 +189,7 @@ function majordomoErrorHandler($errno, $errmsg, $filename, $linenum)
     $errorCode = $errno;
     $errorType = majordomoGetErrorType($errorCode);
     $message = "PHP error level $errorCode $errorType in $filename (line $linenum):\n" . $errmsg . "\n";
+
     $message .= majordomoGetErrorDetails();
     if ($errno == E_WARNING) {
         if (defined('LOG_PHP_WARNINGS') && LOG_PHP_WARNINGS) {
