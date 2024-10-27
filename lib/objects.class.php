@@ -325,7 +325,6 @@ function addLinkedProperty($object, $property, $module)
         } else {
             $tmp = explode(',', $value['LINKED_MODULES']);
         }
-
         if (!in_array($module, $tmp)) {
             $tmp[] = $module;
 
@@ -333,6 +332,7 @@ function addLinkedProperty($object, $property, $module)
 
             SQLUpdate('pvalues', $value);
         }
+        return $value['ID'];
     } else {
         return 0;
     }
@@ -881,7 +881,7 @@ function getHistoryAvg($varname, $start_time, $stop_time = 0)
  */
 function getHistoryValue($varname, $time, $nerest = false)
 {
-	$time = (int)$time;
+    $time = (int)$time;
     if ($time <= 0) $time = (time() + $time);
 
     // Get hist val id
@@ -1067,7 +1067,8 @@ function callMethodSafe($method_name, $params = 0)
     }
 }
 
-function callAPISync($api_url, $method = 'GET', $params = 0) {
+function callAPISync($api_url, $method = 'GET', $params = 0)
+{
     return callAPI($api_url, $method, $params, true);
 }
 
@@ -1149,7 +1150,7 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
         exit();
     }
 
-    if ($result!='') {
+    if ($result != '') {
         $data = json_decode($result, true);
         if (is_array($data) && isset($data['apiHandleResult'])) {
             return $data['apiHandleResult'];

@@ -1125,6 +1125,8 @@ $dictionary = array(
 
     'DEVICES_COPY_SETTINGS' => 'Copy settings',
     'DEVICES_LINKED_WARNING' => 'Please note that when linking to existing object, it will be assigned to the new class.',
+    'DEVICES_SUB_DEVICES' => 'Sub-devices',
+    'DEVICES_PARENT_DEVICE' => 'Parent device',
 
     'DEVICES_RELAY' => 'Relay/Switch',
     'DEVICES_DIMMER' => 'Dimmer',

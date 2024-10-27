@@ -211,33 +211,25 @@ if (!isset($request[0])) {
         }
     }
 } elseif (strtolower($request[0]) == 'devices' && $request[1] && $method == 'GET') {
-    $devices = SQLSelect("SELECT * FROM devices WHERE ID=" . (int)$request[1]);
-    $total = count($devices);
-    $cached_properties = array();
-    for ($i = 0; $i < $total; $i++) {
-        $device = array();
-        $device['id'] = $devices[$i]['ID'];
-        $device['title'] = $devices[$i]['TITLE'];
-        $device['object'] = $devices[$i]['LINKED_OBJECT'];
-        $device['type'] = $devices[$i]['TYPE'];
-        $device['favorite'] = $devices[$i]['FAVORITE'];
-        $device['system_device'] = $devices[$i]['SYSTEM_DEVICE'];
-        $obj = getObject($device['object']);
-        if (!isset($cached_properties[$obj->class_id])) {
-            $cached_properties[$obj->class_id] = getClassProperties($obj->class_id);
+
+    include_once(DIR_MODULES . 'devices/devices.class.php');
+    $devices_module = new devices();
+    $devices = $devices_module->getDevicesForAPI("devices.ID=" . (int)$request[1]);
+
+    if (isset($devices[0])) {
+        $device = $devices[0];
+        $linksTotal = (int)current(SQLSelectOne("SELECT COUNT(*) as TOTAL FROM devices_linked WHERE DEVICE1_ID=" . $device['id'] . " OR DEVICE2_ID=" . $device['id']));
+        $device['linksTotal'] = $linksTotal;
+        $schedulePointsTotal = (int)current(SQLSelectOne("SELECT COUNT(*) as TOTAL FROM devices_scheduler_points WHERE DEVICE_ID=" . $device['id']));
+        $device['scheduleTotal'] = $schedulePointsTotal;
+
+        $sub_devices = $devices_module->getDevicesForAPI("devices.PARENT_ID=" . (int)$request[1]);
+        if (isset($sub_devices[0])) {
+            $device['subDevices'] = $sub_devices;
         }
+        $result['device'] = $device;
     }
-    $properties = $cached_properties[$obj->class_id];
-    foreach ($properties as $p) {
-        $device[$p['TITLE']] = getGlobal($device['object'] . '.' . $p['TITLE']);
-    }
-    $linksTotal = (int)current(SQLSelectOne("SELECT COUNT(*) as TOTAL FROM devices_linked WHERE DEVICE1_ID=" . $device['id'] . " OR DEVICE2_ID=" . $device['id']));
-    $device['linksTotal'] = $linksTotal;
 
-    $schedulePointsTotal = (int)current(SQLSelectOne("SELECT COUNT(*) as TOTAL FROM devices_scheduler_points WHERE DEVICE_ID=" . $device['id']));
-    $device['scheduleTotal'] = $schedulePointsTotal;
-
-    $result['device'] = $device;
 } elseif (strtolower($request[0]) == 'devices' && $request[1] && $method == 'POST') {
     $device = SQLSelectOne("SELECT * FROM devices WHERE ID='" . (int)$request[1] . "'");
     if (!$device['ID']) {
@@ -273,28 +265,9 @@ if (!isset($request[0])) {
         $result['result'] = true;
     }
 } elseif (strtolower($request[0]) == 'devices') {
-    $devices = SQLSelect("SELECT * FROM devices ORDER BY TITLE");
-    $result['devices'] = array();
-    $total = count($devices);
-    for ($i = 0; $i < $total; $i++) {
-        $device = array();
-        $device['id'] = $devices[$i]['ID'];
-        $device['title'] = $devices[$i]['TITLE'];
-        $device['object'] = $devices[$i]['LINKED_OBJECT'];
-        $device['type'] = $devices[$i]['TYPE'];
-        $device['favorite'] = $devices[$i]['FAVORITE'];
-        $device['system_device'] = $devices[$i]['SYSTEM_DEVICE'];
-        $obj = getObject($device['object']);
-        if (!isset($cached_properties[$obj->class_id])) {
-            $cached_properties[$obj->class_id] = getClassProperties($obj->class_id);
-        }
-        $properties = $cached_properties[$obj->class_id];
-        foreach ($properties as $p) {
-            $device[$p['TITLE']] = getGlobal($device['object'] . '.' . $p['TITLE']);
-        }
-        $result['devices'][] = $device;
-    }
-
+    include_once(DIR_MODULES . 'devices/devices.class.php');
+    $devices_module = new devices();
+    $result['devices'] = $devices_module->getDevicesForAPI("devices.PARENT_ID=0");
 } elseif (strtolower($request[0]) == 'room' && (preg_match('/^\d+$/', $request[1])) && ($method == 'DELETE')) {
     $id = (int)$request[1];
     $room_rec = SQLSelectOne("SELECT * FROM locations WHERE ID=" . $id);
@@ -602,7 +575,7 @@ if (!isset($request[0])) {
 
         $user = SQLSelectOne("SELECT ID, `NAME`, USERNAME FROM users ORDER BY ID");
         if ($user['ID']) {
-            if (!$user['NAME']) $user['NAME']=$user['USERNAME'];
+            if (!$user['NAME']) $user['NAME'] = $user['USERNAME'];
             $result['user'] = $user;
         } else {
             $result['user']['ID'] = "0";

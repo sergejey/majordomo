@@ -1123,6 +1123,9 @@ $dictionary = array(
     'DEVICES_MODULE_TITLE' => 'Простые устройства',
     'DEVICES_COPY_SETTINGS' => 'Копировать настройки',
     'DEVICES_LINKED_WARNING' => 'Внимание: выбор существующего объекта приведёт к привязке его к новому классу.',
+    'DEVICES_SUB_DEVICES' => 'Дочерние устройства',
+    'DEVICES_PARENT_DEVICE' => 'Родительское устройство',
+
     'DEVICES_RELAY' => 'Реле/Управляемый выключатель',
     'DEVICES_DIMMER' => 'Освещение (Диммер)',
     'DEVICES_RGB' => 'Освещение (RGB)',

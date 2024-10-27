@@ -1,27 +1,17 @@
 <?php
-/*
-* @version 0.3 (auto-set)
-*/
 
-/**
- * @author Serge Dzheigalo <jey@unit.local>
- * @package project
- */
 class application extends module
 {
 
     var $action;
     var $member_id;
 
-// --------------------------------------------------------------------
     function __construct()
     {
         $this->name = "application";
         $this->app_action = '';
         $this->popup = false;
     }
-
-// --------------------------------------------------------------------
 
     function saveParams($data = 1)
     {
@@ -398,8 +388,4 @@ class application extends module
 
     }
 
-// --------------------------------------------------------------------
-
 }
-
-

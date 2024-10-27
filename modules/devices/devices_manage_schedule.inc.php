@@ -12,8 +12,6 @@ $days=array(
     array('VALUE'=>6,'TITLE'=>LANG_WEEK_SAT),
 );
 
-//$point=SQLSelectOne("SELECT * FROM devices_scheduler_points WHERE ID=".(int)$point_id);
-//$devices = SQLSelect("SELECT devices.* FROM devices")
 $tmp = array_map('current',SQLSelect("SELECT DEVICE_ID FROM devices_scheduler_points GROUP BY DEVICE_ID"));
 
 $type_methods=array();

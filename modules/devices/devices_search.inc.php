@@ -38,7 +38,7 @@ if ($group_name == 'manage_groups') {
     $total = count($object_names);
     if ($total > 0) {
         for ($i = 0; $i < $total; $i++) {
-            $val = getGlobal($object_names[$i].'.alive');
+            $val = getGlobal($object_names[$i] . '.alive');
             if (!$val) {
                 $res_object_names[] = "'" . $object_names[$i] . "'";
             }
@@ -108,8 +108,7 @@ if (!$qry) $qry = "1";
 $tmp = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM devices WHERE devices.ARCHIVED!=1");
 $out['TOTAL'] = (int)$tmp['TOTAL'];
 
-$loc_title = '';
-$sortby_devices = "locations.PRIORITY DESC, locations.TITLE, devices.LOCATION_ID, devices.TYPE, devices.TITLE";
+$sortby_devices = "devices.PARENT_ID, locations.PRIORITY DESC, locations.TITLE, devices.LOCATION_ID, devices.TYPE, devices.TITLE";
 $out['SORTBY'] = $sortby_devices;
 // SEARCH RESULTS
 $res = SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE $qry ORDER BY " . $sortby_devices);
@@ -118,11 +117,6 @@ if (isset($res[0])) {
     $total = count($res);
     $out['TOTAL_FOUND'] = $total;
     for ($i = 0; $i < $total; $i++) {
-        // some action for every record if required
-        if ($res[$i]['LOCATION_TITLE'] != $loc_title) {
-            $res[$i]['NEW_LOCATION'] = 1;
-            $loc_title = $res[$i]['LOCATION_TITLE'];
-        }
         if ($res[$i]['LINKED_OBJECT']) {
             if ($res[$i]['TYPE'] == 'camera' || $res[$i]['TYPE'] == 'mark') {
                 $processed = $this->processDevice($res[$i]['ID'], 'list');
@@ -156,11 +150,41 @@ if (isset($res[0])) {
         if ($linked['TOTAL']) {
             $res[$i]['LINKED'] = $linked['TOTAL'];
         }
-        $methods = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM methods WHERE CODE!='' AND OBJECT_ID=".(int)$object_rec['ID']);
+        $methods = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM methods WHERE CODE!='' AND OBJECT_ID=" . (int)$object_rec['ID']);
         if ($methods['TOTAL']) {
             $res[$i]['METHODS'] = $methods['TOTAL'];
         }
     }
+
+    $position = 1;
+    $parent_id = 0;
+    for ($i = 0; $i < $total; $i++) {
+        if (!$res[$i]['PARENT_ID']) {
+            $parent_id = $res[$i]['ID'];
+            $position = $i + 1;
+            //dprint("Parent-id: " . $parent_id, false);
+        }
+        //dprint("Device $i: " . $res[$i]['TITLE'] . " Position: " . $position, false);
+        if (($position < $total) && $parent_id > 0) {
+            for ($k = $position; $k < $total; $k++) {
+                if ($res[$k]['PARENT_ID'] > 0 && $res[$k]['PARENT_ID'] == $parent_id) {
+                    //dprint("Moving: " . $res[$k]['TITLE'] . " to $position", false);
+                    array_splice($res, $position, 0, array($res[$k]));
+                    array_splice($res, $k + 1, 1);
+                    $position++;
+                }
+            }
+        }
+    }
+
+    $loc_title = '';
+    for ($i = 0; $i < $total; $i++) {
+        if ($res[$i]['LOCATION_TITLE'] != $loc_title) {
+            $res[$i]['NEW_LOCATION'] = 1;
+            $loc_title = $res[$i]['LOCATION_TITLE'];
+        }
+    }
+
     $out['RESULT'] = $res;
 }
 

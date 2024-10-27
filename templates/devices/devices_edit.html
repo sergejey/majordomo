@@ -20,7 +20,7 @@
 [#endif ERR#]
 <fieldset>
 [#if ID=""#]
-<legend><#LANG_NEW_RECORD#></legend>
+<legend>[#if PARENT_DEVICE_TITLE!=""#]<a href="?view_mode=<#VIEW_MODE#>&id=[#PARENT_ID#]">[#PARENT_DEVICE_TITLE#]</a> &mdash; [#endif#]<#LANG_NEW_RECORD#></legend>
 [#endif ID#]
 <!-- TITLE (varchar) -->
 <div class="form-group">
@@ -31,12 +31,14 @@
  <div class="col-lg-4"><input type="text" class="form-control" name="title" value="[#TITLE#]" id="title"></div>
 </div>
 
+ [#if PARENT_ID="0"#]
  <div class="form-group">
   <label class="col-lg-3 control-label">
    <#LANG_ALT_TITLES#>:
   </label>
   <div class="col-lg-4"><input type="text" class="form-control" name="alt_titles" value="[#ALT_TITLES#]" id="alt_titles"></div>
  </div>
+ [#endif PARENT_ID#]
 
  <div class="form-group">
   <label class="col-lg-3 control-label"[#if ERR_TYPE#] style="color:red;font-weight:bold"[#endif#]>
@@ -79,6 +81,7 @@
   </div>
  </div>
 
+ [#if PARENT_ID="0"#]
  <div class="form-group ">
   <label class="col-lg-4 control-label"><#LANG_LOCATION#>: <#LANG_HCB#>location<#LANG_HCE#></label>
   <div class="col-lg-4"><select name="location_id" class="form-control">
@@ -122,7 +125,19 @@
    </span>
   </div>
  </div>
+ [#endif PARENT_ID#]
 
+ <div class="form-group ">
+  <label class="col-lg-4 control-label"><#LANG_DEVICES_PARENT_DEVICE#>: <#LANG_HCB#>parent_device<#LANG_HCE#></label>
+  <div class="col-lg-4">
+   <select name="parent_id" class="form-control">
+    <option value="0"><#LANG_NO#></option>
+    [#begin PARENTS#]
+    <option value="[#ID#]"[#if ID="<#PARENT_ID#>"#] selected[#endif#]>[#TITLE#]</option>
+    [#end PARENTS#]
+   </select>
+  </div>
+ </div>
 
 <div class="form-group">
  <label class="col-lg-4 control-label">
@@ -134,8 +149,7 @@
  [#else ID#]
  <button type="submit" name="subm" value="Add" class="btn btn-primary"><#LANG_ADD#></button>
  [#endif ID#]
-         <a href="?" class="btn btn-default " onclick="if (window.self !== window.top) {parent.$.fancybox.close();return false;}"><#LANG_CANCEL#></a>
-
+         <a href="?[#if PARENT_ID!="0"#]id=[#PARENT_ID#]&view_mode=<#VIEW_MODE#>[#endif#]" class="btn btn-default " onclick="if (window.self !== window.top) {parent.$.fancybox.close();return false;}"><#LANG_CANCEL#></a>
          [#if ID!=""#]
          <a href="?view_mode=delete_devices&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i> <#LANG_DELETE#></a>
          [#endif ID#]

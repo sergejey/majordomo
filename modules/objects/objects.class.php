@@ -299,6 +299,7 @@ class objects extends module
         if (!isset($rec['ID'])) return false;
 
         // DELETE LINKED OBJECT FROM ALL TABLES
+
         $tables = SQLSelect("SELECT DISTINCT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME IN ('LINKED_OBJECT') AND TABLE_SCHEMA='" . DB_NAME . "';");
         $total = count($tables);
         for ($i = 0; $i < $total; $i++) {
@@ -1025,6 +1026,7 @@ class objects extends module
                 $p_lower == 'status' ||
                 $p_lower == 'disabled' ||
                 $p_lower == 'level' ||
+                $p_lower == 'color' ||
                 $p_lower == 'volume' ||
                 $p_lower == 'channel' ||
                 $p_lower == 'mode' ||
