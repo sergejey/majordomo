@@ -293,7 +293,7 @@ if ($this->tab == 'settings') {
                         SQLExec("DELETE FROM pvalues WHERE PROPERTY_ID=" . $property_id . " AND OBJECT_ID=" . $object_id);
                         SQLExec("DELETE FROM properties WHERE ID=" . $property_id);
                     }
-                    //echo $property_id;exit;
+                    clearCacheData('P:');
                 }
             }
             if (gg($rec['LINKED_OBJECT'] . '.' . $property_title)) {
