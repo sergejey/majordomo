@@ -401,10 +401,14 @@ for ($i = 0; $i < $total; $i++) {
 if ($run_code != '' && $period_delay > 0) {
     setTimeout('delay' . md5($run_code), $run_code, $period_delay);
 } elseif ($run_code != '' && $period_run_for > 0 && $opposite_code != '') {
+    setEvalCode($run_code);
     eval($run_code);
+    setEvalCode();
     setTimeout('opposite' . md5($run_code), $opposite_code, $period_run_for);
 } elseif ($run_code != '') {
+    setEvalCode($run_code);
     eval($run_code);
+    setEvalCode();
 }
 
 if ($reply_say != '') {

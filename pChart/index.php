@@ -95,17 +95,19 @@ if (!$pvalue['ID']) {
     exit;
 }
 
-if ($_GET['op'] == 'value') {
+if ($op == 'value') {
     echo $pvalue['VALUE'];
     exit;
 }
 
+$type = gr('type');
 if (!$type) {
     $type = '7d';
 }
 
 $group = gr('group');
 
+$total = 0;
 if (preg_match('/(\d+)d/', $type, $m)) {
     $total = (int)$m[1];
     $period = round(($total * 24 * 60 * 60) / (($w - $w_delta) / $px_per_point)); // seconds
@@ -121,8 +123,8 @@ if (preg_match('/(\d+)d/', $type, $m)) {
     $period = round(($total * 31 * 24 * 60 * 60) / (($w - $w_delta) / $px_per_point)); // seconds
     $start_time = $end_time - $total * 31 * 24 * 60 * 60;
 
-} elseif (preg_match('/(\d+)\/(\d+)\/(\d+)/', gr('start'), $m) && $_GET['interval']) {
-    $period = (int)$_GET['interval']; //seconds
+} elseif (preg_match('/(\d+)\/(\d+)\/(\d+)/', gr('start'), $m) && gr('interval')) {
+    $period = gr('interval','int'); //seconds
     $start_time = mktime(0, 0, 0, $m[2], $m[3], $m[1]);
     $total = 1;
 } else {
@@ -171,7 +173,6 @@ if ($total > 0) {
     }
 
     if ($op == 'timed') {
-        //header("Content-type: text/json");
         $tret = array();
         $t_times = array();
         $t_values = array();
@@ -185,10 +186,11 @@ if ($total > 0) {
         exit;
     }
 
-    if ($_GET['op'] == 'log') {
+    $op = gr('op');
+    if (gr('op') == 'log') {
         if ($total_values > 0) {
-            if ($_GET['subop'] == 'clear') {
-                if (!$_GET['id']) {
+            if (gr('subop') == 'clear') {
+                if (!gr('id')) {
                     $values = SQLSelect("SELECT * FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "'");
                     $total = count($values);
                     for ($i = 0; $i < $total; $i++) {
@@ -198,7 +200,7 @@ if ($total > 0) {
                     }
                     SQLExec("DELETE FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "'");
                 } else {
-                    $value = SQLSelectOne("SELECT * FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' AND ID='" . (int)$_GET['id'] . "'");
+                    $value = SQLSelectOne("SELECT * FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' AND ID='" . gr('id','int') . "'");
                     if ($property['DATA_TYPE'] == 5) {
                         @unlink(ROOT . 'cms/images/' . $value['VALUE']);
                     }
@@ -227,33 +229,23 @@ if ($total > 0) {
                 $data = SQLSelect("SELECT * FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED, ID");
                 //dprint($data);
 
-                $csv = implode("\t", array('ADDED', 'VALUE')) . PHP_EOL;
+                $csv = implode("\t", array('ADDED', 'VALUE', 'SOURCE')) . PHP_EOL;
                 foreach ($data as $row) {
-                    $csv .= $row['ADDED'] . "\t" . $row['VALUE'];
+                    $csv .= $row['ADDED'] . "\t" . $row['VALUE'] . "\t" . $row['SOURCE'];
                     $csv .= PHP_EOL;
                 }
 
                 $filename = 'data_' . date('Y-m-d-H_i_s') . '.txt';
                 $now = gmdate("D, d M Y H:i:s");
-                //header("Expires: Tue, 03 Jul 2001 06:00:00 GMT");
-                //header("Cache-Control: max-age=0, no-cache, must-revalidate, proxy-revalidate");
-                //header("Last-Modified: {$now} GMT");
-
                 // force download
                 header("Content-Type: application/force-download");
                 header("Content-Type: application/octet-stream");
                 header("Content-Type: application/download");
-
                 // disposition / encoding on response body
                 header("Content-Disposition: attachment;filename={$filename}");
                 header("Content-Transfer-Encoding: binary");
-
                 echo $csv;
-
-
                 exit;
-
-                // ID, VALUE, SOURCE, ADDED
             }
 
             echo "<html><head>";
@@ -281,13 +273,12 @@ if ($total > 0) {
      }); 
  });
  function dateChanged(dt) {
-     let url = "{$url}";
+     url = "{$url}";
      window.location.href = url + '&end='+encodeURI(dt);
  }
 </script>
 FF;
             echo "</head><body><div>";
-            //echo "<table width=100%><tr><td width='99%'>";
 
             $_SERVER['REQUEST_URI'] = preg_replace('/&subop=(\w+)/', '', $_SERVER['REQUEST_URI']);
             echo "<div class='row'><div class='col-md-10'><ul class='nav nav-tabs'>";
@@ -313,14 +304,13 @@ FF;
                     if ($_GET['minimal']) {
                         $height = 500;
                     }
-
+                    $p_url = '';
                     if (!is_array($_GET['p'])) {
                         $properties = array($_GET['p']);
                     } else {
                         $properties = $_GET['p'];
                         $p_url .= '&height=' . $height;
                     }
-                    $p_url = '';
                     foreach ($properties as $p) {
                         $p_url .= '&properties[]=' . urlencode($p);
                         if (preg_match('/^(\w+)\.(\w+)$/', $p, $m)) {
@@ -332,16 +322,11 @@ FF;
                             }
                         }
                     }
-                    $code = '&nbsp;<iframe allowfullscreen="true" border="0" frameborder="0" src="' . ROOTHTML . 'module/charts.html?id=config&enable_fullscreen=1&period=' . $_GET['subop'] . '&end=' . urlencode($_GET['end']) . '&chart_type=' . urlencode($_GET['chart_type']) . '&group=' . $group . $p_url . '&theme=grid-light&frameBorder=0" style="height:80% !important" width=100% ></iframe>';//height=' . $height . '
+                    $code = '&nbsp;<iframe allowfullscreen="true" border="0" frameborder="0" src="' . ROOTHTML . 'module/charts.html?id=config&enable_fullscreen=1&period=' . $_GET['subop'] . '&end=' . urlencode($_GET['end']) . '&chart_type=' . urlencode(gr('chart_type')) . '&group=' . $group . $p_url . '&theme=grid-light&frameBorder=0" style="height:80% !important" width=100% ></iframe>';//height=' . $height . '
                 } else {
                     $code = '&nbsp;<img src="' . ROOTHTML . '3rdparty/jpgraph/?p=' . $p . '&type=' . $_GET['subop'] . '&end=' . urlencode($_GET['end']) . '&width=500&"/>';
                 }
                 echo $code;
-                /*
-                if (!$_GET['minimal']) {
-                    echo "<br/>" . htmlspecialchars($code);
-                }
-                */
                 exit;
             }
         }
@@ -349,20 +334,12 @@ FF;
 
         $history = array_reverse($history);
 
-        /*
-        if (!$_GET['full']) {
-            $history = array_slice($history, 0, 25);
-            $total_values = count($history);
-        }
-        */
         require(ROOT . '3rdparty/Paginator/Paginator.php');
         $page = gr('page','int');
         if (!$page) $page = 1;
 
         $on_page = 20;
-        //$limit=(($page-1)*$on_page).','.$on_page;
         $start_offset = (($page - 1) * $on_page);
-        //$urlPattern='?page=(:num)';
         $url = $_SERVER['REQUEST_URI'];
         $url = preg_replace('/&page=\d+/', '', $url);
         $urlPattern = $url . '&page=(:num)';
@@ -383,7 +360,6 @@ FF;
         echo "<table class='table table-striped'>";
         echo "<thead><tr><th>" . LANG_ADDED . "</th><th>" . LANG_VALUE . "</th><th>Src</th><th>&nbsp;</th></tr></thead>";
         for ($i = 0; $i < $total_values; $i++) {
-            //echo date('Y-m-d H:i:s', $history[$i]['UNX']);
             echo "<tr><td>";
             echo $history[$i]['ADDED'];
             echo "</td>";
@@ -408,21 +384,12 @@ FF;
             echo "</tr>";
         }
         echo "</table>";
-        /*
-        if (!$_GET['full']) {
-            echo ' <br/><a href="' . $_SERVER['REQUEST_URI'] . '&type=1&full=1" class="btn btn-default btn-warning">Load all values</a> ';
-        }
-        */
 
         echo "</div></body></html>";
         exit;
     }
 
     $next_index = 0;
-    /*if ($approx=='count' && $total_values>1) {
-            $temp_array=array(round($history[1]['VALUE']-$history[0]['VALUE'],2));
-    } else */
-    //$temp_array=array($history[0]['VALUE']);
     $last_value = $history[0]['VALUE'];
 
     if ($_GET['approx']) {
@@ -431,7 +398,7 @@ FF;
 
     $index = 0;
     while ($start_time <= $end_time) {
-        if ($next_index < $total_values) {        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        if ($next_index < $total_values) {
             for ($i = $next_index; $i < $total_values; $i++) {
                 $next_index = $i + 1;
                 if ($history[$i]['UNX'] >= $start_time || $next_index >= $total_values) {
@@ -452,44 +419,36 @@ FF;
                     } else {
                         $value = $last_value;
                     }
-                    if ($_GET['op'] == 'debug') {
+                    if (gr('op') == 'debug') {
                         echo "<tt>Take value = </tt><b>" . $value . "</b><tt> from ";
-                        //print_r($temp_array);         //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-                        //var_dump($temp_array);        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-                        var_export($temp_array);        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                        var_export($temp_array);
                         echo "<tt><br>Period time: " . date('Y-m-d H:i:s', $start_time - $period) . " - " . date('Y-m-d H:i:s', $start_time) . " (" . $period . " sec)</tt><br>";
                         echo "<hr></tt>";
                     }
 
-                    //ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                     if ($i >= 1 && $i < $total_values - 1) $last_value = $history[$i - 1]['VALUE'];
                     elseif ($i == $total_values - 1) $last_value = $history[$total_values - 1]['VALUE'];
                     else                                                            $last_value = $history[0]['VALUE'];
-                    if (($start_time + $period) < $history[$i]['UNX']) { //ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-                        $temp_array = array($last_value); //ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                    if (($start_time + $period) < $history[$i]['UNX']) {
+                        $temp_array = array($last_value);
                         $next_index = $i;
-                    } elseif ($start_time > $history[$i]['UNX']) { //ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
-                        $temp_array = array($history[$total_values - 1]['VALUE']); //ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                    } elseif ($start_time > $history[$i]['UNX']) {
+                        $temp_array = array($history[$total_values - 1]['VALUE']);
                         $next_index = $i;
                     } else
-                        $temp_array = array($history[$i]['VALUE']); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-                    //}
-                    //if ($_GET['op']=='debug') echo "<tt>".$history[$i]['UNX'].">".$start_time.": ".$history[$i]['VALUE']."</tt><br>";
+                        $temp_array = array($history[$i]['VALUE']);
                     break;
                 } else {
                     if ($history[$i]['UNX'] < $start_time)
-                        $temp_array[] = $history[$i]['VALUE']; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-                    //if ($_GET['op']=='debug') echo "<tt>".$history[$i]['UNX']."<".$start_time.": ".$history[$i]['VALUE']."</tt><br>";
+                        $temp_array[] = $history[$i]['VALUE'];
                 }
             }
         } else {
-            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             if ($approx == 'count') {
                 $value = round($history[$total_values - 1]['VALUE'] - $last_value, 2);
             } else {
                 $value = $history[$total_values - 1]['VALUE'];
             }
-            //$values[]=$value;
         }
         if (isset($value)) $values[] = $value;
         if ($_GET['op'] == 'debug') {
@@ -532,7 +491,6 @@ FF;
     }
 
     if ($_GET['op'] == 'debug') {
-        //$history=array_reverse($history);
         echo "This array in pChart:<br>";
         $all = count($values);
         for ($i = 0; $i < $all; $i++) {
@@ -544,13 +502,9 @@ FF;
         }
         exit;
     }
-
     $DataSet->AddPoints($values, "Serie1");
-    //$DataSet->AddPoints($hours,"Serie3");
-
 } else {
     $DataSet->AddPoints(0, "Serie1");
-    //$DataSet->AddPoints(0,"Serie3");
 }
 
 if ($_GET['op'] == 'values') {
@@ -559,7 +513,6 @@ if ($_GET['op'] == 'values') {
 }
 
 if ($_GET['op'] == 'json') {
-    //header("Content-type: text/json");
     $ret = array();
     $ret['VALUES'] = $values;
     $ret['TIME'] = $hours;
@@ -572,7 +525,6 @@ $DataSet->addPoints($hours, "Labels");
 $DataSet->setSerieDescription("Labels", "ï¿½ï¿½ï¿½ï¿½ï¿½");
 $DataSet->setAbscissa("Labels");
 
-//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 if ($_GET['gcolor'] == 'red') {
     $ColorPalete = array("R" => 220, "G" => 50, "B" => 50);
 } elseif ($_GET['gcolor'] == 'brown') {
@@ -590,7 +542,6 @@ if ($_GET['gcolor'] == 'red') {
         $ColorPalete = array("R" => 250, "G" => 250, "B" => 250);
     }
 }
-//$ColorPalete["Alpha"] = 100; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 $DataSet->setPalette("Serie1", $ColorPalete);
 
 // Initialise the graph  
@@ -599,7 +550,6 @@ $Test = new pImage($w, $h, $DataSet);
 /* Define the boundaries of the graph area */
 $Test->setGraphArea($left_border, $top_border, $w - $right_border, $h - $bottom_border);
 
-//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 if (SETTINGS_THEME == 'light' || $_GET['bg'] == 'light') {
     $Settings = array(
         "StartR" => 240,
@@ -620,7 +570,7 @@ if (SETTINGS_THEME == 'light' || $_GET['bg'] == 'light') {
         "Alpha" => 100);
 }
 $Test->drawGradientArea(0, 0, $w, $h, DIRECTION_VERTICAL, $Settings);
-//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+
 $Settings["StartR"] = $Settings["StartR"] + 40;
 $Settings["StartG"] = $Settings["StartG"] + 40;
 $Settings["StartB"] = $Settings["StartB"] + 40;
@@ -646,17 +596,17 @@ if (SETTINGS_THEME == 'light' || $_GET['bg'] == 'light') {
         "ManualScale" => $AxisBoundaries,
         "DrawXLines" => FALSE,
         "DrawYLines" => FALSE,
-        //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+
         "AxisR" => 100,
         "AxisG" => 100,
         "AxisB" => 100,
-        //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+
         "TickR" => 100,
         "TickG" => 100,
         "TickB" => 100,
         "InnerTickWidth" => 0,
         "OuterTickWidth" => 5,
-        "LabelSkip" => 0, //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        "LabelSkip" => 0,
         "GridTicks" => 1,
         "ScaleSpacing" => 100,
         "XMargin" => 0,
@@ -680,7 +630,7 @@ if (SETTINGS_THEME == 'light' || $_GET['bg'] == 'light') {
         "DrawBox" => FALSE,
         "CaptionOffset" => -18,
         "NoMargin" => TRUE,
-        "Border" => FALSE,                                //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ drawXThresholdArea
+        "Border" => FALSE,
         "CaptionAlign" => CAPTION_RIGHT_BOTTOM);
     /* Choose a nice font */
     $Test->setFontProperties(array("FontName" => $font, "R" => 100, "G" => 100, "B" => 100, "FontSize" => $scale_fontsize));
@@ -690,17 +640,17 @@ if (SETTINGS_THEME == 'light' || $_GET['bg'] == 'light') {
         "ManualScale" => $AxisBoundaries,
         "DrawXLines" => FALSE,
         "DrawYLines" => FALSE,
-        //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+
         "AxisR" => 240,
         "AxisG" => 240,
         "AxisB" => 240,
-        //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+
         "TickR" => 240,
         "TickG" => 240,
         "TickB" => 240,
         "InnerTickWidth" => 0,
         "OuterTickWidth" => 5,
-        "LabelSkip" => 0, //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        "LabelSkip" => 0,
         "GridTicks" => 1,
         "ScaleSpacing" => 100,
         "XMargin" => 0,
@@ -724,17 +674,16 @@ if (SETTINGS_THEME == 'light' || $_GET['bg'] == 'light') {
         "DrawBox" => FALSE,
         "CaptionOffset" => -18,
         "NoMargin" => TRUE,
-        "Border" => FALSE,                                //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ drawXThresholdArea
+        "Border" => FALSE,
         "CaptionAlign" => CAPTION_RIGHT_BOTTOM);
     /* Choose a nice font */
     $Test->setFontProperties(array("FontName" => $font, "R" => 240, "G" => 240, "B" => 240, "FontSize" => $scale_fontsize));
 }
 
 $Test->drawScale($scaleSettings);
-//$Test->drawGraphAreaGradient(162,183,202,50);
 $Test->setFontProperties(array("FontName" => $font, "FontSize" => $threshold_fontsize));
 $drawThreshold = $ThresholdSettings;
-$drawThreshold["Alpha"] = 10;  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+$drawThreshold["Alpha"] = 10;
 $index = 0;
 $Alpha = $drawThreshold["Alpha"];
 while ($index < sizeof($thresholds)) {
@@ -750,18 +699,16 @@ while ($index < sizeof($thresholds)) {
     ++$index;
 }
 $drawThreshold["Alpha"] = $Alpha;
-$Test->drawThreshold(round(max($values), 1), $ThresholdSettings); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-$Test->drawThreshold(round(min($values), 1), $ThresholdSettings); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-$Test->drawThreshold(round(array_sum($values) / sizeof($values), 1), $ThresholdSettings); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-//$Test->drawGrid(1,TRUE,230,230,230,10);
+$Test->drawThreshold(round(max($values), 1), $ThresholdSettings);
+$Test->drawThreshold(round(min($values), 1), $ThresholdSettings);
+$Test->drawThreshold(round(array_sum($values) / sizeof($values), 1), $ThresholdSettings);
+
 if ($_GET['scale'] == 'zero') {
     $temp = $ThresholdSettings["WriteCaption"];
     $ThresholdSettings["WriteCaption"] = FALSE;
     $Test->drawThreshold(0, $ThresholdSettings);
     $ThresholdSettings["WriteCaption"] = $temp;
 }
-
-//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 if (isset($_GET['title'])) {
     $_GET['title'] = strip_tags($_GET['title']);
@@ -781,23 +728,15 @@ if (SETTINGS_THEME == 'light' || $_GET['bg'] == 'light') {
     }
 }
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-if ($_GET['gtype'] == 'curve') { //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-    //$Test->drawCubicCurve($DataSet->GetData(),$DataSet->GetDataDescription());
-    //$Test->clearShadow();
-    //$Test->drawFilledCubicCurve($DataSet->GetData(),$DataSet->GetDataDescription(),.1,30, FALSE);
+if ($_GET['gtype'] == 'curve') {
     $Test->drawSplineChart(array(
         "DisplayValues" => FALSE,
         "BreakVoid" => FALSE,
         "VoidTicks" => 0,
         "DisplayColor" => DISPLAY_AUTO));
-    $Test->drawAreaChart(array("AroundZero" => FALSE)); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-    // $Test->drawAreaChart(array("AroundZero"=>TRUE)); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    $Test->drawAreaChart(array("AroundZero" => FALSE));
 } elseif ($_GET['gtype'] == 'bar') { //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-    //$Test->drawFilledRectangle(60,60,450,190,array("R"=>255,"G"=>255,"B"=>255,"Surrounding"=>-200,"Alpha"=>10));
-    //$Test->drawScale(array("DrawSubTicks"=>TRUE));
     $Test->setShadow(TRUE, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
-    //$Test->setFontProperties(array("FontName"=>"../fonts/pf_arma_five.ttf","FontSize"=>6));
     $Test->drawBarChart(array(
         "DisplayValues" => FALSE,
         "Interleave" => 0.2,
@@ -806,17 +745,13 @@ if ($_GET['gtype'] == 'curve') { //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿
         "Rounded" => FALSE,
         "AroundZero" => TRUE,
         "Surrounding" => 0));
-} else { //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-    //$Test->drawLineGraph($DataSet->GetData(),$DataSet->GetDataDescription());
-    //$Test->clearShadow();
-    //$Test->drawFilledLineGraph($DataSet->GetData(),$DataSet->GetDataDescription(), 30);
+} else {
     $Test->drawLineChart(array(
         "DisplayValues" => FALSE,
         "BreakVoid" => FALSE,
         "VoidTicks" => 0,
         "DisplayColor" => DISPLAY_AUTO));
-    //$Test->drawAreaChart(array("AroundZero"=>FALSE)); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-    $Test->drawAreaChart(array("AroundZero" => TRUE)); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    $Test->drawAreaChart(array("AroundZero" => TRUE));
 }
 
 /* Render the picture (choose the best way) */

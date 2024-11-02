@@ -113,51 +113,43 @@ function endMeasure($mpoint)
  * @param mixed $hidden n/a (default 1)
  * @return void
  */
-function PerformanceReport($visible = 0)
+function PerformanceReport($no_print = 0)
 {
     global $perf_data;
 
-    if (!$visible) {
-        echo "<!-- BEGIN PERFORMANCE REPORT\n";
-    } else {
-        echo "<div style='position:absolute;top:60px;left:710px;width:800px;height:300px;'><pre>";
-    }
+    $result = array();
 
     foreach ($perf_data as $k => $v) {
-        if (!$v['NUM']) {
+        if (!isset($v['NUM']) || !$v['NUM']) {
             EndMeasure($k);
         }
     }
 
     foreach ($perf_data as $k => $v) {
-        if ($perf_data['TOTAL']['TIME']) {
+        if (isset($perf_data['TOTAL']) && $perf_data['TOTAL']['TIME']) {
             $v['PROC'] = ((int)($v['TIME'] / $perf_data['TOTAL']['TIME'] * 100 * 100)) / 100;
+        } else {
+            $v['PROC'] = 0;
         }
-
         $rs = "$k (" . $v['NUM'] . "): " . round($v['TIME'], 4) . " " . round($v['PROC'], 2) . "%";
-
         if (isset($v['MEMORY_START'])) {
             $rs .= ' M (s): ' . $v['MEMORY_START'] . 'b';
         }
-
         if (isset($v['MEMORY_END'])) {
             $rs .= ' M (e): ' . $v['MEMORY_END'] . 'b';
         }
-
-        if (!$v['NUM']) {
-            $tmp[] = "Not finished $k";
+        if (!isset($v['NUM']) || !$v['NUM']) {
+            $result[] = "Not finished $k";
+        } else {
+            $result[] = $rs;
         }
-
-        $tmp[] = $rs;
     }
 
-    echo implode("\n", $tmp);
-
-    if (!$visible) {
+    if (!$no_print) {
+        echo "<!-- BEGIN PERFORMANCE REPORT\n";
+        echo implode("\n", $result);
         echo "\n END PERFORMANCE REPORT -->";
-    } else {
-        echo "</pre></div>";
     }
-    return $tmp;
+    return $result;
 }
 

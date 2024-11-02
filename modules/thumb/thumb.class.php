@@ -6,6 +6,7 @@
  * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
  * @version 0.2
  */
+
 //
 class thumb extends module
 {
@@ -35,74 +36,65 @@ class thumb extends module
         //}
 
 
-        if ($this->live) {
+        if (isset($this->live)) {
             $out['LIVE'] = $this->live;
         }
 
-        if ($this->slideshow) {
-            $out['SLIDESHOW']=1;
+        if (isset($this->slideshow)) {
+            $out['SLIDESHOW'] = $this->slideshow;
         }
 
-        if ($this->userpassword) {
+        if (isset($this->userpassword)) {
             $this->userpassword = processTitle($this->userpassword);
             $tmp = explode(':', $this->userpassword);
             $this->username = $tmp[0];
             $this->password = $tmp[1];
         }
 
-        if ($this->url) {
+        if (isset($this->url)) {
             $this->url = processTitle($this->url);
             $this->username = processTitle($this->username);
             $this->password = processTitle($this->password);
-
-            $filename = 'thumb_' . md5($this->url) . basename(preg_replace('/\W/', '', $this->url));
+            $filename = 'thumb_' . md5($this->url);
             if (preg_match('/\.cgi$/is', $filename)) {
                 $filename = str_replace('.cgi', '.jpg', $filename);
             }
-
             $this->src = ROOT . 'cms/cached/' . $filename;
-
-            /*
-            */
-
             $this->src_def = urlencode('/cms/cached/' . $filename);
 
         } else {
-
             preg_match('/(.*)?\/.*$/', $_SERVER['PHP_SELF'], $match);
             $this->src_def = urlencode('http://' . $_SERVER['SERVER_NAME'] . $match[1] . $this->src);
-
         }
 
         $out['REQUESTED'] = $this->src;
 
 
-        if (file_exists($this->src) || $this->url) {
+        if ((isset($this->src) && file_exists($this->src)) || isset($this->url)) {
             //$lst=GetImageSize($this->src);
-            $out['REAL_WIDTH'] = $lst[0];
-            $out['REAL_HEIGHT'] = $lst[1];
-            $out['URL'] = base64_encode($this->url);
-            $out['TRANSPORT'] = urldecode($this->transport);
+            if (isset($lst)) {
+                $out['REAL_WIDTH'] = $lst[0];
+                $out['REAL_HEIGHT'] = $lst[1];
+            }
+            if (isset($this->url)) $out['URL'] = base64_encode($this->url);
+            if (isset($this->transport)) $out['TRANSPORT'] = urldecode($this->transport);
 
-
-            $out['USERNAME'] = urlencode($this->username);
-            $out['PASSWORD'] = urlencode($this->password);
-            $image_format = $lst[2];
+            if (isset($this->username)) $out['USERNAME'] = urlencode($this->username);
+            if (isset($this->password)) $out['PASSWORD'] = urlencode($this->password);
 
             $out['UNIQ'] = rand(1, time());
-            $out['WIDTH'] = $this->width;
-            $out['HEIGHT'] = $this->height;
-            $out['MAX_HEIGHT'] = $this->max_height;
-            $out['MAX_WIDTH'] = $this->max_width;
-            $out['CLOSE'] = htmlspecialchars($this->close);
+            if (isset($this->width)) $out['WIDTH'] = $this->width;
+            if (isset($this->height)) $out['HEIGHT'] = $this->height;
+            if (isset($this->max_height)) $out['MAX_HEIGHT'] = $this->max_height;
+            if (isset($this->max_width)) $out['MAX_WIDTH'] = $this->max_width;
+            if (isset($this->close)) $out['CLOSE'] = htmlspecialchars($this->close);
             /*
             $out['BGCOLOR']=(($this->bgcolor[0]='#')?substr($this->bgcolor,1):$this->bgcolor);
             $out['COLOR']=(($this->color[0]='#')?substr($this->color,1):$this->color);
             */
-            $out['ENLARGE'] = (int)($this->enlarge);
-            $out['SRC'] = urlencode($this->src);
-            $out['SRC_REAL'] = $this->src_def;
-            //echo $out['SRC_REAL']."<br>";
+            if (isset($this->enlarge)) $out['ENLARGE'] = (int)($this->enlarge);
+            if (isset($this->src)) $out['SRC'] = urlencode($this->src);
+            if (isset($this->src_def)) $out['SRC_REAL'] = $this->src_def;
         }
 
 

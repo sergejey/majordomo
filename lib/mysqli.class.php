@@ -128,18 +128,10 @@ class mysql
         */
         if ($this->dbh) return true;
 
-        if (IsWindowsOS()) {
-            if ($this->port) {
-                $this->dbh = mysqli_connect($this->host, $this->user, $this->password, $this->dbName, $this->port);
-            } else {
-                $this->dbh = mysqli_connect($this->host, $this->user, $this->password, $this->dbName);
-            }
+        if ($this->port) {
+            $this->dbh = mysqli_connect($this->host, $this->user, $this->password, $this->dbName, $this->port);
         } else {
-            if ($this->port) {
-                $this->dbh = mysqli_connect('p:' . $this->host, $this->user, $this->password, $this->dbName, $this->port);
-            } else {
-                $this->dbh = mysqli_connect('p:' . $this->host, $this->user, $this->password, $this->dbName);
-            }
+            $this->dbh = mysqli_connect($this->host, $this->user, $this->password, $this->dbName);
         }
 
         if (!$this->dbh) {

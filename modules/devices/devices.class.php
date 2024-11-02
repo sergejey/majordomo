@@ -288,9 +288,7 @@ class devices extends module
         startMeasure('processDevice');
         $device_rec = SQLSelectOne("SELECT * FROM devices WHERE ID=" . (int)$device_id);
         $result = array('HTML' => '', 'DEVICE_ID' => $device_rec['ID']);
-
         $template = getObjectClassTemplate($device_rec['LINKED_OBJECT'], $view);
-
         $result['HTML'] = processTitle($template, $this);
         if ($device_rec['TYPE'] == 'camera') {
             $result['HEIGHT'] = 5;
@@ -493,13 +491,6 @@ class devices extends module
                 if ($diff < 0 || $diff >= 10 * 60 || $diff2 <= 10 * 60) {
                     continue;
                 }
-                /*
-                $tmlr = strtotime($rec['LATEST_RUN']);
-                $diff_run = time() - $tmlr;
-                if ($diff_run <= 20 * 60) {
-                    continue;
-                }
-                */
 
                 if (!checkAccess('spoint', $rec['ID'])) continue;
 
@@ -507,11 +498,16 @@ class devices extends module
                 unset($rec['LINKED_OBJECT']);
                 $rec['LATEST_RUN'] = date('Y-m-d H:i:s');
                 SQLUpdate('devices_scheduler_points', $rec);
-                DebMes("Running point: " . $linked_object . '.' . $rec['LINKED_METHOD'] . ' (' . $rec['VALUE'] . ')', 'devices_schedule');
-                if ($rec['VALUE'] != '') {
-                    callMethodSafe($linked_object . '.' . $rec['LINKED_METHOD'], array('value' => $rec['VALUE']));
+
+                DebMes("Running point (device " . $rec['DEVICE_ID'] . "): " . $linked_object . '.' . $rec['LINKED_METHOD'] . ' (' . $rec['VALUE'] . ')', 'devices_schedule');
+                if ($linked_object != '' && $rec['LINKED_METHOD'] != '') {
+                    if ($rec['VALUE'] != '') {
+                        callMethodSafe($linked_object . '.' . $rec['LINKED_METHOD'], array('value' => $rec['VALUE']));
+                    } else {
+                        callMethodSafe($linked_object . '.' . $rec['LINKED_METHOD']);
+                    }
                 } else {
-                    callMethodSafe($linked_object . '.' . $rec['LINKED_METHOD']);
+                    DebMes("Incorrect linked object and/or method", 'devices_schedule');
                 }
             }
         }
@@ -701,17 +697,8 @@ class devices extends module
                     if (!$record['DEVICE_ID']) continue;
                     $res['devices'][] = $record;
                 }
-
-                //$res = $this->processDevice($id,$view);
             }
             if ($op == 'loadAllDevicesHTML') {
-                /*
-                if (gr('favorite')) {
-                    $devices=SQLSelect("SELECT ID, LINKED_OBJECT FROM devices WHERE FAVORITE=1");
-                } else {
-                    $devices=SQLSelect("SELECT ID, LINKED_OBJECT FROM devices WHERE FAVORITE!=1");
-                }
-                */
                 $devices = SQLSelect("SELECT ID, LINKED_OBJECT FROM devices WHERE SYSTEM_DEVICE=0 AND ARCHIVED=0");
                 $total = count($devices);
                 for ($i = 0; $i < $total; $i++) {
@@ -931,7 +918,6 @@ class devices extends module
                 }
                 $locations[$i]['DEVICES_TOTAL'] = $devices_count;
             }
-            //$devices_count=(int)current(SQLSelectOne("SELECT COUNT(*) FROM devices WHERE LOCATION_ID=".(int)$locations[$i]['ID']));
             $locations[$i]['INDEX'] = $i;
         }
         $out['GROUPS'] = $locations;
@@ -1019,6 +1005,34 @@ class devices extends module
         return $ids;
     }
 
+
+    function getDevicesForAPI($qry = '1')
+    {
+        global $cached_properties;
+        $devices = SQLSelect("SELECT * FROM devices WHERE $qry ORDER BY TITLE");
+        $result = array();
+        $total = count($devices);
+        for ($i = 0; $i < $total; $i++) {
+            $device = array();
+            $device['id'] = $devices[$i]['ID'];
+            $device['title'] = $devices[$i]['TITLE'];
+            $device['object'] = $devices[$i]['LINKED_OBJECT'];
+            $device['type'] = $devices[$i]['TYPE'];
+            $device['favorite'] = $devices[$i]['FAVORITE'];
+            $device['system_device'] = $devices[$i]['SYSTEM_DEVICE'];
+            $obj = getObject($device['object']);
+            if (!isset($cached_properties[$obj->class_id])) {
+                $cached_properties[$obj->class_id] = getClassProperties($obj->class_id);
+            }
+            $properties = $cached_properties[$obj->class_id];
+            foreach ($properties as $p) {
+                $device[$p['TITLE']] = getGlobal($device['object'] . '.' . $p['TITLE']);
+            }
+            $result[] = $device;
+        }
+        return $result;
+    }
+
     /**
      * devices search
      *
@@ -1055,10 +1069,15 @@ class devices extends module
 
         if (!isset($rec['ID'])) return false;
 
+        $sub_devices = SQLSelect("SELECT ID FROM devices WHERE PARENT_ID=" . $rec['ID']);
+        $total = count($sub_devices);
+        for ($i = 0; $i < $total; $i++) {
+            $this->delete_devices($sub_devices[$i]['ID']);
+        }
+
         $payload = array();
         $payload['name'] = $rec['LINKED_OBJECT'];
         sg('HomeBridge.to_remove', json_encode($payload));
-
 
         // some action for related tables
 
@@ -1082,6 +1101,7 @@ class devices extends module
             SQLExec("DELETE FROM " . $tables[$i] . " WHERE `SYSTEM`='sdevice" . $rec['ID'] . "'");
         }
         SQLExec("DELETE FROM devices_linked WHERE DEVICE1_ID='" . $rec['ID'] . "' OR DEVICE2_ID='" . $rec['ID'] . "'");
+        SQLExec("DELETE FROM devices_scheduler_points WHERE DEVICE_ID='" . $rec['ID'] . "'");
         SQLExec("DELETE FROM devices WHERE ID='" . $rec['ID'] . "'");
 
 
@@ -1099,14 +1119,14 @@ class devices extends module
             return 0;
         }
 
-        if ($options['TABLE'] && $options['TABLE_ID']) {
+        if (isset($options['TABLE']) && isset($options['TABLE_ID']) && $options['TABLE'] && $options['TABLE_ID']) {
             $table_rec = SQLSelectOne("SELECT * FROM " . $options['TABLE'] . " WHERE ID=" . $options['TABLE_ID']);
             if (!$table_rec['ID']) {
                 return 0;
             }
         }
 
-        if ($options['LINKED_OBJECT'] != '') {
+        if (isset($options['LINKED_OBJECT']) && $options['LINKED_OBJECT'] != '') {
             $old_device = SQLSelectOne("SELECT ID FROM devices WHERE LINKED_OBJECT LIKE '" . DBSafe($options['LINKED_OBJECT']) . "'");
             if ($old_device['ID']) return $old_device['ID'];
             $rec['LINKED_OBJECT'] = $options['LINKED_OBJECT'];
@@ -1114,17 +1134,22 @@ class devices extends module
 
         $rec = array();
         $rec['TYPE'] = $device_type;
-        if ($options['TITLE']) {
+        if (isset($options['TITLE'])) {
             $rec['TITLE'] = $options['TITLE'];
         } else {
             $rec['TITLE'] = 'New device ' . date('H:i');
         }
-        if ($options['LOCATION_ID']) {
+        if (isset($options['LOCATION_ID'])) {
             $rec['LOCATION_ID'] = $options['LOCATION_ID'];
+        }
+        if (isset($options['PARENT_ID'])) {
+            $parent_device = SQLSelectOne("SELECT * FROM devices WHERE ID=" . (int)$options['PARENT_ID']);
+            $rec['LOCATION_ID'] = (int)$parent_device['LOCATION_ID'];
+            $rec['PARENT_ID'] = $options['PARENT_ID'];
         }
         $rec['ID'] = SQLInsert('devices', $rec);
 
-        if ($rec['LOCATION_ID']) {
+        if (isset($rec['LOCATION_ID'])) {
             $location_title = getRoomObjectByLocation($rec['LOCATION_ID'], 1);
         }
 
@@ -1159,7 +1184,7 @@ class devices extends module
         }
 
         if ($rec['ID']) {
-            say(LANG_DEVICES_IS_ADDED.' '.$rec['TITLE'],2);
+            //say(LANG_DEVICES_IS_ADDED . ' ' . $rec['TITLE'], 2);
         }
 
         return 1;
@@ -1544,6 +1569,7 @@ class devices extends module
  devices: SYSTEM_DEVICE int(3) unsigned NOT NULL DEFAULT 0
  devices: CLICKED datetime DEFAULT NULL
  devices: ARCHIVED int(3) unsigned NOT NULL DEFAULT 0
+ devices: PARENT_ID int(10) unsigned NOT NULL DEFAULT 0
 
  devices: SYSTEM varchar(255) NOT NULL DEFAULT ''
  devices: SUBTYPE varchar(100) NOT NULL DEFAULT ''

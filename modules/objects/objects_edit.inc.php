@@ -172,10 +172,7 @@ if ($this->tab == 'properties') {
         if ($this->mode == 'update') {
             global ${"value" . $props[$i]['ID']};
             if (isset(${"value" . $props[$i]['ID']})) {
-                $this->class_id = $rec['CLASS_ID'];
-                $this->id = $rec['ID'];
-                $this->object_title = $rec['TITLE'];
-                $this->setProperty($props[$i]['TITLE'], ${"value" . $props[$i]['ID']});
+                setGlobal($rec['TITLE'].".".$props[$i]['TITLE'], ${"value" . $props[$i]['ID']});
             }
         }
         $props[$i]['VALUE'] = isset($value['VALUE']) ? $value['VALUE'] : '';

@@ -114,6 +114,18 @@ class saverestore extends module
         $this->result = $p->result;
     }
 
+
+    function parse_size($size) {
+        $unit = preg_replace('/[^bkmgtpezy]/i', '', $size); // Remove the non-unit characters from the size.
+        $size = preg_replace('/[^0-9\.]/', '', $size); // Remove the non-numeric characters from the size.
+        if ($unit) {
+            // Find the position of the unit in the ordered string which is the power of magnitude to multiply a kilobyte by.
+            return round($size * pow(1024, stripos('bkmgtpezy', $unit[0])));
+        }
+        else {
+            return round($size);
+        }
+    }
     /**
      * BackEnd
      *
@@ -125,14 +137,25 @@ class saverestore extends module
     {
 
 
-        global $err_msg;
+        $err_msg = gr('err_msg');
         if ($err_msg) {
             $out['ERR_MSG'] = $err_msg;
         }
-        global $ok_msg;
+        $ok_msg = gr('ok_msg');
         if ($ok_msg) {
             $out['OK_MSG'] = $ok_msg;
         }
+
+        
+        $post_max_size = $this->parse_size(ini_get('post_max_size'));
+        if ($post_max_size > 0) {
+            $max_size = $post_max_size;
+        }
+        $upload_max = $this->parse_size(ini_get('upload_max_filesize'));
+        if ($upload_max > 0 && $upload_max < $max_size) {
+            $max_size = $upload_max;
+        }
+        $out['MAX_SIZE'] = round($max_size / 1024 / 1024,2).' Mb';
 
         if (gr('mode') == 'force_update') {
             unset($_REQUEST['mode']);
@@ -158,15 +181,6 @@ class saverestore extends module
             $this->redirect("?ok_msg=" . urlencode(LANG_DATA_SAVED));
         }
 
-        /*
-        $set_update_url = gr('set_update_url');
-        if ($set_update_url) {
-            $this->config['MASTER_UPDATE_URL'] = $set_update_url;
-            $this->saveConfig();
-            $this->redirect("?ok_msg=" . urlencode(LANG_DATA_SAVED));
-        }
-        */
-
         $this->getConfig();
 
         if (is_dir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp')) {
@@ -183,7 +197,7 @@ class saverestore extends module
         $out['UPDATE_AUTO_TIME'] = $this->config['UPDATE_AUTO_TIME'];
         $out['UPDATE_AUTO_PLUGINS'] = $this->config['UPDATE_AUTO_PLUGINS'];
 
-        global $aditional_git_urls;
+        $aditional_git_urls = gr('aditional_git_urls');
         $out['ADITIONAL_GIT_URLS'] = array();
         foreach ($aditional_git_urls as $url => $title) {
             $tmp = array();
@@ -197,7 +211,8 @@ class saverestore extends module
         $github_feed_url = str_replace('/archive/', '/commits/', $github_feed_url);
         $github_feed_url = str_replace('.tar.gz', '.atom', $github_feed_url);
 
-        if ($_GET['op'] == 'check_updates') {
+        $op = isset($_GET['op'])?$_GET['op']:'';
+        if ($op == 'check_updates') {
             $cache_timeout = 3 * 24 * 60 * 60;
         } else {
             $cache_timeout = 30 * 60;
@@ -266,7 +281,8 @@ class saverestore extends module
                     if ($out['LATEST_ID'] != '' && $out['LATEST_ID'] == $out['LATEST_UPDATED_ID'] && $out['LATEST_CURR_BRANCH'] == $out['UPDATE_CURR_BRANCH']) {
                         $out['NO_NEED_TO_UPDATE'] = 1;
                     }
-                    if ($this->ajax && $_GET['op'] == 'check_updates') {
+                    $op = isset($_GET['op'])?$_GET['op']:'';
+                    if ($this->ajax && $op == 'check_updates') {
                         if (!isset($out['NO_NEED_TO_UPDATE'])) {
                             echo json_encode(array('needUpdate' => '1', 'currBranch' => $out['LATEST_CURR_BRANCH'], 'current_version' => $this->config['LATEST_UPDATED_ID']));
                         } else {

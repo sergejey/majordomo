@@ -350,8 +350,6 @@ class patterns extends module
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
             curl_setopt($ch, CURLOPT_TIMEOUT, 30);
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
             curl_setopt($ch, CURLOPT_USERPWD, $this->connect_username . ":" . $this->connect_password);
             //execute post
             $result = curl_exec($ch);
@@ -497,6 +495,7 @@ class patterns extends module
                     }
                 }
                 $code = $rec['SCRIPT'];
+                setEvalCode($code);
                 $success = eval($code);
                 if ($success === false) {
                     DebMes("Error in pattern code: " . $code, 'patterns');
@@ -517,6 +516,7 @@ class patterns extends module
             try {
                 $code = $script_exit;
                 if ($code != '') {
+                    setEvalCode($code);
                     $success = eval($code);
                 } else {
                     $success = true;

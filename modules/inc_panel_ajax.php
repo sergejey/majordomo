@@ -14,7 +14,10 @@ function evalConsole($code, $print = 0) {
 		}
 		return eval('print_r('.$code.');');
 	} else {
-		return eval($code);
+	    setEvalCode($code);
+        $eval_result = eval($code);
+        setEvalCode();
+        return $eval_result;
 	}
 }
 

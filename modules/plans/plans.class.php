@@ -181,6 +181,7 @@ class plans extends module
                     runScript($state['SCRIPT_ID']);
                 }
                 if ($state['CODE']!='') {
+                    setEvalCode($state['CODE']);
                     eval($state['CODE']);
                 }
                 echo "OK";
@@ -195,6 +196,7 @@ class plans extends module
                     runScript($component['SCRIPT_ID']);
                 }
                 if ($component['CODE']!='') {
+                    setEvalCode($component['CODE']);
                     eval($component['CODE']);
                 }
                 echo "OK";

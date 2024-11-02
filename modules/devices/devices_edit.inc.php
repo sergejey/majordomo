@@ -34,7 +34,7 @@ if (isset($rec['LINKED_OBJECT']) && $rec['LINKED_OBJECT'] != '') {
 }
 
 $show_methods = array();
-if ($rec['TYPE'] != '') {
+if (isset($rec['TYPE']) && $rec['TYPE'] != '') {
     $methods = $this->getAllMethods($rec['TYPE']);
     if (is_array($methods)) {
         foreach ($methods as $k => $v) {
@@ -208,9 +208,14 @@ if ($this->tab == 'settings') {
                 if (isset($v['_CONFIG_HELP'])) $v['CONFIG_HELP'] = $v['_CONFIG_HELP'];
                 $v['CONFIG_TYPE'] = $v['_CONFIG_TYPE'];
                 $v['VALUE'] = getGlobal($rec['LINKED_OBJECT'] . '.' . $k);
-                if ($v['CONFIG_TYPE'] == 'devices') {
+                if (preg_match('/^devices/is', $v['CONFIG_TYPE'])) {
                     $second_devices = array();
-                    $target_classes = array('SControllers', 'SOpenable');
+                    if (preg_match('/^devices:(.+)/', $v['CONFIG_TYPE'], $m)) {
+                        $target_classes = array_map('trim', explode(',', $m[1]));
+                    } else {
+                        $target_classes = array('SControllers', 'SOpenable');
+                    }
+                    $v['CONFIG_TYPE'] = 'devices';
                     $other_devices = SQLSelect("SELECT ID, TITLE, `TYPE`, LINKED_OBJECT FROM devices WHERE ID!=" . (int)$rec['ID'] . " ORDER BY TITLE");
                     $total = count($other_devices);
                     for ($i = 0; $i < $total; $i++) {
@@ -288,7 +293,7 @@ if ($this->tab == 'settings') {
                         SQLExec("DELETE FROM pvalues WHERE PROPERTY_ID=" . $property_id . " AND OBJECT_ID=" . $object_id);
                         SQLExec("DELETE FROM properties WHERE ID=" . $property_id);
                     }
-                    //echo $property_id;exit;
+                    clearCacheData('P:');
                 }
             }
             if (gg($rec['LINKED_OBJECT'] . '.' . $property_title)) {
@@ -414,25 +419,31 @@ if ($this->mode == 'update' && $this->tab == '') {
         $ok = 0;
     }
 
-    $rec['ALT_TITLES'] = gr('alt_titles', 'trim');
-
     $rec['TYPE'] = $type;
     if ($rec['TYPE'] == '') {
         $out['ERR_TYPE'] = 1;
         $ok = 0;
     }
 
-    global $location_id;
-    $rec['LOCATION_ID'] = (int)$location_id;
+    $rec['PARENT_ID'] = gr('parent_id', 'int');
+    if ($rec['PARENT_ID']) {
+        $parent_device = SQLSelectOne("SELECT * FROM devices WHERE ID=" . $rec['PARENT_ID']);
+        $rec['LOCATION_ID'] = (int)$parent_device['LOCATION_ID'];
+        $rec['SYSTEM_DEVICE'] = (int)$parent_device['SYSTEM_DEVICE'];
+        $rec['ARCHIVED'] = (int)$parent_device['ARCHIVED'];
+        $rec['ALT_TITLES'] = $parent_device['TITLE'] . ' - ' . $rec['TITLE'];
+    } else {
+        $rec['ALT_TITLES'] = gr('alt_titles', 'trim');
+        $rec['LOCATION_ID'] = gr('location_id', 'int');
+        $rec['SYSTEM_DEVICE'] = gr('system_device', 'int');
+        $rec['ARCHIVED'] = gr('archived', 'int');
+    }
 
     if (gr('favorite', 'int')) {
         $rec['FAVORITE'] = gr('favorite_priority', 'int');
     } else {
         $rec['FAVORITE'] = 0;
     }
-
-    $rec['SYSTEM_DEVICE'] = gr('system_device', 'int');
-    $rec['ARCHIVED'] = gr('archived', 'int');
 
 
     $rec['LINKED_OBJECT'] = $linked_object;
@@ -462,6 +473,10 @@ if ($this->mode == 'update' && $this->tab == '') {
             $new_rec = 1;
             $rec['ID'] = SQLInsert($table_name, $rec); // adding new record
             $added = 1;
+        }
+
+        if (!$rec['PARENT_ID']) {
+            SQLExec("UPDATE devices SET LOCATION_ID=" . (int)$rec['LOCATION_ID'] . ", SYSTEM_DEVICE=" . (int)$rec['SYSTEM_DEVICE'] . ", ARCHIVED=" . (int)$rec['ARCHIVED'] . " WHERE PARENT_ID=" . $rec['ID']);
         }
 
         if ($rec['LOCATION_ID']) {
@@ -514,7 +529,7 @@ if ($this->mode == 'update' && $this->tab == '') {
             setGlobal($object_rec['TITLE'] . '.linkedRoom', '');
         }
 
-        if ($added && is_array($type_details['PROPERTIES'])) {
+        if ($added && isset($type_details['PROPERTIES']) && is_array($type_details['PROPERTIES'])) {
             foreach ($type_details['PROPERTIES'] as $property => $details) {
                 if (isset($details['_CONFIG_DEFAULT'])) {
                     setGlobal($object_rec['TITLE'] . '.' . $property, $details['_CONFIG_DEFAULT']);
@@ -576,7 +591,7 @@ foreach ($this->device_types as $k => $v) {
 }
 
 
-if ($rec['LINKED_OBJECT']) {
+if (isset($rec['LINKED_OBJECT']) && $rec['LINKED_OBJECT'] != '') {
     $processed = $this->processDevice($rec['ID']);
     $out['HTML'] = $processed['HTML'];
 }
@@ -588,15 +603,29 @@ $out['TYPES'] = $types;
 
 $out['LOCATIONS'] = SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE+0");
 
-
-if ($rec['LOCATION_ID']) {
+if (isset($rec['LOCATION_ID']) && $rec['LOCATION_ID']) {
     $location_rec = SQLSelectOne("SELECT ID,TITLE FROM locations WHERE ID=" . $rec['LOCATION_ID']);
     $out['LOCATION_TITLE'] = processTitle($location_rec['TITLE']);
     $other_devices = SQLSelect("SELECT ID, TITLE, ARCHIVED FROM devices WHERE LOCATION_ID=" . (int)$rec['LOCATION_ID'] . " ORDER BY TITLE");
     $out['OTHER_DEVICES'] = $other_devices;
 }
 
-if ($rec['TYPE']) {
+if (isset($rec['TYPE']) && $rec['TYPE'] != '') {
     $other_devices_type = SQLSelect("SELECT ID, TITLE, ARCHIVED, LINKED_OBJECT FROM devices WHERE TYPE='" . $rec['TYPE'] . "' ORDER BY TITLE");
     $out['OTHER_DEVICES_TYPE'] = $other_devices_type;
 }
+
+$parent_id = gr('parent_id', 'int');
+if (!$parent_id && $rec['PARENT_ID']) $parent_id = $rec['PARENT_ID'];
+if ($parent_id) {
+    $parent_device = SQLSelectOne("SELECT * FROM devices WHERE ID=" . $parent_id);
+    $out['PARENT_DEVICE_TITLE'] = $parent_device['TITLE'];
+} elseif ($rec['ID']) {
+    $sub_devices = SQLSelect("SELECT ID, TITLE FROM devices WHERE PARENT_ID=".(int)$rec['ID']." ORDER BY TITLE");
+    if (isset($sub_devices[0])) {
+        $out['SUB_DEVICES']=$sub_devices;
+    }
+}
+$out['PARENT_ID'] = $parent_id;
+
+$out['PARENTS'] = SQLSelect("SELECT ID, TITLE FROM devices WHERE PARENT_ID=0 ORDER BY TITLE");

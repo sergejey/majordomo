@@ -241,7 +241,7 @@ function addClassObject($class_name, $object_name, $system = '')
                   FROM objects
                  WHERE TITLE = '" . DBSafe($object_name) . "'";
     $object = SQLSelectOne($sqlQuery);
-    if ($object['ID'])
+    if (isset($object['ID']))
         return $object['ID'];
 
     if ($system != '') {
@@ -249,7 +249,7 @@ function addClassObject($class_name, $object_name, $system = '')
                   FROM objects
                  WHERE `SYSTEM` = '" . DBSafe($system) . "'";
         $object = SQLSelectOne($sqlQuery);
-        if ($object['ID'])
+        if (isset($object['ID']))
             return $object['ID'];
     }
 
@@ -325,7 +325,6 @@ function addLinkedProperty($object, $property, $module)
         } else {
             $tmp = explode(',', $value['LINKED_MODULES']);
         }
-
         if (!in_array($module, $tmp)) {
             $tmp[] = $module;
 
@@ -333,6 +332,7 @@ function addLinkedProperty($object, $property, $module)
 
             SQLUpdate('pvalues', $value);
         }
+        return $value['ID'];
     } else {
         return 0;
     }
@@ -881,7 +881,7 @@ function getHistoryAvg($varname, $start_time, $stop_time = 0)
  */
 function getHistoryValue($varname, $time, $nerest = false)
 {
-	$time = (int)$time;
+    $time = (int)$time;
     if ($time <= 0) $time = (time() + $time);
 
     // Get hist val id
@@ -1067,10 +1067,20 @@ function callMethodSafe($method_name, $params = 0)
     }
 }
 
-function callAPI($api_url, $method = 'GET', $params = 0)
+function callAPISync($api_url, $method = 'GET', $params = 0)
+{
+    return callAPI($api_url, $method, $params, true);
+}
+
+function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
 {
     $is_child = false;
     $fork_disabled = true;
+
+    if (is_array($method)) {
+        $params = $method;
+        $method = 'GET';
+    }
 
     if (defined('ENABLE_FORK') && ENABLE_FORK && function_exists('pcntl_fork')) {
         $fork_disabled = false;
@@ -1112,10 +1122,8 @@ function callAPI($api_url, $method = 'GET', $params = 0)
         curl_setopt($api_ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
         curl_setopt($api_ch, CURLOPT_MAXREDIRS, 2);
         curl_setopt($api_ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
-        curl_setopt($api_ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($api_ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($api_ch, CURLOPT_NOSIGNAL, 1);
-        if (!$is_child) {
+        if (!$is_child && !$wait_response) {
             curl_setopt($api_ch, CURLOPT_TIMEOUT_MS, 50);
         }
     }
@@ -1128,7 +1136,7 @@ function callAPI($api_url, $method = 'GET', $params = 0)
         curl_setopt($api_ch, CURLOPT_POSTFIELDS, $params);
     }
     curl_setopt($api_ch, CURLOPT_URL, $url);
-    curl_exec($api_ch);
+    $result = curl_exec($api_ch);
 
     if (curl_errno($api_ch)) {
         $errorInfo = curl_error($api_ch);
@@ -1141,6 +1149,18 @@ function callAPI($api_url, $method = 'GET', $params = 0)
     if ($is_child) {
         exit();
     }
+
+    if ($result != '') {
+        $data = json_decode($result, true);
+        if (is_array($data) && isset($data['apiHandleResult'])) {
+            return $data['apiHandleResult'];
+        } elseif (is_array($data)) {
+            return $data;
+        } else {
+            return $result;
+        }
+    }
+
     return true;
 
 }

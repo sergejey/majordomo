@@ -700,3 +700,23 @@ function isModuleInstalled($module_name)
         return false;
     }
 }
+
+function setEvalCode($code = '') {
+    global $evalCodeInProgress;
+    $evalCodeInProgress = $code;
+}
+
+function getEvalCode() {
+    global $evalCodeInProgress;
+    if (isset($evalCodeInProgress) && $evalCodeInProgress!='') {
+        $tmp = explode("\n", $evalCodeInProgress);
+        $total_lines = count($tmp);
+        for ($i = 0; $i < $total_lines; $i++) {
+            $line = $i+1;
+            $tmp[$i] = "($line) " . $tmp[$i];
+        }
+        return implode("\n", $tmp);
+    } else {
+        return false;
+    }
+}

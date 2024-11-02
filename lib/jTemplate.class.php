@@ -515,6 +515,8 @@ class jTemplate
                     $true_part = $temp[0];
                     $false_part = isset($temp[1]) ? $temp[1] : "";
 
+                    $str = "// " . str_replace("\n", " ", $condition);
+
                     $condition = preg_replace('/^!(\w+)$/', '!(isset($hash[\'\\1\'])?$hash[\'\\1\']:null)', $condition);
                     $condition = preg_replace('/^(\w+)$/', '(isset($hash[\'\\1\'])?$hash[\'\\1\']:null)', $condition);
                     $condition = preg_replace('/(\w+)(?=[=!<>])/', '(isset($hash[\'\\1\'])?$hash[\'\\1\']:null)', $condition);
@@ -523,13 +525,11 @@ class jTemplate
                     $condition = preg_replace('/\]=(?=[^\w=])/', ']==', $condition);
                     $condition = preg_replace('/:null\)=(?=[^\w=])/', ':null)==', $condition);
 
-                    $str = "if ($condition) {\$res1=\$true_part;} else {\$res1=\$false_part;}";
+                    $str .= "\nif ($condition) {\$res1=\$true_part;} else {\$res1=\$false_part;}";
 
-                    try {
-                        $result = @eval($str);
-                    } catch (Exception $e) {
-                        registerError('jTemplate', sprintf('Error in script "%s": ' . $e->getMessage()));
-                    }
+                    setEvalCode($str);
+                    eval($str);
+                    setEvalCode();
 
                     $bdy = $res1;
                     $res = str_replace($bdy_old, $bdy, $res);
@@ -641,7 +641,9 @@ class jTemplate
                     $code .= "\$tmp=" . $obj . "->result;\n";
 
                     try {
+                        setEvalCode($code);
                         eval($code);
+                        setEvalCode();
                     } catch (Exception $e) {
                         echo "Error: " . $e->getMessage();
                     }

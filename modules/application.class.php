@@ -1,27 +1,17 @@
 <?php
-/*
-* @version 0.3 (auto-set)
-*/
 
-/**
- * @author Serge Dzheigalo <jey@unit.local>
- * @package project
- */
 class application extends module
 {
 
     var $action;
     var $member_id;
 
-// --------------------------------------------------------------------
     function __construct()
     {
         $this->name = "application";
         $this->app_action = '';
         $this->popup = false;
     }
-
-// --------------------------------------------------------------------
 
     function saveParams($data = 1)
     {
@@ -382,7 +372,9 @@ class application extends module
                 $code .= $obj . "->ajax=1;\n";
                 $code .= $obj . "->run();\n";
                 startMeasure("module_" . $this->action);
+                setEvalCode($code);
                 eval($code);
+                setEvalCode();
                 endMeasure("module_" . $this->action);
 
             }
@@ -396,8 +388,4 @@ class application extends module
 
     }
 
-// --------------------------------------------------------------------
-
 }
-
-

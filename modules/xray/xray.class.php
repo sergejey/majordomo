@@ -1018,7 +1018,20 @@ class xray extends module
 								$totalSum = 0;
 								$uptime = 0;
 
+                                $DBstat_Connections = '';
 								foreach($select as $key => $value) {
+                                    if ($value['Variable_name'] == 'Threads_running') {
+                                        $DBstat_Connections .= 'running: '.$value['Value'].'; ';
+                                    }
+                                    if ($value['Variable_name'] == 'Threads_connected') {
+                                        $DBstat_Connections .= 'connected: '.$value['Value'].'; ';
+                                    }
+                                    if ($value['Variable_name'] == 'Threads_cached') {
+                                        $DBstat_Connections .= 'cached: '.$value['Value'].'; ';
+                                    }
+								    if ($value['Variable_name'] == 'Threads_created') {
+                                        $DBstat_Connections .= 'created: '.$value['Value'].'; ';
+                                    }
 									foreach($array_sum as $comName) {
 										if($value['Variable_name'] == $comName) {
 											$totalSum = $totalSum + $value['Value'];
@@ -1029,16 +1042,20 @@ class xray extends module
 										}
 									}
 								}
-								
+
+                                $DBstat_Connections .= 'max: '.current(SQLSelectOne("select @@max_connections"));
+
 								$DBstat_PerSec = $totalSum/$uptime;
 								
 								$DBstat_PerSecType = 'rezerv';
 							}
-							
+
+
 							echo json_encode(array(
 								'second' => round($DBstat_PerSec), 
 								'minute' => round($DBstat_PerSec*60), 
 								'hours' => round($DBstat_PerSec*60*60),
+                                'connections' => $DBstat_Connections,
 								'type' => $DBstat_PerSecType,
 							));
 						} else {

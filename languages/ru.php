@@ -1123,6 +1123,9 @@ $dictionary = array(
     'DEVICES_MODULE_TITLE' => 'Простые устройства',
     'DEVICES_COPY_SETTINGS' => 'Копировать настройки',
     'DEVICES_LINKED_WARNING' => 'Внимание: выбор существующего объекта приведёт к привязке его к новому классу.',
+    'DEVICES_SUB_DEVICES' => 'Дочерние устройства',
+    'DEVICES_PARENT_DEVICE' => 'Родительское устройство',
+
     'DEVICES_RELAY' => 'Реле/Управляемый выключатель',
     'DEVICES_DIMMER' => 'Освещение (Диммер)',
     'DEVICES_RGB' => 'Освещение (RGB)',
@@ -1352,6 +1355,7 @@ $dictionary = array(
     'DEVICES_THERMOSTAT_THRESHOLD' => 'Порог срабатывания термостата (0.25 по-умолчанию)',
     'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Статус реле',
     'DEVICES_THERMOSTAT_SET_TARGET_TEMPERATURE' => 'Установить желаемую температуру',
+    'DEVICES_THERMOSTAT_OPENABLE' => 'Окна/двери',
     'DEVICES_ALL_BY_TYPE' => 'Все по типам',
     'DEVICES_ALL_BY_ROOM' => 'Все по комнатам',
     'DEVICES_LOAD_TIMEOUT'=>'Таймер изменения статуса нагрузки',
@@ -1595,6 +1599,7 @@ $dictionary = array(
 	'NEWDASH_DB_REQ_SEC' => 'Запросов к БД в секунду',
 	'NEWDASH_DB_REQ_MIN' => 'Запросов к БД в минуту',
 	'NEWDASH_DB_REQ_HOUR' => 'Запросов к БД в час',
+    'NEWDASH_DB_CONNECTIONS' => 'Соединений с БД',
 	
 	'NEWDASH_DMB_TITLE' => 'Добавить свой блок',
 	'NEWDASH_DMB_TITLE_MODAL' => 'Добавление своего блока',

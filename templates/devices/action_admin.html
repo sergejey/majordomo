@@ -38,6 +38,9 @@
     <a href="?">&lt;&lt;&lt; <#LANG_BACK#></a> |
     <a href="?location_id=[#LOCATION_ID#]"><#LANG_LOCATION#></a> |
      <a href="?type=[#TYPE#]"><#LANG_TYPE#></a>
+     [#if PARENT_DEVICE_TITLE!=""#]
+     | <a href="?id=[#PARENT_ID#]&view_mode=<#VIEW_MODE#>&tab=<#TAB#>">[#PARENT_DEVICE_TITLE#]</a>
+     [#endif#]
  </p>
  [#endif NO_NAV#]
 
@@ -130,6 +133,28 @@
          [#inc preview.html#]
          [#endif LINKED_OBJECT#]
 
+         [#if PARENT_ID="0"#]
+         <div>
+             <div>
+             <b><#LANG_DEVICES_SUB_DEVICES#>:</b>
+             [#if SUB_DEVICES#]
+                 [#begin SUB_DEVICES#]
+                 <div>
+                     [#module name="devices" id="<#SUB_DEVICES.ID#>"#]
+                 </div>
+                 <a href="?view_mode=edit_devices&id=[#ID#]&tab=<#TAB#>">[#TITLE#]</a>
+                 [#end SUB_DEVICES#]
+             [#else SUB_DEVICES#]
+                 <div><#LANG_NO#></div>
+             [#endif SUB_DEVICES#]
+             </div>
+             &nbsp;
+             <div>
+              <a href="?view_mode=edit_devices&parent_id=[#ID#]" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#></a>
+             </div>
+         </div>
+         [#endif PARENT_ID#]
+
          [#if LINKED_PROPERTIES#]
          &nbsp;
          <div>
@@ -152,7 +177,7 @@
              <script type="text/javascript">
                  function runMethod_[#NAME#]() {
                      if ('[#_CONFIG_REQ_VALUE#]'!='') {
-                         let val = prompt('<#LANG_VALUE#>:');
+                         val = prompt('<#LANG_VALUE#>:');
                          if (val != null && val!='') {
                              callMethod('<#LINKED_OBJECT#>.[#NAME#]','value='+encodeURIComponent(val));
                          }

@@ -271,7 +271,7 @@ class market extends module
                         $postType = '<i>Новость</i> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i>';
                     }
 
-                    if (time() - 950400 <= $data[$i]['ADDED_TM']) {
+                    if (isset($data[$i]['ADDED_TM']) && time() - 950400 <= $data[$i]['ADDED_TM']) {
                         $actualNews = 'background-color: #dff0d8;';
                         $actualNews_Label = '<span class="label label-success" style="margin-right: 10px;">New</span>';
                         $bgColor = '';
@@ -294,7 +294,7 @@ class market extends module
                     }
 
                     echo '<li class="list-group-item ' . $bgColor . '" style="margin-bottom: 5px;' . $actualNews . '">';
-                    echo '<span class="badge">' . date('d.m.Y H:i:s', $data[$i]['ADDED_TM']) . '</span>';
+                    if (isset($data[$i]['ADDED_TM'])) echo '<span class="badge">' . date('d.m.Y H:i:s', $data[$i]['ADDED_TM']) . '</span>';
                     echo '<div onclick="$(\'#news_title_' . $i . '\').toggle(\'slow\');" style="cursor:pointer;">' . $actualNews_Label . $postType . ' ' . htmlspecialchars($data[$i]['TITLE']) . '</div>';
                     echo '<div class="fullTextNewsClass" id="news_title_' . $i . '" style="display: none;margin-top: 10px;padding-top: 10px;border-top: 1px solid lightgray;"><blockquote style="border-left: 5px solid #4d96d3;">' . $body . ' ' . $linkDetail . '</blockquote></div>';
                     echo '</li>';
@@ -424,7 +424,7 @@ class market extends module
                         $tmp = GetXMLTree($github_feed);
                         if (is_array($tmp)) {
                             $items_data = XMLTreeToArray($tmp);
-                            $items = $items_data['feed']['entry'];
+                            $items = isset($items_data['feed']['entry']) ? $items_data['feed']['entry'] : false;
                         } else {
                             $items = false;
                         }
@@ -630,7 +630,11 @@ class market extends module
                 }
             }
         }
-        $locale = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+        if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            $locale = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+        } else {
+            $locale = '';
+        }
         $data_url = 'https://connect.smartliving.ru/market/?lang=' . SETTINGS_SITE_LANGUAGE . "&serial=" . urlencode($serial) . "&locale=" . urlencode($locale) . "&os=" . urlencode($os) . "&" . $details;
 
         $username = '';
@@ -769,6 +773,7 @@ class market extends module
                     if ($files_list != '') {
                         SaveFile(ROOT . 'cms/modules_installed/' . $name . '.files', $files_list);
                     }
+
                     if ($frame) {
                         $this->echonow("OK<br/>", 'green');
                     }
@@ -800,6 +805,11 @@ class market extends module
                 if (file_exists($installed_filename) && Is_Dir($source . "/" . $file) && ($file != '.') && ($file != '..')) {
                     unlink($installed_filename);
                 }
+                $errorFile = ROOT . 'cms/modules_installed/' . $file . ".error";
+                if (file_exists($errorFile)) {
+                    unlink($errorFile);
+                }
+
             }
         }
 
@@ -895,7 +905,9 @@ class market extends module
                 $this->echonow(" OK<br/>", 'green');
             }
             $code = '$plugin = new ' . $name . ';$plugin->uninstall();';
+            setEvalCode($code);
             eval($code);
+            setEvalCode();
             $this->removeTree(ROOT . 'modules/' . $name);
             $this->removeTree(ROOT . 'templates/' . $name);
             if ($name == 'scheduler') {
@@ -959,8 +971,6 @@ class market extends module
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_TIMEOUT, 600);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_FILE, $f);
 
         if (preg_match('/\?op=download/', $url)) {

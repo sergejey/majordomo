@@ -164,6 +164,7 @@ class scripts extends module
                 try {
                     $code = trim($rec['CODE']);
                     if ($code != '') {
+                        setEvalCode($code);
                         $success = eval($code);
                     } else {
                         $success = true;
