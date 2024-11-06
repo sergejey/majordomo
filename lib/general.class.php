@@ -4,10 +4,13 @@
  *
  * Frequiently Used Functions
  *
- * @package MajorDoMo
- * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
- * @version 1.3
  */
+include_once(ROOT . '3rdparty/php-mailer/Exception.php');
+include_once(ROOT . '3rdparty/php-mailer/PHPMailer.php');
+include_once(ROOT . '3rdparty/php-mailer/SMTP.php');
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 if (isset($_SERVER['REQUEST_METHOD'])) {
     $blocked = array('_SERVER', '_COOKIE', 'HTTP_POST_VARS', 'HTTP_GET_VARS', 'HTTP_SERVER_VARS',
@@ -74,9 +77,9 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
 function gr($var_name, $type = 'trim')
 {
 
-    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD']=='DELETE') {
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'DELETE') {
         $content = file_get_contents('php://input');
-        parse_str($content, $_REQUEST );
+        parse_str($content, $_REQUEST);
     }
 
     if (isset($_REQUEST[$var_name])) {
@@ -254,72 +257,120 @@ function checkGeneral($field)
     return (strlen($field) >= 2) ? 1 : 0;
 }
 
-/**
- * Summary of SendMail
- * @param mixed $from From
- * @param mixed $to To
- * @param mixed $subj Subject
- * @param mixed $body Body
- * @param mixed $attach Attachement (default '')
- * @return bool
- */
-function SendMail($from, $to, $subj, $body, $attach = "")
+function SendMail($from, $to, $subj, $body = "", $attach = "")
 {
-    $mail = new htmlMimeMail();
-    $mail->setHeadCharset('UTF-8');
-    $mail->setTextCharset('UTF-8');
-    $mail->setFrom($from);
-    $mail->setSubject($subj);
-    $mail->setText($body);
-
-    if ($attach != '') {
-        $attach_data = $mail->getFile($attach);
-        $mail->addAttachment($attach_data, basename($attach), '');
+    if ($body == '') {
+        $body = $subj;
+        $subj = strip_tags($subj);
+        $subj = str_replace("\n", " ", $subj);
+        if (mb_strlen($subj) > 50) {
+            $subj = mb_substr($subj, 0, 50) . '...';
+        }
     }
-
-    $result = $mail->send(array($to));
-
-    return $result;
+    return SendMail_HTML($from, $to, $subj, "<pre>" . htmlspecialchars($body) . "</pre>", $attach);
 }
 
-/**
- * Summary of SendMail_HTML
- * @param mixed $from From
- * @param mixed $to To
- * @param mixed $subj Subject
- * @param mixed $body Body
- * @param mixed $attach Attache (default '')
- * @return bool
- */
-function SendMail_HTML($from, $to, $subj, $body, $attach = "")
+function SendMail_HTML($from, $to, $subj, $body = "", $attach = "")
 {
-    $mail = new htmlMimeMail();
+    $max_file_size = 50 * 1024 * 1024; //50Mb
 
-    $mail->setHeadCharset('UTF-8');
-    $mail->setHTMLCharset('UTF-8');
-    $mail->setFrom($from);
-    $mail->setSubject($subj);
-    $mail->setHTML($body);
+    if ($body == '') {
+        $body = $subj;
+        $subj = strip_tags($subj);
+        $subj = str_replace("\n", " ", $subj);
+        if (mb_strlen($subj) > 50) {
+            $subj = mb_substr($subj, 0, 50) . '...';
+        }
+    }
 
-    if (is_array($attach)) {
-        $total = count($attach);
-        for ($i = 0; $i < $total; $i++) {
-            if (file_exists($attach[$i])) {
-                $attach_data = $mail->getFile($attach[$i]);
-                $mail->addAttachment($attach_data, basename($attach[$i]), '');
+    if (defined('SETTINGS_MAIL_TYPE')) {
+        $mailer_type = SETTINGS_MAIL_TYPE; //sendmail
+    } else {
+        $mailer_type = 'sendmail'; //sendmail
+    }
+    if (defined('SETTINGS_MAIL_HOST')) {
+        $smtp_host = SETTINGS_MAIL_HOST;
+    } else {
+        $smtp_host = '';
+    }
+    if (defined('SETTINGS_MAIL_AUTH')) {
+        if (SETTINGS_MAIL_AUTH) $smtp_auth = true;
+        else $smtp_auth = false;
+    } else {
+        $smtp_auth = true;
+    }
+    if (defined('SETTINGS_MAIL_USER')) {
+        $smtp_user = SETTINGS_MAIL_USER;
+    } else {
+        $smtp_user = '';
+    }
+    if (defined('SETTINGS_MAIL_PASSWORD')) {
+        $smtp_password = SETTINGS_MAIL_PASSWORD;
+    } else {
+        $smtp_password = '';
+    }
+    if (defined('SETTINGS_MAIL_SECURE')) {
+        $smtp_secure = SETTINGS_MAIL_SECURE;
+    } else {
+        $smtp_secure = '';
+    }
+    if (defined('SETTINGS_MAIL_PORT')) {
+        $smtp_port = SETTINGS_MAIL_PORT;
+    } else {
+        $smtp_port = 465;
+    }
+
+    if ($mailer_type == 'smtp') {
+        if ($smtp_auth && (!$smtp_user || !$smtp_password)) {
+            DebMes("SMTP username/password is not set", 'sendmail');
+            return false;
+        }
+        if (!$smtp_host) {
+            DebMes("SMTP host is not set", 'sendmail');
+            return false;
+        }
+    }
+    $mail = new PHPMailer(true);
+    try {
+        if ($mailer_type == 'sendmail') {
+            $mail->isSendmail();
+        } else {
+            $mail->Host = $smtp_host;  // Specify main and backup SMTP servers
+            $mail->SMTPAuth = $smtp_auth;                               // Enable SMTP authentication
+            $mail->Username = $smtp_user;                 // SMTP username
+            $mail->Password = $smtp_password;                           // SMTP password
+            $mail->SMTPSecure = $smtp_secure;                            // Enable TLS encryption, `ssl` also accepted
+            $mail->Port = $smtp_port;
+            $mail->isSMTP();                                      // Set mailer to use SMTP
+        }
+        $mail->CharSet = 'UTF-8';
+        $mail->setFrom($smtp_user, $from);
+        $mail->addAddress($to);
+        $mail->isHTML(true);                                  // Set email format to HTML
+        $mail->Subject = $subj;
+        $mail->Body = $body;
+
+        if (is_array($attach)) {
+            $total_file_size = 0;
+            $total = count($attach);
+            for ($i = 0; $i < $total; $i++) {
+                if (file_exists($attach[$i])) {
+                    $total_file_size += filesize($attach[$i]);
+                    if ($total_file_size <= $max_file_size) {
+                        $mail->addAttachment($attach[$i], basename($attach[$i]));
+                    }
+                }
+            }
+        } elseif ((file_exists($attach)) && ($attach != "")) {
+            $total_file_size = filesize($attach);
+            if ($total_file_size <= $max_file_size) {
+                $mail->addAttachment($attach, basename($attach));
             }
         }
-    } elseif ((file_exists($attach)) && ($attach != "")) {
-        $attach_data = $mail->getFile($attach);
-        $mail->addAttachment($attach_data, basename($attach), '');
-    }
-    $result = $mail->send(array($to));
-    if (!$result) {
-        DebMes('Message could not be sent. Mailer Error: ' . $mail->ErrorInfo . ' (' . __FILE__ . ')');
-        //getLogger(__FILE__)->error('Message could not be sent. Mailer Error: ' . $mail->ErrorInfo);
-    } else {
-        DebMes('Message has been sent');
-        //getLogger(__FILE__)->debug('Message has been sent');
+        $result = $mail->send();
+    } catch (Exception $e) {
+        DebMes("Message could not be sent: " . $mail->ErrorInfo, 'sendmail');
+        return false;
     }
     return $result;
 }
@@ -701,18 +752,20 @@ function isModuleInstalled($module_name)
     }
 }
 
-function setEvalCode($code = '') {
+function setEvalCode($code = '')
+{
     global $evalCodeInProgress;
     $evalCodeInProgress = $code;
 }
 
-function getEvalCode() {
+function getEvalCode()
+{
     global $evalCodeInProgress;
-    if (isset($evalCodeInProgress) && $evalCodeInProgress!='') {
+    if (isset($evalCodeInProgress) && $evalCodeInProgress != '') {
         $tmp = explode("\n", $evalCodeInProgress);
         $total_lines = count($tmp);
         for ($i = 0; $i < $total_lines; $i++) {
-            $line = $i+1;
+            $line = $i + 1;
             $tmp[$i] = "($line) " . $tmp[$i];
         }
         return implode("\n", $tmp);

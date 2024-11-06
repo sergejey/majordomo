@@ -25,7 +25,7 @@ if ($clear_codeeditor) {
 
 
 $sections = array();
-$filters = array('', 'system', 'behavior', 'hook', 'backup', 'remote', 'scenes', 'calendar', 'codeeditor');
+$filters = array('', 'system', 'behavior', 'hook', 'backup', 'remote', 'scenes', 'calendar', 'codeeditor','mail');
 $total = count($filters);
 for ($i = 0; $i < $total; $i++) {
     $rec = array();
