@@ -593,7 +593,9 @@ function getGlobal($varname)
 {
     $tmp = explode('.', $varname);
 
+    $class_name = '';
     if (isset($tmp[2])) {
+        $class_name = $tmp[0];
         $object_name = $tmp[0] . '.' . $tmp[1];
         $varname = $tmp[2];
     } elseif (isset($tmp[1])) {
@@ -613,14 +615,22 @@ function getGlobal($varname)
         return $cached_value;
     }
 
-    $obj = getObject($object_name);
-
-    if ($obj) {
-        $value = $obj->getProperty($varname);
-        return $value;
+    if ($class_name!='' && isModuleInstalled($class_name)) {
+        include_once(DIR_MODULES.$class_name.'/'.$class_name.'.class.php');
+        $module = new $class_name();
+        if (method_exists($module, 'getModuleProperty')) {
+            $data = $module->getModuleProperty($tmp[1].'.'.$tmp[2]);
+            return $data;
+        }
     } else {
-        return 0;
+        $obj = getObject($object_name);
+        if ($obj) {
+            $value = $obj->getProperty($varname);
+            return $value;
+        }
     }
+    return false;
+
 }
 
 
