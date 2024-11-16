@@ -89,10 +89,10 @@
     }
    </script>
    [#begin FOLDERS#]
-     <a href="#" onclick="$('.style_images').hide();$('#style_[#TITLE#]').show();return false;">[#TITLE#]</a>
+     <a href="#" onclick="$('.style_images').hide();$('#style_[#TITLE#]_<#PROPERTIES.NAME#>').show();return false;">[#TITLE#]</a>
    [#end FOLDERS#]
    [#begin FOLDERS#]
-   <div id="style_[#TITLE#]" class="style_images" style="display:none">
+   <div id="style_[#TITLE#]_<#PROPERTIES.NAME#>" class="style_images" style="display:none">
     [#begin STYLES#]
     <a href="#" onclick="return setStyleImage_<#PROPERTIES.NAME#>('<#ROOTHTML#>cms/scenes/styles/[#IMAGE#]');"><img src="<#ROOTHTML#>cms/scenes/styles/[#IMAGE#]"></a>
     [#end STYLES#]
