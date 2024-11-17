@@ -256,6 +256,15 @@ if (!isset($request[0])) {
             }
         }
 
+        if ($device['TYPE'] == 'relay') {
+            $loadType = gr('load_type');
+            if ($loadType != '') {
+                if ($loadType == 'general') $loadType = '';
+                sg($device['LINKED_OBJECT'] . '.loadType', $loadType);
+            }
+        }
+
+
         $object_id = addClassObject($type_details['CLASS'], $device['LINKED_OBJECT'], 'sdevice' . $device['ID']);
         $object_rec = SQLSelectOne("SELECT * FROM objects WHERE ID=" . $object_id);
         $object_rec['DESCRIPTION'] = $device['TITLE'];
@@ -427,6 +436,9 @@ if (!isset($request[0])) {
             foreach ($properties as $property) {
                 $property_title = $property['TITLE'];
                 $objects[$i][$property_title] = getGlobal($objects[$i]['object'] . '.' . $property_title);
+                if (is_integer(strpos($objects[$i][$property_title],'<#LANG'))) {
+                    $objects[$i][$property_title] = processTitle($objects[$i][$property_title]);
+                }
             }
         }
     } else {

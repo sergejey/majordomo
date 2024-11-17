@@ -43,6 +43,7 @@ $dictionary = array(
     'GENERAL_WE_HAVE_GUESTS_MODE' => 'У нас гости',
     'GENERAL_NIGHT_MODE' => 'Ночной режим',
     'GENERAL_DARKNESS_MODE' => 'Тёмное время суток',
+    'GENERAL_PAIRING_MODE' => 'Привязка',
 
     'GENERAL_CLIMATE' => 'Климат',
     'GENERAL_WEATHER_FORECAST' => 'Прогноз погоды',

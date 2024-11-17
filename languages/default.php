@@ -43,6 +43,7 @@ $dictionary = array(
     'GENERAL_WE_HAVE_GUESTS_MODE' => 'We have guests',
     'GENERAL_NIGHT_MODE' => 'Night mode',
     'GENERAL_DARKNESS_MODE' => 'Darkness mode',
+    'GENERAL_PAIRING_MODE' => 'Pairing mode',
 
     'GENERAL_CLIMATE' => 'Climate',
     'GENERAL_WEATHER_FORECAST' => 'Weather forecast',
