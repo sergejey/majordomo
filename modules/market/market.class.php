@@ -215,6 +215,10 @@ class market extends module
             $name = gr('name');
             $value = gr('value');
 
+            $link = gr('link');
+            $out['LINK'] = $link;
+            $out['LINK_URL'] = urlencode($link);
+
             global $names;
 
             if (isset($names) && is_array($names)) {
@@ -305,6 +309,11 @@ class market extends module
             exit;
         }
 
+        if ($op == 'details') {
+            include_once DIR_MODULES . 'market/details.inc.php';
+            return;
+        }
+
         if ($op == '') {
             $result = $this->marketRequest('op=categories', 120);
             $data = json_decode($result, true);
@@ -340,7 +349,6 @@ class market extends module
         $search = gr('search');
 
         $plugins = array();
-        $params = '';
         $missing = array();
 
         $data = new stdClass();
@@ -412,8 +420,6 @@ class market extends module
                     }
                 }
 
-                //if ($rec['MODULE_NAME']==$name) {
-                //unset($rec['LATEST_VERSION']);
                 if (!isset($rec['LATEST_VERSION_URL'])) {
                     if (preg_match('/github\.com/is', $rec['REPOSITORY_URL']) && (isset($rec['EXISTS']) || $rec['MODULE_NAME'] == $name)) {
                         $git_url = str_replace('archive/master.tar.gz', 'commits/master.atom', $rec['REPOSITORY_URL']);
@@ -430,7 +436,6 @@ class market extends module
                         }
                         if (is_array($items)) {
                             $latest_item = $items[0];
-                            //print_r($latest_item);exit;
                             $updated = strtotime($latest_item['updated']['textvalue']);
                             $rec['LATEST_VERSION'] = date('Y-m-d H:i:s', $updated);
                             $rec['LATEST_VERSION_COMMENT'] = $latest_item['title']['textvalue'];
@@ -439,7 +444,6 @@ class market extends module
                     }
                 }
                 if ($rec['MODULE_NAME'] == $name) {
-                    //$this->url=$rec['REPOSITORY_URL'];
                     $this->url = 'https://connect.smartliving.ru/market/?op=download&name=' . urlencode($rec['MODULE_NAME']) . "&serial=" . urlencode(gg('Serial'));
                     $this->version = $rec['LATEST_VERSION'];
                 }
@@ -452,12 +456,6 @@ class market extends module
                     $this->can_be_updated[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
                 }
 
-                //var_dump($rec["LATEST_VERSION"]);
-                /*
-                if (in_array($rec['MODULE_NAME'], $names)) {
-                    $this->selected_plugins[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
-                }
-                */
                 if (isset($rec['EXISTS']) && $rec['INSTALLED_VERSION'] != $rec['LATEST_VERSION'] && $rec['LATEST_VERSION'] != '') {
                     $this->have_updates[] = $rec['MODULE_NAME'];
                     $this->can_be_updated_new[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
@@ -479,7 +477,7 @@ class market extends module
         }
 
 
-        if (count($plugins) > 0) {
+        if (is_array($plugins) && count($plugins) > 0) {
             usort($plugins, function ($a, $b) {
                 return strcmp($a['TITLE'], $b['TITLE']);
             });
@@ -491,128 +489,6 @@ class market extends module
             echo $p->result;
             exit;
         }
-
-        return;
-
-        // $data_url='https://connect.smartliving.ru/market/?lang='.SETTINGS_SITE_LANGUAGE."&serial=".urlencode($serial)."&locale=".urlencode($locale)."&os=".urlencode($os);
-        $result = $this->marketRequest();
-        $data = json_decode($result);
-
-        if (!$data->PLUGINS) {
-            $out['ERR'] = 1;
-            return;
-        }
-        $total = count($data->PLUGINS);
-
-        $old_category = '';
-        $can_be_updated = array();
-        $selected_plugins = array();
-        global $names;
-
-        if (!is_array($names)) {
-            $names = array();
-        }
-        $cat = array();
-        $cat_id = -1;
-
-
-        $modules_in_db = SQLSelect("SELECT * FROM project_modules");
-        $missing = array();
-        foreach ($modules_in_db as $module_in_db) {
-            if (!is_dir(DIR_MODULES . $module_in_db['NAME'])) {
-                $missing[$module_in_db['NAME']] = 1;
-            }
-        }
-
-        $added_plugins = SQLSelect("SELECT MODULE_NAME FROM plugins");
-        $market_plugins = array();
-        for ($i = 0; $i < $total; $i++) {
-            $rec = (array)$data->PLUGINS[$i];
-            $market_plugins[] = $rec['MODULE_NAME'];
-        }
-        foreach ($added_plugins as $plugin) {
-            if (!in_array($plugin['MODULE_NAME'], $market_plugins)) {
-                $rec = array();
-                $rec['MODULE_NAME'] = $plugin['MODULE_NAME'];
-                $rec['TITLE'] = $rec['MODULE_NAME'];
-                $rec['EXISTS'] = 1;
-                $rec['CATEGORY'] = 'Custom';
-                $data->PLUGINS[] = $rec;
-            }
-        }
-
-        $total = count($data->PLUGINS);
-        for ($i = 0; $i < $total; $i++) {
-            $rec = (array)$data->PLUGINS[$i];
-            $plugin_rec = SQLSelectOne("SELECT * FROM plugins WHERE MODULE_NAME LIKE '" . DBSafe($rec['MODULE_NAME']) . "'");
-            if (is_dir(ROOT . 'modules/' . $rec['MODULE_NAME']) || $plugin_rec['ID']) {
-                $rec['EXISTS'] = 1;
-                if ($plugin_rec['ID']) {
-                    $rec['INSTALLED_VERSION'] = $plugin_rec['CURRENT_VERSION'];
-                }
-                $ignore_rec = SQLSelectOne("SELECT * FROM ignore_updates WHERE `NAME` LIKE '" . DBSafe($rec['MODULE_NAME']) . "'");
-                if ($ignore_rec['ID']) {
-                    $rec['IGNORE_UPDATE'] = 1;
-                }
-            }
-
-            if ($rec['CATEGORY'] != $old_category) {
-                $cat[] = array();
-                ++$cat_id;
-                $cat[$cat_id]['NAME'] = $rec['CATEGORY'];
-                $cat[$cat_id]['CATEGORY_ID'] = $rec['CATEGORY_ID'];
-                $old_category = $rec['CATEGORY'];
-            }
-
-            //if ($rec['MODULE_NAME']==$name) {
-            //unset($rec['LATEST_VERSION']);
-
-            if (!isset($rec['LATEST_VERSION_URL'])) {
-                if (preg_match('/github\.com/is', $rec['REPOSITORY_URL']) && ($rec['EXISTS'] || $rec['MODULE_NAME'] == $name)) {
-                    $git_url = str_replace('archive/master.tar.gz', 'commits/master.atom', $rec['REPOSITORY_URL']);
-                    $options = array(
-                        CURLOPT_HTTPHEADER => array('Accept: application/xml')
-                    );
-                    $github_feed = getURL($git_url, 5 * 60, '', '', false, $options);
-                    $tmp = GetXMLTree($github_feed);
-                    if (is_array($tmp)) {
-                        $items_data = XMLTreeToArray($tmp);
-                        $items = $items_data['feed']['entry'];
-                    } else {
-                        $items = false;
-                    }
-                    if (is_array($items)) {
-                        $latest_item = $items[0];
-                        //print_r($latest_item);exit;
-                        $updated = strtotime($latest_item['updated']['textvalue']);
-                        $rec['LATEST_VERSION'] = date('Y-m-d H:i:s', $updated);
-                        $rec['LATEST_VERSION_COMMENT'] = $latest_item['title']['textvalue'];
-                        $rec['LATEST_VERSION_URL'] = $latest_item['link']['href'];
-                    }
-                }
-            }
-
-
-            if ($rec['MODULE_NAME'] == $name) {
-                //$this->url=$rec['REPOSITORY_URL'];
-                $this->url = 'https://connect.smartliving.ru/market/?op=download&name=' . urlencode($rec['MODULE_NAME']) . "&serial=" . urlencode(gg('Serial'));
-                $this->version = $rec['LATEST_VERSION'];
-            }
-            if (($rec['EXISTS'] && !$rec['IGNORE_UPDATE']) || $missing[$rec['MODULE_NAME']]) {
-                $this->can_be_updated[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
-            }
-            if (in_array($rec['MODULE_NAME'], $names)) {
-                $this->selected_plugins[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
-            }
-            if ($rec['EXISTS'] && $rec['INSTALLED_VERSION'] != $rec['LATEST_VERSION']) {
-                $cat[$cat_id]['NEW_VERSION'] = 1;
-                $this->can_be_updated_new[] = array('NAME' => $rec['MODULE_NAME'], 'URL' => $rec['REPOSITORY_URL'], 'VERSION' => $rec['LATEST_VERSION']);
-                $this->have_updates[] = $rec['MODULE_NAME'];
-            }
-            $cat[$cat_id]['PLUGINS'][] = $rec;
-        }
-        $out['CATEGORY'] = $cat;
-
 
     }
 

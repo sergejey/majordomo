@@ -49,11 +49,13 @@
 						<div class="modal-body">
 							<div class="alert" style="background: radial-gradient(circle farthest-corner at 450px 10px, #e5c15b, #e94949);color: white;text-align: center;border: 0px;"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i><#LANG_LONG_OPERATION_WARNING#></div>
 							[#if MODE="getlatest_iframe"#]
-								<iframe id="processUpdateFrame" style="border-radius: 5px;height: 400px;" src="<#ROOTHTML#>modules/saverestore/update_iframe.php?with_extensions=[#WITH_EXTENSIONS#]&with_backup=[#WITH_BACKUP#]&backup=<#BACKUP#>&design=<#DESIGN#>&code=<#CODE#>&data=<#DATA#>&save_files=<#SAVE_FILES#>" width="100%" frameborder="0"></iframe>
+								<iframe id="processUpdateFrame" style="border-radius: 5px;height: 400px;" src="<#ROOTHTML#>modules/saverestore/update_iframe.php?with_extensions=[#WITH_EXTENSIONS#]&with_backup=[#WITH_BACKUP#]&backup=<#BACKUP#>&design=<#DESIGN#>&code=<#CODE#>&data=<#DATA#>&save_files=<#SAVE_FILES#>&link=<#LINK_URL#>" width="100%" frameborder="0"></iframe>
 							[#else#]
 								<p id="updateParams">
 									<input type="checkbox" name="with_extensions" value="1"> <#LANG_UPDATE_ALL_EXTENSIONS#><br/>
 									<input type="checkbox" name="with_backup" value="1" checked> <#LANG_CREATE_BACKUP#>
+									<input type="hidden" name="link" id="update_link" value="">
+									<div id="update_link_text" style="display:none"></div>
 								</p>
 							[#endif#]
 						</div>
@@ -78,10 +80,15 @@
 				<ul class="list-group">
 					[#begin UPDATES#]
 					<li class="list-group-item [#if MYVERSION == 1#]panel-success[#endif#]" [#if MYVERSION == 1#]style="background: #d6e9c6;"[#endif#]>
-						<span class="badge">[#UPDATE_TEXT#]</span>
+						<span class="badge">
+							[#UPDATE_TEXT#]
+						</span>
 						<div>
-							[#if MYVERSION == 1#]<span class="label label-success" id="mysystemversion"><#LANG_MARKET_CATEGORY_INSTALLED#></span> [#endif#]<a href="[#LINK#]" target="_blank">[#TITLE#]</a>
-							<div>↳ <span class="label label-default">[#DESC_UPDATE#]</span></div>
+							[#if MYVERSION == 1#]<span class="label label-success" id="mysystemversion"><#LANG_MARKET_CATEGORY_INSTALLED#></span> [#endif#]
+							<a href="[#LINK#]" target="_blank">[#TITLE#]</a>
+							<div>↳ <span class="label label-default">[#DESC_UPDATE#]</span>
+								[#if MYVERSION!="1"#]<a class="btn btn-default btn-xs" data-toggle="modal" onclick="$('#update_link').val('[#LINK#]');$('#update_link_text').show();$('#update_link_text').html('Version: [#LINK#]');$('#myModal').modal('show');" data-target="#myModal" role="button"><#LANG_RESTORE#></a>[#endif#]
+							</div>
 							
 						</div>
 					</li>
