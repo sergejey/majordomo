@@ -10,6 +10,10 @@ if ($this->getProperty('setMaxTurnOn')) {
     $levelSaved = 100;
 }
 
+if ($this->class_title != 'SMotions' || $params['NEW_VALUE']) {
+    $this->setProperty('updated', time());
+}
+
 //DebMes("DimmerStatusUpdated: Status $status; Level $level; LevelSaved $levelSaved",'dimming');
 if ($status > 0 && !$level && $levelSaved) {
     if ($switchLevel) {
