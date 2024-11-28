@@ -1354,6 +1354,7 @@ $dictionary = array(
     'DEVICES_THERMOSTAT_CURRENT_TEMP' => 'Текущая температура',
     'DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP' => 'Целевая температура',
     'DEVICES_THERMOSTAT_THRESHOLD' => 'Порог срабатывания термостата (0.25 по-умолчанию)',
+    'DEVICES_THERMOSTAT_INCREMENT' => 'Шаг регулирования (0.5 по-умолчанию)',
     'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Статус реле',
     'DEVICES_THERMOSTAT_SET_TARGET_TEMPERATURE' => 'Установить желаемую температуру',
     'DEVICES_THERMOSTAT_OPENABLE' => 'Окна/двери',

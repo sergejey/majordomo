@@ -1354,6 +1354,7 @@ $dictionary = array(
     'DEVICES_THERMOSTAT_CURRENT_TEMP' => 'Current temperature',
     'DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP' => 'Current target temperature',
     'DEVICES_THERMOSTAT_THRESHOLD' => 'Temperature threshold (0.25 by default)',
+    'DEVICES_THERMOSTAT_INCREMENT' => 'Change increment (0.5 by default)',
     'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Relay status',
     'DEVICES_THERMOSTAT_SET_TARGET_TEMPERATURE' => 'Set target temperature',
     'DEVICES_THERMOSTAT_OPENABLE' => 'Linked Doors/windows',
