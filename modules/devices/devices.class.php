@@ -1103,7 +1103,7 @@ class devices extends module
         SQLExec("DELETE FROM devices_linked WHERE DEVICE1_ID='" . $rec['ID'] . "' OR DEVICE2_ID='" . $rec['ID'] . "'");
         SQLExec("DELETE FROM devices_scheduler_points WHERE DEVICE_ID='" . $rec['ID'] . "'");
         SQLExec("DELETE FROM devices WHERE ID='" . $rec['ID'] . "'");
-
+        processSubscriptionsSafe('DEVICE_DELETED',array('device_id'=>$rec['ID']));
 
     }
 

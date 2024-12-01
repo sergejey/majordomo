@@ -53,6 +53,11 @@ $result['request']['params'] = $_REQUEST;
 if (isset($request[0])) {
     include_once("./config.php");
     include_once("./lib/loader.php");
+
+    $headers = getallheaders();
+    if (isset($headers['app-language']) && $headers['app-language']!='') {
+        $_GET['lang'] = $headers['app-language'];
+    }
     include_once("./load_settings.php");
 
     startMeasure('TOTAL');
@@ -230,6 +235,17 @@ if (!isset($request[0])) {
         $result['device'] = $device;
     }
 
+} elseif (strtolower($request[0]) == 'devices' && $request[1] && $method == 'DELETE') {
+    $device = SQLSelectOne("SELECT * FROM devices WHERE ID='" . (int)$request[1] . "'");
+    if (!$device['ID']) {
+        $result['result'] = false;
+        $result['error'] = 'Device not found';
+    } else {
+        include_once(DIR_MODULES . 'devices/devices.class.php');
+        $devices_module = new devices();
+        $devices_module->delete_devices($device['ID']);
+        $result['result'] = true;
+    }
 } elseif (strtolower($request[0]) == 'devices' && $request[1] && $method == 'POST') {
     $device = SQLSelectOne("SELECT * FROM devices WHERE ID='" . (int)$request[1] . "'");
     if (!$device['ID']) {
