@@ -115,17 +115,18 @@ class saverestore extends module
     }
 
 
-    function parse_size($size) {
+    function parse_size($size)
+    {
         $unit = preg_replace('/[^bkmgtpezy]/i', '', $size); // Remove the non-unit characters from the size.
         $size = preg_replace('/[^0-9\.]/', '', $size); // Remove the non-numeric characters from the size.
         if ($unit) {
             // Find the position of the unit in the ordered string which is the power of magnitude to multiply a kilobyte by.
             return round($size * pow(1024, stripos('bkmgtpezy', $unit[0])));
-        }
-        else {
+        } else {
             return round($size);
         }
     }
+
     /**
      * BackEnd
      *
@@ -146,7 +147,7 @@ class saverestore extends module
             $out['OK_MSG'] = $ok_msg;
         }
 
-        
+
         $post_max_size = $this->parse_size(ini_get('post_max_size'));
         if ($post_max_size > 0) {
             $max_size = $post_max_size;
@@ -155,7 +156,7 @@ class saverestore extends module
         if ($upload_max > 0 && $upload_max < $max_size) {
             $max_size = $upload_max;
         }
-        $out['MAX_SIZE'] = round($max_size / 1024 / 1024,2).' Mb';
+        $out['MAX_SIZE'] = round($max_size / 1024 / 1024, 2) . ' Mb';
 
         if (gr('mode') == 'force_update') {
             unset($_REQUEST['mode']);
@@ -189,7 +190,8 @@ class saverestore extends module
             $out['CLEAR_FIRST'] = 0;
         }
 
-        $update_url = $this->getUpdateURL();
+        $link = gr('link');
+        $update_url = $this->getUpdateURL($link);
         $out['UPDATE_URL'] = $update_url;
 
         $out['UPDATE_AUTO'] = $this->config['UPDATE_AUTO'];
@@ -211,7 +213,7 @@ class saverestore extends module
         $github_feed_url = str_replace('/archive/', '/commits/', $github_feed_url);
         $github_feed_url = str_replace('.tar.gz', '.atom', $github_feed_url);
 
-        $op = isset($_GET['op'])?$_GET['op']:'';
+        $op = isset($_GET['op']) ? $_GET['op'] : '';
         if ($op == 'check_updates') {
             $cache_timeout = 3 * 24 * 60 * 60;
         } else {
@@ -242,13 +244,13 @@ class saverestore extends module
                         $itm = array();
 
                         if ($value['author']['name']['textvalue'] != 'sergejey') continue;
-
                         $itm['ID'] = trim($value['id']['textvalue']);
                         $itm['ID'] = preg_replace('/.+Commit\//is', '', $itm['ID']);
                         $itm['MYVERSION'] = ($itm['ID'] == $this->config['LATEST_UPDATED_ID']) ? 1 : 0;
                         $itm['TITLE'] = trim($value['title']['textvalue']);
                         $itm['AUTHOR'] = $value['author']['name']['textvalue'];
                         $itm['LINK'] = $value['link']['href'];
+                        $itm['LINK_URL'] = urlencode($itm['LINK']);
                         $itm['UPDATED'] = strtotime($value['updated']['textvalue']);
                         $itm['UPDATE_TEXT'] = date('d.m.Y H:i', $itm['UPDATED']);
                         $itm['DESC_UPDATE'] = '';
@@ -281,7 +283,7 @@ class saverestore extends module
                     if ($out['LATEST_ID'] != '' && $out['LATEST_ID'] == $out['LATEST_UPDATED_ID'] && $out['LATEST_CURR_BRANCH'] == $out['UPDATE_CURR_BRANCH']) {
                         $out['NO_NEED_TO_UPDATE'] = 1;
                     }
-                    $op = isset($_GET['op'])?$_GET['op']:'';
+                    $op = isset($_GET['op']) ? $_GET['op'] : '';
                     if ($this->ajax && $op == 'check_updates') {
                         if (!isset($out['NO_NEED_TO_UPDATE'])) {
                             echo json_encode(array('needUpdate' => '1', 'currBranch' => $out['LATEST_CURR_BRANCH'], 'current_version' => $this->config['LATEST_UPDATED_ID']));
@@ -439,9 +441,13 @@ class saverestore extends module
 
             $with_extensions = gr('with_extensions');
             $with_backup = gr('with_backup');
+            $link = gr('link');
 
             $out['WITH_EXTENSIONS'] = $with_extensions;
             $out['WITH_BACKUP'] = $with_backup;
+            $out['LINK'] = $link;
+            $out['LINK_URL'] = urlencode($link);
+
 
             global $backup;
             $out['BACKUP'] = $backup;
@@ -494,7 +500,7 @@ class saverestore extends module
     }
 
 
-    function getUpdateURL()
+    function getUpdateURL($link = '')
     {
         $this->getConfig();
 
@@ -504,6 +510,12 @@ class saverestore extends module
             $update_url = MASTER_UPDATE_URL;
         } else {
             $update_url = GIT_URL . 'archive/master.tar.gz';
+        }
+        if ($link != '') {
+            if (preg_match('/\/commit\/(.+?)$/', $link, $m)) {
+                $commit = $m[1];
+                $update_url = preg_replace('/archive\/\w+?\./', 'archive/' . $commit . '.', $update_url);
+            }
         }
         return $update_url;
     }
@@ -515,9 +527,9 @@ class saverestore extends module
      *
      * @access public
      */
-    function getLatest(&$out, $iframe = 0, $with_backup = 1)
+    function getLatest(&$out, $iframe = 0, $with_backup = 1, $link = '')
     {
-        $url = $this->getUpdateURL();
+        $url = $this->getUpdateURL($link);
         $this->url = $url;
 
         set_time_limit(0);

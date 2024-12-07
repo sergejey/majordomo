@@ -45,6 +45,8 @@ class application extends module
 
         Define('ALTERNATIVE_TEMPLATES', 'templates_alt');
 
+        $out = array();
+
         $theme = SETTINGS_THEME;
         if ($this->action == 'layouts' && $this->id) {
             $layout_rec = SQLSelectOne("SELECT * FROM layouts WHERE ID=" . (int)$this->id);

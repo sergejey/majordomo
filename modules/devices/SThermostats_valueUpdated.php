@@ -3,26 +3,29 @@
 $ot = $this->object_title;
 $this->callMethod('keepAlive');
 
+$status = $this->getProperty('status');
+$targetTemperature = $this->getProperty('currentTargetValue');
+if ($status) {
+    $oldTargetTitle = 'normalTargetValue';
+} else {
+    $oldTargetTitle = 'ecoTargetValue';
+}
+$oldTargetTemperature = $this->getProperty($oldTargetTitle);
+if ($oldTargetTemperature != $targetTemperature) {
+    $this->setProperty($oldTargetTitle, $targetTemperature);
+}
+
 $disabled = $this->getProperty('disabled');
 if ($disabled) {
     return;
 }
 
-$status = $this->getProperty('status');
 $currentTemperature = $this->getProperty('value');
 $ncno = $this->getProperty('ncno');
 $threshold = (float)$this->getProperty('threshold');
 if ($threshold == 0) {
     $threshold = 0.25;
 }
-if ($status) {
-    $targetTemperature = $this->getProperty('normalTargetValue');
-} else {
-    $targetTemperature = $this->getProperty('ecoTargetValue');
-}
-
-
-$this->setProperty('currentTargetValue', $targetTemperature);
 
 $openableSensors = $this->getProperty('openableSensors');
 if ($openableSensors != '') {
@@ -36,7 +39,6 @@ if ($openableSensors != '') {
 }
 
 $currentRelayStatus = $this->getProperty('relay_status');
-
 if ($windowIsOpen) {
     $targetRelayStatus = 0;
 } else {

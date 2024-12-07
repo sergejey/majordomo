@@ -118,6 +118,7 @@ function PerformanceReport($no_print = 0)
     global $perf_data;
 
     $result = array();
+    if (!is_array($perf_data)) return $result;
 
     foreach ($perf_data as $k => $v) {
         if (!isset($v['NUM']) || !$v['NUM']) {

@@ -35,6 +35,7 @@ if ($this->edit_mode == 'edit_link') {
     }
 
     if ($this->mode == 'update') {
+
         $ok = 1;
         $link_rec['DEVICE1_ID'] = $rec['ID'];
         $link_rec['LINK_TYPE'] = $link_name;
@@ -48,16 +49,16 @@ if ($this->edit_mode == 'edit_link') {
         $link_rec['COMMENT'] = gr('comment');
         $link_rec['IS_ACTIVE'] = gr('is_active', 'int');
 
-        $params = $link_details['PARAMS'];
-
         $config = array();
-        $total = count($params);
-        for ($i = 0; $i < $total; $i++) {
-            //global ${$params[$i]['PARAM_NAME'].'_value'};
-            //$config[$params[$i]['PARAM_NAME']]=${$params[$i]['PARAM_NAME'].'_value'};
-            $config[$params[$i]['PARAM_NAME']] = gr($params[$i]['PARAM_NAME'] . '_value');
-            if ($params[$i]['PARAM_TYPE'] == 'duration' && preg_match('/(\d+):(\d+):(\d+)/', $config[$params[$i]['PARAM_NAME']], $m)) {
-                $config[$params[$i]['PARAM_NAME']] = $m[1] * 60 * 60 + $m[2] * 60 + $m[3];
+
+        $params = $link_details['PARAMS'];
+        if (is_array($params)) {
+            $total = count($params);
+            for ($i = 0; $i < $total; $i++) {
+                $config[$params[$i]['PARAM_NAME']] = gr($params[$i]['PARAM_NAME'] . '_value');
+                if ($params[$i]['PARAM_TYPE'] == 'duration' && preg_match('/(\d+):(\d+):(\d+)/', $config[$params[$i]['PARAM_NAME']], $m)) {
+                    $config[$params[$i]['PARAM_NAME']] = $m[1] * 60 * 60 + $m[2] * 60 + $m[3];
+                }
             }
         }
         $link_rec['LINK_SETTINGS'] = serialize($config);

@@ -141,10 +141,11 @@ $this->device_types = array(
         'PROPERTIES' => array(
             'relay_status' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_RELAY_STATUS, 'ONCHANGE' => 'relay_statusUpdated', 'KEEP_HISTORY' => 365, 'DATA_KEY' => 1),
             'value' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_CURRENT_TEMP, 'ONCHANGE' => 'valueUpdated', 'KEEP_HISTORY' => 365, 'DATA_KEY' => 1),
-            'currentTargetValue' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP, 'DATA_KEY' => 1, '_CONFIG_DEFAULT' => 22),
-            'normalTargetValue' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_NORMAL_TEMP, '_CONFIG_TYPE' => 'text', 'ONCHANGE' => 'valueUpdated', '_CONFIG_HELP' => 'SdThermostat', '_CONFIG_DEFAULT' => 22),
-            'ecoTargetValue' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_ECO_TEMP, '_CONFIG_TYPE' => 'text', 'ONCHANGE' => 'valueUpdated', '_CONFIG_HELP' => 'SdThermostat', '_CONFIG_DEFAULT' => 18),
+            'currentTargetValue' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP, 'ONCHANGE' => 'valueUpdated', 'DATA_KEY' => 1, '_CONFIG_DEFAULT' => 22),
+            'normalTargetValue' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_NORMAL_TEMP, '_CONFIG_TYPE' => 'text', 'ONCHANGE' => 'modeTargetValueUpdated', '_CONFIG_HELP' => 'SdThermostat', '_CONFIG_DEFAULT' => 22),
+            'ecoTargetValue' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_ECO_TEMP, '_CONFIG_TYPE' => 'text', 'ONCHANGE' => 'modeTargetValueUpdated', '_CONFIG_HELP' => 'SdThermostat', '_CONFIG_DEFAULT' => 18),
             'threshold' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_THRESHOLD, '_CONFIG_TYPE' => 'text', 'ONCHANGE' => 'valueUpdated', '_CONFIG_HELP' => 'SdThermostat'),
+            'increment' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_INCREMENT, '_CONFIG_TYPE' => 'text', '_CONFIG_HELP' => 'SdThermostat'),
             'ncno' => array('DESCRIPTION' => LANG_DEVICES_NCNO, '_CONFIG_TYPE' => 'select', '_CONFIG_OPTIONS' => 'nc=Normal Close (Heating),no=Normal Open (Cooling)', '_CONFIG_HELP' => 'SdThermostat'),
             'openableSensors' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_OPENABLE, '_CONFIG_TYPE' => 'devices:SOpenable, SOpenClose', '_CONFIG_HELP' => 'SdOpenableSensors'),
             'windowIsOpen' => array('KEEP_HISTORY' => 30),
@@ -152,6 +153,7 @@ $this->device_types = array(
         ),
         'METHODS' => array(
             'setTargetTemperature' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_SET_TARGET_TEMPERATURE, '_CONFIG_SHOW' => 1, '_CONFIG_REQ_VALUE' => 1),
+            'modeTargetValueUpdated' => array('DESCRIPTION' => 'modeTargetValueUpdated'),
             'valueUpdated' => array('DESCRIPTION' => 'Value Updated'),
             'relay_statusUpdated' => array('DESCRIPTION' => 'Relay Status Updated'),
             'statusUpdated' => array('DESCRIPTION' => 'Status Updated'),
@@ -171,7 +173,7 @@ $this->device_types = array(
         'CLASS' => 'SAirConditioners',
         'PROPERTIES' => array(
             'value' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_CURRENT_TEMP, 'ONCHANGE' => 'valueUpdated', 'KEEP_HISTORY' => 365, 'DATA_KEY' => 1),
-            'currentTargetValue' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP, 'DATA_KEY' => 1, 'KEEP_HISTORY' => 365, '_CONFIG_DEFAULT' => 22),
+            'currentTargetValue' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP, 'ONCHANGE' => 'valueUpdated', 'DATA_KEY' => 1, 'KEEP_HISTORY' => 365, '_CONFIG_DEFAULT' => 22),
             'tempStep' => array('DESCRIPTION' => LANG_DEVICES_AC_TEMP_STEP, '_CONFIG_TYPE' => 'text'),
             'fanSpeed' => array('DESCRIPTION' => 'Fan Speed', '_CONFIG_DEFAULT' => 'auto', 'ONCHANGE' => 'fanSpeedUpdated'),
             'fanSpeedModes' => array('DESCRIPTION' => LANG_DEVICES_AC_FAN_SPEED,

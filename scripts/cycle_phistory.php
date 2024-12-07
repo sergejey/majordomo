@@ -104,6 +104,7 @@ while (1) {
                 $h['VALUE_ID'] = $q_rec['VALUE_ID'];
                 $h['ADDED'] = $q_rec['ADDED'];
                 $h['VALUE'] = $value;
+                if (strlen($h['VALUE']) > 255) $h['VALUE'] = substr($h['VALUE'], 0, 255);
                 $h['SOURCE'] = $q_rec['SOURCE'];
                 debug_echo(" Insert new value " . $h['VALUE_ID'] . " " . $h['ADDED'] . " " . $value);
                 $h['ID'] = SQLInsert($table_name, $h);
@@ -134,6 +135,7 @@ while (1) {
                     $h['VALUE_ID'] = $q_rec['VALUE_ID'];
                     $h['ADDED'] = $q_rec['ADDED'];
                     $h['VALUE'] = $value;
+                    if (strlen($h['VALUE']) > 255) $h['VALUE'] = substr($h['VALUE'], 0, 255);
                     $h['SOURCE'] = $q_rec['SOURCE'];
                     $h['ID'] = SQLInsert($table_name, $h);
                     debug_echo(" Done ");

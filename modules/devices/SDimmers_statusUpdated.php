@@ -6,6 +6,8 @@ $levelSaved = $this->getProperty('levelSaved');
 $linked_room = $this->getProperty('linkedRoom');
 $switchLevel=$this->getProperty('switchLevel');
 
+$this->setProperty('updated', time());
+
 if ($this->getProperty('setMaxTurnOn')) {
     $levelSaved = 100;
 }

@@ -135,6 +135,20 @@ $settings_structure = array(
             'title' => 'Path to store backup',
         )
     ),
+    'mail' => array(
+        'MAIL_TYPE' => array(
+            'title' => 'Protocol',
+            'priority' => '10',
+            'type' => 'select',
+            'data' => 'smtp=SMTP|sendmail=SendMail',
+        ),
+        'MAIL_HOST' => array('title' => 'SMTP host', 'priority' => 9),
+        'MAIL_AUTH' => array('title' => 'Authorization required', 'type' => 'onoff', 'default' => 0, 'priority' => 8),
+        'MAIL_USER' => array('title' => 'SMTP username', 'priority' => 7),
+        'MAIL_PASSWORD' => array('title' => 'SMTP password', 'priority' => 6),
+        'MAIL_PORT' => array('title' => 'SMTP port', 'priority' => 5),
+        'MAIL_SECURE' => array('title' => 'SMTP security', 'type' => 'select', 'data' => '=None|ssl=SSL|tls=TLS', 'priority' => 4),
+    ),
     'remote' => array(
         'REMOTE_HOME_NETWORK' => array(
             'title' => LANG_GENERAL_HOME_NETWORK,

@@ -593,7 +593,9 @@ function getGlobal($varname)
 {
     $tmp = explode('.', $varname);
 
+    $class_name = '';
     if (isset($tmp[2])) {
+        $class_name = $tmp[0];
         $object_name = $tmp[0] . '.' . $tmp[1];
         $varname = $tmp[2];
     } elseif (isset($tmp[1])) {
@@ -613,14 +615,22 @@ function getGlobal($varname)
         return $cached_value;
     }
 
-    $obj = getObject($object_name);
-
-    if ($obj) {
-        $value = $obj->getProperty($varname);
-        return $value;
+    if ($class_name!='' && isModuleInstalled($class_name)) {
+        include_once(DIR_MODULES.$class_name.'/'.$class_name.'.class.php');
+        $module = new $class_name();
+        if (method_exists($module, 'getModuleProperty')) {
+            $data = $module->getModuleProperty($tmp[1].'.'.$tmp[2]);
+            return $data;
+        }
     } else {
-        return 0;
+        $obj = getObject($object_name);
+        if ($obj) {
+            $value = $obj->getProperty($varname);
+            return $value;
+        }
     }
+    return false;
+
 }
 
 
@@ -839,7 +849,7 @@ function getHistorySum($varname, $start_time, $stop_time = 0)
  *
  * @access public
  */
-function getHistoryAvg($varname, $start_time, $stop_time = 0)
+function getHistoryAvg($varname, $start_time, $stop_time = 0, $integral = false)
 {
     if ($start_time <= 0) {
         $start_time = (time() + $start_time);
@@ -857,15 +867,112 @@ function getHistoryAvg($varname, $start_time, $stop_time = 0)
         $table_name = 'phistory';
     }
 
-    // Get data
-    $data = SQLSelectOne("SELECT AVG(VALUE+0.0) AS VALUE FROM $table_name " .
-        "WHERE  VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "')");
-
-    if (!isset($data['VALUE'])) {
-        $data = SQLSelectOne("SELECT VALUE+0.0 FROM $table_name " .
-            "WHERE  VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED<('" . date('Y-m-d H:i:s', $start_time) . "') ORDER BY ADDED DESC LIMIT 1");
+    $data = [];
+    if ($integral) { // Calculate average value using integral trapezoidal rule 
+                     // and interpolating start/stop values when no data exist on given timestamps
+        // read history values from DB
+        $firstValue = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED<('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED>=('" . date('Y-m-d H:i:s', $start_time - 7 * 24 * 60 * 60) . "') ORDER BY ADDED DESC LIMIT 1");
+        if (!isset($firstValue['VALUE'])) {
+            $firstValue = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED<('" . date('Y-m-d H:i:s', $start_time) . "') ORDER BY ADDED DESC LIMIT 1");
+        }
+        $values = SQLSelect("SELECT UNIX_TIMESTAMP(ADDED) AS ADDED, VALUE AS VALUE FROM $table_name " .
+            "WHERE  VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "') ORDER BY ADDED ASC");
+        $lastValue = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED>('" . date('Y-m-d H:i:s', $stop_time) . "') ORDER BY ADDED LIMIT 1");
+        if(count($values) == 0) {
+            $values = [$firstValue];
+        }
+        if (isset($firstValue['VALUE']) && intval($firstValue['ADDED']) < intval($values[0]['ADDED'])) {
+            $values = array_merge([$firstValue], $values);
+        }
+        if (isset($lastValue['VALUE'])) {
+            $values = array_merge($values, [$lastValue]);
+        }
+        
+        // convert result to $points array with X as timestamp, and Y as float value
+        $points = [];
+        $valuesCount = count($values);
+        for ($i = 0; $i < $valuesCount; $i++) {
+            $timestamp = intval($values[$i]['ADDED']);
+            $value = floatval($values[$i]['VALUE']);
+            $points[] = ['X' => $timestamp, 'Y' => $value];
+        }
+        
+        if ($valuesCount > 0 ) {
+            // prepare virtual points for $start_time and $stop_time
+            $virtualPointX1 = ['X' => $start_time, 'Y' => null];
+            $virtualPointX2 = ['X' => $stop_time, 'Y' => null];
+            
+            // find points next to start_time and stop_time for interpolation
+            $pointBeforeX1 = $pointBeforeX2 = $pointAfterX1 = $pointAfterX2 = null;
+            foreach ($points as $point) {
+                if ($point['X'] <= $start_time && ($pointBeforeX1 === null || $point['X'] > $pointBeforeX1['X'])) {
+                    $pointBeforeX1 = $point;
+                }
+                if ($point['X'] <= $stop_time && ($pointBeforeX2 === null || $point['X'] > $pointBeforeX2['X'])) {
+                    $pointBeforeX2 = $point;
+                }
+                if ($point['X'] >= $start_time && ($pointAfterX1 === null || $point['X'] < $pointAfterX1['X'])) {
+                    $pointAfterX1 = $point;
+                }
+                if ($point['X'] >= $stop_time && ($pointAfterX2 === null || $point['X'] < $pointAfterX2['X'])) {
+                    $pointAfterX2 = $point;
+                }
+            }
+            if ($pointBeforeX1 === null) {
+                $pointBeforeX1 = $pointAfterX1;
+            }
+            if ($pointAfterX2 === null) {
+                $pointAfterX2 = $pointBeforeX2;
+            }
+            
+            // interpolate virtual values Y1 and Y2
+            if (!function_exists('getHistoryAvgLinearInterpolation')) {
+                function getHistoryAvgLinearInterpolation($x, $x1, $y1, $x2, $y2) {
+                    if($x1 == $x2) {
+                        return $y1;
+                    }
+                    return $y1 + (($x - $x1) / ($x2 - $x1)) * ($y2 - $y1);
+                }
+            }
+            $virtualPointX1['Y'] = getHistoryAvgLinearInterpolation($start_time, $pointBeforeX1['X'], $pointBeforeX1['Y'], $pointAfterX1['X'], $pointAfterX1['Y']);
+            $virtualPointX2['Y'] = getHistoryAvgLinearInterpolation($stop_time, $pointBeforeX2['X'], $pointBeforeX2['Y'], $pointAfterX2['X'], $pointAfterX2['Y']);
+            
+            // add virtual points into array
+            $pointsWithVirtual = [];
+            foreach ($points as $point) {
+                $pointsWithVirtual[] = $point;
+                if ($point === $pointBeforeX1) {
+                    $pointsWithVirtual[] = $virtualPointX1;
+                }
+                if ($point === $pointBeforeX2) {
+                    $pointsWithVirtual[] = $virtualPointX2;
+                }
+            }
+            
+            // find indicies of virtual points
+            $indexX1 = array_search($virtualPointX1, $pointsWithVirtual);
+            $indexX2 = array_search($virtualPointX2, $pointsWithVirtual);
+            
+            // calculate average value using Trapezoidal rule
+            $areaUnderCurve = 0;
+            for ($i = $indexX1 + 1; $i <= $indexX2; $i++) {
+                $areaUnderCurve += ($pointsWithVirtual[$i]['X'] - $pointsWithVirtual[$i - 1]['X']) * (($pointsWithVirtual[$i]['Y'] + $pointsWithVirtual[$i - 1]['Y']) / 2);
+            }
+            $averageY = $areaUnderCurve / ($virtualPointX2['X'] - $virtualPointX1['X']);
+            $data['VALUE'] = $averageY;
+        }
+        
+    } else { // Simple average value based on all stored values between start and stop timestamps
+        // Get data
+        $data = SQLSelectOne("SELECT AVG(VALUE+0.0) AS VALUE FROM $table_name " .
+            "WHERE  VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "')");
+    
+        if (!isset($data['VALUE'])) {
+            $data = SQLSelectOne("SELECT VALUE+0.0 FROM $table_name " .
+                "WHERE  VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED<('" . date('Y-m-d H:i:s', $start_time) . "') ORDER BY ADDED DESC LIMIT 1");
+        }
     }
-
+    
     if (!isset($data['VALUE']) && $latest_data) return getGlobal($varname);
     if (!isset($data['VALUE'])) return false;
 

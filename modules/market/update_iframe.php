@@ -52,13 +52,30 @@ if ($mode2 == 'uploaded' && $name != '') {
 
 if ($mode2 == 'install' && $name != '') {
     // install/update one extension
+
+    $link = gr('link');
+
     $out = array();
     $mkt->admin($out);
     if (!$mkt->url) {
         echo "Error getting download URL";
         exit;
     }
-    $res = $mkt->getLatest($out, $mkt->url, $name, $mkt->version, 1);
+
+    $url = '';
+    if ($link != '') {
+        if (preg_match('/\/commit\/(.+?)$/', $link, $m)) {
+            $commit = $m[1];
+            $url = str_replace('/commit/','/archive/',$link);
+            $url.='.tar.gz';
+        }
+    }
+
+    if (!$url) {
+        $url = $mkt->url;
+    }
+
+    $res = $mkt->getLatest($out, $url, $name, $mkt->version, 1);
     if ($res) {
         logAction('market_install', $name);
         $folder = $name;

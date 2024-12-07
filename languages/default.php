@@ -43,6 +43,7 @@ $dictionary = array(
     'GENERAL_WE_HAVE_GUESTS_MODE' => 'We have guests',
     'GENERAL_NIGHT_MODE' => 'Night mode',
     'GENERAL_DARKNESS_MODE' => 'Darkness mode',
+    'GENERAL_PAIRING_MODE' => 'Pairing mode',
 
     'GENERAL_CLIMATE' => 'Climate',
     'GENERAL_WEATHER_FORECAST' => 'Weather forecast',
@@ -1353,6 +1354,7 @@ $dictionary = array(
     'DEVICES_THERMOSTAT_CURRENT_TEMP' => 'Current temperature',
     'DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP' => 'Current target temperature',
     'DEVICES_THERMOSTAT_THRESHOLD' => 'Temperature threshold (0.25 by default)',
+    'DEVICES_THERMOSTAT_INCREMENT' => 'Change increment (0.5 by default)',
     'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Relay status',
     'DEVICES_THERMOSTAT_SET_TARGET_TEMPERATURE' => 'Set target temperature',
     'DEVICES_THERMOSTAT_OPENABLE' => 'Linked Doors/windows',
