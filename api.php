@@ -55,7 +55,7 @@ if (isset($request[0])) {
     include_once("./lib/loader.php");
 
     $headers = getallheaders();
-    if (isset($headers['app-language']) && $headers['app-language']!='') {
+    if (isset($headers['app-language']) && $headers['app-language'] != '') {
         $_GET['lang'] = $headers['app-language'];
     }
     include_once("./load_settings.php");
@@ -354,13 +354,58 @@ if (!isset($request[0])) {
         $result['error'] = 'Incorrect input data';
         $result['result'] = false;
     }
-} elseif (strtolower($request[0]) == 'rooms' && ($request[1])) {
+} elseif (strtolower($request[0]) == 'rooms' && ($request[1]) && $method == 'DELETE') {
+    $location = SQLSelectOne("SELECT * FROM locations WHERE ID=" . (int)$request[1]);
+    if ($location['ID']) {
+        include_once DIR_MODULES . 'locations/locations.class.php';
+        $location_module = new locations();
+        $location_module->delete_locations($location['ID']);
+        $result['result'] = true;
+    } else {
+        $result['error'] = 'Room not found';
+        $result['result'] = false;
+    }
+} elseif (strtolower($request[0]) == 'rooms' && ($request[1]) && $method == 'POST') {
+    $location = SQLSelectOne("SELECT * FROM locations WHERE ID=" . (int)$request[1]);
+    if ($location['ID'] || $request[1] == 'new') {
+        $ok = 1;
+        $location['TITLE'] = gr('title');
+        if (!$location['TITLE']) {
+            $ok = 0;
+        }
+        if ($ok) {
+            if ($location['ID']) {
+                SQLUpdate('locations', $location);
+            } else {
+                $location['ID'] = SQLInsert('locations', $location);
+            }
+            $result['room']['id'] = $location['ID'];
+            $result['room']['title'] = $location['TITLE'];
+            $result['room']['object'] = getRoomObjectByLocation($location['ID'], 1);
+
+            $roomIcon = gr('roomIcon');
+            if ($roomIcon == 'default') $roomIcon = '';
+            sg($result['room']['object'] . '.roomIcon', $roomIcon);
+
+            $result['result'] = true;
+        } else {
+            $result['error'] = 'Room is not updated';
+            $result['result'] = false;
+        }
+    } else {
+        $result['error'] = 'Room not found';
+        $result['result'] = false;
+    }
+} elseif (strtolower($request[0]) == 'rooms' && ($request[1]) && $method == 'GET') {
     $location = SQLSelectOne("SELECT * FROM locations WHERE ID=" . (int)$request[1]);
     $result['room'] = array();
     if ($location['ID']) {
         $result['room']['title'] = $location['TITLE'];
         $result['room']['id'] = $location['ID'];
         $result['room']['object'] = getRoomObjectByLocation($location['ID'], 1);
+        if ($result['room']['object']) {
+            $result['room']['roomIcon'] = gg($result['room']['object'] . '.roomIcon');
+        }
         $devices = SQLSelect("SELECT * FROM devices WHERE LOCATION_ID=" . $location['ID']);
         $result['room']['devices'] = array();
         $total = count($devices);
@@ -380,8 +425,6 @@ if (!isset($request[0])) {
             foreach ($properties as $p) {
                 $device[$p['TITLE']] = getGlobal($device['object'] . '.' . $p['TITLE']);
             }
-            //$device['status']=getGlobal($device['object'].'.status');
-            //$device['value']=getGlobal($device['object'].'.value');
             $result['room']['devices'][] = $device;
         }
     }
@@ -394,6 +437,9 @@ if (!isset($request[0])) {
         $location['title'] = processTitle($v['TITLE']);
         $location['priority'] = $v['PRIORITY'];
         $location['object'] = getRoomObjectByLocation($v['ID'], 1);
+        if ($location['object']) {
+            $location['roomIcon'] = gg($location['object'] . '.roomIcon');
+        }
         $result['rooms'][] = $location;
     }
 } elseif (strtolower($request[0]) == 'module') {
@@ -452,7 +498,7 @@ if (!isset($request[0])) {
             foreach ($properties as $property) {
                 $property_title = $property['TITLE'];
                 $objects[$i][$property_title] = getGlobal($objects[$i]['object'] . '.' . $property_title);
-                if (is_integer(strpos($objects[$i][$property_title],'<#LANG'))) {
+                if (is_integer(strpos($objects[$i][$property_title], '<#LANG'))) {
                     $objects[$i][$property_title] = processTitle($objects[$i][$property_title]);
                 }
             }
