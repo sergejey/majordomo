@@ -123,9 +123,9 @@ if (!isset($request[0])) {
                 $total = count($links);
                 for ($i = 0; $i < $total; $i++) {
                     $device1 = SQLSelectOne("SELECT ID, TITLE FROM devices WHERE ID=" . (int)$links[$i]['DEVICE1_ID']);
-                    $links[$i]['DEVICE1_TITLE'] = $device1['TITLE'];
+                    $links[$i]['DEVICE1_TITLE'] = processTitle($device1['TITLE']);
                     $device2 = SQLSelectOne("SELECT ID, TITLE FROM devices WHERE ID=" . (int)$links[$i]['DEVICE2_ID']);
-                    $links[$i]['DEVICE2_TITLE'] = $device2['TITLE'];
+                    $links[$i]['DEVICE2_TITLE'] = processTitle($device2['TITLE']);
                     if ($links[$i]['LINK_SETTINGS'] != '') {
                         $links[$i]['LINK_SETTINGS'] = unserialize($links[$i]['LINK_SETTINGS']);
                         if (count(array_keys($links[$i]['LINK_SETTINGS'])) == 0) {

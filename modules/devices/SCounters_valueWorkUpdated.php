@@ -3,6 +3,7 @@
 $old_value = (float)$params['OLD_VALUE'];
 $new_value = (float)$params['NEW_VALUE'];
 
+if ($new_value<0) return;
 /*
 //при частом обновлении данных
 $new_value = round($params['VALUE'], 1);
@@ -42,7 +43,7 @@ if ($conversion > 0) {
 }
 
 $value = (float)$this->getProperty('value');
-$data_value = round(($value + $diff), 3);
+$data_value = round(($value + $diff), 2);
 
 if ($value != $data_value) {
     $this->setProperty('value', $data_value);

@@ -4,6 +4,8 @@ $ot = $params['ORIGINAL_OBJECT_TITLE'];
 $new_value = (float)$params['NEW_VALUE'];
 $old_value = (float)$params['OLD_VALUE'];
 
+if ($new_value<0) return;
+
 $timer_name = $ot . '_counter_update_h';
 clearTimeOut($timer_name);
 
