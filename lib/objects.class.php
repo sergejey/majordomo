@@ -1204,7 +1204,9 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
         } else {
             // child
             $is_child = true;
-            register_shutdown_function(create_function('$pars', 'posix_kill(getmypid(), SIGKILL);'), array());
+            if (function_exists('create_function')) {
+                register_shutdown_function(create_function('$pars', 'posix_kill(getmypid(), SIGKILL);'), array());
+            }
             set_time_limit(60);
         }
     }
@@ -1642,6 +1644,7 @@ function checkOperationsQueue($topic)
 
 function addToOperationsQueue($topic, $dataname, $datavalue = '', $uniq = false, $ttl = 60)
 {
+    startMeasure('addToOperationsQueue');
     if (defined('USE_REDIS')) {
         global $redisConnection;
         if (!isset($redisConnection)) {
@@ -1650,7 +1653,9 @@ function addToOperationsQueue($topic, $dataname, $datavalue = '', $uniq = false,
         }
         $value = $dataname . "|" . $datavalue;
         $queueName = "mjd:queue:" . $topic;
-        return $redisConnection->rPush($queueName, $value);
+        $result = $redisConnection->rPush($queueName, $value);
+        endMeasure('addToOperationsQueue');
+        return $result;
     }
     $rec = array();
     $rec['TOPIC'] = $topic;
@@ -1664,5 +1669,6 @@ function addToOperationsQueue($topic, $dataname, $datavalue = '', $uniq = false,
     }
     $rec['ID'] = SQLInsert('operations_queue', $rec);
     SQLExec("DELETE FROM operations_queue WHERE EXPIRE<NOW();");
+    endMeasure('addToOperationsQueue');
     return $rec['ID'];
 }

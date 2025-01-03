@@ -102,11 +102,11 @@ SQLExec('DROP TABLE IF EXISTS cyclesRun;');
 $old_mask = umask(0);
 if (is_dir(ROOT . 'cached')) {
     DebMes("Removing cache from " . ROOT . 'cached');
-    removeTree(ROOT . 'chached');
+    removeTree(ROOT . 'cached');
 }
 if (is_dir(ROOT . 'cms/cached')) {
     DebMes("Removing cache from " . ROOT . 'cms/cached');
-    removeTree(ROOT . 'cms/chached');
+    removeTree(ROOT . 'cms/cached');
 }
 
 // moving some folders to ./cms/
