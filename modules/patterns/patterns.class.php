@@ -589,6 +589,7 @@ class patterns extends module
         global $pattern_matched;
 
         $condition_matched = 0;
+        $matches = array();
 
         if (!checkAccess('pattern', $id)) return 0;
 
