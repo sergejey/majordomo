@@ -259,13 +259,15 @@ for ($i = 0; $i < $total; $i++) {
     }
 
     // ищем по старому принципу
-    if (preg_match('/' . preg_quote($devices[$i]['TITLE']) . '/uis', $compare_title)) {
-        $device_matched = 1;
-    } elseif (preg_match('/' . preg_quote($compare_title) . '/uis', $devices[$i]['TITLE'])) {
-        $device_matched = 1;
-    } elseif ($phpmorphy_loaded) {
-        if (preg_match('/' . preg_quote($devices[$i]['TITLE']) . '/isu', implode('@@@@', $lines), $matches)) {
+    if (!$device_matched) {
+        if (preg_match('/' . preg_quote($devices[$i]['TITLE']) . '/uis', $compare_title)) {
             $device_matched = 1;
+        } elseif (preg_match('/' . preg_quote($compare_title) . '/uis', $devices[$i]['TITLE'])) {
+            $device_matched = 1;
+        } elseif ($phpmorphy_loaded) {
+            if (preg_match('/' . preg_quote($devices[$i]['TITLE']) . '/isu', implode('@@@@', $lines), $matches)) {
+                $device_matched = 1;
+            }
         }
     }
 
