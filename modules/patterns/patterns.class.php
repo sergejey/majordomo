@@ -590,6 +590,7 @@ class patterns extends module
 
         $condition_matched = 0;
         $matches = array();
+        $history = '';
 
         if (!checkAccess('pattern', $id)) return 0;
 
