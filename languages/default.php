@@ -1232,6 +1232,7 @@ $dictionary = array(
     'DEVICES_LOADTYPE' => 'Device type',
     'DEVICES_LOADTYPE_VENT' => 'Ventilation',
     'DEVICES_LOADTYPE_HEATING' => 'Heating',
+    'DEVICES_LOADTYPE_AC' => 'Air conditioner',
     'DEVICES_LOADTYPE_CURTAINS' => 'Curtains',
     'DEVICES_LOADTYPE_GATES' => 'Gates',
     'DEVICES_LOADTYPE_LIGHT' => 'Light',

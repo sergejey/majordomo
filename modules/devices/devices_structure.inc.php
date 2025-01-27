@@ -65,6 +65,7 @@ $this->device_types = array(
                 '_CONFIG_OPTIONS' => 'light=' . LANG_DEVICES_LOADTYPE_LIGHT .
                     ',heating=' . LANG_DEVICES_LOADTYPE_HEATING .
                     ',vent=' . LANG_DEVICES_LOADTYPE_VENT .
+                    ',ac=' . LANG_DEVICES_LOADTYPE_AC .
                     ',curtains=' . LANG_DEVICES_LOADTYPE_CURTAINS .
                     ',gates=' . LANG_DEVICES_LOADTYPE_GATES .
                     ',power=' . LANG_DEVICES_LOADTYPE_POWER),
