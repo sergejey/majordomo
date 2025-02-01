@@ -32,7 +32,6 @@ if ($this->mode == 'update') {
         $ok = 0;
     }
 
-    $rec['SKYPE'] = gr('skype');
     $rec['MOBILE'] = gr('mobile');
     $rec['COLOR'] = gr('color');
     $rec['IS_ADMIN'] = (int)gr('is_admin');
