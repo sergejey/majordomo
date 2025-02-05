@@ -4,21 +4,27 @@ $level = $this->getProperty('level');
 $minWork = $this->getProperty('minWork');
 $maxWork = $this->getProperty('maxWork');
 $levelWork = $this->getProperty('levelWork');
-
-$statusUpdated = 0;
+$switchLevel = $this->getProperty('switchLevel');
 
 if ($level > 0) {
     $this->setProperty('levelSaved', $level);
-    if (!$this->getProperty('status')) {
-        $statusUpdated = 1;
-        $this->setProperty('status', 1, false);
-    }
-} else {
-    if ($this->getProperty('status')) {
-        $statusUpdated = 1;
-        $this->setProperty('status', 0);
+}
+
+$statusUpdated = 0;
+if (!$switchLevel) {
+    if ($level > 0) {
+        if (!$this->getProperty('status')) {
+            $statusUpdated = 1;
+            $this->setProperty('status', 1, false);
+        }
+    } else {
+        if ($this->getProperty('status')) {
+            $statusUpdated = 1;
+            $this->setProperty('status', 0);
+        }
     }
 }
+
 
 if ($minWork != $maxWork) {
     $levelWork = round($minWork + round(($maxWork - $minWork) * $level / 100));

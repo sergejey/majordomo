@@ -9,6 +9,34 @@
   blockly.focus(); 
   return false;
  }
+
+ function [#CODE_FIELD#]_showCodeHistory() {
+	 $('#[#CODE_FIELD#]_history').toggle();
+	 return false;
+ }
+
+ function [#CODE_FIELD#]_showCode(history_id) {
+	 var history_code = $('#history_'+history_id).html();
+	 alert(history_code);
+	 return false;
+ }
+
+ function [#CODE_FIELD#]_useCode(history_id) {
+	 var history_code = $('#history_'+history_id).html();
+	 var history_code_xml = $('#history_'+history_id+'_xml').html();
+	 var code_type = $('.[#CODE_FIELD#]_code_type:checked').val();
+
+	 $('#[#CODE_FIELD#]').val(history_code);
+	 if (typeof editor !== 'undefined') {
+		 editor.setValue(history_code);
+	 }
+	 $('#xml_code').val(history_code_xml);
+	 if (code_type == 2) {
+		 loadDevices();
+	 }
+	 return false;
+ }
+
 </script>
 
 [#if ONLYCODE != 1#]
@@ -17,8 +45,28 @@
 	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="0"[#if CODE_TYPE="0"#] checked[#endif#]> <#LANG_CODE#> <#LANG_HCB#>codePhp<#LANG_HCE#>
 	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="1"[#if CODE_TYPE="1"#] checked[#endif#]> Blockly<#LANG_HCB#>codeBlockly<#LANG_HCE#>
 	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="2"[#if CODE_TYPE="2"#] checked[#endif#]> <#LANG_DEVICES#><#LANG_HCB#>codeDevices<#LANG_HCE#>
+	[#if HISTORY_AVAILABLE#]
+	(<a href="#" onclick="return [#CODE_FIELD#]_showCodeHistory();"><#LANG_HISTORY#></a>)
+	[#endif HISTORY_AVAILABLE#]
 </div>
 [#endif#]
+
+<div id="[#CODE_FIELD#]_history" style="display:none;max-height: 150px;overflow: auto;">
+	<table class="table">
+		[#begin CODE_HISTORY#]
+		<tr>
+			<td><#LANG_UPDATED#> [#ADDED#]
+				<span id="history_[#ID#]" style="display:none">[#CODE#]</span>
+				<span id="history_[#ID#]_xml" style="display:none">[#XML#]</span>
+			</td>
+			<td>
+				<a href="#" onclick="return <#CODE_FIELD#>_showCode([#ID#]);" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-eye-open"></i> <#LANG_SHOW#></a>
+				<a href="#" onclick="return <#CODE_FIELD#>_useCode([#ID#]);" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-download"></i> <#LANG_SELECT#></a>
+			</td>
+		</tr>
+		[#end CODE_HISTORY#]
+	</table>
+</div>
 
  <script language="javascript">
 
@@ -51,7 +99,6 @@
 
 <script language="javascript" type="text/javascript">
 $(function() {
-//    alert([#CODE_TYPE#]);
     [#if CODE_TYPE="1" || CODE_TYPE="2"#]
      $('#[#CODE_FIELD#]_area').hide();
     [#endif CODE_TYPE#]
@@ -594,15 +641,18 @@ function modalRestoreCode() {
 	
     <script type="text/javascript">
         var devices_data=[];
-        var savedJson=$('#xml_code').val();
-        if (savedJson!='') {
-            var tmp=JSON.parse(savedJson);
-            if (typeof tmp === 'object') {
-                devices_data=tmp;
-                renderCode();
-                renderView();
-            }
-        }
+
+		function loadDevices() {
+			var savedJson=$('#xml_code').val();
+			if (savedJson!='') {
+				var tmp=JSON.parse(savedJson);
+				if (typeof tmp === 'object') {
+					devices_data=tmp;
+					renderCode();
+					renderView();
+				}
+			}
+		}
 
         function renderCode() {
             var result_code='';
@@ -686,5 +736,8 @@ function modalRestoreCode() {
             renderCode();
             renderView();
         }
+
+		loadDevices();
+
     </script>
 </div>

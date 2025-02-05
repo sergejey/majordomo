@@ -90,18 +90,29 @@ if (!isset($request[0])) {
             }
         }
         if ($method == 'POST') {
+            $ok = 1;
             $link_id = gr('link_id', 'int');
             $link = SQLSelectOne("SELECT devices_linked.* FROM devices_linked WHERE (DEVICE1_ID=" . (int)$device['ID'] . " OR DEVICE2_ID=" . (int)$device['ID'] . ") AND ID=" . $link_id);
             $link['DEVICE1_ID'] = gr('device1_id', 'int');
+
+            if (!$link['DEVICE1_ID']) $ok = 0;
             $link['DEVICE2_ID'] = gr('device2_id', 'int');
+
+            if (!$link['DEVICE2_ID']) $ok = 0;
             $link['LINK_TYPE'] = gr('link_type');
+
+            if (!$link['LINK_TYPE']) $ok = 0;
+
             $settings = gr('link_settings');
             if ($settings != '') {
                 $settings = json_decode($settings, true);
                 $link['LINK_SETTINGS'] = serialize($settings);
+                if ($link['LINK_TYPE'] == 'switch_it' && empty($settings['action_type'])) {
+                    $ok = 0;
+                }
             }
             $link['IS_ACTIVE'] = gr('active', 'int');
-            if ($link['DEVICE1_ID'] && $link['DEVICE2_ID'] && $link['LINK_TYPE']) {
+            if ($ok) {
                 if ($link['ID']) {
                     SQLUpdate('devices_linked', $link);
                 } else {
@@ -123,9 +134,9 @@ if (!isset($request[0])) {
                 $total = count($links);
                 for ($i = 0; $i < $total; $i++) {
                     $device1 = SQLSelectOne("SELECT ID, TITLE FROM devices WHERE ID=" . (int)$links[$i]['DEVICE1_ID']);
-                    $links[$i]['DEVICE1_TITLE'] = $device1['TITLE'];
+                    $links[$i]['DEVICE1_TITLE'] = processTitle($device1['TITLE']);
                     $device2 = SQLSelectOne("SELECT ID, TITLE FROM devices WHERE ID=" . (int)$links[$i]['DEVICE2_ID']);
-                    $links[$i]['DEVICE2_TITLE'] = $device2['TITLE'];
+                    $links[$i]['DEVICE2_TITLE'] = processTitle($device2['TITLE']);
                     if ($links[$i]['LINK_SETTINGS'] != '') {
                         $links[$i]['LINK_SETTINGS'] = unserialize($links[$i]['LINK_SETTINGS']);
                         if (count(array_keys($links[$i]['LINK_SETTINGS'])) == 0) {
@@ -693,7 +704,7 @@ if (function_exists('endMeasure')) {
     endMeasure('TOTAL');
 }
 
-if (gr('performance')) {
+if (gr('performance') || (isset($result['passed'])) && $result['passed']>=5) {
     $result['performance'] = PerformanceReport(1);
 }
 
@@ -711,7 +722,7 @@ function apiShutdown()
     if (isset($a['type']) && ($a['type'] === E_ERROR)) {
         DebMes("Result " . $_SERVER['REQUEST_URI'] . ' ' . json_encode($a), 'api_error');
     } elseif (isset($result['passed']) && $result['passed'] > 5) {
-        DebMes("Result [" . $result['passed'] . "] of : " . $_SERVER['REQUEST_URI'] . ' ' . json_encode($result), 'api_slow');
+        DebMes("Result [" . $result['passed'] . "] of : " . $_SERVER['REQUEST_URI'] . "\n" . json_encode($result, JSON_PRETTY_PRINT), 'api_slow');
     }
 }
 

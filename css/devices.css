@@ -276,6 +276,10 @@
     background-image: url(../cms/scenes/styles/switch/i_light_off.png);
 }
 
+.controller.loadtype_ac .device-icon {
+    background-image: url(../cms/scenes/styles/common/i_condition_off.png);
+}
+
 .controller.loadtype_power .device-icon {
     background-image: url(../cms/scenes/styles/switch/i_rozetka_on.png);
 }

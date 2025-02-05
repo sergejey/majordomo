@@ -102,11 +102,11 @@ SQLExec('DROP TABLE IF EXISTS cyclesRun;');
 $old_mask = umask(0);
 if (is_dir(ROOT . 'cached')) {
     DebMes("Removing cache from " . ROOT . 'cached');
-    removeTree(ROOT . 'chached');
+    removeTree(ROOT . 'cached');
 }
 if (is_dir(ROOT . 'cms/cached')) {
     DebMes("Removing cache from " . ROOT . 'cms/cached');
-    removeTree(ROOT . 'cms/chached');
+    removeTree(ROOT . 'cms/cached');
 }
 
 // moving some folders to ./cms/
@@ -303,6 +303,14 @@ $cycles = array();
 $reboot_timer = 0;
 
 if (is_dir("./scripts")) {
+
+    if (file_exists('./scripts/cycle_periodical_db_save.php') && file_exists('./scripts/periodical_db_save.php')) {
+        copyFile('./scripts/periodical_db_save.php', './scripts/cycle_periodical_db_save.php');
+    }
+    if (file_exists('./scripts/cycle_db_save.php') && file_exists('./scripts/periodical_db_save.php')) {
+        copyFile('./scripts/periodical_db_save.php', './scripts/cycle_db_save.php');
+    }
+
     if ($lib_dir = opendir("./scripts")) {
         while (($lib_file = readdir($lib_dir)) !== false) {
             if ((preg_match("/^cycle_.+?\.php$/", $lib_file)))

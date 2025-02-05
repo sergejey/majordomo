@@ -282,7 +282,6 @@ class users extends module
  users: ID int(10) unsigned NOT NULL auto_increment
  users: USERNAME varchar(255) NOT NULL DEFAULT ''
  users: NAME varchar(255) NOT NULL DEFAULT ''
- users: SKYPE varchar(255) NOT NULL DEFAULT ''
  users: MOBILE varchar(255) NOT NULL DEFAULT ''
  users: AVATAR varchar(255) NOT NULL DEFAULT ''
  users: LINKED_OBJECT varchar(255) NOT NULL DEFAULT ''

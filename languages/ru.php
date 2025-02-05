@@ -1230,6 +1230,7 @@ $dictionary = array(
     'DEVICES_LOADTYPE' => 'Тип устройства',
     'DEVICES_LOADTYPE_VENT' => 'Вентиляция',
     'DEVICES_LOADTYPE_HEATING' => 'Обогрев',
+    'DEVICES_LOADTYPE_AC' => 'Кондиционер',
     'DEVICES_LOADTYPE_CURTAINS' => 'Шторы',
     'DEVICES_LOADTYPE_GATES' => 'Ворота',
     'DEVICES_LOADTYPE_LIGHT' => 'Освещение',

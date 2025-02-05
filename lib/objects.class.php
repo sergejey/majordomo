@@ -615,11 +615,11 @@ function getGlobal($varname)
         return $cached_value;
     }
 
-    if ($class_name!='' && isModuleInstalled($class_name)) {
-        include_once(DIR_MODULES.$class_name.'/'.$class_name.'.class.php');
+    if ($class_name != '' && isModuleInstalled($class_name)) {
+        include_once(DIR_MODULES . $class_name . '/' . $class_name . '.class.php');
         $module = new $class_name();
         if (method_exists($module, 'getModuleProperty')) {
-            $data = $module->getModuleProperty($tmp[1].'.'.$tmp[2]);
+            $data = $module->getModuleProperty($tmp[1] . '.' . $tmp[2]);
             return $data;
         }
     } else {
@@ -643,6 +643,9 @@ function getGlobal($varname)
  */
 function getHistoryValueId($varname)
 {
+
+    startMeasure('getHistoryValueId');
+
     $tmp = explode('.', $varname);
 
     if (isset($tmp[2])) {
@@ -656,13 +659,18 @@ function getHistoryValueId($varname)
 
     // Get object
     $obj = getObject($object_name);
-    if (!$obj) return false;
+    if (!$obj) {
+        endMeasure('getHistoryValueId');
+        return false;
+    }
 
     // Get property
     $prop_id = $obj->getPropertyByName($varname, $obj->class_id, $obj->id);
     if ($prop_id == false) return false;
 
     $rec = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='" . (int)$prop_id . "' AND OBJECT_ID='" . (int)$obj->id . "'");
+
+    endMeasure('getHistoryValue');
 
     if (!$rec['ID'])
         return false;
@@ -679,6 +687,7 @@ function getHistoryValueId($varname)
  */
 function getHistory($varname, $start_time, $stop_time = 0)
 {
+    startMeasure('getHistory');
     if ($start_time <= 0) $start_time = (time() + $start_time);
     if ($stop_time <= 0) $stop_time = (time() + $stop_time);
 
@@ -692,11 +701,16 @@ function getHistory($varname, $start_time, $stop_time = 0)
     }
 
     // Get data
-    return SQLSelect("SELECT VALUE, ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "') ORDER BY ADDED");
+    $data = SQLSelect("SELECT VALUE, ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "') ORDER BY ADDED");
+
+    endMeasure('getHistory');
+    return $data;
+
 }
 
 function getHistoryAvgDay($varname, $start_time, $stop_time = 0)
 {
+    startMeasure('getHistoryAvgDay');
     if ($start_time <= 0) $start_time = (time() + $start_time);
     if ($stop_time <= 0) $stop_time = (time() + $stop_time);
 
@@ -710,7 +724,12 @@ function getHistoryAvgDay($varname, $start_time, $stop_time = 0)
     }
 
     // Get data
-    return SQLSelect("SELECT round(avg(VALUE),2) VALUE,  date(ADDED) ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "') group by  date(ADDED) ORDER BY ADDED");
+    $data = SQLSelect("SELECT round(avg(VALUE),2) VALUE,  date(ADDED) ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "') group by  date(ADDED) ORDER BY ADDED");
+
+    endMeasure('getHistoryAvgDay');
+
+    return $data;
+
 }
 
 
@@ -723,6 +742,7 @@ function getHistoryAvgDay($varname, $start_time, $stop_time = 0)
  */
 function getHistoryMin($varname, $start_time, $stop_time = 0)
 {
+    startMeasure('getHistoryMin');
     if ($start_time <= 0) {
         $start_time = (time() + $start_time);
         $latest_data = true;
@@ -744,6 +764,8 @@ function getHistoryMin($varname, $start_time, $stop_time = 0)
     $data = SQLSelectOne("SELECT MIN(VALUE+0.0) AS VALUE FROM $table_name " .
         "WHERE VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "')");
 
+    endMeasure('getHistoryMin');
+
     if (!isset($data['VALUE']) && $latest_data) return getGlobal($varname);
     if (!isset($data['VALUE'])) return false;
 
@@ -759,6 +781,7 @@ function getHistoryMin($varname, $start_time, $stop_time = 0)
  */
 function getHistoryMax($varname, $start_time, $stop_time = 0)
 {
+    startMeasure('getHistoryMax');
     if ($start_time <= 0) {
         $start_time = (time() + $start_time);
         $latest_data = true;
@@ -778,6 +801,7 @@ function getHistoryMax($varname, $start_time, $stop_time = 0)
     $data = SQLSelectOne("SELECT MAX(VALUE+0.0) AS VALUE FROM $table_name " .
         "WHERE VALUE != \"\" AND  VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "')");
 
+    endMeasure('getHistoryMax');
     if (!isset($data['VALUE']) && $latest_data) return getGlobal($varname);
     if (!isset($data['VALUE'])) return false;
 
@@ -793,6 +817,9 @@ function getHistoryMax($varname, $start_time, $stop_time = 0)
  */
 function getHistoryCount($varname, $start_time, $stop_time = 0)
 {
+
+    startMeasure('getHistoryCount');
+
     if ($start_time <= 0) $start_time = (time() + $start_time);
     if ($stop_time <= 0) $stop_time = (time() + $stop_time);
 
@@ -806,6 +833,8 @@ function getHistoryCount($varname, $start_time, $stop_time = 0)
     // Get data
     $data = SQLSelectOne("SELECT COUNT(VALUE+0.0) AS VALUE FROM $table_name " .
         "WHERE VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "')");
+
+    endMeasure('getHistoryCount');
 
     if (!isset($data['VALUE']))
         return false;
@@ -822,6 +851,7 @@ function getHistoryCount($varname, $start_time, $stop_time = 0)
  */
 function getHistorySum($varname, $start_time, $stop_time = 0)
 {
+    startMeasure('getHistorySum');
     if ($start_time <= 0) $start_time = (time() + $start_time);
     if ($stop_time <= 0) $stop_time = (time() + $stop_time);
 
@@ -835,6 +865,8 @@ function getHistorySum($varname, $start_time, $stop_time = 0)
     // Get data
     $data = SQLSelectOne("SELECT SUM(VALUE+0.0) AS VALUE FROM $table_name " .
         "WHERE  VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "')");
+
+    endMeasure('getHistorySum');
 
     if (!isset($data['VALUE']))
         return false;
@@ -851,6 +883,7 @@ function getHistorySum($varname, $start_time, $stop_time = 0)
  */
 function getHistoryAvg($varname, $start_time, $stop_time = 0, $integral = false)
 {
+    startMeasure('getHistoryAvg');
     if ($start_time <= 0) {
         $start_time = (time() + $start_time);
         $latest_data = true;
@@ -869,7 +902,7 @@ function getHistoryAvg($varname, $start_time, $stop_time = 0, $integral = false)
 
     $data = [];
     if ($integral) { // Calculate average value using integral trapezoidal rule 
-                     // and interpolating start/stop values when no data exist on given timestamps
+        // and interpolating start/stop values when no data exist on given timestamps
         // read history values from DB
         $firstValue = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED<('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED>=('" . date('Y-m-d H:i:s', $start_time - 7 * 24 * 60 * 60) . "') ORDER BY ADDED DESC LIMIT 1");
         if (!isset($firstValue['VALUE'])) {
@@ -878,7 +911,7 @@ function getHistoryAvg($varname, $start_time, $stop_time = 0, $integral = false)
         $values = SQLSelect("SELECT UNIX_TIMESTAMP(ADDED) AS ADDED, VALUE AS VALUE FROM $table_name " .
             "WHERE  VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "') ORDER BY ADDED ASC");
         $lastValue = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED>('" . date('Y-m-d H:i:s', $stop_time) . "') ORDER BY ADDED LIMIT 1");
-        if(count($values) == 0) {
+        if (count($values) == 0) {
             $values = [$firstValue];
         }
         if (isset($firstValue['VALUE']) && intval($firstValue['ADDED']) < intval($values[0]['ADDED'])) {
@@ -887,7 +920,7 @@ function getHistoryAvg($varname, $start_time, $stop_time = 0, $integral = false)
         if (isset($lastValue['VALUE'])) {
             $values = array_merge($values, [$lastValue]);
         }
-        
+
         // convert result to $points array with X as timestamp, and Y as float value
         $points = [];
         $valuesCount = count($values);
@@ -896,12 +929,12 @@ function getHistoryAvg($varname, $start_time, $stop_time = 0, $integral = false)
             $value = floatval($values[$i]['VALUE']);
             $points[] = ['X' => $timestamp, 'Y' => $value];
         }
-        
-        if ($valuesCount > 0 ) {
+
+        if ($valuesCount > 0) {
             // prepare virtual points for $start_time and $stop_time
             $virtualPointX1 = ['X' => $start_time, 'Y' => null];
             $virtualPointX2 = ['X' => $stop_time, 'Y' => null];
-            
+
             // find points next to start_time and stop_time for interpolation
             $pointBeforeX1 = $pointBeforeX2 = $pointAfterX1 = $pointAfterX2 = null;
             foreach ($points as $point) {
@@ -924,11 +957,12 @@ function getHistoryAvg($varname, $start_time, $stop_time = 0, $integral = false)
             if ($pointAfterX2 === null) {
                 $pointAfterX2 = $pointBeforeX2;
             }
-            
+
             // interpolate virtual values Y1 and Y2
             if (!function_exists('getHistoryAvgLinearInterpolation')) {
-                function getHistoryAvgLinearInterpolation($x, $x1, $y1, $x2, $y2) {
-                    if($x1 == $x2) {
+                function getHistoryAvgLinearInterpolation($x, $x1, $y1, $x2, $y2)
+                {
+                    if ($x1 == $x2) {
                         return $y1;
                     }
                     return $y1 + (($x - $x1) / ($x2 - $x1)) * ($y2 - $y1);
@@ -936,7 +970,7 @@ function getHistoryAvg($varname, $start_time, $stop_time = 0, $integral = false)
             }
             $virtualPointX1['Y'] = getHistoryAvgLinearInterpolation($start_time, $pointBeforeX1['X'], $pointBeforeX1['Y'], $pointAfterX1['X'], $pointAfterX1['Y']);
             $virtualPointX2['Y'] = getHistoryAvgLinearInterpolation($stop_time, $pointBeforeX2['X'], $pointBeforeX2['Y'], $pointAfterX2['X'], $pointAfterX2['Y']);
-            
+
             // add virtual points into array
             $pointsWithVirtual = [];
             foreach ($points as $point) {
@@ -948,11 +982,11 @@ function getHistoryAvg($varname, $start_time, $stop_time = 0, $integral = false)
                     $pointsWithVirtual[] = $virtualPointX2;
                 }
             }
-            
+
             // find indicies of virtual points
             $indexX1 = array_search($virtualPointX1, $pointsWithVirtual);
             $indexX2 = array_search($virtualPointX2, $pointsWithVirtual);
-            
+
             // calculate average value using Trapezoidal rule
             $areaUnderCurve = 0;
             for ($i = $indexX1 + 1; $i <= $indexX2; $i++) {
@@ -961,18 +995,18 @@ function getHistoryAvg($varname, $start_time, $stop_time = 0, $integral = false)
             $averageY = $areaUnderCurve / ($virtualPointX2['X'] - $virtualPointX1['X']);
             $data['VALUE'] = $averageY;
         }
-        
+
     } else { // Simple average value based on all stored values between start and stop timestamps
         // Get data
         $data = SQLSelectOne("SELECT AVG(VALUE+0.0) AS VALUE FROM $table_name " .
             "WHERE  VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "')");
-    
+
         if (!isset($data['VALUE'])) {
             $data = SQLSelectOne("SELECT VALUE+0.0 FROM $table_name " .
                 "WHERE  VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED<('" . date('Y-m-d H:i:s', $start_time) . "') ORDER BY ADDED DESC LIMIT 1");
         }
     }
-    
+    endMeasure('getHistoryAvg');
     if (!isset($data['VALUE']) && $latest_data) return getGlobal($varname);
     if (!isset($data['VALUE'])) return false;
 
@@ -988,6 +1022,9 @@ function getHistoryAvg($varname, $start_time, $stop_time = 0, $integral = false)
  */
 function getHistoryValue($varname, $time, $nerest = false)
 {
+
+    startMeasure('getHistoryValue');
+
     $time = (int)$time;
     if ($time <= 0) $time = (time() + $time);
 
@@ -1007,6 +1044,8 @@ function getHistoryValue($varname, $time, $nerest = false)
 
     // Get val after
     $val2 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $time) . "') ORDER BY ADDED LIMIT 1");
+
+    endMeasure('getHistoryValue');
 
     // Not found values
     if ((!isset($val1['VALUE'])) && (!isset($val2['VALUE'])))
@@ -1204,13 +1243,15 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
         } else {
             // child
             $is_child = true;
-            register_shutdown_function(create_function('$pars', 'posix_kill(getmypid(), SIGKILL);'), array());
+            if (function_exists('create_function')) {
+                register_shutdown_function(create_function('$pars', 'posix_kill(getmypid(), SIGKILL);'), array());
+            }
             set_time_limit(60);
         }
     }
 
 
-    startMeasure('callAPI');
+    startMeasure('callAPI '.$api_url);
     if (!is_array($params)) {
         $params = array();
     }
@@ -1251,7 +1292,7 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
         //DebMes("Call to $url finished with error: \n" . $errorInfo . "\n" . json_encode($info), 'callAPI_errors');
     }
 
-    endMeasure('callAPI');
+    endMeasure('callAPI '.$api_url);
 
     if ($is_child) {
         exit();
@@ -1642,6 +1683,7 @@ function checkOperationsQueue($topic)
 
 function addToOperationsQueue($topic, $dataname, $datavalue = '', $uniq = false, $ttl = 60)
 {
+    startMeasure('addToOperationsQueue');
     if (defined('USE_REDIS')) {
         global $redisConnection;
         if (!isset($redisConnection)) {
@@ -1650,7 +1692,9 @@ function addToOperationsQueue($topic, $dataname, $datavalue = '', $uniq = false,
         }
         $value = $dataname . "|" . $datavalue;
         $queueName = "mjd:queue:" . $topic;
-        return $redisConnection->rPush($queueName, $value);
+        $result = $redisConnection->rPush($queueName, $value);
+        endMeasure('addToOperationsQueue');
+        return $result;
     }
     $rec = array();
     $rec['TOPIC'] = $topic;
@@ -1664,5 +1708,6 @@ function addToOperationsQueue($topic, $dataname, $datavalue = '', $uniq = false,
     }
     $rec['ID'] = SQLInsert('operations_queue', $rec);
     SQLExec("DELETE FROM operations_queue WHERE EXPIRE<NOW();");
+    endMeasure('addToOperationsQueue');
     return $rec['ID'];
 }

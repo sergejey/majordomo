@@ -1015,7 +1015,7 @@ class devices extends module
         for ($i = 0; $i < $total; $i++) {
             $device = array();
             $device['id'] = $devices[$i]['ID'];
-            $device['title'] = $devices[$i]['TITLE'];
+            $device['title'] = processTitle($devices[$i]['TITLE']);
             $device['object'] = $devices[$i]['LINKED_OBJECT'];
             $device['type'] = $devices[$i]['TYPE'];
             $device['favorite'] = $devices[$i]['FAVORITE'];

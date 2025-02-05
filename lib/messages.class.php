@@ -156,6 +156,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     }
 
     $rec = array();
+    if (mb_strlen($ph) > 255) $ph = mb_substr($ph, 0, 255);
     $rec['MESSAGE'] = $ph;
     $rec['IMAGE'] = $image;
     $rec['ADDED'] = date('Y-m-d H:i:s');

@@ -127,7 +127,7 @@ from general import *
 from historys import *
 from job import *
 from mjdm import *
-from timer import *
+from timers import *
 
 if (sys.argv[1:]):
     params=sys.argv[1:]
