@@ -201,12 +201,14 @@ class saverestore extends module
 
         $aditional_git_urls = gr('aditional_git_urls');
         $out['ADITIONAL_GIT_URLS'] = array();
-        foreach ($aditional_git_urls as $url => $title) {
-            $tmp = array();
-            $tmp['URL'] = $url;
-            $tmp['TITLE'] = $title;
-            $tmp['SELECTED'] = $out['UPDATE_URL'] == $url ? 'selected' : '';
-            $out['ADITIONAL_GIT_URLS'][] = $tmp;
+        if(is_array($aditional_git_urls)){
+            foreach ($aditional_git_urls as $url => $title) {
+                $tmp = array();
+                $tmp['URL'] = $url;
+                $tmp['TITLE'] = $title;
+                $tmp['SELECTED'] = $out['UPDATE_URL'] == $url ? 'selected' : '';
+                $out['ADITIONAL_GIT_URLS'][] = $tmp;
+            }
         }
 
         $github_feed_url = $update_url;
