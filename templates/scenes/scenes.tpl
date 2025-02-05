@@ -316,9 +316,9 @@
           {if ($STATE.SCRIPT_ID=="0") && ($STATE.ACTION_METHOD=="") && ($STATE.CODE=="")}return;{/if}
          }
          {/if}
-        {/foreach}
-        {/foreach}
-        {/foreach}
+        {/foreach} // state
+        {/foreach} // element
+        {/foreach} // scene
 
 
 
@@ -539,6 +539,10 @@ $(".draggable" ).draggable({ cursor: "move", snap: true , snapTolerance: 5, grid
                         }});
 
 
+                 {/if}
+
+                 {if $SCENE_AUTO_REFRESH!="0" && $SCENE_AUTO_REFRESH!=""}
+                   setTimeout('window.location.reload();',{$SCENE_AUTO_REFRESH}*60*1000);
                  {/if}
 
                  {if $SCENE_WALLPAPER!=""}

@@ -170,6 +170,7 @@ $dictionary = array(
     'SCALE_HEIGHT' => 'По высоте экрана',
     'SCALE_BOTH' => 'По ширине и высоте',
     'SCENE_DEVICES_BACKGROUND' => 'Фон для устройств',
+    'SCENE_RELOAD_INTERVAL' => 'Интервал перезагрузки, минут',
 
     'SETUP' => 'Настроить',
 

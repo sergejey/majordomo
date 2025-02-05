@@ -7,13 +7,15 @@ if ($delete_id) {
     $rec=SQLSelectOne("SELECT * FROM devices_groups WHERE ID=".(int)$delete_id);
     $property_title='group'.$rec['SYS_NAME'];
     $objects = getObjectsByProperty($property_title);
-    $total = count($objects);
-    for($i=0;$i<$total;$i++) {
-        $object_id=gg($objects[$i].'.object_id');
-        $property_id=current(SQLSelectOne("SELECT ID FROM properties WHERE OBJECT_ID=".(int)$object_id." AND TITLE='".DBSafe($property_title)."'"));
-        if ($property_id) {
-            SQLExec("DELETE FROM pvalues WHERE PROPERTY_ID=".$property_id." AND OBJECT_ID=".$object_id);
-            SQLExec("DELETE FROM properties WHERE ID=".$property_id);
+    if (is_array($objects)) {
+        $total = count($objects);
+        for($i=0;$i<$total;$i++) {
+            $object_id=gg($objects[$i].'.object_id');
+            $property_id=current(SQLSelectOne("SELECT ID FROM properties WHERE OBJECT_ID=".(int)$object_id." AND TITLE='".DBSafe($property_title)."'"));
+            if ($property_id) {
+                SQLExec("DELETE FROM pvalues WHERE PROPERTY_ID=".$property_id." AND OBJECT_ID=".$object_id);
+                SQLExec("DELETE FROM properties WHERE ID=".$property_id);
+            }
         }
     }
     SQLExec("DELETE FROM devices_groups WHERE ID=".$rec['ID']);

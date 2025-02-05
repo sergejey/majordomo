@@ -1,9 +1,6 @@
 <?php
-/*
-* @version 0.1 (wizard)
-*/
 
-global $view_mode2;
+$view_mode2 = gr('view_mode2');
 $out['VIEW_MODE2'] = $view_mode2;
 
 
@@ -14,7 +11,7 @@ $table_name = 'scenes';
 $rec = SQLSelectOne("SELECT * FROM $table_name WHERE ID='$id'");
 
 
-global $open;
+$open = gr('open');
 if ($open != '') {
     if ($open == 'new') {
         $this->redirect("?id=" . $rec['ID'] . "&view_mode=" . $this->view_mode . "&tab=elements" . "&view_mode2=edit_elements&element_id=&top=" . $_GET['top'] . "&left=" . $_GET['left']);
@@ -33,8 +30,7 @@ if ($open != '') {
     }
 }
 
-global $state_id;
-
+$state_id = gr('state_id', 'int');
 if ($this->tab == 'devices') {
     include DIR_MODULES . 'scenes/devices.inc.php';
 }
@@ -50,61 +46,27 @@ if ($view_mode2 == '') {
         $ok = 1;
         // step: default
         if ($this->tab == '') {
-            //updating 'TITLE' (varchar, required)
-            global $title;
-            $rec['TITLE'] = $title;
+            $rec['TITLE'] = gr('title');
             if ($rec['TITLE'] == '') {
                 $out['ERR_TITLE'] = 1;
                 $ok = 0;
             }
-            //updating 'BACKGROUND' (varchar)
-            global $background;
-            $rec['BACKGROUND'] = $background;
+            $rec['BACKGROUND'] = gr('background');
+            $rec['WALLPAPER'] = gr('wallpaper');
+            $rec['WALLPAPER_FIXED'] = gr('wallpaper_fixed','int');
+            $rec['WALLPAPER_NOREPEAT'] = gr('wallpaper_norepeat','int');
+            $rec['AUTO_SCALE'] = gr('auto_scale','int');
+            $rec['AUTO_REFRESH'] = gr('auto_refresh','int');
 
-            global $wallpaper;
-            $rec['WALLPAPER'] = $wallpaper;
-
-            global $wallpaper_fixed;
-            $rec['WALLPAPER_FIXED'] = (int)$wallpaper_fixed;
-
-            global $wallpaper_norepeat;
-            $rec['WALLPAPER_NOREPEAT'] = (int)$wallpaper_norepeat;
-
-            global $auto_scale;
-            $rec['AUTO_SCALE'] = (int)$auto_scale;
-
-
-            //updating 'PRIORITY' (int)
-            global $priority;
-            $rec['PRIORITY'] = (int)$priority;
-
-            global $hidden;
-            $rec['HIDDEN'] = (int)$hidden;
-
+            $rec['PRIORITY'] = gr('priority', 'int');
+            $rec['HIDDEN'] = gr('hidden', 'int');
             $rec['DEVICES_BACKGROUND']=gr('devices_background');
-
-            // updating elements array
-            /*
-             global $elements;
-             $elements = json_decode($elements, true);
-             $elements = ($elements == null) ? array() : $elements;
-             */
         }
-
-        if ($this->tab == 'visual') {
-            //updating visual
-        }
-
 
         //UPDATING RECORD
         if ($ok) {
-            if ($rec['ID']) {
+            if (isset($rec['ID'])) {
                 SQLUpdate($table_name, $rec); // update
-                /*
-                    foreach ($elements as $value) {
-                           SQLUpdate('elements', $value);
-                    }
-                */
             } else {
                 $new_rec = 1;
                 $rec['ID'] = SQLInsert($table_name, $rec); // adding new record
@@ -118,7 +80,7 @@ if ($view_mode2 == '') {
 }
 
 if ($view_mode2 == 'clone_elements') {
-    global $element_id;
+    $element_id = gr('element_id', 'int');
     $element = SQLSelectOne("SELECT * FROM elements WHERE ID='" . (int)$element_id . "'");
     $states = SQLSelect("SELECT * FROM elm_states WHERE ELEMENT_ID='" . $element['ID'] . "'");
     unset($element['ID']);
@@ -136,7 +98,7 @@ if ($view_mode2 == 'clone_elements') {
 
 
 if ($view_mode2 == 'delete_elements') {
-    global $element_id;
+    $element_id = gr('element_id', 'int');
     $element = SQLSelectOne("SELECT * FROM elements WHERE ID='" . (int)$element_id . "'");
     if ($element['ID']) {
         $this->delete_elements($element['ID']);
@@ -145,13 +107,13 @@ if ($view_mode2 == 'delete_elements') {
 }
 
 if ($view_mode2 == 'up_elements') {
-    global $element_id;
+    $element_id = gr('element_id', 'int');
     $this->reorder_elements($element_id, 'up');
     $this->redirect("?id=" . $rec['ID'] . "&view_mode=" . $this->view_mode . "&tab=" . $this->tab);
 }
 
 if ($view_mode2 == 'down_elements') {
-    global $element_id;
+    $element_id = gr('element_id', 'int');
     $this->reorder_elements($element_id, 'down');
     $this->redirect("?id=" . $rec['ID'] . "&view_mode=" . $this->view_mode . "&tab=" . $this->tab);
 }
@@ -256,7 +218,7 @@ if ($this->tab == 'elements') {
 if ($element['ID']) {
     $elements = SQLSelect("SELECT `ID`, `SCENE_ID`, `TITLE`, `TYPE`, `TOP`, `LEFT`, `WIDTH`, `HEIGHT`, `CROSS_SCENE`, PRIORITY, (SELECT `IMAGE` FROM elm_states WHERE elements.ID = elm_states.element_ID LIMIT 1) AS `IMAGE` FROM elements WHERE SCENE_ID='" . $rec['ID'] . "' AND CONTAINER_ID=0 ORDER BY PRIORITY DESC, TITLE");
 } else {
-    $elements = $this->getElements("SCENE_ID='" . $rec['ID'] . "' AND CONTAINER_ID=0");
+    $elements = $this->getElements("SCENE_ID='" . $rec['ID'] . "' AND CONTAINER_ID=0", array('ignore_css_image' => 1, 'no_render' => 1, 'ignore_state' => 1));
 }
 //
 if (count($elements)) {
@@ -286,7 +248,6 @@ if ($element['CONTAINER_ID']) {
 
 
 $out['CONTAINERS'] = $containers;
-
 $out['SCENES'] = SQLSelect("SELECT * FROM scenes ORDER BY TITLE");
 $out['DEVICES'] = SQLSelect("SELECT ID, TITLE FROM devices ORDER BY TITLE");
 
