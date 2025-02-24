@@ -1519,6 +1519,7 @@ class devices extends module
     {
         parent::install();
 
+        /*
         if (file_exists(ROOT . 'languages/' . $this->name . '_' . SETTINGS_SITE_LANGUAGE . '.php')) {
             include_once(ROOT . 'languages/' . $this->name . '_' . SETTINGS_SITE_LANGUAGE . '.php');
         }
@@ -1527,6 +1528,7 @@ class devices extends module
         }
 
         SQLExec("UPDATE project_modules SET TITLE='" . LANG_DEVICES_MODULE_TITLE . "' WHERE NAME='" . $this->name . "'");
+        */
 
         $this->setDictionary();
         $this->renderStructure();
