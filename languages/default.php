@@ -147,6 +147,8 @@ $dictionary = array(
     'MODULE_SAVERESTORE' => 'Check updates',
     'MODULE_WEBVARS' => 'Web Variables',
     'MODULE_ACTIONS_LOG' => 'Actions history',
+    'MODULE_DEVICES' => 'Simple Devices',
+    'MODULE_CHARTS' => 'Graphics',
 
     'MODULE_DASHBOARD' => 'Dashboard',
     'MODULE_DATESELECTOR' => 'Dateselector',
