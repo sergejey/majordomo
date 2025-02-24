@@ -163,6 +163,8 @@ $dictionary = array(
     'MODULE_USERLOG' => 'Журнал действий',
     'MODULE_PLANS' => 'Планы',
     'MODULE_ACTIONS_LOG' => 'История действий',
+    'MODULE_DEVICES' => 'Простые устройства',
+    'MODULE_CHARTS' => 'Графики',
 
     'SCENE_HIDDEN' => 'Не включать в список переключающихся сцен',
     'SCENE_AUTO_SCALE' => 'Автоматически изменять размер сцены',
