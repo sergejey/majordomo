@@ -372,12 +372,10 @@ FF;
             echo "</td>";
             echo "<td>";
             if ($history[$i]['SOURCE']) {
-                if (strlen($history[$i]['SOURCE']) > 30) {
-                    $src = substr($history[$i]['SOURCE'], 0, 30) . ' ...';
-                } else {
-                    $src = $history[$i]['SOURCE'];
-                }
-                echo '<input class="form-control" type=text value="' . $history[$i]['SOURCE'] . '"/>';
+                $src = $history[$i]['SOURCE'];
+                $src = str_replace("\n", ' ', $src);
+                $src = str_replace('"', '&quot;', $src);
+                echo '<input class="form-control" type=text value="' . $src . '"/>';
             }
             echo "</td>";
             echo '<td><a href="' . $_SERVER['REQUEST_URI'] . '&subop=clear&id=' . $history[$i]['ID'] . '" onClick="return confirm(\'' . LANG_ARE_YOU_SURE . '\')" class="btn btn-default btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i></a></td>';

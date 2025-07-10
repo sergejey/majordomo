@@ -65,7 +65,7 @@ while (1) {
     }
 
     $connect_topics = array(
-        '/incoming_urls', '/menu_session', '/reverse_requests', '/forward/#'
+        '/incoming_urls', '/menu_session', '/reverse_requests', '/forward/#', '/ping'
     );
 
 
@@ -142,7 +142,12 @@ while (1) {
             if ((time() - $ping_timestamp) > 60) {
                 $ping_timestamp = time();
                 set_time_limit(10);
-                $mqtt_client->publish($ping_topic, time());
+                echo date('Y-m-d H:i:s') . " Pinging MQTT server ($ping_topic) with timestamp " . time() . "\n";
+                if ($mqtt_client->publish($ping_topic, time())) {
+                    echo date('Y-m-d H:i:s') . " PING OK\n";
+                } else {
+                    echo date('Y-m-d H:i:s') . " PING FAILED\n";
+                }
                 set_time_limit(0);
             }
         }
