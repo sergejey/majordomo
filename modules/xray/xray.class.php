@@ -284,8 +284,10 @@ class xray extends module
                         $keywords["cm(\"" . $k] = $k;
                         $keywords["cm('" . $k] = $k;
                         $tmp = explode('.', $k);
-                        $keywords["->callMethod('" . $tmp[1]] = $tmp[1];
-                        $keywords["->callMethod(\"" . $tmp[1]] = $tmp[1];
+                        if(isset($tmp[1])){
+                            $keywords["->callMethod('" . $tmp[1]] = $tmp[1];
+                            $keywords["->callMethod(\"" . $tmp[1]] = $tmp[1];
+                        }
                     }
                 }
 
@@ -423,6 +425,7 @@ class xray extends module
 
         $out['FILTER'] = gr('filter');
         $out['LINES'] = gr('limit');
+        $qry = "";
 
         if ($this->view_mode == 'services') {
             global $cmd;
@@ -676,7 +679,8 @@ class xray extends module
 						$responce['LIST'][$i]['AVTIME'] = number_format($res[$i]['TIME_TOTAL'] / $res[$i]['TOTAL'], 2);
                     }
 					
-					$responce['LIST'] = array_reverse($responce['LIST']);
+					
+					$responce['LIST'] = isset($responce['LIST']) ? array_reverse($responce['LIST']) : "";
 					
 					echo json_encode($responce);
 					

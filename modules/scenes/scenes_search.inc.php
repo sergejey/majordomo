@@ -61,17 +61,25 @@ if ($this->action != 'admin') {
     unset($res2);
 }
 
-
-if ($res[0]['ID']) {
+if (isset($res[0]['ID'])) {
     $total = count($res);
     $positions = array();
     for ($i = 0; $i < $total; $i++) {
         // some action for every record if required
         startMeasure('scene' . $res[$i]['ID'] . '_get root elements');
-        $res[$i]['ELEMENTS'] = $this->getElements("SCENE_ID='" . $res[$i]['ID'] . "' AND CONTAINER_ID=0", array('ignore_css_image' => 1));
+        if ($this->action == 'admin') {
+            $res[$i]['ELEMENTS'] = $this->getElements("SCENE_ID='" . $res[$i]['ID'] . "' AND CONTAINER_ID=0", array('ignore_css_image' => 1, 'no_render' => 1));
+        } else {
+            $res[$i]['ELEMENTS'] = $this->getElements("SCENE_ID='" . $res[$i]['ID'] . "' AND CONTAINER_ID=0");
+        }
         endMeasure('scene' . $res[$i]['ID'] . '_get root elements');
         startMeasure('scene' . $res[$i]['ID'] . '_get all elements');
-        $res[$i]['ALL_ELEMENTS'] = $this->getElements("SCENE_ID='" . $res[$i]['ID'] . "'", array('ignore_state' => 1, 'ignore_sub' => 1, 'ignore_css_image' => 1));
+        if ($this->action == 'admin') {
+            $res[$i]['ALL_ELEMENTS'] = $this->getElements("SCENE_ID='" . $res[$i]['ID'] . "'", array('ignore_state' => 1, 'ignore_sub' => 1, 'ignore_css_image' => 1, 'no_render' => 1));
+        } else {
+            $res[$i]['ALL_ELEMENTS'] = $this->getElements("SCENE_ID='" . $res[$i]['ID'] . "'");
+        }
+
         endMeasure('scene' . $res[$i]['ID'] . '_get all elements');
         $res[$i]['NUM'] = $i;
         $res[$i]['NUMP'] = $i + 1;

@@ -147,6 +147,8 @@ $dictionary = array(
     'MODULE_SAVERESTORE' => 'Check updates',
     'MODULE_WEBVARS' => 'Web Variables',
     'MODULE_ACTIONS_LOG' => 'Actions history',
+    'MODULE_DEVICES' => 'Simple Devices',
+    'MODULE_CHARTS' => 'Graphics',
 
     'MODULE_DASHBOARD' => 'Dashboard',
     'MODULE_DATESELECTOR' => 'Dateselector',
@@ -1021,6 +1023,7 @@ $dictionary = array(
     'SCALE_HEIGHT' => 'By screen height',
     'SCALE_BOTH' => 'Both (fit to screen)',
     'SCENE_DEVICES_BACKGROUND' => 'Background for Devices',
+    'SCENE_RELOAD_INTERVAL' => 'Scene reload interval, minutes',
 
     'DO_NOTHING' => 'Do nothing',
     'DO_ONCLICK' => 'On click',

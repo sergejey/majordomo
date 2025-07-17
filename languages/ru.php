@@ -163,6 +163,8 @@ $dictionary = array(
     'MODULE_USERLOG' => 'Журнал действий',
     'MODULE_PLANS' => 'Планы',
     'MODULE_ACTIONS_LOG' => 'История действий',
+    'MODULE_DEVICES' => 'Простые устройства',
+    'MODULE_CHARTS' => 'Графики',
 
     'SCENE_HIDDEN' => 'Не включать в список переключающихся сцен',
     'SCENE_AUTO_SCALE' => 'Автоматически изменять размер сцены',
@@ -170,6 +172,7 @@ $dictionary = array(
     'SCALE_HEIGHT' => 'По высоте экрана',
     'SCALE_BOTH' => 'По ширине и высоте',
     'SCENE_DEVICES_BACKGROUND' => 'Фон для устройств',
+    'SCENE_RELOAD_INTERVAL' => 'Интервал перезагрузки, минут',
 
     'SETUP' => 'Настроить',
 

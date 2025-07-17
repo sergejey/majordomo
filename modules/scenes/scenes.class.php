@@ -319,12 +319,6 @@ class scenes extends module
             $out['SET_DATASOURCE'] = 1;
         }
         if ($this->data_source == 'elements') {
-            if ($this->view_mode == '' || $this->view_mode == 'search_elements') {
-                $this->search_elements($out);
-            }
-            if ($this->view_mode == 'edit_elements') {
-                $this->edit_elements($out, $this->id);
-            }
             if ($this->view_mode == 'delete_elements') {
                 $this->delete_elements($this->id);
                 $this->redirect("?data_source=elements");
@@ -886,26 +880,6 @@ class scenes extends module
     }
 
     /**
-     * elements search
-     *
-     * @access public
-     */
-    function search_elements(&$out)
-    {
-        require(DIR_MODULES . $this->name . '/elements_search.inc.php');
-    }
-
-    /**
-     * elements edit/add
-     *
-     * @access public
-     */
-    function edit_elements(&$out, $id)
-    {
-        require(DIR_MODULES . $this->name . '/elements_edit.inc.php');
-    }
-
-    /**
      * elements delete record
      *
      * @access public
@@ -1371,7 +1345,7 @@ class scenes extends module
                 if ($elements[$ie]['TYPE'] == 'img') {
                     unset($states[$is]['HTML']);
                 }
-                if ($states[$is]['HTML'] != '') {
+                if ($states[$is]['HTML'] != '' && !isset($options['no_render'])) {
                     $states[$is]['HTML'] = processTitle($states[$is]['HTML']);
                 }
                 if (!is_array($options) || !isset($options['ignore_state']) || $options['ignore_state'] != 1) {
@@ -1747,7 +1721,8 @@ class scenes extends module
  scenes: WALLPAPER_FIXED int(3) NOT NULL DEFAULT '0'
  scenes: WALLPAPER_NOREPEAT int(3) NOT NULL DEFAULT '0'
  scenes: SYSTEM varchar(255) NOT NULL DEFAULT '' 
- scenes: DEVICES_BACKGROUND varchar(10) NOT NULL DEFAULT '' 
+ scenes: DEVICES_BACKGROUND varchar(10) NOT NULL DEFAULT ''
+ scenes: AUTO_REFRESH int(10) NOT NULL DEFAULT '0' 
 
  elements: ID int(10) unsigned NOT NULL auto_increment
  elements: SCENE_ID int(10) NOT NULL DEFAULT '0'

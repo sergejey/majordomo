@@ -71,6 +71,17 @@ if ($this->mode == 'edit_widget') {
                 $data[$property]=$property_data['FUNCTION']($data);
             }
         }
+        if (is_integer(strpos($element['TITLE'], $widget_type['TITLE'])) || $element['TITLE']=='') {
+            if ($data['WIDGET_TYPE']=='device_scaled' && isset($data['device_id'])) {
+                $device = SQLSelectOne("SELECT ID, TITLE FROM devices WHERE ID=".(int)$data['device_id']);
+                $element['TITLE'] = $widget_type['TITLE'].': '.$device['TITLE'];
+            } elseif ($data['WIDGET_TYPE']=='text') {
+                $element['TITLE'] = $widget_type['TITLE'].': '.strip_tags($data['text_value']);
+                if (strlen($element['TITLE'])>100) {
+                    $element['TITLE'] = substr($element['TITLE'],0,97).'...';
+                }
+            }
+        }
         $element['WIZARD_DATA'] = json_encode($data);
         if ($element['TITLE']!='') {
             SQLUpdate('elements',$element);
@@ -128,7 +139,7 @@ if ($this->mode == 'delete_widget') {
     $this->redirect("?id=".$scene_id."&view_mode=".$this->view_mode."&tab=".$this->tab."&top=".$top."&left=".$left);
 }
 
-$widgets = SQLSelect("SELECT ID, TITLE FROM elements WHERE SCENE_ID=" . $scene_id . " AND TYPE='widget'");
+$widgets = SQLSelect("SELECT ID, TITLE FROM elements WHERE SCENE_ID=" . $scene_id . " AND TYPE='widget' ORDER BY TITLE");
 if ($widgets[0]['ID']) {
     $out['WIDGETS']=$widgets;
 }

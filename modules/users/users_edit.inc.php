@@ -10,28 +10,17 @@ $table_name = 'users';
 $rec = SQLSelectOne("SELECT * FROM $table_name WHERE ID='$id'");
 if ($this->mode == 'update') {
     $ok = 1;
-    //updating 'USERNAME' (varchar, required)
-    global $username;
-    $rec['USERNAME'] = $username;
+    $rec['USERNAME'] = gr('username');
     if ($rec['USERNAME'] == '') {
         $out['ERR_USERNAME'] = 1;
         $ok = 0;
     }
-    //updating 'NAME' (varchar, required)
-    global $name;
-    $rec['NAME'] = $name;
+    $rec['NAME'] = gr('name');
     if ($rec['NAME'] == '') {
         $out['ERR_NAME'] = 1;
         $ok = 0;
     }
-    //updating 'EMAIL' (email, required)
-    global $email;
-    $rec['EMAIL'] = $email;
-    if ($rec['EMAIL'] == '' || !preg_match('/.+?@.+?/is', $rec['EMAIL'])) {
-        $out['ERR_EMAIL'] = 1;
-        $ok = 0;
-    }
-
+    $rec['EMAIL'] = gr('email');
     $rec['MOBILE'] = gr('mobile');
     $rec['COLOR'] = gr('color');
     $rec['IS_ADMIN'] = (int)gr('is_admin');
@@ -59,6 +48,7 @@ if ($this->mode == 'update') {
 
     //UPDATING RECORD
     if ($ok) {
+
         if ($rec['ID']) {
             SQLUpdate($table_name, $rec); // update
         } else {
@@ -70,7 +60,13 @@ if ($this->mode == 'update') {
         }
         $out['OK'] = 1;
 
-        $user_title = getUserObjectByTitle($rec['ID'], 1);
+        if (!$rec['LINKED_OBJECT']) {
+            $user_title = getUserObjectByTitle($rec['ID'], 1);
+            $rec['LINKED_OBJECT'] = $user_title;
+            SQLUpdate($table_name, $rec); // update
+        }
+
+
         $this->redirect("?");
 
     } else {
@@ -85,7 +81,7 @@ if (is_array($rec)) {
     }
 }
 
-if ($rec['PASSWORD']!='' && hash('sha512','')==$rec['PASSWORD']) {
+if ($rec['PASSWORD'] != '' && hash('sha512', '') == $rec['PASSWORD']) {
     $rec['PASSWORD'] = '';
 }
 

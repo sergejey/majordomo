@@ -856,6 +856,7 @@ class objects extends module
         if (isset($_SERVER['REQUEST_URI'])) {
             $source .= ' '.urldecode($_SERVER['REQUEST_URI']);
         }
+        $source = str_replace("\n", '', $source);
         if (mb_strlen($source) > 250) {
             $source = mb_substr($source, 0, 250) . '...';
         }
