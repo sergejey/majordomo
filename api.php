@@ -54,9 +54,11 @@ if (isset($request[0])) {
     include_once("./config.php");
     include_once("./lib/loader.php");
 
-    $headers = getallheaders();
-    if (isset($headers['app-language']) && $headers['app-language'] != '') {
-        $_GET['lang'] = $headers['app-language'];
+    if (function_exists('getallheaders')) {
+        $headers = getallheaders();
+        if (isset($headers['app-language']) && $headers['app-language'] != '') {
+            $_GET['lang'] = $headers['app-language'];
+        }
     }
     include_once("./load_settings.php");
 
