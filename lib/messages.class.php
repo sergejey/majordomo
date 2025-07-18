@@ -98,7 +98,6 @@ function sayTo($ph, $level = 0, $destination = '')
     // add message to chat
     $rec = array();
     $rec['MESSAGE'] = $ph;
-    if (strlen($rec['MESSAGE']) > 255) $rec['MESSAGE'] = substr($rec['MESSAGE'], 0, 255);
     $rec['ADDED'] = date('Y-m-d H:i:s');
     $rec['ROOM_ID'] = 0;
     $rec['MEMBER_ID'] = 0;
@@ -156,7 +155,6 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     }
 
     $rec = array();
-    if (mb_strlen($ph) > 255) $ph = mb_substr($ph, 0, 255);
     $rec['MESSAGE'] = $ph;
     $rec['IMAGE'] = $image;
     $rec['ADDED'] = date('Y-m-d H:i:s');

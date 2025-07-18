@@ -231,6 +231,8 @@ function usual(&$out) {
 * @access private
 */
  function dbInstall($data) {
+	 
+ SQLExec("ALTER TABLE `shouts` CHANGE COLUMN `MESSAGE` `MESSAGE` text NOT NULL DEFAULT ''");
 /*
 shouts - Shoutbox
 */
@@ -238,7 +240,7 @@ shouts - Shoutbox
  shouts: ID int(10) unsigned NOT NULL auto_increment
  shouts: ROOM_ID int(10) NOT NULL DEFAULT '0'
  shouts: MEMBER_ID int(10) NOT NULL DEFAULT '0'
- shouts: MESSAGE varchar(255) NOT NULL DEFAULT ''
+ shouts: MESSAGE text NOT NULL DEFAULT ''
  shouts: IMPORTANCE int(10) NOT NULL DEFAULT '0'
  shouts: ADDED datetime
  shouts: SOURCE varchar(255) NOT NULL DEFAULT ''
