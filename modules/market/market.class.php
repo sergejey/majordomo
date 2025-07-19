@@ -654,8 +654,8 @@ class market extends module
                         $this->echonow("OK<br/>", 'green');
                     }
                     $rec = SQLSelectOne("SELECT * FROM plugins WHERE MODULE_NAME LIKE '" . DBSafe($name) . "'");
-                    $rec['MODULE_NAME'] = $name;
-                    $rec['CURRENT_VERSION'] = $version;
+                    $rec['MODULE_NAME'] = $name . '';
+                    $rec['CURRENT_VERSION'] = $version . '';
                     $rec['IS_INSTALLED'] = 1;
                     $rec['LATEST_UPDATE'] = date('Y-m-d H:i:s');
                     if ($rec['ID']) {
@@ -1035,8 +1035,8 @@ class market extends module
             DebMes("Installing/updating plugin $name ($version)", 'market');
 
             $rec = SQLSelectOne("SELECT * FROM plugins WHERE MODULE_NAME LIKE '" . DBSafe($name) . "'");
-            $rec['MODULE_NAME'] = $name;
-            $rec['CURRENT_VERSION'] = $version;
+            $rec['MODULE_NAME'] = $name . '';
+            $rec['CURRENT_VERSION'] = $version . '';
             $rec['IS_INSTALLED'] = 1;
             $rec['LATEST_UPDATE'] = date('Y-m-d H:i:s');
             if ($rec['ID']) {

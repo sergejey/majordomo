@@ -17,7 +17,7 @@ if ($this->owner->print == 1) {
 if (isset($rec['LINKED_OBJECT']) && $rec['LINKED_OBJECT'] != '') {
     $object_rec = SQLSelectOne("SELECT ID FROM objects WHERE TITLE='" . $rec['LINKED_OBJECT'] . "'");
     if ($object_rec['ID']) {
-        $properties = SQLSelect("SELECT pvalues.*, properties.TITLE as PROPERTY FROM pvalues LEFT JOIN properties ON properties.ID=pvalues.PROPERTY_ID WHERE pvalues.OBJECT_ID=" . $object_rec['ID'] . " AND pvalues.LINKED_MODULES!='' ORDER BY UPDATED DESC");
+        $properties = SQLSelect("SELECT pvalues.*, properties.TITLE as PROPERTY, properties.KEEP_HISTORY FROM pvalues LEFT JOIN properties ON properties.ID=pvalues.PROPERTY_ID WHERE pvalues.OBJECT_ID=" . $object_rec['ID'] . " AND (pvalues.LINKED_MODULES!='' OR properties.KEEP_HISTORY>0) ORDER BY UPDATED DESC");
         $total = count($properties);
         if ($total > 0) {
             for ($i = 0; $i < $total; $i++) {

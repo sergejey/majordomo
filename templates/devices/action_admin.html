@@ -162,6 +162,9 @@
          [#begin LINKED_PROPERTIES#]
          <br/><a href="<#ROOTHTML#>panel/linkedobject.html?op=redirect&object=<#LINKED_OBJECT#>&sub=properties">[#PROPERTY#]</a>:
              [#VALUE#]
+             [#if KEEP_HISTORY!="0"#]
+             <i class="glyphicon glyphicon-stats" style="cursor: pointer;color: green;" onClick="return openModalTWindow('propHistory<#LINKED_OBJECT#>.[#PROPERTY#]', '<#LINKED_OBJECT#>.[#PROPERTY#]', '<#ROOTHTML#>pChart/?p=<#LINKED_OBJECT#>.[#PROPERTY#]&op=log&type=7d', 600, 600)"></i>
+             [#endif#]
          [#begin LINKED_MODULES#]
           <a href="?(panel:{action=[#MODULE#]})&md=[#MODULE#]&go_linked_object=[#OBJECT#]&go_linked_property=[#PROPERTY#]" class="label label-success">[#MODULE#]</a>
          [#end LINKED_MODULES#]
