@@ -13,6 +13,9 @@
         [#if _CONFIG_TYPE=="text"#]
          <input type="text" name="property_[#NAME#]" value="[#VALUE#]" class="form-control">
         [#endif#]
+        [#if _CONFIG_TYPE=="image_url"#]
+        <input type="text" name="property_[#NAME#]" id="property_[#NAME#]" value="[#VALUE#]" onclick="openFileBrowser('property_[#NAME#]');" class="form-control">
+        [#endif#]
         [#if _CONFIG_TYPE=="textarea"#]
         <textarea name="property_[#NAME#]" class="form-control">[#VALUE#]</textarea>
         [#endif#]
@@ -41,6 +44,7 @@
         <input type="submit" class="btn btn-default btn-primary" value="<#LANG_SUBMIT#>">
         <a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>" class="btn btn-default"><#LANG_CANCEL#></a>
         <a onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&mode=delete_widget&element_id=<#ELEMENT_ID#>" class="btn btn-default"><i class="glyphicon glyphicon-trash"></i></a>
+        <a onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&mode=add_widget&type=<#WIDGET_TYPE#>&src_element_id=<#ELEMENT_ID#>" class="btn btn-default"><i class="glyphicon glyphicon-copy"></i><#LANG_MAKE_COPY#></a>
     </div>
     <input type="hidden" name="id" value="<#ID#>">
     <input type="hidden" name="view_mode" value="<#VIEW_MODE#>">

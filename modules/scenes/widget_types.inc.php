@@ -75,7 +75,7 @@ $this->widget_types = array(
         'DESCRIPTION' => LANG_WIDGET_IMAGE_BLOCK_DESCRIPTION,
         'PROPERTIES' => array(
             'image_url' => array('DESCRIPTION' => LANG_WIDGET_IMAGE_URL,
-                'DEFAULT_VALUE' => '', '_CONFIG_TYPE' => 'text'),
+                'DEFAULT_VALUE' => '', '_CONFIG_TYPE' => 'image_url'),
             'refresh_interval' => array('DESCRIPTION' => LANG_WIDGET_IMAGE_REFRESH_INTERVAL,
                 'DEFAULT_VALUE' => '0', '_CONFIG_TYPE' => 'text'),
         ),

@@ -31,6 +31,41 @@ position: absolute;
 </style>
 <body bgcolor="transparent" style="margin:0px;padding:0px;">
 <script language="javascript">
+
+    let latestMessageScene = '';
+    let latestMessageTimerScene = 0;
+
+    function checkLatestMessageScene() {
+        $.ajax({
+            url: ROOTHTML+'getlatestnote.html',
+        }).done(function(data) {
+            if (data != latestMessageScene) {
+                latestMessageScene = data;
+                let dataJSON = JSON.parse(latestMessageScene);
+                if (dataJSON.DATA!='' && latestMessageTimerScene!=0) {
+                    $.toast({
+                        text: '<div style="font-size: 24px; line-height: 28px;padding: 10px">'+dataJSON.DATA+'</div>',
+                        showHideTransition: 'fade',
+                        allowToastClose: true,
+                        hideAfter: 3000,
+                        stack: 5,
+                        position: 'top-right',
+                        bgColor: '#444444',
+                        textColor: '#eeeeee',
+                        textAlign: 'left',
+                        loader: true,
+                        loaderBg: '#9EC600',
+                    });
+                }
+            }
+            latestMessageTimerScene = setTimeout(checkLatestMessageScene, 2000);
+        });
+    }
+
+    $(document).ready(function() {
+        checkLatestMessageScene();
+    });
+
 $(document).ready(function() {
  if (!inIframe()) {
   $("body").css('background-color', '[#if "<#SETTINGS_THEME#>"=="dark"#]black[#else#]white[#endif#]');

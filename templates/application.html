@@ -62,6 +62,40 @@ $(document).ready(function() {
    return false;
  }
 
+ let latestMessageApp = '';
+ let latestMessageTimerApp = 0;
+
+ function checkLatestMessageApp() {
+     $.ajax({
+         url: ROOTHTML+'getlatestnote.html',
+     }).done(function(data) {
+         if (data != latestMessage) {
+             latestMessageApp = data;
+             let dataJSON = JSON.parse(latestMessageApp);
+             if (dataJSON.DATA!='' && latestMessageTimerApp!=0) {
+                 $.toast({
+                     text: '<div style="font-size: 24px; line-height: 28px;padding: 10px">'+dataJSON.DATA+'</div>',
+                     showHideTransition: 'fade',
+                     allowToastClose: true,
+                     hideAfter: 3000,
+                     stack: 5,
+                     position: 'top-right',
+                     bgColor: '#444444',
+                     textColor: '#eeeeee',
+                     textAlign: 'left',
+                     loader: true,
+                     loaderBg: '#9EC600',
+                 });
+             }
+         }
+         latestMessageTimerApp = setTimeout(checkLatestMessageApp, 2000);
+     });
+ }
+
+ $(document).ready(function() {
+     checkLatestMessageApp();
+ });
+
 </script>
 
 [#if POPUP="1"#]
@@ -72,6 +106,7 @@ $(document).ready(function() {
  var eventState='';
  var eventLatest='';
  var eventTimer;
+
  var noteTimer;
  var noteLatest='';
 

@@ -1,5 +1,40 @@
 <script language="javascript">
 
+    let latestMessage = '';
+    let latestMessageTimer = 0;
+
+    function checkLatestMessage() {
+        $.ajax({
+            url: ROOTHTML+'getlatestnote.html',
+        }).done(function(data) {
+            if (data != latestMessage) {
+                latestMessage = data;
+                let dataJSON = JSON.parse(latestMessage);
+                if (dataJSON.DATA!='' && latestMessageTimer!=0) {
+                    $.toast({
+                        text: dataJSON.DATA,
+                        showHideTransition: 'fade',
+                        allowToastClose: true,
+                        hideAfter: 3000,
+                        stack: 5,
+                        position: 'bottom-left',
+                        bgColor: '#444444',
+                        textColor: '#eeeeee',
+                        textAlign: 'left',
+                        loader: true,
+                        loaderBg: '#9EC600',
+                    });
+                }
+            }
+            latestMessageTimer = setTimeout(checkLatestMessage, 2000);
+        });
+    }
+
+
+    $(document).ready(function() {
+        checkLatestMessage();
+    });
+
     function toggleCategory(id) {
         var vl=$.cookie('sub_'+id);
         if (vl == 'off') {
@@ -712,4 +747,7 @@
 
     }
     [#endif#]
+
+
+
 </script>

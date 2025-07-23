@@ -48,10 +48,8 @@ if ($op == 'console') {
 }
 
 if ($op == 'filter') {
-    global $title;
-	
-	//if(!$title) die();
-	
+    $title = gr('title','trim');
+
     $object_title = '';
     $property_title = '';
 
