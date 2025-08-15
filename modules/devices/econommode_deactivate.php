@@ -11,7 +11,7 @@ for ($i = 0; $i < $total; $i++) {
 
     $obj = getObject($objects[$i]);
     if (is_object($obj) && $obj->device_id && !checkAccess('prop_groupEcoOn', $obj->device_id)) continue;
-    if (!$is_dark && getGlobal($objects[$i] . '.groupSunrise')) continue;
+    if (!$is_dark && getGlobal($objects[$i] . '.groupSunrise')) continue; // skip if DarknessMode is not active
 
     callMethodSafe($objects[$i] . '.turnOn', array('source' => 'EconomMode'));
     usleep(50000);

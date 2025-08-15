@@ -1054,6 +1054,7 @@ $dictionary = array(
     'USE_CLASS_SETTINGS' => 'use class settings',
 
     'USING_LATEST_VERSION' => 'You are using the latest version!',
+    'VERSION_TOO_OLD' => 'You have too old version of the system',
     'LATEST_UPDATES' => 'Latest updates',
     'UPDATE_TO_THE_LATEST' => 'Update to the latest code',
     'SAVE_BACKUP' => 'Save Backup',

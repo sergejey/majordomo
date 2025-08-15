@@ -1050,7 +1050,7 @@ $dictionary = array(
 
     'COUNTER' => 'Счётчик',
     'USE_CLASS_SETTINGS' => 'использовать настройки свойств класса',
-
+    'VERSION_TOO_OLD' => 'Вы используете устаревшую версию системы',
     'USING_LATEST_VERSION' => 'Вы используете последнюю версию!',
     'LATEST_UPDATES' => 'Последние обновления',
     'UPDATE_TO_THE_LATEST' => 'Обновить систему',

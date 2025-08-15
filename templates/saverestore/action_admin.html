@@ -97,7 +97,7 @@
 				<script>
 				$(document).ready(function() {
 					if($('#mysystemversion').length == 0) {
-						$('#changelogUpdate').prepend('<div class="alert alert-danger"><b>Ваша система <u>сильно устарела</u>!</b> Текущая версия: <a href="https://github.com/sergejey/majordomo/commit/[#LATEST_UPDATED_ID#]" target="_blank">[#LATEST_CURR_BRANCH#]_[#LATEST_UPDATED_ID_SLICE#]</a>. Последнее обновление: [#LATEST_UPDATED_TIME#]</div>');
+						$('#changelogUpdate').prepend('<div class="alert alert-danger"><b><#LANG_VERSION_TOO_OLD#></b> ([#LATEST_UPDATED_TIME#]);<br/><#LANG_LATEST_UPDATES#>: <a href="https://github.com/sergejey/majordomo/commit/[#LATEST_UPDATED_ID#]" target="_blank">[#LATEST_CURR_BRANCH#]_[#LATEST_UPDATED_ID_SLICE#]</a>.</div>');
 					}
 				});
 				</script>
