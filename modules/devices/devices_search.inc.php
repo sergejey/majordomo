@@ -18,6 +18,9 @@ if ($type != '') {
 $location_id = gr('location_id');
 if ($location_id == 'manage_locations') {
     $this->redirect("?(panel:{action=locations})");
+} elseif ($location_id == 'undefined') {
+    $out['LOCATION_ID'] = 'undefined';
+    $qry .= " AND devices.LOCATION_ID=0";
 } elseif ($location_id) {
     $out['LOCATION_ID'] = (int)$location_id;
     $qry .= " AND devices.LOCATION_ID=" . $out['LOCATION_ID'];
@@ -105,12 +108,13 @@ if ($save_qry) {
 }
 if (!$qry) $qry = "1";
 
-$tmp = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM devices WHERE devices.ARCHIVED!=1");
+$tmp = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM devices WHERE devices.ARCHIVED!=1 AND PARENT_ID=0");
 $out['TOTAL'] = (int)$tmp['TOTAL'];
 
 $sortby_devices = "devices.PARENT_ID, locations.PRIORITY DESC, locations.TITLE, devices.LOCATION_ID, devices.TYPE, devices.TITLE";
 $out['SORTBY'] = $sortby_devices;
 // SEARCH RESULTS
+$qry.=" AND devices.PARENT_ID=0";
 $res = SQLSelect("SELECT devices.*, locations.TITLE as LOCATION_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE $qry ORDER BY " . $sortby_devices);
 if (isset($res[0])) {
     //paging($res, 100, $out); // search result paging
@@ -118,6 +122,11 @@ if (isset($res[0])) {
     $out['TOTAL_FOUND'] = $total;
     for ($i = 0; $i < $total; $i++) {
         if ($res[$i]['LINKED_OBJECT']) {
+
+            if ($res[$i]['LOCATION_TITLE']=='') {
+                $res[$i]['LOCATION_TITLE'] = '---';
+            }
+
             if ($res[$i]['TYPE'] == 'camera' || $res[$i]['TYPE'] == 'mark') {
                 $processed = $this->processDevice($res[$i]['ID'], 'list');
             } else {
@@ -207,8 +216,12 @@ $out['TYPES'] = $types;
 $locations = SQLSelect("SELECT ID, TITLE FROM locations ORDER BY TITLE+0");
 $total = count($locations);
 for ($i = 0; $i < $total; $i++) {
-    $tmp = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM devices WHERE LOCATION_ID='" . $locations[$i]['ID'] . "'");
+    $tmp = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM devices WHERE LOCATION_ID='" . $locations[$i]['ID'] . "' AND PARENT_ID=0");
     $locations[$i]['TOTAL'] = (int)$tmp['TOTAL'];
+}
+$tmp = SQLSelectOne("SELECT COUNT(*) AS TOTAL FROM devices WHERE LOCATION_ID=0 AND PARENT_ID=0");
+if ($tmp['TOTAL']) {
+    $locations[] = array('ID' => 'undefined', 'TITLE' => '---', 'TOTAL' => (int)$tmp['TOTAL']);
 }
 $out['LOCATIONS'] = $locations;
 //var_dump($this->getWatchedProperties(0));exit;
