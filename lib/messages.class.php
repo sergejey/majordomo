@@ -138,7 +138,7 @@ function saySafe($ph, $level = 0, $member_id = 0, $source = '')
  * @param mixed $member_id Member ID (default 0)
  * @return void
  */
-function say($ph, $level = 0, $member_id = 0, $source = '')
+function say($ph, $level = 0, $member_id = 0, $source = '', $sound_name = 'dingdong')
 {
 
     //dprint(date('Y-m-d H:i:s')." Say started",false);
@@ -188,11 +188,13 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
         }
 
 
-        if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL == '1') {
+        if (!defined('SETTINGS_SPEAK_SIGNAL') || SETTINGS_SPEAK_SIGNAL == '1' ) {
             if ($level >= (int)getGlobal('minMsgLevel') && !$member_id) { // && !$ignoreVoice
                 $passed = time() - $last_say_time;
                 if ($passed > 20) {
-                    playSound('dingdong', 1, $level);
+                    if ($sound_name != 'none') {
+                        playSound($sound_name, 1, $level);
+                    }    
                 }
             }
         }
