@@ -684,7 +684,14 @@ if (!isset($request[0])) {
         }
     }
 
-} else {
+} elseif ($request[0] == 'swagger') {
+    header('Content-Type: application/json; charset=utf-8');
+    include_once(__DIR__ . '/swagger_def.php');
+    echo json_encode($swagger, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    exit;
+
+}
+else {
     $result['error'] = 'Incorrect usage';
 }
 
