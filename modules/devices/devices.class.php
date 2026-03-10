@@ -238,7 +238,7 @@ class devices extends module
 
     function getAllMethods($type)
     {
-        $methods = isset($this->device_types[$type]['METHODS']) ? $this->device_types[$type]['METHODS'] : '';
+        $methods = isset($this->device_types[$type]['METHODS']) ? $this->device_types[$type]['METHODS'] : array();
         $parent_class = isset($this->device_types[$type]['PARENT_CLASS']) ? $this->device_types[$type]['PARENT_CLASS'] : '';
         if ($parent_class != '') {
             foreach ($this->device_types as $k => $v) {
