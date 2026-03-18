@@ -14,6 +14,10 @@ if ($is_blocked) {
     return;
 }
 
+if ($this->class_title == 'SMotions' && !$params['NEW_VALUE']) {
+    clearTimeout($ot . '_presence_motion_detected');
+}
+
 if ($this->class_title == 'SMotions' && $params['NEW_VALUE'] && !timeOutExists($ot . '_motion_timer_status')) {
     $this->callMethodSafe('motionDetected', array('statusUpdated' => 1));
 } elseif ($this->class_title == 'SButtons' && $params['NEW_VALUE'] && !timeOutExists($ot . '_pressed_status')) {

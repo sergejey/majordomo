@@ -10,12 +10,10 @@ if (!isset($params['statusUpdated'])) {
 }
 
 if (!$isPresence) {
-
     if (isset($params['VALUE']) && !$params['VALUE'] && !isset($params['statusUpdated'])) {
         $this->setProperty('status', 0);
         return;
     }
-
     $motion_timeout = $this->getProperty('timeout'); // seconds timeout
     if ($motion_timeout == "") {
         $motion_timeout = 20; // timeout by default
@@ -23,6 +21,8 @@ if (!$isPresence) {
     if ($motion_timeout) {
         setTimeout($ot . '_motion_timer', 'setGlobal("' . $ot . '.status", 0);', $motion_timeout);
     }
+} else {
+    setTimeOut($ot . '_presence_motion_detected', "callMethod('" . $ot . ".motionDetected');", 60);
 }
 
 $nobodysHome = getGlobal('NobodyHomeMode.active');
