@@ -275,11 +275,9 @@ class app_player extends module
 
                 // Load addon
                 if (file_exists(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php')) {
-
                     include_once(DIR_MODULES . 'app_player/addons/' . $terminal['PLAYER_TYPE'] . '.addon.php');
 
                     if (class_exists($terminal['PLAYER_TYPE'])) {
-
                         if (is_subclass_of($terminal['PLAYER_TYPE'], 'app_player_addon', TRUE)) {
 
                             if ($player = new $terminal['PLAYER_TYPE']($terminal)) {
@@ -303,7 +301,6 @@ class app_player extends module
 
                                     // Execute command
                                     $result = $player->$command($param);
-
                                     // Get results
                                     $json['success'] = $player->success;
                                     $json['message'] = $player->message;

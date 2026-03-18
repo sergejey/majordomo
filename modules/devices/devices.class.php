@@ -238,7 +238,7 @@ class devices extends module
 
     function getAllMethods($type)
     {
-        $methods = isset($this->device_types[$type]['METHODS']) ? $this->device_types[$type]['METHODS'] : array();
+        $methods = isset($this->device_types[$type]['METHODS']) && is_array($this->device_types[$type]['METHODS']) ? $this->device_types[$type]['METHODS'] : array();
         $parent_class = isset($this->device_types[$type]['PARENT_CLASS']) ? $this->device_types[$type]['PARENT_CLASS'] : '';
         if ($parent_class != '') {
             foreach ($this->device_types as $k => $v) {
@@ -1103,7 +1103,7 @@ class devices extends module
         SQLExec("DELETE FROM devices_linked WHERE DEVICE1_ID='" . $rec['ID'] . "' OR DEVICE2_ID='" . $rec['ID'] . "'");
         SQLExec("DELETE FROM devices_scheduler_points WHERE DEVICE_ID='" . $rec['ID'] . "'");
         SQLExec("DELETE FROM devices WHERE ID='" . $rec['ID'] . "'");
-        processSubscriptionsSafe('DEVICE_DELETED',array('device_id'=>$rec['ID']));
+        processSubscriptionsSafe('DEVICE_DELETED', array('device_id' => $rec['ID']));
 
     }
 
