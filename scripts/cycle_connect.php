@@ -13,23 +13,19 @@ include_once("./lib/loader.php");
 
 include_once("./load_settings.php");
 
-$started_time = time();
-$max_run_time = 2 * 60 * 60; // do restart in 2 hours
-
-set_time_limit(0);
-
 include_once(DIR_MODULES . 'connect/connect.class.php');
+include_once(ROOT . "3rdparty/phpmqtt/phpMQTT.php");
+
+const CONNECT_HOST = 'connect.smartliving.ru';
+const MAX_RUN_TIME = 2 * 60 * 60;
 
 $menu_sent_time = 0;
 $devices_sent_time = 0;
-
-include_once(ROOT . "3rdparty/phpmqtt/phpMQTT.php");
-
-$saved_devices_data = array();
-
-const CONNECT_HOST = 'connect.smartliving.ru';
-
 $simple_devices_queue_checked = 0;
+$started_time = time();
+
+set_time_limit(0);
+
 
 setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 
@@ -77,12 +73,9 @@ while (1) {
         $port = '8883';
         $ca_file = dirname(__FILE__) . '/../modules/connect/fullchain.pem';
     }
-
     $connect_topics = array(
         '/incoming_urls', '/menu_session', '/reverse_requests', '/forward/#', '/ping'
     );
-
-
     $topics = array();
     foreach ($connect_topics as $topic) {
         $topics[] = $username . $topic;
@@ -90,7 +83,6 @@ while (1) {
             $topics[] = $connect->config['CONNECT_USERNAME'] . $topic;
         }
     }
-
     $query = implode(',', $topics);
     $ping_topic = $username . '/ping';
     $client_name = "MJD_" . $username . "_" . time();
@@ -99,8 +91,8 @@ while (1) {
     echo date('H:i:s') . " Connecting to $host:$port\n";
     DebMes("Connecting to $host:$port", 'connect');
     if ($mqtt_client->connect(true, NULL, $username, $password)) {
-        echo date('H:i:s') . " CONNECTED\n";
-        DebMes("CONNECTED.", 'connect');
+        echo date('H:i:s') . " MQTT CONNECTED\n";
+        DebMes("MQTT CONNECTED.", 'connect');
         $query_list = explode(',', $query);
         $total = count($query_list);
         echo date('H:i:s') . " Topics to watch: $query (Total: $total)\n";
@@ -120,56 +112,7 @@ while (1) {
         DebMes("SUBSCRIBED.", 'connect');
         $ping_timestamp = 0;
         while ($mqtt_client->proc()) {
-            $currentMillis = round(microtime(true) * 10000);
-            if ($currentMillis - $previousMillis > 10000) {
-                $previousMillis = $currentMillis;
-                $checked_time = time();
-                setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-                if (isRebootRequired() || isset($_GET['onetime'])) {
-                    exit;
-                }
-            }
-
-            if (!defined('DISABLE_SIMPLE_DEVICES') && (time() - $simple_devices_queue_checked >= 5)) {
-                $simple_devices_queue_checked = time();
-                $devices_data_queue = checkOperationsQueue('connect_device_data');
-                foreach ($devices_data_queue as $property_data_element) {
-                    $devices_data = array_filter($devices_data, function ($element) use ($property_data_element) {
-                        return $element['DATANAME'] != $property_data_element['DATANAME'];
-                    });
-                    $devices_data[] = $property_data_element;
-                }
-                $total_updated_devices = count($devices_data);
-                if ($total_updated_devices > 0) {
-                    DebMes("Devices data queue size: " . $total_updated_devices, 'connect');
-                    for ($s = 0; $s < 10; $s++) {
-                        $property_data = array_shift($devices_data);
-                        if (is_array($property_data)) {
-                            DebMes("Sending " . $property_data['DATANAME'] . ": " . $property_data['DATAVALUE'], 'connect');
-                            $connect->sendDeviceProperty($property_data['DATANAME'], $property_data['DATAVALUE']);
-                            DebMes("Sent " . $property_data['DATANAME'], 'connect');
-                        }
-                    }
-                }
-                $sync_required = checkOperationsQueue('connect_sync_devices');
-                if ((time() - $devices_sent_time > 60 * 60) || is_array($sync_required[0])) {
-                    echo date('Y-m-d H:i:s') . " Sending all devices\n";
-                    DebMes("Sending all devices", 'connect');
-                    $devices_sent_time = time();
-                    $devices_data = array();
-                    $connect->sendAllDevices();
-                    DebMes("Devices sent.", 'connect');
-                    $saved_devices_data = array(); // clear sent data cache
-                }
-
-            }
-
-            if ((time() - $started_time) > $max_run_time) {
-                DebMes("Running too long, exit.", 'connect');
-                echo "Exit cycle CONNECT... (reconnecting)";
-                $mqtt_client->close();
-                exit;
-            }
+            pollingCycle('mqtt');
             if ((time() - $ping_timestamp) > 60) {
                 $ping_timestamp = time();
                 set_time_limit(10);
@@ -190,13 +133,82 @@ while (1) {
         }
         DebMes("Closing MQTT connection", 'connect');
         $mqtt_client->close();
-
     } else {
         echo date('Y-m-d H:i:s') . " Failed to connect ...\n";
-        //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-        DebMes("Failed to connect to MQTT", 'connect');
-        sleep(10);
-        continue;
+        DebMes("Failed to connect to MQTT, switching to polling.", 'connect');
+
+        while (1) {
+            $queue = $connect->getMQTTQueue();
+            if (is_array($queue) && count($queue) > 0) {
+                foreach ($queue as $item) {
+                    procmsg($item['TOPIC'], $item['VALUE']);
+                }
+            }
+            pollingCycle('polling');
+            sleep(3);
+        }
+
+    }
+}
+
+function pollingCycle($protocol = 'mqtt')
+{
+    global $connect;
+    global $simple_devices_queue_checked;
+    global $devices_sent_time;
+    global $devices_data;
+    global $started_time;
+
+    if (!defined('DISABLE_SIMPLE_DEVICES') && (time() - $simple_devices_queue_checked >= 5)) {
+        $simple_devices_queue_checked = time();
+        $devices_data_queue = checkOperationsQueue('connect_device_data');
+        foreach ($devices_data_queue as $property_data_element) {
+            $devices_data = array_filter($devices_data, function ($element) use ($property_data_element) {
+                return $element['DATANAME'] != $property_data_element['DATANAME'];
+            });
+            $devices_data[] = $property_data_element;
+        }
+        $total_updated_devices = count($devices_data);
+        if ($total_updated_devices > 0) {
+            DebMes("Devices data queue size: " . $total_updated_devices, 'connect');
+            for ($s = 0; $s < 10; $s++) {
+                $property_data = array_shift($devices_data);
+                if (is_array($property_data)) {
+                    DebMes("Sending " . $property_data['DATANAME'] . ": " . $property_data['DATAVALUE'], 'connect');
+                    $connect->sendDeviceProperty($property_data['DATANAME'], $property_data['DATAVALUE']);
+                    DebMes("Sent " . $property_data['DATANAME'], 'connect');
+                }
+            }
+        }
+        $sync_required = checkOperationsQueue('connect_sync_devices');
+        if ((time() - $devices_sent_time > 60 * 60) || is_array($sync_required[0])) {
+            echo date('Y-m-d H:i:s') . " Sending all devices\n";
+            DebMes("Sending all devices", 'connect');
+            $devices_sent_time = time();
+            $devices_data = array();
+            $connect->sendAllDevices();
+            DebMes("Devices sent.", 'connect');
+        }
+    }
+
+    global $previousMillis;
+    $currentMillis = round(microtime(true) * 10000);
+    if ($currentMillis - $previousMillis > 10000) {
+        $previousMillis = $currentMillis;
+        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+        if (isRebootRequired() || isset($_GET['onetime'])) {
+            exit;
+        }
+    }
+
+    if ((time() - $started_time) > MAX_RUN_TIME) {
+        DebMes("Running too long, exit.", 'connect');
+        echo "Exit cycle CONNECT... (reconnecting)";
+        if ($protocol == 'mqtt') {
+            global $mqtt_client;
+            $mqtt_client->close();
+        }
+        exit;
     }
 }
 
