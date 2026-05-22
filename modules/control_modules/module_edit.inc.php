@@ -14,10 +14,12 @@ if ($mode2 == 'download') {
     mkdir(ROOT . 'cms/saverestore/temp/' . $name, 0777);
 
     mkdir(ROOT . 'cms/saverestore/temp/' . $name . "/modules", 0777);
-    copyTree(ROOT . 'modules/' . $name, ROOT . 'cms/saverestore/temp/' . $name . "/modules");
+    mkdir(ROOT . 'cms/saverestore/temp/' . $name . "/modules/" . $name, 0777);
+    copyTree(ROOT . 'modules/' . $name, ROOT . 'cms/saverestore/temp/' . $name . "/modules/" . $name);
 
     mkdir(ROOT . 'cms/saverestore/temp/' . $name . "/templates", 0777);
-    copyTree(ROOT . 'templates/' . $name, ROOT . 'cms/saverestore/temp/' . $name . "/templates");
+    mkdir(ROOT . 'cms/saverestore/temp/' . $name . "/templates/" . $name, 0777);
+    copyTree(ROOT . 'templates/' . $name, ROOT . 'cms/saverestore/temp/' . $name . "/templates/" . $name);
 
     if (file_exists(ROOT . 'scripts/cycle_' . $name . '.php')) {
         mkdir(ROOT . 'cms/saverestore/temp/' . $name . "/scripts", 0777);
