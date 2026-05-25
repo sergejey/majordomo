@@ -285,6 +285,14 @@ function SQLRestoreDBDump($dump_file)
     else
         $mysqlCmdPath = "mysql";
 
+    $data = LoadFile($dump_file);
+    if (is_integer(strpos($data, '/*M!999999\- enable the sandbox mode */'))) {
+        $data_new = str_replace('/*M!999999\- enable the sandbox mode */', '', $data);
+        $data_new = str_replace('COLLATE=utf8mb3_uca1400_ai_ci', 'COLLATE=utf8mb3_general_ci', $data_new);
+        $dump_file = $dump_file . '.updated';
+        SaveFile($dump_file, $data_new);
+    }
+
     $mysqlCmdParam = " -h " . DB_HOST . " --user=\"" . DB_USER . "\" --password=\"" . DB_PASSWORD . "\"";
     $mysqlCmdParam .= " " . DB_NAME . " <" . $dump_file;
     $cmd = $mysqlCmdPath . $mysqlCmdParam;
