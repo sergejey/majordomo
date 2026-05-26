@@ -755,6 +755,23 @@ class objects extends module
         if (!$this->object_title) return false;
 
         $property = trim($property);
+
+        if (substr($property, -9) == '__updated') {
+            $source_property = substr($property, 0, -9);
+            if ($source_property == '') {
+                return '';
+            }
+
+            $value = SQLSelectOne("SELECT UPDATED FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $source_property) . "'");
+            if (!isset($value['UPDATED'])) {
+                $id = $this->getPropertyByName($source_property, $this->class_id, $this->id);
+                if ($id) {
+                    $value = SQLSelectOne("SELECT UPDATED FROM pvalues WHERE PROPERTY_ID='" . (int)$id . "' AND OBJECT_ID='" . (int)$this->id . "'");
+                }
+            }
+            return isset($value['UPDATED']) ? $value['UPDATED'] : '';
+        }
+
         $cached_name = 'MJD:' . $this->object_title . '.' . $property;
 
         if ($property == 'object_title') {
