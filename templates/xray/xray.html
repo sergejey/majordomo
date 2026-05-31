@@ -8,10 +8,18 @@ $(document).ready(function() {
 </script>
 <link href="<#ROOTHTML#>3rdparty/select2/css/select2.min.css" rel="stylesheet" />
 <script src="<#ROOTHTML#>3rdparty/select2/js/select2.min.js"></script>
+<style>
+@media (max-width: 767px) {
+	.xray-mobile-gutters {
+		margin-right: -15px;
+		margin-left: -15px;
+	}
+}
+</style>
 
 
 [#if ACTION!="context" && ACTION!="service"#]
-	<div class="row" style="margin-right: -15px;margin-left: -15px;">
+	<div class="row xray-mobile-gutters">
 		<div class="col-md-12">
 			<ul class="nav nav-tabs">
 				<li [#if VIEW_MODE=""#]class="active"[#endif#]><a href="?view_mode="><#LANG_LOG#></a></li>
@@ -31,7 +39,7 @@ $(document).ready(function() {
 	<div style="border-left: 1px solid #ddd;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;">
 	[#if VIEW_MODE!="services"#]
 	<form action="?" method="get" class="form-inline">
-		<div class="row" style="margin-right: -15px;margin-left: -15px;padding: 10px;">
+		<div class="row xray-mobile-gutters" style="padding: 10px;">
 			[#if VIEW_MODE=""#]
 			<div class="col-md-6">
 				<!--- первая вкладка --->
@@ -75,7 +83,7 @@ $(document).ready(function() {
 		</div>
 	</form>
 	[#endif VIEW_MODE#]
-	<div class="row" style="margin-right: -15px;margin-left: -15px;margin-top: 10px;">
+	<div class="row xray-mobile-gutters" style="margin-top: 10px;">
 		<div class="col-md-[#if VIEW_MODE=""#]8[#else#]12[#endif VIEW_MODE#]">
 			<div style="padding:0 10px">
 				<div class="progress" style="height:3px">
@@ -86,18 +94,37 @@ $(document).ready(function() {
 		</div>
         [#if VIEW_MODE=""#]
 		<div class="col-md-4">
-			<table class="table">
-			[#begin TODAY_FILES#]
-				<tr>
-					<td>
-						<a href="?files[]=[#TITLE#]">[#BASENAME#]</a>
-					</td>
-					<td>[#SIZE#]</td>
-					<td>[#PASSED#]</td>
-					<td><a href="?download_file=[#TITLE#]"><i class="glyphicon glyphicon-download"></a></td>
-				</tr>
-			[#end TODAY_FILES#]
-			</table>
+			<div class="panel panel-default">
+				<div class="panel-heading" style="padding: 8px 12px;"><b>Файлы логов</b></div>
+				<div class="table-responsive">
+					<table class="table table-condensed table-hover" style="margin-bottom: 0;">
+						<thead>
+							<tr>
+								<th>Файл</th>
+								<th class="text-right" style="white-space: nowrap;">Размер</th>
+								<th class="text-right" style="white-space: nowrap;">Изменен</th>
+								<th class="text-center" style="width: 42px;"></th>
+							</tr>
+						</thead>
+						<tbody>
+						[#begin TODAY_FILES#]
+							<tr>
+								<td style="max-width: 1px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+									<a href="?files[]=[#TITLE#]" title="[#TITLE#]">[#BASENAME#]</a>
+								</td>
+								<td class="text-right" style="white-space: nowrap;">[#SIZE#]</td>
+								<td class="text-right" style="white-space: nowrap;">[#PASSED#]</td>
+								<td class="text-center">
+									<a href="?download_file=[#TITLE#]" class="btn btn-default btn-xs" title="Скачать">
+										<i class="glyphicon glyphicon-download"></i>
+									</a>
+								</td>
+							</tr>
+						[#end TODAY_FILES#]
+						</tbody>
+					</table>
+				</div>
+			</div>
 		</div>
         [#endif VIEW_MODE#]
 	</div>
