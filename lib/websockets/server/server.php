@@ -20,7 +20,9 @@ if (!defined('WEBSOCKETS_MAX_CLIENTS')) define('WEBSOCKETS_MAX_CLIENTS', 100);
 if (!defined('WEBSOCKETS_CHECK_ORIGIN')) define('WEBSOCKETS_CHECK_ORIGIN', 0);
 if (!defined('WEBSOCKETS_MAX_CONNECTIONS_PER_IP')) define('WEBSOCKETS_MAX_CONNECTIONS_PER_IP', 100);
 if (!defined('WEBSOCKETS_MAX_REQUESTS_PER_MINUTE')) define('WEBSOCKETS_MAX_REQUESTS_PER_MINUTE', 20000);
-if (!defined('WEBSOCKETS_CLIENT_TIMEOUT')) define('WEBSOCKETS_CLIENT_TIMEOUT', 30);
+// 0 means "no inactivity timeout". This avoids forced reconnect loops
+// for clients that mostly receive data and rarely send messages.
+if (!defined('WEBSOCKETS_CLIENT_TIMEOUT')) define('WEBSOCKETS_CLIENT_TIMEOUT', 0);
 if (!defined('WEBSOCKETS_ALLOWED_ORIGINS')) define('WEBSOCKETS_ALLOWED_ORIGINS', '');
 
 function majordomoCreateWebSocketServer()

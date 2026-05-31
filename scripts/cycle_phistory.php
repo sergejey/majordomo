@@ -31,6 +31,7 @@ $cycleVarName = 'ThisComputer.' . str_replace('.php', '', basename(__FILE__)) . 
 echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 
 $processed = array();
+$processed_cleanup_time = 0;
 
 while (1) {
     if (time() - $checked_time > 5) {
@@ -66,6 +67,15 @@ while (1) {
 
     $queue = SQLSelect("SELECT * FROM phistory_queue ORDER BY ID LIMIT " . $limit);
     if (isset($queue[0]['ID'])) {
+        if ((time() - $processed_cleanup_time) > 60 * 60) {
+            $processed_cleanup_time = time();
+            foreach ($processed as $value_id => $processed_time) {
+                if ((time() - $processed_time) > 6 * 60 * 60) {
+                    unset($processed[$value_id]);
+                }
+            }
+        }
+
         if ($count_queue > $limit && !$queue_error_status) {
             sg('phistory_queue_problem', 1);
             $txt = 'Properties history queue is too long (' . $count_queue . ')';
@@ -149,6 +159,7 @@ while (1) {
             }
             // delete old data
         }
+        unset($queue, $tmp_history, $h, $q_rec);
     } else
         sleep(1);
 

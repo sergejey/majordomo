@@ -44,28 +44,19 @@ setGlobal($cycleName, time(), 1);
 
 require_once('./lib/websockets/server/server.php');
 
-$restartDelay = 2;
-$restartDelayMax = 30;
-
-while (true) {
-    setGlobal($cycleName, time(), 1);
-    try {
-        $server = majordomoCreateWebSocketServer();
-        $server->run();
-        // normally run() is infinite; if it returns, force controlled restart
-        throw new Exception('WebSocket server loop exited unexpectedly');
-    } catch (Throwable $e) {
-        $message = date('Y-m-d H:i:s') . ' WebSocket server crashed: ' . $e->getMessage();
-        echo $message . PHP_EOL;
-        DebMes($message, 'websockets');
-    } catch (Exception $e) {
-        $message = date('Y-m-d H:i:s') . ' WebSocket server crashed: ' . $e->getMessage();
-        echo $message . PHP_EOL;
-        DebMes($message, 'websockets');
-    }
-
-    sleep($restartDelay);
-    if ($restartDelay < $restartDelayMax) {
-        $restartDelay = min($restartDelay * 2, $restartDelayMax);
-    }
+try {
+    $server = majordomoCreateWebSocketServer();
+    $server->run();
+    // normally run() is infinite; if it returns, force non-zero exit
+    throw new Exception('WebSocket server loop exited unexpectedly');
+} catch (Throwable $e) {
+    $message = date('Y-m-d H:i:s') . ' WebSocket server crashed: ' . $e->getMessage();
+    echo $message . PHP_EOL;
+    DebMes($message, 'websockets');
+    exit(1);
+} catch (Exception $e) {
+    $message = date('Y-m-d H:i:s') . ' WebSocket server crashed: ' . $e->getMessage();
+    echo $message . PHP_EOL;
+    DebMes($message, 'websockets');
+    exit(1);
 }

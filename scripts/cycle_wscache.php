@@ -24,7 +24,13 @@ $cycleVarName = 'ThisComputer.' . str_replace('.php', '', basename(__FILE__)) . 
 if (defined('SETTINGS_SYSTEM_WEBSOCKETS_RESTART_TIMEOUT') && (int)SETTINGS_SYSTEM_WEBSOCKETS_RESTART_TIMEOUT >= 0) {
     $websocket_restart_timeout = (int)SETTINGS_SYSTEM_WEBSOCKETS_RESTART_TIMEOUT;
 } else {
-    $websocket_restart_timeout = 5 * 60;
+    $websocket_restart_timeout = 0;
+}
+
+if (defined('WEBSOCKETS_QUEUE_LIMIT') && (int)WEBSOCKETS_QUEUE_LIMIT > 0) {
+    $websocket_queue_limit = (int)WEBSOCKETS_QUEUE_LIMIT;
+} else {
+    $websocket_queue_limit = 500;
 }
 
 clearTimeout('restartWebSocket');
@@ -33,7 +39,7 @@ while (1) {
     if ($checked_time != time()) {
         $checked_time = time();
         try {
-            $queue = SQLSelect("SELECT * FROM cached_ws");
+            $queue = SQLSelect("SELECT * FROM cached_ws ORDER BY ADDED LIMIT " . $websocket_queue_limit);
             if (is_array($queue) && !empty($queue)) {
                 $total = count($queue);
                 $sent_ok = 1;
@@ -99,6 +105,7 @@ while (1) {
                     echo date("H:i:s") . ' Error while posting to websocket.' . "\n";
                 }
             }
+            unset($queue, $properties, $values, $post_property_keys);
         } catch (Throwable $e) {
             DebMes('cycle_wscache error: ' . $e->getMessage(), 'websockets');
             echo date("H:i:s") . ' cycle_wscache exception: ' . $e->getMessage() . "\n";

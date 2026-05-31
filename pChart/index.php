@@ -253,6 +253,7 @@ if ($total > 0) {
             $url = str_replace('&end=', '&', $_SERVER['REQUEST_URI']);
             echo <<<FF
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <link href="{$roothtml}css/devices.css?v=19-10-15"  rel="stylesheet" type="text/css"/>

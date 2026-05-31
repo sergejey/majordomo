@@ -260,6 +260,9 @@ function postToWebSocket($property, $value, $post_action = 'PostProperty')
 
     if (!$data_sent && !isset($_SERVER['REQUEST_METHOD'])) {
         //reconnect
+        if (Is_Object($wsClient)) {
+            $wsClient->disconnect();
+        }
         $wsClient = new WebsocketClient;
         if ((@$wsClient->connect('127.0.0.1', WEBSOCKETS_PORT, '/majordomo'))) {
             $data_sent = @$wsClient->sendData($payload);

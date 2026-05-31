@@ -298,12 +298,20 @@ function runScheduledJobs()
 {
     SQLExec("DELETE FROM jobs WHERE EXPIRE <= '" . date('Y-m-d H:i:s') . "'");
 
+    if (defined('JOBS_QUEUE_LIMIT') && (int)JOBS_QUEUE_LIMIT > 0) {
+        $limit = (int)JOBS_QUEUE_LIMIT;
+    } else {
+        $limit = 100;
+    }
+
     $sqlQuery = "SELECT *
                   FROM jobs
                  WHERE PROCESSED = 0
                    AND EXPIRED   = 0
                    AND (STARTED IS NULL OR STARTED <= '" . date('Y-m-d H:i:s', time() - 300) . "')
-                   AND RUNTIME   <= '" . date('Y-m-d H:i:s') . "'";
+                   AND RUNTIME   <= '" . date('Y-m-d H:i:s') . "'
+                 ORDER BY RUNTIME, ID
+                 LIMIT " . $limit;
 
     $jobs = SQLSelect($sqlQuery);
     $total = count($jobs);
