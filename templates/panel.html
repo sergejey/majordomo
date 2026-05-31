@@ -145,7 +145,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" onclick="$('#filter_modules').val('');filterSearch();" class="btn btn-default" data-dismiss="modal"><#LANG_CLOSE#></button>
+					<button type="button" id="btnFilterCloseSearch" class="btn btn-default" data-dismiss="modal"><#LANG_CLOSE#></button>
 				</div>
 			</div>
 		</div>
@@ -164,8 +164,8 @@
 					
 					<span class="input-group-btn">
 						<input type="submit" name="submit" value="<#LANG_SEND#>" class="btn btn-success ">
-						<input type="button" value="Подключить модуль" onclick="$('#currModuleName').toggle();" class="btn btn-info ">
-						<input type="button" onclick="consoleToggle();" value="<#LANG_CLOSE#>" class="btn btn-warning ">
+						<input type="button" id="btnConsoleToggleModule" value="Подключить модуль" class="btn btn-info ">
+						<input type="button" id="btnConsoleClose" value="<#LANG_CLOSE#>" class="btn btn-warning ">
 					</span>
 				</div>
 				<select class="form-control" id="currModuleName" style="display:none;margin-top: 10px;" onchange="insertModuleInConsole($(this).val());">
@@ -205,7 +205,7 @@
 		<img src="<#ROOTHTML#>img/system/loading.gif" style="max-width: 200px">
 		<p><#LANG_NEWDASH_PRELOAD_TEXT#></p>
 		
-		<a id="stopLoadBtnPreloader" onclick="$('#preloader').hide();" href="" class="btn btn-success btn-md" role="button"><#LANG_NEWDASH_PRELOAD_BTN#></a>
+		<a id="stopLoadBtnPreloader" href="" class="btn btn-success btn-md" role="button"><#LANG_NEWDASH_PRELOAD_BTN#></a>
 	</div>
 
 	
@@ -217,7 +217,7 @@
 	<div id="partLoadContent">
 		<div class="visible-xs">
 			<div class="row" style="margin: 0 15px;">
-				<div class="col-12" style="margin-bottom: 10px;">
+				<div class="col-xs-12" style="margin-bottom: 10px;">
 					<input type="text" class="form-control" data-toggle="modal" data-target="#mdmGlobalSearchModal" placeholder="<#LANG_SEARCH#>">
 				</div>
 			</div>
@@ -244,7 +244,7 @@
 					<div class="col-md-[#if ACTION!=""#]8[#else#]5[#endif#]" style="padding-left: 0px;padding-right: 0px;">
 						<ol class="breadcrumb" id="hideMenuDiv" style="border-radius: 4px 0px 0px 4px;">
 							<li>
-								<a href="#" onClick="return leftPanelToggle();"><i id="hideMenuIcon" class="glyphicon glyphicon-resize-horizontal"></i></a>
+								<a href="#" id="linkToggleLeftPanel"><i id="hideMenuIcon" class="glyphicon glyphicon-resize-horizontal"></i></a>
 							</li>
 							<li><a href="?"><#LANG_CONTROL_PANEL#></a></li>
 							[#if NAV_MODULE_CAT!=""#]<li style="color: gray;">[#NAV_MODULE_CAT#]</li>[#endif#]
@@ -261,14 +261,14 @@
 									<button style="vertical-align: super;" type="button" onclick="window.open('<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help', '_blank');" class="btn btn-default"><#LANG_KNOWLEDGE_BASE#></button>
 								</div>
 								--->
-								<a href="javascript://" onclick="consoleDebugToggle();" style="text-decoration: none;margin-right: 15px;color: #d74b4b;"><i class="glyphicon glyphicon-screenshot"></i> Debug</a>
+								<a href="javascript://" id="linkConsoleDebug" style="text-decoration: none;margin-right: 15px;color: #d74b4b;"><i class="glyphicon glyphicon-screenshot"></i> Debug</a>
 								<a href="<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a>
 								<a href="https://connect.smartliving.ru/addons/name/<#ACTION#>.html?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help" target="_blank"><i class="glyphicon glyphicon-info-sign"></i> <#LANG_MODULE_SUPPORT#> [#NAV_MODULE_NAME#]</a>
 							</li>
 							[#else#]
 							<li>
 								<span id="loadUpdate"><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></span>
-								<a id="errors-saved" style="display:none" href="?action=system_errors" style="text-decoration: none;"></a>
+								<a id="errors-saved" style="display:none;text-decoration: none;" href="?action=system_errors"></a>
 								<a id="updates-check-market" style="display:none" href="?action=market#panel_updates" style="text-decoration: none;"><span class="label label-success" id="updates-check-market-text"><#LANG_MODULES_UPDATES_AVAILABLE#></span></a>
 								<a id="updates-check-system" style="display:none" href="?action=saverestore" style="text-decoration: none;"><span class="label label-warning"><#LANG_SYSTEM_UPDATES_AVAILABLE#></span></a>
 							</li>

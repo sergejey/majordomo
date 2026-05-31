@@ -43,6 +43,7 @@ if ($group_name == 'manage_groups') {
     if (!is_array($object_names)) {
         $object_names = array(0);
     }
+    $res_object_names = array();
     $total = count($object_names);
     if ($total > 0) {
         for ($i = 0; $i < $total; $i++) {
@@ -51,7 +52,11 @@ if ($group_name == 'manage_groups') {
                 $res_object_names[] = "'" . $object_names[$i] . "'";
             }
         }
-        $qry .= " AND devices.LINKED_OBJECT IN (" . implode(',', $res_object_names) . ")";
+        if (count($res_object_names) > 0) {
+            $qry .= " AND devices.LINKED_OBJECT IN (" . implode(',', $res_object_names) . ")";
+        } else {
+            $qry .= " AND 0";
+        }
     } else {
         $qry .= " AND 0";
     }
@@ -126,6 +131,7 @@ if (isset($res[0])) {
     $total = count($res);
     $out['TOTAL_FOUND'] = $total;
     for ($i = 0; $i < $total; $i++) {
+        $object_rec = array('ID' => 0);
         if ($res[$i]['LINKED_OBJECT']) {
 
             if ($res[$i]['LOCATION_TITLE']=='') {

@@ -491,20 +491,32 @@ class xray extends module
 
         if ($this->view_mode == '') {
 
-            $download_file = gr('download_file');
-            if ($download_file!='' && file_exists(ROOT.'cms/debmes/'.$download_file)) {
-                header('Content-type: text/plain');
-                header('Content-Disposition: attachment; filename="'.$download_file.'"');
-                readfile(ROOT.'cms/debmes/'.$download_file);
-                exit;
-            }
-
             if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH != '') {
                 $path = SETTINGS_SYSTEM_DEBMES_PATH;
             } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY != '') {
                 $path = LOG_DIRECTORY;
             } else {
                 $path = ROOT . 'cms/debmes';
+            }
+            $path_real = realpath($path);
+
+            $download_file = (string)gr('download_file');
+            if ($download_file != '' && $path_real !== false) {
+                $download_file = str_replace('\\', '/', $download_file);
+                $download_file = ltrim($download_file, '/');
+                if (strpos($download_file, "\0") === false) {
+                    $requested_file = realpath($path_real . '/' . $download_file);
+                    if ($requested_file !== false) {
+                        $base_path = rtrim(str_replace('\\', '/', $path_real), '/') . '/';
+                        $requested_path = str_replace('\\', '/', $requested_file);
+                        if (strpos($requested_path, $base_path) === 0 && is_file($requested_file)) {
+                            header('Content-type: text/plain');
+                            header('Content-Disposition: attachment; filename="' . basename($requested_file) . '"');
+                            readfile($requested_file);
+                            exit;
+                        }
+                    }
+                }
             }
 
             getDirTree($path, $files);

@@ -1466,6 +1466,17 @@ $dictionary = array(
 
     'MAINCYCLEDOWN' => 'Остановлен главный цикл системы', //
     'MAINCYCLEDOWN_DETAILS' => '<b>Без паники! :)</b><br/>Остановлен главный процесс системы MajorDoMo.<Br/>Возможно, будет достаточно подождать несколько секунд и работа восстановится, но если ошибка остаётся, то воспользуйтесь пожалуйста одной из опций представленных ниже.',
+    'CYCLE_STOP_REASON_RESTART_COMMAND' => 'остановлен по команде перезапуска',
+    'CYCLE_STOP_REASON_STOP_COMMAND' => 'остановлен по команде stop',
+    'CYCLE_STOP_REASON_PRE_RESTART' => 'остановлен перед запланированным перезапуском',
+    'CYCLE_STOP_REASON_CRASH_ERROR' => 'аварийное завершение (%s)',
+    'CYCLE_STOP_REASON_SIGNAL' => 'завершен системным сигналом #%d',
+    'CYCLE_STOP_REASON_CRASH_EXIT_CODE' => 'аварийное завершение (exit code %d)',
+    'CYCLE_STOP_REASON_UNEXPECTED_EXIT_ZERO' => 'неожиданное завершение (exit code 0, вероятна внутренняя ошибка в цикле)',
+    'CYCLE_STOP_REASON_UNEXPECTED_UNKNOWN' => 'неожиданное завершение (причина неизвестна)',
+    'CYCLE_STOP_DETAILS_HEADER' => 'Цикл %s остановлен: %s.',
+    'CYCLE_STOP_DETAILS_LAST_ERROR' => 'Последняя ошибка цикла: %s',
+    'CYCLE_STOP_DETAILS_COMMAND' => 'Команда запуска: %s',
 
     'RECENTLY_USED' => 'Недавнее',
 

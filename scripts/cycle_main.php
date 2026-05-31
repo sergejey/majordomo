@@ -49,6 +49,8 @@ $old_date = date('Y-m-d');
 
 $checked_time = 0;
 $started_time = time();
+$objects = array();
+$total = 0;
 
 echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 set_time_limit(0);

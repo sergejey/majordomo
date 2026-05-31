@@ -133,12 +133,17 @@ if ($this->tab == 'logic') {
             if ($errors) {
                 $out['ERR_LINE'] = preg_replace('/[^0-9]/', '', substr(stristr($errors, 'php on line '), 0, 18)) - 2;
                 $out['ERR_CODE'] = 1;
-                $errorStr = explode('Parse error: ', htmlspecialchars(strip_tags(nl2br($errors))));
-                $errorStr = explode('Errors parsing', $errorStr[1]);
-                $errorStr = explode(' in ', $errorStr[0]);
-                //var_dump($errorStr);
-                $out['ERRORS'] = $errorStr[0];
-                $out['ERR_FULL'] = $errorStr[0] . ' ' . $errorStr[1];
+                $errorRaw = htmlspecialchars(strip_tags(nl2br($errors)));
+                $errorStr = explode('Parse error: ', $errorRaw);
+                if (isset($errorStr[1])) {
+                    $errorStr = explode('Errors parsing', $errorStr[1]);
+                    $errorStr = explode(' in ', $errorStr[0]);
+                    $out['ERRORS'] = isset($errorStr[0]) ? $errorStr[0] : $errorRaw;
+                    $out['ERR_FULL'] = trim((isset($errorStr[0]) ? $errorStr[0] : '') . ' ' . (isset($errorStr[1]) ? $errorStr[1] : ''));
+                } else {
+                    $out['ERRORS'] = $errorRaw;
+                    $out['ERR_FULL'] = $errorRaw;
+                }
                 $out['ERR_OLD_CODE'] = $old_code;
                 $ok = 0;
             }
@@ -398,7 +403,7 @@ if ($this->tab == '') {
             $qry_devices .= " AND devices.TYPE='" . DBSafe($out['TYPE']) . "'";
         }
         $existing_devices = SQLSelect("SELECT ID, TITLE FROM devices WHERE $qry_devices ORDER BY TITLE");
-        if ($existing_devices[0]['ID']) {
+        if (!empty($existing_devices[0]['ID'])) {
             $out['SELECT_EXISTING'] = 1;
             $out['EXISTING_DEVICES'] = $existing_devices;
         }

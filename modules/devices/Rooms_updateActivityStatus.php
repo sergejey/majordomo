@@ -25,7 +25,11 @@ usort($rooms, function ($a,$b) {
 });
 
 if (getGlobal('NobodyHomeMode.active')) {
-    $somebodyHomeText = LANG_DEVICES_ROOMS_NOBODYHOME." ".LANG_DEVICES_ROOMS_ACTIVITY." " . date('H:i', $rooms[0]['time']) . " (" . $rooms[0]['room'] . ")";
+    if (!empty($rooms[0])) {
+        $somebodyHomeText = LANG_DEVICES_ROOMS_NOBODYHOME." ".LANG_DEVICES_ROOMS_ACTIVITY." " . date('H:i', $rooms[0]['time']) . " (" . $rooms[0]['room'] . ")";
+    } else {
+        $somebodyHomeText = LANG_DEVICES_ROOMS_NOBODYHOME . '.';
+    }
 } else {
     $res_rooms = array();
     for ($i = 0; $i < $total; $i++) {

@@ -39,6 +39,8 @@ class mysql
     var $latestTransaction;
     var $pingTimeout;
     public $connected;
+    private $lastErrorNo = 0;
+    private $lastErrorDetails = '';
 
     /**
      * MySQL constructor
@@ -112,7 +114,35 @@ class mysql
             $this->Ping();
         }
         $this->latestTransaction = time();
-        $result = mysqli_query($this->dbh, $query);
+        $result = false;
+        $this->lastErrorNo = 0;
+        $this->lastErrorDetails = '';
+        try {
+            $result = mysqli_query($this->dbh, $query);
+        } catch (Throwable $e) {
+            $this->lastErrorNo = (int)$e->getCode();
+            $this->lastErrorDetails = $e->getMessage();
+            $result = false;
+        }
+
+        if (!$result) {
+            $errorNo = $this->lastErrorNo ? $this->lastErrorNo : (int)@mysqli_errno($this->dbh);
+            $errorDetails = $this->lastErrorDetails ? $this->lastErrorDetails : (string)@mysqli_error($this->dbh);
+            if ($this->isConnectionLostError($errorNo, $errorDetails)) {
+                $this->Disconnect();
+                if ($this->Connect()) {
+                    try {
+                        $result = mysqli_query($this->dbh, $query);
+                        if ($result) {
+                            return $result;
+                        }
+                    } catch (Throwable $e) {
+                        $this->lastErrorNo = (int)$e->getCode();
+                        $this->lastErrorDetails = $e->getMessage();
+                    }
+                }
+            }
+        }
 
         if (!$result && !$ignore_errors) {
             $this->Error($query, 0);
@@ -181,6 +211,17 @@ class mysql
         if ($tblCnt > 0) {
             return true;
         }
+    }
+
+    private function isConnectionLostError($errorNo, $errorDetails)
+    {
+        if ((int)$errorNo === 2006 || (int)$errorNo === 2013) {
+            return true;
+        }
+        if ($errorDetails && preg_match('/MySQL server has gone away|Lost connection to MySQL server/is', $errorDetails)) {
+            return true;
+        }
+        return false;
     }
 
 
@@ -317,8 +358,8 @@ class mysql
     public function Error($query = "", $stop = 0)
     {
         if (!$this->dbh) return false;
-        $err_no = mysqli_errno($this->dbh);
-        $err_details = mysqli_error($this->dbh);
+        $err_no = $this->lastErrorNo ? $this->lastErrorNo : mysqli_errno($this->dbh);
+        $err_details = $this->lastErrorDetails ? $this->lastErrorDetails : mysqli_error($this->dbh);
         $stop = 1;
         if (preg_match('/You have an error in your SQL syntax/is', $err_details)) {
             $stop = 0;

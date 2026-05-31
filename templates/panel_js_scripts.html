@@ -2,15 +2,28 @@
 
     let latestMessage = '';
     let latestMessageTimer = 0;
+    let latestMessageInFlight = false;
+    let latestMessageLoopStarted = false;
+    const LATEST_MESSAGE_INTERVAL_ACTIVE = 10000;
+    const LATEST_MESSAGE_INTERVAL_HIDDEN = 60000;
 
     function checkLatestMessage() {
+        if (latestMessageInFlight) {
+            return;
+        }
+        latestMessageInFlight = true;
         $.ajax({
             url: ROOTHTML+'getlatestnote.html',
         }).done(function(data) {
             if (data != latestMessage) {
                 latestMessage = data;
-                let dataJSON = JSON.parse(latestMessage);
-                if (dataJSON.DATA!='' && latestMessageTimer!=0) {
+                var dataJSON;
+                try {
+                    dataJSON = JSON.parse(latestMessage);
+                } catch (e) {
+                    dataJSON = null;
+                }
+                if (dataJSON && dataJSON.DATA!='' && latestMessageTimer!=0) {
                     $.toast({
                         text: dataJSON.DATA,
                         showHideTransition: 'fade',
@@ -26,13 +39,62 @@
                     });
                 }
             }
-            latestMessageTimer = setTimeout(checkLatestMessage, 2000);
+        }).always(function() {
+            latestMessageInFlight = false;
+            clearTimeout(latestMessageTimer);
+            latestMessageTimer = setTimeout(
+                checkLatestMessage,
+                document.hidden ? LATEST_MESSAGE_INTERVAL_HIDDEN : LATEST_MESSAGE_INTERVAL_ACTIVE
+            );
         });
+    }
+
+    function safeJsonParse(data, fallback) {
+        try {
+            return JSON.parse(data);
+        } catch (e) {
+            return typeof fallback === 'undefined' ? null : fallback;
+        }
+    }
+
+    function applyDbBadgeState($el, value, warnThreshold, dangerThreshold) {
+        $el.removeClass('label-success label-warning label-danger').css('cursor', 'help');
+        if (value <= warnThreshold) {
+            $el.addClass('label-success');
+        } else if (value < dangerThreshold) {
+            $el.addClass('label-warning');
+        } else {
+            $el.addClass('label-danger');
+        }
     }
 
 
     $(document).ready(function() {
-        checkLatestMessage();
+        if (!latestMessageLoopStarted) {
+            latestMessageLoopStarted = true;
+            checkLatestMessage();
+        }
+        $(document).on('click', '#btnFilterCloseSearch', function() {
+            $('#filter_modules').val('');
+            filterSearch();
+        });
+        $(document).on('click', '#btnConsoleToggleModule', function() {
+            $('#currModuleName').toggle();
+        });
+        $(document).on('click', '#btnConsoleClose', function() {
+            return consoleToggle();
+        });
+        $(document).on('click', '#stopLoadBtnPreloader', function() {
+            $('#preloader').hide();
+        });
+        $(document).on('click', '#linkToggleLeftPanel', function(e) {
+            e.preventDefault();
+            return leftPanelToggle();
+        });
+        $(document).on('click', '#linkConsoleDebug', function(e) {
+            e.preventDefault();
+            return consoleDebugToggle();
+        });
     });
 
     function toggleCategory(id) {
@@ -181,7 +243,7 @@
             //$('#filter_add').html('...');
             $('#filter_add').show();
             clearTimeout(filterTimer);
-            filterTimer=setTimeout('filterSearch();', 1000);
+            filterTimer=setTimeout(filterSearch, 1000);
         } else {
             $('#filter_add').hide();
             clearTimeout(filterTimer);
@@ -269,7 +331,11 @@
         $.ajax({
             url: urlDebug,
         }).done(function(data) {
-            data = JSON.parse(data);
+            try {
+                data = JSON.parse(data);
+            } catch (e) {
+                data = {};
+            }
 
             if(data.CONTENT) {
                 $('#console_debug').html(data.CONTENT);
@@ -277,7 +343,7 @@
                 $('#console_debug').html('<img style="background: white;border-radius: 50px;padding: 5px;" src="<#ROOTHTML#>img/ajax-loader.gif"/> Console is empty... Wait new data...');
             }
         });
-        consoleDebugTimer=setTimeout('updateConsoleDebug()',1000);
+        consoleDebugTimer=setTimeout(updateConsoleDebug, 1000);
     }
 
     function consoleToggle() {
@@ -341,7 +407,7 @@
         hrefLocation = link;
         hrefLocation=hrefLocation.replace(/^.*\/\/[^\/]+/, '');
         clearTimeout(locationTimer);
-        locationTimer = setTimeout('checkLocationHref();',1000);
+        locationTimer = setTimeout(checkLocationHref, 1000);
         urlPartLoad+='&part_load=1';
 
         var cachedKey = simple_hash(urlPartLoad);
@@ -364,13 +430,13 @@
                 //console.log('Ignoring response');
             }
             clearTimeout(loaderTimer);
+            var obj;
             try {
-                JSON.parse(data);
+                obj = JSON.parse(data);
             } catch (e) {
                 window.location.href=this.urlInProgress;
                 return false;
             }
-            var obj=jQuery.parseJSON(data);
             if ("undefined" !== typeof obj.REDIRECT) {
                 link = obj.REDIRECT;
             }
@@ -402,7 +468,11 @@
         $.ajax({
             url: '<#ROOTHTML#>diagnostic.php?ajax=1',
             success: function(data) {
-                data = JSON.parse(data);
+                try {
+                    data = JSON.parse(data);
+                } catch (e) {
+                    return;
+                }
                 //console.log(data);
                 $('#dashInfoIPCl').text();
                 $('#dashInfoIPSer').text();
@@ -418,13 +488,19 @@
         $.ajax({
             url: '<#ROOTHTML#>admin.php?action=xray&md=xray&inst=adm&view_mode=scripts&ajax=1&op=getcontent',
             success: function(data) {
-                data = JSON.parse(data);
-                list = data.LIST.reverse();
-                i = 0;
+                data = safeJsonParse(data, {});
+                if (!data.LIST || !data.LIST.length) {
+                    return;
+                }
+                var list = data.LIST.reverse();
+                var i = 0;
                 while (i < 6) {
-                    dataCurr = list[i];
+                    var dataCurr = list[i];
+                    if (!dataCurr) {
+                        break;
+                    }
 
-                    (i != 0) ? scriptLastBlock = $('#scriptLast').html() : scriptLastBlock = '';
+                    var scriptLastBlock = (i !== 0) ? $('#scriptLast').html() : '';
                     $('#scriptLast').html(scriptLastBlock + '<li class="list-group-item"><span class="badge">'+dataCurr.EXECUTED+'</span>'+dataCurr.SCRIPT+'</li>')
 
                     i++;
@@ -438,37 +514,18 @@
         $.ajax({
             url: '<#ROOTHTML#>admin.php?action=xray&md=xray&inst=adm&view_mode=database&ajax=1&op=getcontent&mode=showdbload',
             success: function(data) {
-                data = JSON.parse(data);
+                data = safeJsonParse(data, {});
+                if (typeof data.second === 'undefined' || typeof data.minute === 'undefined' || typeof data.hours === 'undefined') {
+                    return;
+                }
                 $('#dashInfoDBReqS').html(data.second);
                 $('#dashInfoDBReqM').html(data.minute);
                 $('#dashInfoDBReqH').html(data.hours);
                 $('#dashInfoDBConnections').html(data.connections);
-                $('#dashInfoDBConnections').attr('style', 'cursor: help;background: #5cb85c');
-
-                //Секунды
-                if(data.second <= 170) {
-                    $('#dashInfoDBReqS').attr('style', 'cursor: help;background: #5cb85c');
-                } else if(data.second > 170 && data.second < 250) {
-                    $('#dashInfoDBReqS').attr('style', 'cursor: help;background: #f0ad4e');
-                } else {
-                    $('#dashInfoDBReqS').attr('style', 'cursor: help;background: #d9534f');
-                }
-                //Минуты
-                if(data.minute <= 10200) {
-                    $('#dashInfoDBReqM').attr('style', 'cursor: help;background: #5cb85c');
-                } else if(data.second > 10200 && data.second < 15000) {
-                    $('#dashInfoDBReqM').attr('style', 'cursor: help;background: #f0ad4e');
-                } else {
-                    $('#dashInfoDBReqM').attr('style', 'cursor: help;background: #d9534f');
-                }
-                //Часы
-                if(data.minute <= 612000) {
-                    $('#dashInfoDBReqH').attr('style', 'cursor: help;background: #5cb85c');
-                } else if(data.second > 612000 && data.second < 900000) {
-                    $('#dashInfoDBReqH').attr('style', 'cursor: help;background: #f0ad4e');
-                } else {
-                    $('#dashInfoDBReqH').attr('style', 'cursor: help;background: #d9534f');
-                }
+                $('#dashInfoDBConnections').removeClass('label-warning label-danger').addClass('label-success').css('cursor', 'help');
+                applyDbBadgeState($('#dashInfoDBReqS'), data.second, 170, 250);
+                applyDbBadgeState($('#dashInfoDBReqM'), data.minute, 10200, 15000);
+                applyDbBadgeState($('#dashInfoDBReqH'), data.hours, 612000, 900000);
             },
             error: function(data) {
                 console.log('error');
@@ -513,7 +570,7 @@
         }
 
         if(cmdCustom == '' && $('#module_add').val()) {
-            parentModule = $('#module_add').val();
+            var parentModule = $('#module_add').val();
             cmd = parentModule+cmd;
         }
 
@@ -546,7 +603,7 @@
 
                     data = JSON.parse(data);
 
-                    currModuleName = $('#currModuleName').val();
+                    var currModuleName = $('#currModuleName').val();
 
                     $('#methodsModule>ul').html('');
 
@@ -560,7 +617,7 @@
                     return;
                 }
 
-                old_data = $('#console_output').html();
+                var old_data = $('#console_output').html();
 
                 if(!data) {
                     data = '<i>Completed the request</i>';
@@ -660,11 +717,11 @@
                     //Есть доп инфа для вывода
                     if(data.moreinfo) {
                         $('#more_myBlockOnDash').show();
-                        i = 0;
+                        var i = 0;
                         for (var value in data.moreinfo) {
                             if(i == 0) $('#more_myBlockOnDash_body').html('');
-                            color = data.moreinfo[value].split('|color:');
-                            (color[1]) ? color_bg = color[1] : color_bg = '#999';
+                            var color = data.moreinfo[value].split('|color:');
+                            var color_bg = color[1] ? color[1] : '#999';
 
                             $('#more_myBlockOnDash_body').prepend('<li class="list-group-item">'+value+'<span class="badge" style="background:'+color_bg+';">'+color[0]+'</span></li>');
                             i++;

@@ -371,7 +371,7 @@ class app_player extends module
             }
         }
         $out['TERMINALS_TOTAL'] = count($terminals);
-        if ($out['TERMINALS_TOTAL'] == 1 || !count($session_terminals)) {
+        if ($out['TERMINALS_TOTAL'] == 1 || empty($session_terminals)) {
             $terminals[0]['SELECTED'] = 1;
         }
         foreach ($terminals as $temp_terminal) {

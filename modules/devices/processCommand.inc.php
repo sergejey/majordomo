@@ -249,7 +249,7 @@ for ($i = 0; $i < $total; $i++) {
         if (!$device_matched ) {
             // ищем строгое соответствие по названию
             foreach($devices as $key => $value) {
-                if(in_array(strtolower ($compare_title), strtolower ($value))) {
+                if (isset($devices[$key]['TITLE']) && strtolower($devices[$key]['TITLE']) == strtolower($compare_title)) {
                     $i = $key;
                     $device_matched = 1;
                     break ;

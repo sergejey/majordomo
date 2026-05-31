@@ -221,7 +221,7 @@ if ($element['ID']) {
     $elements = $this->getElements("SCENE_ID='" . $rec['ID'] . "' AND CONTAINER_ID=0", array('ignore_css_image' => 1, 'no_render' => 1, 'ignore_state' => 1));
 }
 //
-if (count($elements)) {
+if (is_array($elements) && count($elements)) {
     $out['ELEMENTS'] = $elements;
 }
 
@@ -231,7 +231,7 @@ if ($element['TYPE'] == 'container') {
 } elseif ($element['ID']) {
     $sub_elements = SQLSelect("SELECT ID, TITLE FROM elements WHERE CONTAINER_ID=" . (int)$element['CONTAINER_ID'] . " AND SCENE_ID='" . $rec['ID'] . "' ORDER BY PRIORITY DESC, TITLE");
 }
-if ($sub_elements[0]['ID']) {
+if (!empty($sub_elements[0]['ID'])) {
     $out['SUB_ELEMENTS'] = $sub_elements;
 }
 
@@ -250,5 +250,4 @@ if ($element['CONTAINER_ID']) {
 $out['CONTAINERS'] = $containers;
 $out['SCENES'] = SQLSelect("SELECT * FROM scenes ORDER BY TITLE");
 $out['DEVICES'] = SQLSelect("SELECT ID, TITLE FROM devices ORDER BY TITLE");
-
 
