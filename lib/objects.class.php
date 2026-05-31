@@ -1238,6 +1238,7 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
 {
     $is_child = false;
     $fork_disabled = true;
+    static $fork_signal_configured = false;
 
     if (is_array($method)) {
         $params = $method;
@@ -1247,6 +1248,10 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
     $is_cli_runtime = (PHP_SAPI === 'cli');
     if ($is_cli_runtime && defined('ENABLE_FORK') && ENABLE_FORK && function_exists('pcntl_fork')) {
         $fork_disabled = false;
+        if (!$fork_signal_configured && function_exists('pcntl_signal') && defined('SIGCHLD')) {
+            pcntl_signal(SIGCHLD, SIG_IGN);
+            $fork_signal_configured = true;
+        }
     }
 
     if (!$fork_disabled) {
@@ -1313,7 +1318,8 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
     endMeasure('callAPI ' . $api_url);
 
     if ($is_child) {
-        exit();
+        curl_close($api_ch);
+        exit(0);
     }
 
     if ($result != '') {
