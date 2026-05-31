@@ -101,9 +101,11 @@ if (isset($links[0]['ID'])) {
         if ($links[$i]['LINK_SETTINGS'] != '') {
             $settings = unserialize($links[$i]['LINK_SETTINGS']);
             $new_settings = '';
-            foreach ($settings as $k => $v) {
-                if ($v == '' || $v == '0') continue;
-                $new_settings .= $k . ': <i>' . $v . '</i>; ';
+            if (is_array($settings)) {
+                foreach ($settings as $k => $v) {
+                    if ($v == '' || $v == '0') continue;
+                    $new_settings .= $k . ': <i>' . $v . '</i>; ';
+                }
             }
             $links[$i]['LINK_SETTINGS'] = $new_settings;
         }
@@ -131,4 +133,3 @@ $avail_links = $this->getTypeLinks($rec['TYPE']);
 if (isset($avail_links[0])) {
     $out['AVAIL_LINKS'] = $avail_links;
 }
-

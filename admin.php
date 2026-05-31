@@ -127,11 +127,10 @@ if (isset($_GET['part_load'])) {
         saveToCache('reload:' . md5($_SERVER['REQUEST_URI']), 1);
     }
 
-    header("HTTP/1.0: 200 OK\n");
-    header('Content-Type: text/html; charset=utf-8');
-    echo $result;
-    exit;
+    header("HTTP/1.0 200 OK\n");
+    header('Content-Type: application/json; charset=utf-8');
     $session->save();
+    echo $result;
     exit;
 }
 
@@ -142,7 +141,8 @@ if (isset($_GET['dynids']) and is_array($_GET['dynids'])) {
 
     $data = array();
     foreach ($_GET['dynids'] as $data_id) {
-        if (preg_match('/id="' . $data_id . '">(.+?)<!--\/dynamic_content-->/uis', $result, $m)) {
+        $safe_data_id = preg_quote((string)$data_id, '/');
+        if (preg_match('/id="' . $safe_data_id . '">(.+?)<!--\/dynamic_content-->/uis', $result, $m)) {
             $data['blocks'][] = array('name' => $data_id, 'content' => $m[1]);
         }
 

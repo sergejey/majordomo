@@ -1278,18 +1278,19 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
     $url = preg_replace('/([^:])\/\//', '\1/', $url);
 
     $method = strtoupper($method);
-    global $api_ch;
-    if (!isset($api_ch)) {
-        $api_ch = curl_init();
-        curl_setopt($api_ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
-        curl_setopt($api_ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($api_ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
-        curl_setopt($api_ch, CURLOPT_MAXREDIRS, 2);
-        curl_setopt($api_ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
-        curl_setopt($api_ch, CURLOPT_NOSIGNAL, 1);
-        if (!$is_child && !$wait_response) {
-            curl_setopt($api_ch, CURLOPT_TIMEOUT_MS, 50);
-        }
+    $api_ch = curl_init();
+    curl_setopt($api_ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
+    curl_setopt($api_ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($api_ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
+    curl_setopt($api_ch, CURLOPT_MAXREDIRS, 2);
+    curl_setopt($api_ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
+    curl_setopt($api_ch, CURLOPT_NOSIGNAL, 1);
+
+    if (!$is_child && !$wait_response) {
+        // fire-and-forget mode: give local API enough time to accept request,
+        // but still return control quickly and avoid blocking the caller
+        curl_setopt($api_ch, CURLOPT_CONNECTTIMEOUT_MS, 300);
+        curl_setopt($api_ch, CURLOPT_TIMEOUT_MS, 800);
     }
     if ($method == 'GET') {
         $url .= '?' . http_build_query($params);
@@ -1317,14 +1318,18 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
     if ($result != '') {
         $data = json_decode($result, true);
         if (is_array($data) && isset($data['apiHandleResult'])) {
+            curl_close($api_ch);
             return $data['apiHandleResult'];
         } elseif (is_array($data)) {
+            curl_close($api_ch);
             return $data;
         } else {
+            curl_close($api_ch);
             return $result;
         }
     }
 
+    curl_close($api_ch);
     return true;
 
 }

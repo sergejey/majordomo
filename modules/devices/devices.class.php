@@ -809,7 +809,7 @@ class devices extends module
             $recent_devices = SQLSelect("SELECT devices.* FROM devices WHERE !IsNull(CLICKED) ORDER BY CLICKED DESC LIMIT 10");
         }
 
-        if ($devices[0]['ID']) {
+        if (!empty($devices[0]['ID'])) {
             if ($location_id || $type || 1) {
                 $total = count($devices);
                 for ($i = 0; $i < $total; $i++) {

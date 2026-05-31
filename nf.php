@@ -53,10 +53,10 @@ $requests = array(
    '/^'.$rootHTML.'panel\/class\/(\d+)\/methods\.html/is'=> '?(panel:{action=classes})&md=classes&view_mode=edit_classes&id=\1&tab=methods',
    '/^'.$rootHTML.'panel\/class\/(\d+)\/methods\/(\d+)\.html/is'=> '?(panel:{action=classes}classes:{view_mode=edit_classes, tab=methods, id=\1, instance=adm})&md=methods&view_mode=edit_methods&id=\2',
    '/^'.$rootHTML.'panel\/class\/(\d+)\/object\/(\d+)\.html/is'=> '?(panel:{action=classes}classes:{view_mode=edit_classes, tab=objects, id=\1, instance=adm})&md=objects&view_mode=edit_objects&id=\2',
-   '/^'.$rootHTML.'panel\/class\/(\d+)\/object\/(\d+)\\/methods\.html/is'=> '?(panel:{action=classes}classes:{view_mode=edit_classes, tab=objects, id=\1, instance=adm})&md=objects&view_mode=edit_objects&id=\2&tab=methods',
-   '/^'.$rootHTML.'panel\/class\/(\d+)\/object\/(\d+)\\/methods\/(\d+)\.html/is'=> '?(panel:{action=classes}classes:{view_mode=edit_classes, tab=objects, id=\1, instance=adm})&md=objects&view_mode=edit_objects&id=\2&tab=methods&overwrite=1&method_id=\3',
-   '/^'.$rootHTML.'panel\/class\/(\d+)\/object\/(\d+)\\/properties\.html/is'=> '?(panel:{action=classes}classes:{view_mode=edit_classes, tab=objects, id=\1, instance=adm})&md=objects&view_mode=edit_objects&id=\2&tab=properties',
-   '/^'.$rootHTML.'panel\/scene\/(\d+)\/elements\/(\d+)\\/state(\d+)\.html/is'=> '?(panel:{action=scenes})&md=scenes&view_mode=edit_scenes&id=\1&tab=elements&view_mode2=edit_elements&element_id=\2&state_id=\3',
+   '/^'.$rootHTML.'panel\/class\/(\d+)\/object\/(\d+)\/methods\.html/is'=> '?(panel:{action=classes}classes:{view_mode=edit_classes, tab=objects, id=\1, instance=adm})&md=objects&view_mode=edit_objects&id=\2&tab=methods',
+   '/^'.$rootHTML.'panel\/class\/(\d+)\/object\/(\d+)\/methods\/(\d+)\.html/is'=> '?(panel:{action=classes}classes:{view_mode=edit_classes, tab=objects, id=\1, instance=adm})&md=objects&view_mode=edit_objects&id=\2&tab=methods&overwrite=1&method_id=\3',
+   '/^'.$rootHTML.'panel\/class\/(\d+)\/object\/(\d+)\/properties\.html/is'=> '?(panel:{action=classes}classes:{view_mode=edit_classes, tab=objects, id=\1, instance=adm})&md=objects&view_mode=edit_objects&id=\2&tab=properties',
+   '/^'.$rootHTML.'panel\/scene\/(\d+)\/elements\/(\d+)\/state(\d+)\.html/is'=> '?(panel:{action=scenes})&md=scenes&view_mode=edit_scenes&id=\1&tab=elements&view_mode2=edit_elements&element_id=\2&state_id=\3',
    '/^'.$rootHTML.'panel\/scene\/(\d+)\/elements\/(\d+)\.html/is'=> '?(panel:{action=scenes})&md=scenes&view_mode=edit_scenes&id=\1&tab=elements&view_mode2=edit_elements&element_id=\2',
    '/^'.$rootHTML.'panel\/scene\/(\d+)\.html/is'=> '?(panel:{action=scenes})&md=scenes&view_mode=edit_scenes&id=\1&',
    '/^'.$rootHTML.'panel\/zwave\/(\d+)\.html/is'   => '?(panel:{action=zwave})&md=zwave&view_mode=edit_zwave_devices&id=\1',
@@ -155,4 +155,3 @@ if (preg_match('/^'.$rootHTML.'panel\//is', $_SERVER['REQUEST_URI']))
    include_once("admin.php");
 else
    include_once("index.php");
-

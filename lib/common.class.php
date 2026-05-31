@@ -239,7 +239,7 @@ function addScheduledJob($title, $commands, $datetime, $expire = 1800)
  */
 function clearScheduledJob($title)
 {
-    SQLExec("DELETE FROM jobs WHERE TITLE LIKE '" . DBSafe($title) . "'");
+    SQLExec("DELETE FROM jobs WHERE TITLE = '" . DBSafe($title) . "'");
 }
 
 /**
@@ -302,16 +302,19 @@ function runScheduledJobs()
                   FROM jobs
                  WHERE PROCESSED = 0
                    AND EXPIRED   = 0
+                   AND (STARTED IS NULL OR STARTED <= '" . date('Y-m-d H:i:s', time() - 300) . "')
                    AND RUNTIME   <= '" . date('Y-m-d H:i:s') . "'";
 
     $jobs = SQLSelect($sqlQuery);
     $total = count($jobs);
 
     for ($i = 0; $i < $total; $i++) {
-        $jobs[$i]['PROCESSED'] = 1;
         $jobs[$i]['STARTED'] = date('Y-m-d H:i:s');
-
-        SQLExec("UPDATE jobs SET PROCESSED=" . $jobs[$i]['PROCESSED'] . ", STARTED='" . $jobs[$i]['STARTED'] . "' WHERE ID=" . $jobs[$i]['ID']);
+        SQLExec("UPDATE jobs SET STARTED='" . $jobs[$i]['STARTED'] . "' WHERE ID=" . (int)$jobs[$i]['ID'] . " AND PROCESSED=0 AND (STARTED IS NULL OR STARTED <= '" . date('Y-m-d H:i:s', time() - 300) . "')");
+        $claimed_job = SQLSelectOne("SELECT ID FROM jobs WHERE ID=" . (int)$jobs[$i]['ID'] . " AND STARTED='" . DBSafe($jobs[$i]['STARTED']) . "' AND PROCESSED=0");
+        if (!isset($claimed_job['ID'])) {
+            continue;
+        }
 
         if ($jobs[$i]['COMMANDS'] != '') {
             $url = BASE_URL . '/objects/?system_call=1&job=' . $jobs[$i]['ID'] . '&title=' . urlencode($jobs[$i]['TITLE']);
@@ -319,8 +322,11 @@ function runScheduledJobs()
             $result = preg_replace('/<!--.+-->/is', '', $result);
             if (!preg_match('/OK$/', $result)) {
                 DebMes(sprintf('Error executing job %s (%s): %s', $jobs[$i]['TITLE'], $jobs[$i]['ID'], $result) . ' (' . __FILE__ . ')', 'errors');
+                SQLExec("UPDATE jobs SET STARTED=NULL, RUNTIME='" . date('Y-m-d H:i:s', time() + 5) . "' WHERE ID=" . (int)$jobs[$i]['ID'] . " AND PROCESSED=0");
+                continue;
             }
         }
+        SQLExec("UPDATE jobs SET PROCESSED=1 WHERE ID=" . (int)$jobs[$i]['ID']);
     }
 }
 

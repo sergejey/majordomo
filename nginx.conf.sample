@@ -1,0 +1,57 @@
+server {
+    listen 127.0.0.1:80;
+    server_name example.com www.example.com localhost;
+
+    # Current layout (legacy):
+    root /var/www/example/data/www/example.com;
+    # Future hardened layout (when entrypoints moved):
+    # root /var/www/example/data/www/example.com/public;
+
+    index index.php index.html index.htm;
+    charset utf-8;
+
+    # Sensitive files
+    location = /config.php { deny all; }
+    location = /debmes.txt { deny all; }
+    location ~ /\. { deny all; }
+    location ~* \.(htaccess|htpasswd|ini|phps|fla|sql|log|sh|py)$ { deny all; }
+
+    # Apache: ReWriteCond %{REQUEST_URI} pda$ -> /popup/pda.html [R,L]
+    location ~* pda$ {
+        return 302 /popup/pda.html;
+    }
+
+    # Apache: ReWriteCond %{REQUEST_URI} ^/api/ -> /api.php
+    location ^~ /api/ {
+        rewrite ^ /api.php last;
+    }
+
+    # Apache: /module/app_mediabrowser.* -> nf.php when no real file/dir exists
+    location ~* ^/module/app_mediabrowser\..*$ {
+        try_files $uri $uri/ /nf.php?$query_string;
+    }
+
+    # Apache: *.html/*.xml -> nf.php when no real file/dir exists
+    location ~* \.(html|xml)$ {
+        try_files $uri $uri/ /nf.php?$query_string;
+    }
+
+    # Keep static/real files behavior predictable
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ [^/]\.php(/|$) {
+        include /etc/nginx/fastcgi_params;
+        fastcgi_pass unix:/var/run/php/php-fpm.sock;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+        fastcgi_param SCRIPT_NAME $fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+        fastcgi_param HTTPS $http_x_forwarded_proto if_not_empty;
+
+        fastcgi_read_timeout 240;
+    }
+}
