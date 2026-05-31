@@ -23,6 +23,7 @@ class actions_log extends module
         $this->title = "<#LANG_MODULE_ACTIONS_LOG#>";
         $this->module_category = "<#LANG_SECTION_SYSTEM#>";
         $this->checkInstalled();
+        $this->dbInstall();
     }
 
     /**
@@ -233,9 +234,60 @@ class actions_log extends module
  actions_log: USER varchar(255) NOT NULL DEFAULT ''
  actions_log: TERMINAL varchar(255) NOT NULL DEFAULT ''
  actions_log: IP varchar(100) NOT NULL DEFAULT ''
- actions_log: INDEX (ACTION_TYPE)  
+ actions_log: SOURCE varchar(50) NOT NULL DEFAULT ''
+ actions_log: MODULE varchar(100) NOT NULL DEFAULT ''
+ actions_log: VIEW_MODE varchar(100) NOT NULL DEFAULT ''
+ actions_log: OBJECT_TYPE varchar(50) NOT NULL DEFAULT ''
+ actions_log: OBJECT_ID varchar(100) NOT NULL DEFAULT ''
+ actions_log: OBJECT_TITLE varchar(255) NOT NULL DEFAULT ''
+ actions_log: URL varchar(255) NOT NULL DEFAULT ''
+ actions_log: REQUEST_METHOD varchar(10) NOT NULL DEFAULT ''
+ actions_log: RESULT varchar(20) NOT NULL DEFAULT ''
+ actions_log: REQUEST_ID varchar(64) NOT NULL DEFAULT ''
+ actions_log: REFERER varchar(255) NOT NULL DEFAULT ''
+ actions_log: USER_AGENT varchar(255) NOT NULL DEFAULT ''
+ actions_log: DETAILS_JSON text
+ actions_log: INDEX (ACTION_TYPE)
+ actions_log: INDEX (ADDED)
+ actions_log: INDEX (USER)
+ actions_log: INDEX (IP)
+ actions_log: INDEX (SOURCE)
+ actions_log: INDEX (MODULE)
+ actions_log: INDEX (REQUEST_ID)
 EOD;
         parent::dbInstall($data);
+    }
+
+    function getActionLabel($action_type)
+    {
+        return $this->translateLogCode('ACTION', $action_type);
+    }
+
+    function getSourceLabel($source)
+    {
+        return $this->translateLogCode('SOURCE', $source);
+    }
+
+    function getResultLabel($result)
+    {
+        return $this->translateLogCode('RESULT', $result);
+    }
+
+    function translateLogCode($prefix, $value)
+    {
+        $value = trim((string)$value);
+        if ($value === '') {
+            return '';
+        }
+
+        $normalized = strtoupper(preg_replace('/[^a-z0-9]+/i', '_', $value));
+        $lang_key = 'LANG_ACTIONLOG_' . $prefix . '_' . $normalized;
+        if (defined($lang_key)) {
+            return constant($lang_key);
+        }
+
+        $value = str_replace('_', ' ', $value);
+        return ucfirst($value);
     }
 // --------------------------------------------------------------------
 }

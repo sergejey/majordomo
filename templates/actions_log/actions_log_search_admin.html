@@ -1,83 +1,227 @@
-<div class="row">
- <div class="col-md-8">
-  <form action="?" method="get" class="form-inline">
-   <div class="form-group">
-    <select name="action_type" class="form-control">
-     <option value=""><#LANG_ACTION#></option>
-     [#begin ACTION_TYPES#]
-     <option value="[#ACTION_TYPE#]"[#if ACTION_TYPE="<#ACTION_TYPE#>"#] selected[#endif#]>[#ACTION_TYPE#]</option>
-     [#end ACTION_TYPES#]
-    </select>
-   </div>
-   <div class="form-group">
-    <input type="text" name="search" value="<#SEARCH#>" placeholder="<#LANG_SEARCH#>" class="form-control">
-   </div>
-   <div class="form-group">
-    <input id="time_start" name="from" value="[#FROM#]" type="text" placeholder="<#LANG_GENERAL_STARTING#>" class="form-control datepicker">
-   </div>
-   <div class="form-group">
-    <input id="time_start" name="to" value="[#TO#]" type="text" placeholder="<#LANG_GENERAL_ENDING#>" class="form-control datepicker">
+<style>
+ .actions-log-filter .form-group,
+ .actions-log-filter .form-control,
+ .actions-log-filter .btn {
+  margin-bottom: 8px;
+ }
+ .actions-log-filter .actions-log-actions {
+  margin-top: 6px;
+ }
+ .actions-log-table td {
+  vertical-align: top !important;
+ }
+ .actions-log-mobile-item {
+  border: 1px solid #e7e7e7;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #fff;
+ }
+ .actions-log-mobile-item .meta-line {
+  font-size: 12px;
+  color: #777;
+  margin-top: 4px;
+ }
+ .actions-log-mobile-item .title-line {
+  font-weight: 600;
+  margin-top: 6px;
+ }
+ .actions-log-desktop-view {
+  display: block;
+ }
+ .actions-log-mobile-view {
+  display: none;
+ }
+ @media (max-width: 767px) {
+  .actions-log-desktop-view {
+   display: none !important;
+  }
+  .actions-log-mobile-view {
+   display: block !important;
+  }
+ }
+</style>
+
+<div class="panel panel-default">
+ <div class="panel-body actions-log-filter">
+  <form action="?" method="get" class="form">
+   <div class="row">
+    <div class="col-sm-2">
+     <label><#LANG_PERIOD#></label>
+     <select name="period" class="form-control">
+      <option value="custom"[#if PERIOD="custom"#] selected[#endif#]><#LANG_PERIOD_CUSTOM#></option>
+      <option value="today"[#if PERIOD="today"#] selected[#endif#]><#LANG_PERIOD_TODAY#></option>
+      <option value="day"[#if PERIOD="day"#] selected[#endif#]><#LANG_PERIOD_DAY#></option>
+      <option value="week"[#if PERIOD="week"#] selected[#endif#]><#LANG_PERIOD_WEEK#></option>
+      <option value="month"[#if PERIOD="month"#] selected[#endif#]><#LANG_PERIOD_MONTH#></option>
+     </select>
+    </div>
+    <div class="col-sm-2">
+     <label><#LANG_GENERAL_STARTING#></label>
+     <input name="from" value="[#FROM#]" type="text" class="form-control datepicker">
+    </div>
+    <div class="col-sm-2">
+     <label><#LANG_GENERAL_ENDING#></label>
+     <input name="to" value="[#TO#]" type="text" class="form-control datepicker">
+    </div>
+    <div class="col-sm-2">
+     <label><#LANG_ACTION#></label>
+     <select name="action_type" class="form-control">
+      <option value=""><#LANG_ALL#></option>
+      [#begin ACTION_TYPES#]
+      <option value="[#VALUE#]"[#if SELECTED="1"#] selected[#endif#]>[#TITLE#]</option>
+      [#end ACTION_TYPES#]
+     </select>
+    </div>
+    <div class="col-sm-2">
+     <label><#LANG_ACTIONLOG_SOURCE#></label>
+     <select name="source" class="form-control">
+      <option value=""><#LANG_ALL#></option>
+      [#begin SOURCES#]
+      <option value="[#VALUE#]"[#if SELECTED="1"#] selected[#endif#]>[#TITLE#]</option>
+      [#end SOURCES#]
+     </select>
+    </div>
+    <div class="col-sm-2">
+     <label><#LANG_ACTIONLOG_RESULT#></label>
+     <select name="result" class="form-control">
+      <option value=""><#LANG_ALL#></option>
+      [#begin RESULTS_LIST#]
+      <option value="[#VALUE#]"[#if SELECTED="1"#] selected[#endif#]>[#TITLE#]</option>
+      [#end RESULTS_LIST#]
+     </select>
+    </div>
    </div>
 
-   <div class="form-group">
-    <input type="submit" name="submit" value="<#LANG_SEARCH#>" class="btn btn-default btn-primary">
+   <div class="row">
+    <div class="col-sm-2">
+     <label><#LANG_ACTIONLOG_MODULE#></label>
+     <select name="module_name" class="form-control">
+      <option value=""><#LANG_ALL#></option>
+      [#begin MODULES_LIST#]
+      <option value="[#VALUE#]"[#if SELECTED="1"#] selected[#endif#]>[#VALUE#]</option>
+      [#end MODULES_LIST#]
+     </select>
+    </div>
+    <div class="col-sm-2">
+     <label><#LANG_USER#></label>
+     <input type="text" name="user_name" value="<#USER_NAME#>" class="form-control" placeholder="<#LANG_USER#>">
+    </div>
+    <div class="col-sm-2">
+     <label><#LANG_TERMINAL#></label>
+     <input type="text" name="terminal" value="<#TERMINAL_FILTER#>" class="form-control" placeholder="<#LANG_TERMINAL#>">
+    </div>
+    <div class="col-sm-2">
+     <label>IP</label>
+     <input type="text" name="ip" value="<#IP_FILTER#>" class="form-control" placeholder="IP">
+    </div>
+    <div class="col-sm-2">
+     <label><#LANG_ACTIONLOG_REQUEST_METHOD#></label>
+     <select name="request_method" class="form-control">
+      <option value=""><#LANG_ALL#></option>
+      [#begin METHODS_LIST#]
+      <option value="[#VALUE#]"[#if SELECTED="1"#] selected[#endif#]>[#VALUE#]</option>
+      [#end METHODS_LIST#]
+     </select>
+    </div>
+    <div class="col-sm-2">
+     <label><#LANG_SEARCH#></label>
+     <input type="text" name="search" value="<#SEARCH#>" class="form-control" placeholder="<#LANG_SEARCH#>">
+    </div>
    </div>
-   [#if FROM!="" || TO!="" OR SEARCH!="" OR ACTION_TYPE!=""#]
-   <div class="form-group">
-    <a href="?" class="btn btn-default"><#LANG_CANCEL#></a>
+
+   <div class="row actions-log-actions">
+    <div class="col-sm-8 col-xs-12">
+     <button type="submit" class="btn btn-primary"><#LANG_SEARCH#></button>
+     [#if FROM!="" || TO!="" OR SEARCH!="" OR ACTION_TYPE!="" OR SOURCE!="" OR MODULE_NAME!="" OR RESULT_FILTER!="" OR REQUEST_METHOD!="" OR USER_NAME!="" OR TERMINAL_FILTER!="" OR IP_FILTER!="" OR PERIOD!="custom"#]
+     <a href="?" class="btn btn-default"><#LANG_CANCEL#></a>
+     [#endif#]
+    </div>
+    <div class="col-sm-4 col-xs-12 text-right">
+     <a href="?clear_history=1" class="btn btn-danger" onclick="return confirm('<#LANG_ARE_YOU_SURE#>');"><#LANG_CLEAR_ALL#></a>
+    </div>
    </div>
-   [#endif#]
   </form>
-
- </div>
- <div class="col-md-4 text-right">
-  <a href="?clear_history=1" class="btn btn-default btn-danger" onclick="return confirm('<#LANG_ARE_YOU_SURE#>');"><#LANG_CLEAR_ALL#></a>
  </div>
 </div>
-<!-- table actions_log search -->
-<!-- results -->
+
 [#if RESULT#]
-<!-- paging -->
 <div>[#PAGINATOR#]&nbsp;</div>
-<!-- / paging -->
-<!-- search results (list) -->
-<form action="?" method="post" name="frmList_actions_log" style="padding:0px" class="form">
-<table  class="table table-striped">
- <thead>
- <tr>
-  <th><#LANG_ADDED#></th>
-  <th>IP</th>
-  <th><#LANG_USER#></th>
-  <th><#LANG_TERMINAL#></th>
-  <th><#LANG_ACTION#></th>
-  <th><#LANG_DETAILS#></th>
- </tr>
- </thead>
-<tbody>
-[#begin RESULT#]
-<tr>
- <td>[#ADDED#]</td>
- <td>[#IP#]</td>
- <td>[#USER#]</td>
- <td>[#TERMINAL#]</td>
- <td>[#ACTION_TYPE#]</td>
- <td>[#TITLE#]</td>
-</tr>
-[#end RESULT#]
-</tbody>
-</table>
-<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
-<input type="hidden" name="view_mode" value="multiple_actions_log">
-</form>
-<!-- / search results (list) -->
-<!-- paging -->
-[#PAGINATOR#]
-<!-- / paging -->
-[#else RESULT#]
-&nbsp;
-<div class="alert alert-warning">
-<#LANG_NO_RECORDS_FOUND#>
-</div>
-[#endif RESULT#]
-<!-- / results -->
 
+<div class="table-responsive actions-log-desktop-view">
+ <table class="table table-striped table-hover actions-log-table">
+  <thead>
+   <tr>
+    <th style="width:145px;"><#LANG_ADDED#></th>
+    <th style="width:155px;"><#LANG_USER#></th>
+    <th style="width:220px;"><#LANG_ACTION#></th>
+    <th style="width:130px;"><#LANG_ACTIONLOG_SOURCE#></th>
+    <th style="width:130px;"><#LANG_ACTIONLOG_RESULT#></th>
+    <th style="width:170px;"><#LANG_ACTIONLOG_TARGET#></th>
+    <th style="width:200px;"><#LANG_ACTIONLOG_LOCATION#></th>
+    <th><#LANG_DETAILS#></th>
+   </tr>
+  </thead>
+  <tbody>
+  [#begin RESULT#]
+  <tr>
+   <td>[#ADDED_HTML#]</td>
+   <td>
+    <div>[#USER_HTML#]</div>
+    [#if IP_HTML!=""#]<div class="text-muted" style="font-size:11px;">IP: [#IP_HTML#]</div>[#endif#]
+    [#if TERMINAL_HTML!=""#]<div class="text-muted" style="font-size:11px;"><#LANG_TERMINAL#>: [#TERMINAL_HTML#]</div>[#endif#]
+   </td>
+   <td>[#ACTION_TYPE_TITLE_HTML#]</td>
+   <td><span class="label [#SOURCE_BADGE_CLASS#]">[#SOURCE_TITLE_HTML#]</span></td>
+   <td><span class="label [#RESULT_BADGE_CLASS#]">[#RESULT_TITLE_HTML#]</span></td>
+   <td>[#TARGET_TITLE_HTML#]</td>
+   <td>
+    <div>[#LOCATION_TITLE_HTML#]</div>
+    [#if URL_SHORT_HTML!=""#]<div class="text-muted" style="font-size:11px;">[#URL_SHORT_HTML#]</div>[#endif#]
+   </td>
+   <td>
+    [#if HAS_DETAILS="1"#]
+    <a class="btn btn-xs btn-default" data-toggle="collapse" href="#[#ROW_UID#]"><#LANG_MORE_DETAILS#></a>
+    <div id="[#ROW_UID#]" class="collapse" style="margin-top:5px;">
+     <pre style="white-space:pre-wrap;word-break:break-word;max-height:260px;margin:0;">[#DETAILS_BODY_HTML#]</pre>
+    </div>
+    [#else#]
+    <span class="text-muted">-</span>
+    [#endif#]
+   </td>
+  </tr>
+  [#end RESULT#]
+  </tbody>
+ </table>
+</div>
+
+<div class="actions-log-mobile-view">
+ [#begin RESULT#]
+ <div class="actions-log-mobile-item">
+  <div>
+   <strong>[#ADDED_HTML#]</strong>
+   <span class="label [#RESULT_BADGE_CLASS#]" style="margin-left:6px;">[#RESULT_TITLE_HTML#]</span>
+  </div>
+  <div class="title-line">[#ACTION_TYPE_TITLE_HTML#]</div>
+  <div class="meta-line"><#LANG_ACTIONLOG_SOURCE#>: [#SOURCE_TITLE_HTML#]</div>
+  <div class="meta-line"><#LANG_USER#>: [#USER_HTML#][#if TERMINAL_HTML!=""#], <#LANG_TERMINAL#>: [#TERMINAL_HTML#][#endif#]</div>
+  [#if IP_HTML!=""#]<div class="meta-line">IP: [#IP_HTML#]</div>[#endif#]
+  <div class="meta-line"><#LANG_ACTIONLOG_TARGET#>: [#TARGET_TITLE_HTML#]</div>
+  <div class="meta-line"><#LANG_ACTIONLOG_LOCATION#>: [#LOCATION_TITLE_HTML#]</div>
+  [#if URL_SHORT_HTML!=""#]<div class="meta-line">URL: [#URL_SHORT_HTML#]</div>[#endif#]
+  [#if HAS_DETAILS="1"#]
+  <div style="margin-top:8px;">
+   <a class="btn btn-xs btn-default" data-toggle="collapse" href="#m_[#ROW_UID#]"><#LANG_MORE_DETAILS#></a>
+   <div id="m_[#ROW_UID#]" class="collapse" style="margin-top:5px;">
+    <pre style="white-space:pre-wrap;word-break:break-word;max-height:220px;margin:0;">[#DETAILS_BODY_HTML#]</pre>
+   </div>
+  </div>
+  [#endif#]
+ </div>
+ [#end RESULT#]
+</div>
+
+[#PAGINATOR#]
+[#else RESULT#]
+<div class="alert alert-warning"><#LANG_NO_RECORDS_FOUND#></div>
+[#endif RESULT#]

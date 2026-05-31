@@ -1218,29 +1218,263 @@ function hsvToHex($h, $s, $v)
     return sprintf("%02x%02x%02x", $rgb[0], $rgb[1], $rgb[2]);
 }
 
-function logAction($action_type, $details = '')
+function getActionsLogAvailableFields()
+{
+    static $fields_map = null;
+    if ($fields_map !== null) {
+        return $fields_map;
+    }
+
+    $fields_map = array();
+    if (!SQLTableExists('actions_log')) {
+        return $fields_map;
+    }
+
+    $fields = SQLGetFields('actions_log');
+    if (is_array($fields)) {
+        $total = count($fields);
+        for ($i = 0; $i < $total; $i++) {
+            if (isset($fields[$i]['Field'])) {
+                $fields_map[strtoupper($fields[$i]['Field'])] = 1;
+            }
+        }
+    }
+
+    return $fields_map;
+}
+
+function actionLogDetectSource($context = array())
+{
+    if (isset($context['source']) && $context['source'] !== '') {
+        return (string)$context['source'];
+    }
+
+    if (php_sapi_name() === 'cli') {
+        return 'cli';
+    }
+
+    $request_uri = isset($_SERVER['REQUEST_URI']) ? (string)$_SERVER['REQUEST_URI'] : '';
+    if (stripos($request_uri, '/admin.php') !== false) {
+        return 'admin';
+    }
+    if (stripos($request_uri, '/api.php') !== false) {
+        return 'api';
+    }
+    if (stripos($request_uri, '/command.php') !== false) {
+        return 'command';
+    }
+    if (stripos($request_uri, '/objects/') !== false) {
+        return 'objects';
+    }
+    return 'web';
+}
+
+function sanitizeActionLogData($data, $key = '')
+{
+    $key_string = is_string($key) ? $key : '';
+    if ($key_string !== '' && preg_match('/pass|password|token|secret|auth|cookie|session|private|apikey|api_key|key/i', $key_string)) {
+        return '***';
+    }
+
+    if (is_array($data)) {
+        $result = array();
+        foreach ($data as $k => $v) {
+            $result[$k] = sanitizeActionLogData($v, (string)$k);
+        }
+        return $result;
+    }
+
+    if (is_object($data)) {
+        $converted = (array)$data;
+        return sanitizeActionLogData($converted, $key_string);
+    }
+
+    if (is_string($data)) {
+        return mb_substr($data, 0, 2000, 'utf-8');
+    }
+
+    return $data;
+}
+
+function getActionLogRequestId($context = array())
+{
+    if (isset($context['request_id']) && $context['request_id'] !== '') {
+        return (string)$context['request_id'];
+    }
+    if (isset($_SERVER['HTTP_X_REQUEST_ID']) && $_SERVER['HTTP_X_REQUEST_ID'] !== '') {
+        return (string)$_SERVER['HTTP_X_REQUEST_ID'];
+    }
+
+    static $generated_request_id = null;
+    if ($generated_request_id !== null) {
+        return $generated_request_id;
+    }
+
+    $seed = '';
+    if (isset($_SERVER['REQUEST_TIME_FLOAT'])) {
+        $seed .= (string)$_SERVER['REQUEST_TIME_FLOAT'];
+    } else {
+        $seed .= microtime(true);
+    }
+    if (isset($_SERVER['REQUEST_URI'])) {
+        $seed .= '|' . $_SERVER['REQUEST_URI'];
+    }
+    if (function_exists('session_id')) {
+        $seed .= '|' . session_id();
+    }
+    $generated_request_id = md5($seed);
+    return $generated_request_id;
+}
+
+function logAction($action_type, $details = '', $context = array(), ...$legacy_args)
 {
     if (!isModuleInstalled('actions_log')) return;
+
+    // Backward compatibility:
+    // - custom modules may pass 3rd argument as scalar
+    // - details may be passed as array/object
+    // - extra positional args are accepted and safely stored in details JSON
+    if (is_array($details) || is_object($details)) {
+        $details_payload = sanitizeActionLogData($details);
+        $json_options = 0;
+        if (defined('JSON_UNESCAPED_UNICODE')) {
+            $json_options = $json_options | JSON_UNESCAPED_UNICODE;
+        }
+        if (defined('JSON_UNESCAPED_SLASHES')) {
+            $json_options = $json_options | JSON_UNESCAPED_SLASHES;
+        }
+        $encoded_details = json_encode($details_payload, $json_options);
+        if (is_string($encoded_details) && $encoded_details !== '') {
+            $details = $encoded_details;
+        } else {
+            $details = print_r($details_payload, true);
+        }
+    } else {
+        $details = (string)$details;
+    }
+
+    if (!is_array($context)) {
+        // Legacy style: logAction('type', 'details', 'module_name')
+        // or logAction('type', 'details', 123)
+        $context = array('legacy_context' => (string)$context);
+    }
+
+    if (isset($legacy_args[0])) {
+        $context['legacy_args'] = sanitizeActionLogData($legacy_args);
+    }
+
+    $fields_map = getActionsLogAvailableFields();
+    if (!isset($fields_map['ID'])) {
+        return;
+    }
 
     global $session;
     $rec = array();
     $rec['ADDED'] = date('Y-m-d H:i:s');
-    if (isset($session->data['SITE_USERNAME'])) {
+    if (isset($session->data['SITE_USERNAME']) && $session->data['SITE_USERNAME'] !== '') {
         $rec['USER'] = $session->data['SITE_USERNAME'];
-    } elseif (preg_match('/^\/admin\.php/', $_SERVER['REQUEST_URI'])) {
+    } elseif (isset($_SERVER['REQUEST_URI']) && preg_match('/^\/admin\.php/', $_SERVER['REQUEST_URI'])) {
         $rec['USER'] = 'Control Panel';
+    } else {
+        $rec['USER'] = '';
     }
     if (isset($session->data['TERMINAL'])) {
         $rec['TERMINAL'] = $session->data['TERMINAL'];
     } else {
         $rec['TERMINAL'] = '';
     }
-    $rec['ACTION_TYPE'] = $action_type;
-    $rec['TITLE'] = $details;
-    $rec['TITLE'] = mb_substr($rec['TITLE'], 0, 250, 'utf-8');
-    $rec['IP'] = $_SERVER['REMOTE_ADDR'];
-    SQLInsert('actions_log', $rec);
+    $rec['ACTION_TYPE'] = (string)$action_type;
+    $rec['TITLE'] = mb_substr($details, 0, 250, 'utf-8');
+    $rec['IP'] = isset($_SERVER['REMOTE_ADDR']) ? (string)$_SERVER['REMOTE_ADDR'] : '';
 
+    if (isset($fields_map['SOURCE'])) {
+        $rec['SOURCE'] = mb_substr(actionLogDetectSource($context), 0, 50, 'utf-8');
+    }
+    if (isset($fields_map['MODULE'])) {
+        $module_name = isset($context['module']) ? (string)$context['module'] : '';
+        if ($module_name === '' && isset($_REQUEST['action'])) {
+            $module_name = (string)$_REQUEST['action'];
+        }
+        $rec['MODULE'] = mb_substr($module_name, 0, 100, 'utf-8');
+    }
+    if (isset($fields_map['VIEW_MODE'])) {
+        $view_mode = isset($context['view_mode']) ? (string)$context['view_mode'] : '';
+        if ($view_mode === '' && isset($_REQUEST['view_mode'])) {
+            $view_mode = (string)$_REQUEST['view_mode'];
+        }
+        $rec['VIEW_MODE'] = mb_substr($view_mode, 0, 100, 'utf-8');
+    }
+    if (isset($fields_map['OBJECT_TYPE'])) {
+        $rec['OBJECT_TYPE'] = mb_substr(isset($context['object_type']) ? (string)$context['object_type'] : '', 0, 50, 'utf-8');
+    }
+    if (isset($fields_map['OBJECT_ID'])) {
+        $object_id = isset($context['object_id']) ? (string)$context['object_id'] : '';
+        if ($object_id === '' && isset($_REQUEST['id'])) {
+            $object_id = (string)$_REQUEST['id'];
+        }
+        $rec['OBJECT_ID'] = mb_substr($object_id, 0, 100, 'utf-8');
+    }
+    if (isset($fields_map['OBJECT_TITLE'])) {
+        $rec['OBJECT_TITLE'] = mb_substr(isset($context['object_title']) ? (string)$context['object_title'] : '', 0, 255, 'utf-8');
+    }
+    if (isset($fields_map['URL'])) {
+        $url = isset($context['url']) ? (string)$context['url'] : '';
+        if ($url === '' && isset($_SERVER['REQUEST_URI'])) {
+            $url = (string)$_SERVER['REQUEST_URI'];
+        }
+        $rec['URL'] = mb_substr($url, 0, 255, 'utf-8');
+    }
+    if (isset($fields_map['REQUEST_METHOD'])) {
+        $method = isset($context['request_method']) ? (string)$context['request_method'] : '';
+        if ($method === '' && isset($_SERVER['REQUEST_METHOD'])) {
+            $method = (string)$_SERVER['REQUEST_METHOD'];
+        }
+        if ($method === '' && php_sapi_name() === 'cli') {
+            $method = 'CLI';
+        }
+        $rec['REQUEST_METHOD'] = mb_substr($method, 0, 10, 'utf-8');
+    }
+    if (isset($fields_map['RESULT'])) {
+        $result = isset($context['result']) ? (string)$context['result'] : 'ok';
+        $rec['RESULT'] = mb_substr($result, 0, 20, 'utf-8');
+    }
+    if (isset($fields_map['REQUEST_ID'])) {
+        $rec['REQUEST_ID'] = mb_substr(getActionLogRequestId($context), 0, 64, 'utf-8');
+    }
+    if (isset($fields_map['REFERER'])) {
+        $referer = isset($context['referer']) ? (string)$context['referer'] : '';
+        if ($referer === '' && isset($_SERVER['HTTP_REFERER'])) {
+            $referer = (string)$_SERVER['HTTP_REFERER'];
+        }
+        $rec['REFERER'] = mb_substr($referer, 0, 255, 'utf-8');
+    }
+    if (isset($fields_map['USER_AGENT'])) {
+        $user_agent = isset($context['user_agent']) ? (string)$context['user_agent'] : '';
+        if ($user_agent === '' && isset($_SERVER['HTTP_USER_AGENT'])) {
+            $user_agent = (string)$_SERVER['HTTP_USER_AGENT'];
+        }
+        $rec['USER_AGENT'] = mb_substr($user_agent, 0, 255, 'utf-8');
+    }
+    if (isset($fields_map['DETAILS_JSON'])) {
+        $context_data = $context;
+        unset($context_data['source'], $context_data['module'], $context_data['view_mode'], $context_data['object_type'], $context_data['object_id'], $context_data['object_title'], $context_data['url'], $context_data['request_method'], $context_data['result'], $context_data['request_id'], $context_data['referer'], $context_data['user_agent']);
+        $context_data = sanitizeActionLogData($context_data);
+        if (!empty($context_data)) {
+            $options = 0;
+            if (defined('JSON_UNESCAPED_UNICODE')) {
+                $options = $options | JSON_UNESCAPED_UNICODE;
+            }
+            if (defined('JSON_UNESCAPED_SLASHES')) {
+                $options = $options | JSON_UNESCAPED_SLASHES;
+            }
+            $encoded = json_encode($context_data, $options);
+            if (is_string($encoded) && $encoded !== '') {
+                $rec['DETAILS_JSON'] = mb_substr($encoded, 0, 65535, 'utf-8');
+            }
+        }
+    }
+
+    SQLInsert('actions_log', $rec);
 }
 
 /**

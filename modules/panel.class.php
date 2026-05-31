@@ -159,6 +159,8 @@ class panel extends module
                 $this->redirect("?");
             }
 
+            $this->registerPanelActivityLog();
+
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 clearCache(0);
             }
@@ -292,6 +294,65 @@ class panel extends module
         $p = new parser(DIR_TEMPLATES . $this->name . ".html", $this->data, $this);
         return $p->result;
 
+    }
+
+    function registerPanelActivityLog()
+    {
+        global $session;
+        global $ajax_panel;
+
+        if (!isModuleInstalled('actions_log')) {
+            return;
+        }
+
+        if (defined('NO_DATABASE_CONNECTION')) {
+            return;
+        }
+
+        if (isset($ajax_panel) && $ajax_panel) {
+            return;
+        }
+
+        $request_method = isset($_SERVER['REQUEST_METHOD']) ? strtoupper((string)$_SERVER['REQUEST_METHOD']) : 'GET';
+        $module_name = $this->action ? (string)$this->action : 'dashboard';
+        $view_mode = trim(gr('view_mode'));
+        $record_context = array(
+            'source' => 'admin',
+            'module' => $module_name,
+            'view_mode' => $view_mode,
+            'object_type' => 'module',
+            'object_id' => gr('id'),
+            'object_title' => $module_name,
+            'request_method' => $request_method,
+            'result' => 'ok',
+            'url' => isset($_SERVER['REQUEST_URI']) ? (string)$_SERVER['REQUEST_URI'] : ''
+        );
+
+        if ($request_method == 'GET') {
+            $route_key = $module_name . '|' . $view_mode . '|' . (string)gr('id') . '|' . $record_context['url'];
+            $last_route = isset($session->data['ACTIONS_LOG_LAST_ROUTE']) ? (string)$session->data['ACTIONS_LOG_LAST_ROUTE'] : '';
+            $last_route_ts = isset($session->data['ACTIONS_LOG_LAST_ROUTE_TS']) ? (int)$session->data['ACTIONS_LOG_LAST_ROUTE_TS'] : 0;
+            if ($route_key != $last_route || (time() - $last_route_ts) > 10) {
+                logAction('control_panel_navigation', $module_name, $record_context);
+                $session->data['ACTIONS_LOG_LAST_ROUTE'] = $route_key;
+                $session->data['ACTIONS_LOG_LAST_ROUTE_TS'] = time();
+            }
+        } elseif ($request_method == 'POST') {
+            $post_fields = array_keys($_POST);
+            $safe_fields = array();
+            $total = count($post_fields);
+            for ($i = 0; $i < $total; $i++) {
+                $field_name = (string)$post_fields[$i];
+                if (!preg_match('/pass|password|token|secret|auth|cookie|session|private|apikey|api_key|key/i', $field_name)) {
+                    $safe_fields[] = $field_name;
+                }
+            }
+            $record_context['payload'] = array(
+                'post_fields' => $safe_fields,
+                'post_fields_total' => $total
+            );
+            logAction('control_panel_submit', $module_name, $record_context);
+        }
     }
 
 // --------------------------------------------------------------------
