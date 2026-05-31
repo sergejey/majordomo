@@ -480,6 +480,13 @@ while (false !== ($result = $threads->iteration())) {
                 DebMes("Got control command '$control' for " . $title, 'boot');
                 if ($control == 'stop') {
                     $to_stop[$title] = time();
+                    // Explicit stop must cancel any delayed start/restart requests.
+                    unset($to_start[$title]);
+                    $key = array_search($title, $auto_restarts);
+                    if ($key !== false) {
+                        unset($auto_restarts[$key]);
+                        $auto_restarts = array_values($auto_restarts);
+                    }
                 } elseif ($control == 'restart' || $control == 'start') {
                     $to_stop[$title] = time();
                     $to_start[$title] = time() + 30;
@@ -572,6 +579,7 @@ while (false !== ($result = $threads->iteration())) {
                 $cycle_title = '';
                 $need_restart = 0;
                 $last_error = '';
+                $stop_requested = false;
                 if (preg_match('/(cycle_.+?)\.php/is', $closed_thread, $m)) {
                     $cycle_title = $m[1];
                     $last_error = checkCycleFromCache($cycle_title . 'LastError');
@@ -579,15 +587,18 @@ while (false !== ($result = $threads->iteration())) {
                         $last_error = '';
                     }
                     DebMes("Thread closed: " . $cycle_title, 'boot');
+                    $stop_requested = isset($to_stop[$cycle_title]);
                     unset($to_stop[$cycle_title]);
                     setGlobal($cycle_title . 'Run', '');
-                    $key = array_search($cycle_title, $auto_restarts);
-                    if ($key !== false) {
-                        unset($auto_restarts[$key]);
-                        $auto_restarts = array_values($auto_restarts);
-                        $need_restart = 1;
-                    } elseif (isset($to_start[$cycle_title])) {
-                        $need_restart = 1;
+                    if (!$stop_requested) {
+                        $key = array_search($cycle_title, $auto_restarts);
+                        if ($key !== false) {
+                            unset($auto_restarts[$key]);
+                            $auto_restarts = array_values($auto_restarts);
+                            $need_restart = 1;
+                        } elseif (isset($to_start[$cycle_title])) {
+                            $need_restart = 1;
+                        }
                     }
                 }
                 if ($need_restart && $cycle_title) {
@@ -599,7 +610,7 @@ while (false !== ($result = $threads->iteration())) {
                                 $closed_thread,
                                 $exit_code,
                                 $term_sig,
-                                isset($to_stop[$cycle_title]),
+                                $stop_requested,
                                 isset($to_start[$cycle_title]),
                                 $last_error
                             );
