@@ -3,13 +3,13 @@
 * ro language file
 *
 * @package MajorDoMo
-* @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+* @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
 * @version 1.0
 */
 
 $dictionary=array(
 'SETTINGS_SITE_LANGUAGE_CODE' => 'ro-RO',
-'WIKI_URL'=>'http://smartliving.ru/',
+'WIKI_URL'=>'https://majordomohome.com/',
 'DEFAULT_COMPUTER_NAME'=>'Alisa',
 'WELCOME_GREETING'=>'Bine ați venit!',
 'WELCOME_TEXT'=>'Vă mulțumim, că folositi  MajorDoMo, o platformă deschisă pentru automatizarea casei. <br/> <br/> Aflați mai multe și intrați în comunitatea noastră: <a href="<#LANG_WIKI_URL#> "target = _blank> Site-ul web </a> | <a href="<#LANG_WIKI_URL#> forum / "target = _blank> Forum </a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank> pagina Facebook </a> <br/> & nbsp; <br/> & nbsp; <br/> <small> PS Puteți schimba sau șterge această pagină prin <a href="/admin.php?pd=&md=panel&inst=&action=layouts"> Panou de control </a> </ small>',

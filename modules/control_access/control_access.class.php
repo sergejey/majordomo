@@ -67,7 +67,7 @@ function getParams() {
    UnSet($session->data['SITE_USERNAME']);
    UnSet($session->data['SITE_USER_ID']);
    Unset($session->data["cp_requested_url"]);
-   $this->redirect("/");
+   $this->redirect(ROOTHTML);
   }
 
   if ($this->action=="enter") {

@@ -52,7 +52,8 @@ if (!is_float($maxValue) && !is_float($minValue) && !$is_normal) {
   clearTimeOut($alert_timer_title);
   if ($this->getProperty('notify')) {
     //back to normal notify
-    say(LANG_DEVICES_NOTIFY_BACKTONORMAL . ' (' . $description . ' ' . $value . ')', 2);
+    //say(LANG_DEVICES_NOTIFY_BACKTONORMAL . ' (' . $description . ' ' . $value . ')', 2);
+    say($value.' '.$description.' - '.LANG_DEVICES_NOTIFY_BACKTONORMAL, 2);
   }
 }
 
@@ -68,7 +69,7 @@ if ($linked_room && $this->getProperty('mainSensor')) {
 }
 
 $this->callMethodSafe('keepAlive');
-$this->callMethod('statusUpdated');
+$this->callMethod('statusUpdated', $params);
 /*
 include_once(dirname(__FILE__).'/devices.class.php');
 $dv=new devices();

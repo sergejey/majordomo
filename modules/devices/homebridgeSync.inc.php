@@ -22,9 +22,9 @@ for ($i = 0; $i < $total; $i++) {
     $payload['name'] = $devices[$i]['LINKED_OBJECT'];
 
 
-    if ($devices[$i]['SYSTEM_DEVICE']) {
+    if ($devices[$i]['SYSTEM_DEVICE'] || $devices[$i]['ARCHIVED']) {
         if ($debug_sync) {
-            DebMes("HomeBridge.to_remove: ".json_encode($payload),'homebridge');
+            DebMes("HomeBridge.to_remove: " . json_encode($payload), 'homebridge');
         }
         sg('HomeBridge.to_remove', json_encode($payload));
         continue;
@@ -82,16 +82,18 @@ for ($i = 0; $i < $total; $i++) {
                     $payload['characteristic'] = 'TargetDoorState';
                     $payload['value'] = "1";
                     sg('HomeBridge.to_set', json_encode($payload));
-                } elseif ($open_type == 'door' || $open_type == 'window' || $open_type == 'curtains'  || $open_type == 'shutters') {
+                } elseif ($open_type == 'door' || $open_type == 'window' || $open_type == 'curtains' || $open_type == 'shutters') {
                     $payload['characteristic'] = 'CurrentPosition';
                     if (gg($devices[$i]['LINKED_OBJECT'] . '.status')) {
-                        $payload['value'] = "100";
+                        $payload['value'] = "0"; // открыто на 0% (закрыто)
                     } else {
-                        $payload['value'] = "0";
+                        $payload['value'] = "100"; // открыто на 100% (открыто)
                     }
                     sg('HomeBridge.to_set', json_encode($payload));
                     $payload['characteristic'] = 'TargetPosition';
-                    $payload['value'] = "100";
+                    sg('HomeBridge.to_set', json_encode($payload));
+                    $payload['characteristic'] = 'PositionState';
+                    $payload['value'] = "2"; //0 - "Закрывается" 1 - "Открывается" 2 - нет отображения
                     sg('HomeBridge.to_set', json_encode($payload));
                 }
             }
@@ -113,27 +115,38 @@ for ($i = 0; $i < $total; $i++) {
             $payload['value'] = gg($devices[$i]['LINKED_OBJECT'] . '.value');
             sg('HomeBridge.to_set', json_encode($payload));
             break;
-        case 'sensor_temphum':
-            // Temp
-            $payload['service'] = 'TemperatureSensor';
-            $payload['CurrentTemperature']['minValue'] = -40;
+        case 'sensor_co2':
+            $payload['service'] = 'CarbonDioxideSensor';
             sg('HomeBridge.to_add', json_encode($payload));
 
-            $payload['characteristic'] = 'CurrentTemperature';
+            $payload['characteristic'] = 'CarbonDioxideLevel';
             $payload['value'] = gg($devices[$i]['LINKED_OBJECT'] . '.value');
             sg('HomeBridge.to_set', json_encode($payload));
 
-            // Hum
-            $payload['name'] .= '_Hum';
-            $payload['service_name'] .= '_Hum';
-            $payload['service'] = 'HumiditySensor';
-            unset($payload['CurrentTemperature']['minValue']);
-            sg('HomeBridge.to_add', json_encode($payload));
-
-            $payload['characteristic'] = 'CurrentRelativeHumidity';
-            $payload['value'] = gg($devices[$i]['LINKED_OBJECT'] . '.valueHumidity');
+            $payload['characteristic'] = 'CarbonDioxideDetected';
+            $payload['value'] = "0";
             sg('HomeBridge.to_set', json_encode($payload));
 
+            break;
+
+        case 'sensor_moisture':
+            //todo
+            break;
+
+        case 'sensor_radiation':
+            //todo
+            break;
+
+        case 'vacuum':
+            //todo
+            break;
+
+        case 'media':
+            //todo
+            break;
+
+        case 'tv':
+            //todo
             break;
 
         case 'motion':
@@ -362,6 +375,11 @@ for ($i = 0; $i < $total; $i++) {
            sg('HomeBridge.to_set',json_encode($payload));
            break;
         */
+        default:
+            $addon_path = dirname(__FILE__) . '/addons/' . $devices[$i]['TYPE'] . '_homebridgeSync.php';
+            if (file_exists($addon_path)) {
+                require($addon_path);
+            }
     }
 }
 

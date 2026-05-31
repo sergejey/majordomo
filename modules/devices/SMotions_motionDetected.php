@@ -3,26 +3,33 @@
 $ot = $this->object_title;
 
 $this->callMethodSafe('keepAlive');
+$isPresence = $this->getProperty('isPresenceSensor');
 
 if (!isset($params['statusUpdated'])) {
     setTimeout($ot . '_motion_timer_status', '', 3);
 }
 
-if (isset($params['VALUE']) && !$params['VALUE'] && !isset($params['statusUpdated'])) {
-    $this->setProperty('status', 0);
-    return;
+if (!$isPresence) {
+    if (isset($params['VALUE']) && !$params['VALUE'] && !isset($params['statusUpdated'])) {
+        $this->setProperty('status', 0);
+        return;
+    }
+    $motion_timeout = $this->getProperty('timeout'); // seconds timeout
+    if ($motion_timeout == "") {
+        $motion_timeout = 20; // timeout by default
+    }
+    if ($motion_timeout) {
+        setTimeout($ot . '_motion_timer', 'setGlobal("' . $ot . '.status", 0);', $motion_timeout);
+    }
+} else {
+    setTimeOut($ot . '_presence_motion_detected', "callMethod('" . $ot . ".motionDetected');", 60);
 }
 
-$motion_timeout = $this->getProperty('timeout'); // seconds timeout
-if (!$motion_timeout) {
-    $motion_timeout = 20; // timeout by default
-}
 $nobodysHome = getGlobal('NobodyHomeMode.active');
 
 if (!isset($params['statusUpdated'])) {
     $this->setProperty('status', 1);
 }
-setTimeout($ot . '_motion_timer', 'setGlobal("' . $ot . '.status", 0);', $motion_timeout);
 
 if ($nobodysHome && $this->getProperty('ignoreNobodysHome')) {
     return;
@@ -34,14 +41,14 @@ if (defined('SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT')) {
     $nobodyhome_timeout = SETTINGS_BEHAVIOR_NOBODYHOME_TIMEOUT * 60;
 }
 
-$resetNobodysHome=$this->getProperty('resetNobodysHome');
+$resetNobodysHome = $this->getProperty('resetNobodysHome');
 if ($nobodyhome_timeout && !$resetNobodysHome) {
     setTimeOut('nobodyHome', "callMethodSafe('NobodyHomeMode.activate');", $nobodyhome_timeout);
 } elseif ($resetNobodysHome) {
     clearTimeout('nobodyHome');
 }
 
-$is_blocked=(int)$this->getProperty('blocked');
+$is_blocked = (int)$this->getProperty('blocked');
 if ($is_blocked) {
     return;
 }

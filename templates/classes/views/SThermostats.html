@@ -11,6 +11,10 @@
                                                         callMethod("%.object_title%.tempUp");
                                                         $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
                                                         return false;'>+</a>
+    <div class="device-details">%.object_description%
+           <span style="display:%.batteryOperated|"none;inline"%;
+                        %.batteryWarning|"0=color:green;1=color:red;2=color:lightsalmon"%;"><i class="glyphicon glyphicon-flash"></i>%.batteryLevel%%</span>
+    </div>
 </div>
 <div class="device-details"><#LANG_DEVICES_THERMOSTAT_CURRENT_TEMP#>: %.value% [<a href="#"  onclick="var url=('<#ROOTHTML#>pChart/?p[]=%.object_title%'+'.value&p[]=%.object_title%'+'.relay_status&op=log&subop=24h&minimal=1');parent.$.fancybox.open({ src: url, type: 'iframe',iframe:{preload:false} });return false;"><#LANG_HISTORY#></a>]</div>
 <div class="device-details"><#LANG_DEVICES_THERMOSTAT_MODE#>:

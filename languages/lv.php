@@ -3,13 +3,13 @@
 * lv language file
 *
 * @package MajorDoMo
-* @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+* @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
 * @version 1.0
 */
 
 $dictionary=array(
 'SETTINGS_SITE_LANGUAGE_CODE' => 'lv-LV',
-'WIKI_URL'=>'http://smartliving.ru/',
+'WIKI_URL'=>'https://majordomohome.com/',
 'DEFAULT_COMPUTER_NAME'=>'Alise',
 'WELCOME_GREETING'=>'Labdien',
 'WELCOME_TEXT'=>'Paldies ka lietojat MajorDoMo -- Atvērtā koda mājas automatizāciju. <br/><br/>Uziniet vairāk pievienojaties kopienai: <a href="<#LANG_WIKI_URL#>" target=_blank>Tīmekļa vietne</a> | <a href="<#LANG_WIKI_URL#>forum/" target=_blank>Forums</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook Lapa</a> <br/>&nbsp;<br/>&nbsp;<br/><small>P.S. Jūs varat šo lapu izmainīt ieejot <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Vadības panelis</a></small>',

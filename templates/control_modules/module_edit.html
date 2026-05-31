@@ -1,0 +1,72 @@
+<script>
+    $(window).load(function() {
+        //Вставляем данные в бредкрумбс
+        $('.breadcrumb:eq(0)').append('<li style="color: gray;">[#TITLE#] ([#NAME#])</li>');
+    });
+</script>
+<div class="row" style="margin-right: -15px;margin-left: -15px;">
+    <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+        <div class="panel panel-default" style="margin-bottom: 0px;">
+            <div class="panel-body">
+                <span class="label label-primary" style="position: absolute;right: 25px;top: 10px;">[#CATEGORY#]</span>
+                <center><img class="media-object" onError="this.src='<#ROOTHTML#>img/logo.png'" style="width: 100px;height: 100px;margin: 50px 0;" src="<#ROOTHTML#>img/modules/[#NAME#].png"></center>
+            </div>
+        </div>
+        <center>
+            <div class="btn-group" style="margin-top: 15px;margin-bottom: 15px;">
+                <a class="btn btn-warning" href="?mode=<#MODE#>&mode2=install&name=[#NAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-refresh"></i> Re-install</a>
+                <a class="btn btn-danger" href="?mode=<#MODE#>&mode2=uninstall&name=[#NAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-trash"></i> Un-install</a>
+                <a class="btn btn-default" href="?mode=<#MODE#>&mode2=download&name=[#NAME#]"><i class="glyphicon glyphicon-download"></i> Pack</a>
+            </div>
+        </center>
+    </div>
+    <div class="col-lg-9 col-md-8 col-sm-12 col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>[#TITLE#] ([#NAME#])</b></div>
+            <div class="panel-body">
+                <p>[#MARKET_DESCRIPTION_RU#]</p>
+                [#if MARKET_ID == ''#]
+                <p>No information from Connect on this module.</p>
+                [#endif#]
+
+            </div>
+            [#if MARKET_ID != ''#]
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <span class="badge">[#MARKET_AUTHOR#]</span>
+                    Author
+                </li>
+                <li class="list-group-item">
+                    <span class="badge">[#MARKET_LATEST_VERSION#]</span>
+                    Latest version
+                </li>
+                <li class="list-group-item">
+                    <span class="badge" style="background: transparent;padding: 0;"><a href="[#MARKET_LATEST_VERSION_URL#]" class="btn btn-info btn-xs" target="_blank">Open</a></span>
+                    Latest version link
+                </li>
+                <li class="list-group-item">
+                    <span class="badge" style="background: transparent;padding: 0;"><a href="[#MARKET_SUPPORT_URL#]" class="btn btn-info btn-xs" target="_blank">Open</a></span>
+                    Support
+                </li>
+                <li class="list-group-item">
+                    <span class="badge">[#if MARKET_PRICE==""#]free[#else#][#MARKET_PRICE#][#endif#]</span>
+                    Price
+                </li>
+            </ul>
+            [#endif#]
+        </div>
+        [#if MODULE_CONFIG#]
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>Module config</b></div>
+            <ul class="list-group">
+                [#begin MODULE_CONFIG#]
+                <li class="list-group-item">
+                    <span class="badge label-danger" style="border-radius: 3px;padding: 5px 15px;margin: 0;">[#VALUE#]</span>
+                    [#KEY#]
+                </li>
+                [#end MODULE_CONFIG#]
+            </ul>
+        </div>
+        [#endif#]
+    </div>
+</div>

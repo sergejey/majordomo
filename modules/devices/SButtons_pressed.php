@@ -1,6 +1,9 @@
 <?php
 
 $ot = $this->object_title;
+
+$this->callMethodSafe('keepAlive');
+
 if (!isset($params['statusUpdated'])) {
   setTimeout($ot . '_pressed_status', '', 3);
   $this->setProperty('status', 1);

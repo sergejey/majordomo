@@ -26,9 +26,8 @@
 							<div class="btn-group">
 								<a class="btn btn-default btn-xs" href="?view_mode=priority_up&id=[#ID#]"><i class="glyphicon glyphicon-arrow-up"></i></a>
 								<a class="btn btn-default btn-xs" href="?view_mode=priority_down&id=[#ID#]"><i class="glyphicon glyphicon-arrow-down"></i></a>
-
-								<a class="btn btn-warning btn-xs" href="javascript://" data-toggle="modal" data-target="#modalEditLocation[#ID#]"><i class="glyphicon glyphicon-pencil"></i> Изменить</a>
-								<a class="btn btn-danger btn-xs" href="?view_mode=delete_locations&id=[#ID#]" onClick="return confirm('Delete record?')"><i class="glyphicon glyphicon-remove"></i> Удалить</a>
+								<a class="btn btn-default btn-xs" href="?view_mode=edit_locations&id=[#ID#]"><i class="glyphicon glyphicon-pencil"></i> <#LANG_EDIT#></a>
+								<a class="btn btn-danger btn-xs" href="?view_mode=delete_locations&id=[#ID#]" onClick="return confirm('Delete record?')"><i class="glyphicon glyphicon-remove"></i> <#LANG_DELETE#></a>
 							</div>
 						[#endif ACTION#]
 					</span>

@@ -1,18 +1,13 @@
 <!--#
  @version 0.2 (auto-set)
 #-->
-[#if FILTER_SET=""#]
-
-
+[#if FILTER_SET="" && HIDE_FILTERS!="1"#]
 <ul class="nav nav-tabs">
 [#begin SECTIONS#]
 [#if FILTER!=""#][#endif#]
 <li [#if SELECTED="1"#]class="active"[#endif#]><a href="?filter_name=[#FILTER#]">[#TITLE#]</a></li>
 [#end SECTIONS#]
 </ul>
-
-
-
 <br/>&nbsp;
 [#endif FILTER_SET#]
 
@@ -144,7 +139,9 @@ $(function() {
 
 <div class="form-actions">
         <button class="btn btn-default btn-primary" type="submit" name="submit"><i class="icon-ok"></i> <#LANG_SUBMIT#></button>
-        <a class="btn btn-default" href="?mode=reset" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_RESET_TO_DEFAULT#></a>
+        [#if ACTION!=""#]
+        <a class="btn btn-default" href="?mode=reset&filter_name=<#FILTER_NAME#>" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_RESET_TO_DEFAULT#></a>
+        [#endif ACTION#]
         <input type="hidden" name="mode" value="update">
         <input type="hidden" name="filter_name" value="<#FILTER_NAME#>">
 </div>

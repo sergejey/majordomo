@@ -1,5 +1,5 @@
 <?php
-mysqli_report(MYSQLI_REPORT_OFF);
+
 /**
  * MySQL database class
  *
@@ -106,41 +106,21 @@ class mysql
      * @access public
      */
     public function Exec($query, $ignore_errors = false)
-	{
-		mysqli_report(MYSQLI_REPORT_OFF);
+    {
+        if (!$this->dbh && !$this->Connect()) return false;
+        if ((time() - $this->latestTransaction) > $this->pingTimeout) {
+            $this->Ping();
+        }
+        $this->latestTransaction = time();
+        $result = mysqli_query($this->dbh, $query);
 
-		if (!$this->dbh && !$this->Connect()) return false;
+        if (!$result && !$ignore_errors) {
+            $this->Error($query, 0);
+            return 0;
+        }
 
-		if ((time() - $this->latestTransaction) > $this->pingTimeout) {
-			$this->Ping();
-		}
-
-		$this->latestTransaction = time();
-
-		$result = @mysqli_query($this->dbh, $query);
-
-		if (!$result) {
-			$err_no = mysqli_errno($this->dbh);
-
-			if ($err_no == 2006 || $err_no == 2013) {
-				$this->Disconnect();
-				$this->dbh = null;
-				$this->connected = false;
-
-				if ($this->Connect()) {
-					$this->latestTransaction = time();
-					$result = @mysqli_query($this->dbh, $query);
-				}
-			}
-		}
-
-		if (!$result && !$ignore_errors) {
-			$this->Error($query, 0);
-			return 0;
-		}
-
-		return $result;
-	}
+        return $result;
+    }
 
     /**
      * Execute SQL SELECT query and return all records

@@ -4,12 +4,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 
 <link rel="shortcut icon" href="<#ROOTHTML#>favicon.ico" type="image/x-icon"/>
-<link href="<#ROOTHTML#>css/devices.css?v=19-10-30-1"  rel="stylesheet" type="text/css"/>
+<link href="<#ROOTHTML#>css/devices.css?v=22-01-03"  rel="stylesheet" type="text/css"/>
 
 <script type="text/javascript"  src="<#ROOTHTML#>3rdparty/jquery/jquery-3.3.1.min.js"></script>
 <script type="text/javascript"  src="<#ROOTHTML#>3rdparty/jquery/jquery-migrate-3.0.0.min.js"></script>
 
-[#if '<#SETTINGS_THEME#>' != 'dark'#]
+[#if "<#SETTINGS_THEME#>"!="dark" || PANEL_THEME=="light"#]
 <link rel="stylesheet" id="theme" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap.min.css" type="text/css">
 [#else#]
 <link rel="stylesheet" id="theme" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap_dark_admin.css" type="text/css">
@@ -20,11 +20,16 @@
 <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>3rdparty/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css"/>
 <script type="text/javascript" src="<#ROOTHTML#>3rdparty/moment/moment.min.js"></script>
 <script type="text/javascript" src="<#ROOTHTML#>3rdparty/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="<#ROOTHTML#>3rdparty/duration-picker/html-duration-picker.min.js"></script>
+
 
 <script type="text/javascript" src="<#ROOTHTML#>js/jquery.cookie.js"></script>
 
 <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>3rdparty/fancybox/jquery.fancybox.min.css?v=3.3.5" media="screen" />
 <script type="text/javascript" src="<#ROOTHTML#>3rdparty/fancybox/jquery.fancybox.min.js?v=3.3.5"></script>
+
+<link rel="stylesheet" type="text/css" href="<#ROOTHTML#>3rdparty/jquery.toast/jquery.toast.min.css"/>
+<script type="text/javascript" src="<#ROOTHTML#>3rdparty/jquery.toast/jquery.toast.min.js"></script>
 
 <script type="text/javascript" src="<#ROOTHTML#>3rdparty/long-press-event/long-press-event.js"></script>
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/scripts.js?v=2019-07-09" ></script>
@@ -32,6 +37,7 @@
 <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>css/umbra-css2/style.css" title="theme"/>
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jWindow.js"></script>
 
+
 <script language="javascript">
-      var ROOTHTML = "<#ROOTHTML#>";
+      const ROOTHTML = "<#ROOTHTML#>";
 </script>

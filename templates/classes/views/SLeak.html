@@ -22,6 +22,10 @@ $(function() {
 <div class="device-widget %.alive|"offline;online"%">
 	<div class="device-icon leak %.status|"off;on"%"></div>
 	<div class="device-header">%.object_description%</div>
-	<!---<div class="device-details">%.updatedText%</div>--->
-	<div class="updatedText-JS-%.object_id%" style="font-size: 11px;">...</div>
+
+<div class="device-details">
+	<span class="updatedText-JS-%.object_id%" style="font-size: 11px;">...</span>
+<span style="display:%.batteryOperated|"none;inline"%;
+%.batteryWarning|"0=color:green;1=color:red;2=color:lightsalmon"%;"><i class="glyphicon glyphicon-flash"></i>%.batteryLevel%%</span>
+</div>
 </div>

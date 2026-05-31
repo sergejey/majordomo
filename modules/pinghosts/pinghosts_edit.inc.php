@@ -138,7 +138,7 @@ if(defined('SETTINGS_CODEEDITOR_TURNONSETTINGS')) {
    }
   }
   //options for 'HOST TYPE' (select)
-  $tmp=explode('|', DEF_TYPE_OPTIONS);
+  $tmp=explode('|', PING_TYPE_OPTIONS);
   foreach($tmp as $v) {
    if (preg_match('/(.+)=(.+)/', $v, $matches)) {
     $value=$matches[1];

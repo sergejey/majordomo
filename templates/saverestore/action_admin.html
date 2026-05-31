@@ -49,11 +49,13 @@
 						<div class="modal-body">
 							<div class="alert" style="background: radial-gradient(circle farthest-corner at 450px 10px, #e5c15b, #e94949);color: white;text-align: center;border: 0px;"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i><#LANG_LONG_OPERATION_WARNING#></div>
 							[#if MODE="getlatest_iframe"#]
-								<iframe id="processUpdateFrame" style="border-radius: 5px;height: 400px;" src="<#ROOTHTML#>modules/saverestore/update_iframe.php?with_extensions=[#WITH_EXTENSIONS#]&with_backup=[#WITH_BACKUP#]&backup=<#BACKUP#>&design=<#DESIGN#>&code=<#CODE#>&data=<#DATA#>&save_files=<#SAVE_FILES#>" width="100%" frameborder="0"></iframe>
+								<iframe id="processUpdateFrame" style="border-radius: 5px;height: 400px;" src="<#ROOTHTML#>modules/saverestore/update_iframe.php?with_extensions=[#WITH_EXTENSIONS#]&with_backup=[#WITH_BACKUP#]&backup=<#BACKUP#>&design=<#DESIGN#>&code=<#CODE#>&data=<#DATA#>&save_files=<#SAVE_FILES#>&link=<#LINK_URL#>" width="100%" frameborder="0"></iframe>
 							[#else#]
 								<p id="updateParams">
 									<input type="checkbox" name="with_extensions" value="1"> <#LANG_UPDATE_ALL_EXTENSIONS#><br/>
 									<input type="checkbox" name="with_backup" value="1" checked> <#LANG_CREATE_BACKUP#>
+									<input type="hidden" name="link" id="update_link" value="">
+									<div id="update_link_text" style="display:none"></div>
 								</p>
 							[#endif#]
 						</div>
@@ -78,10 +80,15 @@
 				<ul class="list-group">
 					[#begin UPDATES#]
 					<li class="list-group-item [#if MYVERSION == 1#]panel-success[#endif#]" [#if MYVERSION == 1#]style="background: #d6e9c6;"[#endif#]>
-						<span class="badge">[#UPDATE_TEXT#]</span>
+						<span class="badge">
+							[#UPDATE_TEXT#]
+						</span>
 						<div>
-							[#if MYVERSION == 1#]<span class="label label-success" id="mysystemversion">Моя версия</span> [#endif#]<a href="[#LINK#]" target="_blank">[#TITLE#]</a>
-							<div>↳ <span class="label label-default">[#DESC_UPDATE#]</span></div>
+							[#if MYVERSION == 1#]<span class="label label-success" id="mysystemversion"><#LANG_MARKET_CATEGORY_INSTALLED#></span> [#endif#]
+							<a href="[#LINK#]" target="_blank">[#TITLE#]</a>
+							<div>↳ <span class="label label-default">[#DESC_UPDATE#]</span>
+								[#if MYVERSION!="1"#]<a class="btn btn-default btn-xs" data-toggle="modal" onclick="$('#update_link').val('[#LINK#]');$('#update_link_text').show();$('#update_link_text').html('Version: [#LINK#]');$('#myModal').modal('show');" data-target="#myModal" role="button"><#LANG_RESTORE#></a>[#endif#]
+							</div>
 							
 						</div>
 					</li>
@@ -90,7 +97,7 @@
 				<script>
 				$(document).ready(function() {
 					if($('#mysystemversion').length == 0) {
-						$('#changelogUpdate').prepend('<div class="alert alert-danger"><b>Ваша система <u>сильно устарела</u>!</b> Текущая версия: <a href="https://github.com/sergejey/majordomo/commit/[#LATEST_UPDATED_ID#]" target="_blank">[#LATEST_CURR_BRANCH#]_[#LATEST_UPDATED_ID_SLICE#]</a>. Последнее обновление: [#LATEST_UPDATED_TIME#]</div>');
+						$('#changelogUpdate').prepend('<div class="alert alert-danger"><b><#LANG_VERSION_TOO_OLD#></b> ([#LATEST_UPDATED_TIME#]);<br/><#LANG_LATEST_UPDATES#>: <a href="https://github.com/sergejey/majordomo/commit/[#LATEST_UPDATED_ID#]" target="_blank">[#LATEST_CURR_BRANCH#]_[#LATEST_UPDATED_ID_SLICE#]</a>.</div>');
 					}
 				});
 				</script>
@@ -314,8 +321,8 @@
 						 
 						.input__file-button {
 						  width: 100%;
-						  max-width: 290px;
-						  height: 60px;
+						  max-width: 390px;
+						  height: 40px;
 						  background: #4792d1;
 						  color: #fff;
 						  font-size: 2rem;
@@ -339,7 +346,7 @@
 						   <input name="file" type="file" name="file" id="input__file" class="input input__file" multiple>
 						   <label for="input__file" class="input__file-button">
 							  <span class="input__file-icon-wrapper"><i style="font-size: 22pt;" class="glyphicon glyphicon-download-alt"></i></span>
-							  <span class="input__file-button-text"><#LANG_NEWSAVERESTORE_CHOUSE_FILE#></span>
+							  <span class="input__file-button-text"><#LANG_NEWSAVERESTORE_CHOUSE_FILE#> ([#MAX_SIZE#] max)</span>
 						   </label>
 						</div>
 						
@@ -396,10 +403,10 @@
 	</div>
 </div>
 
-	[#else CLEAR_FIRSTS#]
+	[#else CLEAR_FIRST#]
     <br>&nbsp;
     <form action="?" method="post" enctype="multipart/form-data">
         <input type="submit" name="submit" value="<#LANG_CLEAR_TEMPORARY_FOLDER#>" class="btn btn-default">
         <input type="hidden" name="mode" value="clear">
     </form>
-    [#endif CLEAR_FIRSTS#]
+    [#endif CLEAR_FIRST#]

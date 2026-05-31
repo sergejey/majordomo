@@ -6,22 +6,21 @@ import sys
 import datetime
 import time
 from typing import List, Any
-import mjdm as mj
 
 def registerEvent(eventName, details, expire_in):
     '''
     Принимает значения в следующем виде
-    mjdm.registerEvent("adminEvent4", "LOL" ,20)
+    registerEvent("adminEvent4", "LOL" ,20)
     либо с установкой значения объекту
-    mjdm.registerEvent("adminEvent4", {"rec":"","obj":"Zokalo2","prop":"TEST","value":"22"}, 20)
+    registerEvent("adminEvent4", {"rec":"","obj":"Zokalo2","prop":"TEST","value":"22"}, 20)
     либо с запуском метода объекта с параметрами
-    mjdm.registerEvent("adminEvent4", {"rec":"","obj":"Zokalo2","meth":"checkBt","param":"{"status":"0", 'brightness':"5",'color':'#fffff2' "}, 20)
+    registerEvent("adminEvent4", {"rec":"","obj":"Zokalo2","meth":"checkBt","param":"{"status":"0", 'brightness':"5",'color':'#fffff2' "}, 20)
     либо с запуском метода объекта без паметров
-    mjdm.registerEvent("adminEvent4", {"rec":"","obj":"Zokalo2","meth":"checkBt","param":"{}"}, 20)
+    registerEvent("adminEvent4", {"rec":"","obj":"Zokalo2","meth":"checkBt","param":"{}"}, 20)
     либо с установкой значения объекту и запуском метода для объекта
-    mjdm.registerEvent("adminEvent4", {"rec":"","obj":"Zokalo2","prop":"TEST","value":"","meth":"checkBt","param":"{}"}, 20)
+    registerEvent("adminEvent4", {"rec":"","obj":"Zokalo2","prop":"TEST","value":"","meth":"checkBt","param":"{}"}, 20)
 
-    mjdm.registerEvent("Имя Эвента строка STR ", Детали (строка, целое значение, словарь) , время жизни в днях целое значение INT)
+    registerEvent("Имя Эвента строка STR ", Детали (строка, целое значение, словарь) , время жизни в днях целое значение INT)
     Запуск методов и установки значений свойств пока не работает так как надо код дорабатывается
 
     obj - имя объекта

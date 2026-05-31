@@ -9,6 +9,34 @@
   blockly.focus(); 
   return false;
  }
+
+ function [#CODE_FIELD#]_showCodeHistory() {
+	 $('#[#CODE_FIELD#]_history').toggle();
+	 return false;
+ }
+
+ function [#CODE_FIELD#]_showCode(history_id) {
+	 var history_code = $('#history_'+history_id).html();
+	 alert(history_code);
+	 return false;
+ }
+
+ function [#CODE_FIELD#]_useCode(history_id) {
+	 var history_code = $('#history_'+history_id).html();
+	 var history_code_xml = $('#history_'+history_id+'_xml').html();
+	 var code_type = $('.[#CODE_FIELD#]_code_type:checked').val();
+
+	 $('#[#CODE_FIELD#]').val(history_code);
+	 if (typeof editor !== 'undefined') {
+		 editor.setValue(history_code);
+	 }
+	 $('#xml_code').val(history_code_xml);
+	 if (code_type == 2) {
+		 loadDevices();
+	 }
+	 return false;
+ }
+
 </script>
 
 [#if ONLYCODE != 1#]
@@ -17,8 +45,28 @@
 	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="0"[#if CODE_TYPE="0"#] checked[#endif#]> <#LANG_CODE#> <#LANG_HCB#>codePhp<#LANG_HCE#>
 	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="1"[#if CODE_TYPE="1"#] checked[#endif#]> Blockly<#LANG_HCB#>codeBlockly<#LANG_HCE#>
 	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="2"[#if CODE_TYPE="2"#] checked[#endif#]> <#LANG_DEVICES#><#LANG_HCB#>codeDevices<#LANG_HCE#>
+	[#if HISTORY_AVAILABLE#]
+	(<a href="#" onclick="return [#CODE_FIELD#]_showCodeHistory();"><#LANG_HISTORY#></a>)
+	[#endif HISTORY_AVAILABLE#]
 </div>
 [#endif#]
+
+<div id="[#CODE_FIELD#]_history" style="display:none;max-height: 150px;overflow: auto;">
+	<table class="table">
+		[#begin CODE_HISTORY#]
+		<tr>
+			<td><#LANG_UPDATED#> [#ADDED#]
+				<span id="history_[#ID#]" style="display:none">[#CODE#]</span>
+				<span id="history_[#ID#]_xml" style="display:none">[#XML#]</span>
+			</td>
+			<td>
+				<a href="#" onclick="return <#CODE_FIELD#>_showCode([#ID#]);" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-eye-open"></i> <#LANG_SHOW#></a>
+				<a href="#" onclick="return <#CODE_FIELD#>_useCode([#ID#]);" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-download"></i> <#LANG_SELECT#></a>
+			</td>
+		</tr>
+		[#end CODE_HISTORY#]
+	</table>
+</div>
 
  <script language="javascript">
 
@@ -51,7 +99,6 @@
 
 <script language="javascript" type="text/javascript">
 $(function() {
-//    alert([#CODE_TYPE#]);
     [#if CODE_TYPE="1" || CODE_TYPE="2"#]
      $('#[#CODE_FIELD#]_area').hide();
     [#endif CODE_TYPE#]
@@ -65,6 +112,34 @@ $(function() {
 <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/fold/foldgutter.css">
 <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/hint/show-hint.css">
 [#if SETTINGS_CODEEDITOR_THEME != 'codemirror' && SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/lib/[#SETTINGS_CODEEDITOR_THEME#].css">[#endif#]
+
+<style>
+	.cm_panel {
+		background: #f7f7f7;
+		padding: 3px 7px;
+		font-size: 0.85em;
+	}
+	.cm_panel.top, .cm_panel.after-top {
+		border-bottom: 1px solid #ddd;
+	}
+	.cm_panel.bottom, .cm_panel.before-bottom {
+		border-top: 1px solid #ddd;
+	}
+
+	.cm_panel.top.cm_panel_fullscreen {
+		position: fixed;
+		z-index: 10;
+		top: 0; left: 50%;
+		width: 50%;
+	}
+
+	.remove-panel {
+		cursor: pointer;
+	}
+	.remove-panel {
+		float: right;
+	}
+</style>
 
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/edit/matchbrackets.js"></script>
 <script src="<#ROOTHTML#>3rdparty/codemirror/mode/htmlmixed/htmlmixed.js"></script>
@@ -85,10 +160,57 @@ $(function() {
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/search.js"></script>
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/dialog.js"></script>
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/searchcursor.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/display/panel.js"></script>
 
 <script language="javascript">
 var editor;
 var myTextArea[#CODE_FIELD#];
+
+var numPanels = 0;
+var panels = {};
+
+function makePanel(where) {
+	var node = document.createElement("div");
+	var id = ++numPanels;
+	var close, label;
+
+	node.id = "panel-" + id;
+	node.className = "cm_panel " + where;
+	close = node.appendChild(document.createElement("a"));
+	close.setAttribute("title", "Remove me!");
+	close.setAttribute("class", "remove-panel");
+	close.textContent = "✖";
+	CodeMirror.on(close, "mousedown", function(e) {
+		e.preventDefault()
+		panels[node.id].clear();
+	});
+	label = node.appendChild(document.createElement("span"));
+	label.innerHTML = "Tips: you can hit <a href='#' onClick='return switchFullscreen();'>F11</a> for a fullscreen mode; <a href='#' onclick='return CtrlSSave();'>Ctrl+S</a> to save code.";
+	return node;
+}
+function addPanel(where) {
+	var node = makePanel(where);
+	panels[node.id] = editor.addPanel(node, {position: where, stable: true});
+}
+
+
+function switchFullscreen() {
+	if (editor.getOption("fullScreen") != true) {
+		$('nav').hide();
+		setTimeout('$(\'nav\').hide();',1000);
+		$('.cm_panel').addClass('cm_panel_fullscreen');
+	} else {
+		$('nav').show();
+		$('.cm_panel').removeClass('cm_panel_fullscreen');
+	}
+	editor.setOption("fullScreen", !editor.getOption("fullScreen"));
+}
+
+function CtrlSSave() {
+	[#if SETTINGS_CODEEDITOR_AUTOSAVE != '0'#]ajaxAutosave('save');[#endif#]
+	$("[name='subm']").click();
+}
+
 $(document).ready(function(){
 	var myTextArea[#CODE_FIELD#] = document.getElementById('[#CODE_FIELD#]');
 	editor = CodeMirror.fromTextArea(myTextArea[#CODE_FIELD#], {
@@ -98,7 +220,7 @@ $(document).ready(function(){
 		indentUnit: 0,
 		tabSize: 4,
 		
-		[#if TYPE=="php"#]
+		[#if TYPE=="php" || TYPE=="html" || TYPE=="javascript"#]
 		enterMode: "indent",
 		undoDelay: 400,
 		lineWrapping: [#if SETTINGS_CODEEDITOR_WRAPLINES == 1#]true[#else#]false[#endif#],
@@ -120,19 +242,10 @@ $(document).ready(function(){
 		gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 		extraKeys: {
 			"F11": function(cm) {
-				if (cm.getOption("fullScreen") != true) {
-					$('nav').hide();
-				} else {
-					$('nav').show();
-				}
-				
-				cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-				
+				switchFullscreen();
 			},
-			"Ctrl-S": function(instance) { 
-				[#if SETTINGS_CODEEDITOR_AUTOSAVE != '0'#]ajaxAutosave('save');[#endif#]
-				//alert('[#CODE_FIELD#]');
-				$("[name='subm']").click();
+			"Ctrl-S": function(instance) {
+				CtrlSSave();
 				return;
 			},
 			"Ctrl-E": function(cm) { 
@@ -169,7 +282,11 @@ $(document).ready(function(){
 			"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }
 		}
 	});
-	
+
+
+
+	addPanel("top");
+
 	[#if TYPE=="php"#]
 		[#if SETTINGS_CODEEDITOR_TURNONSETTINGS == 1 && SETTINGS_CODEEDITOR_AUTOCOMPLETE == 1#]
 		if($('#mobileIndicator').is(':hidden')) {
@@ -524,15 +641,18 @@ function modalRestoreCode() {
 	
     <script type="text/javascript">
         var devices_data=[];
-        var savedJson=$('#xml_code').val();
-        if (savedJson!='') {
-            var tmp=JSON.parse(savedJson);
-            if (typeof tmp === 'object') {
-                devices_data=tmp;
-                renderCode();
-                renderView();
-            }
-        }
+
+		function loadDevices() {
+			var savedJson=$('#xml_code').val();
+			if (savedJson!='') {
+				var tmp=JSON.parse(savedJson);
+				if (typeof tmp === 'object') {
+					devices_data=tmp;
+					renderCode();
+					renderView();
+				}
+			}
+		}
 
         function renderCode() {
             var result_code='';
@@ -543,7 +663,6 @@ function modalRestoreCode() {
             }
             $('#[#CODE_FIELD#]').val(result_code);
             $('#xml_code').val(JSON.stringify(devices_data));
-            //alert(result_code);
         }
         function renderView() {
             $("#devices_table tr").remove();
@@ -617,5 +736,8 @@ function modalRestoreCode() {
             renderCode();
             renderView();
         }
+
+		loadDevices();
+
     </script>
 </div>

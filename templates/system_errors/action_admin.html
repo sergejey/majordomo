@@ -1,3 +1,24 @@
+<div id="settings_form" style="display:none">
+	<form action="?" method="post" class="form form-horizontal">
+		<div class="form-group">
+			<label for="clean_up" class="col-lg-5"><#LANG_KEEP_HISTORY_DAYS#>:</label>
+			<div class="col-lg-4">
+				<input id="clean_up" type="text" name="keep_history" value="<#SETTINGS_ERRORS_KEEP_HISTORY#>" placeholder="0" class="form-control">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-lg-5">&nbsp;</div>
+			<div class="col-lg-4">
+				<input type="submit" value="<#LANG_SUBMIT#>" class="btn btn-default btn-primary">
+				<a href="#" class="btn btn-default" onclick="$('#settings_form').toggle();return false;"><#LANG_CANCEL#></a>
+			</div>
+		</div>
+		<input type="hidden" name="mode" value="update_settings">
+	</form>
+</div>
+
+<div style="clear:both"></div>
+
 <div class="row" style="margin-right: -15px;margin-left: -15px;display: flex;flex-wrap: wrap;">
 	<div class="col-md-6" style="display: flex;flex-wrap: wrap;">
 		[#if ERRORS_FOUND!=0#]
@@ -23,12 +44,15 @@
 				<div class="btn-group">
 					<button type="button" onclick="location.href='/diagnostic.php'" class="btn btn-success"><#LANG_SUBMIT_DIAGNOSTIC#></button>
 					<button type="button" onclick="location.href='?action=system_errors&md=system_errors&view_mode=addtesterror'" class="btn btn-warning"><#LANG_NEWSYSTEM_ERROR_GET_ERROR#></button>
+					<a href="#" id="settings_button" class="btn btn-default" onclick="$('#settings_form').toggle();return false;"><#LANG_SECTION_SETTINGS#></a>
 				</div>
 			</div>
 		</div>
-		
+
 	</div>
+
 </div>
+
 
 [#if TAB="history"#]
 <script>

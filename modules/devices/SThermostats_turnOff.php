@@ -1,4 +1,8 @@
 <?php
 
 $this->setProperty('status', 0);
-$this->callMethod('enable');
+
+if ($this->getProperty('disabled')) {
+    $this->callMethod('enable');
+}
+

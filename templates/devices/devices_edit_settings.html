@@ -35,12 +35,20 @@
     });
    </script>
    [#endif#]
+   [#if CONFIG_TYPE="duration"#]
+   <input type="text" value="[#VALUE#]" id="[#NAME#]_value" name="[#NAME#]_value" class="form-control">
+   [#module name="duration_input" input_id="<#PROPERTIES.NAME#>_value"#]
+   [#endif#]
    [#if CONFIG_TYPE="num" || CONFIG_TYPE="text"#]
    <input type="text" value="[#VALUE#]" name="[#NAME#]_value" class="form-control">
    [#endif#]
    [#if CONFIG_TYPE="yesno"#]
    <input type="radio" value="1" name="[#NAME#]_value" [#if VALUE="1"#] checked[#endif#]> <#LANG_YES#>
    <input type="radio" value="0" name="[#NAME#]_value" [#if VALUE!="1"#] checked[#endif#]> <#LANG_NO#>
+   [#endif#]
+
+   [#if CONFIG_TYPE="devices"#]
+   [#inc devices_edit_settings_type_devices.html#]
    [#endif#]
 
    [#if CONFIG_TYPE="html"#]
@@ -85,15 +93,21 @@
     }
    </script>
    [#begin FOLDERS#]
-     <a href="#" onclick="$('.style_images').hide();$('#style_[#TITLE#]').show();return false;">[#TITLE#]</a>
+     <a href="#" onclick="$('.style_images').hide();$('#style_[#TITLE#]_<#PROPERTIES.NAME#>').show();return false;">[#TITLE#]</a>
    [#end FOLDERS#]
    [#begin FOLDERS#]
-   <div id="style_[#TITLE#]" class="style_images" style="display:none">
+   <div id="style_[#TITLE#]_<#PROPERTIES.NAME#>" class="style_images" style="display:none">
     [#begin STYLES#]
     <a href="#" onclick="return setStyleImage_<#PROPERTIES.NAME#>('<#ROOTHTML#>cms/scenes/styles/[#IMAGE#]');"><img src="<#ROOTHTML#>cms/scenes/styles/[#IMAGE#]"></a>
     [#end STYLES#]
    </div>
    [#end FOLDERS#]
+   [#endif#]
+
+   [#if _CONFIG_RESTRICTIONS="1"#]
+   <a onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);"
+      class="btn btn-default btn-sm [#if _CONFIG_RESTRICTIONS_SET="1"#] btn-success[#endif#]"
+      href="?(panel:{action=security_rules})&object_type=prop_[#NAME#]&object_id=<#ID#>&print=1&types[]=hours&types[]=conditions" target=_blank><i class="glyphicon glyphicon-cog"></i></a>
    [#endif#]
 
   </div>
@@ -114,11 +128,30 @@
  </div>
  [#endif GROUPS#]
 
+ [#if OTHER_DEVICES_TYPE#]
+ <div class="form-group">
+  <div class="col-md-5 text-right">
+   &nbsp;
+  </div>
+  <div class="col-md-7">
+   <input type="checkbox" name="copy_settings" id="copy_settings" value="1"
+          onclick="if ($('#copy_settings').is(':checked')) $('#apply_others_div').show(); else  $('#apply_others_div').hide();"> <#LANG_DEVICES_COPY_SETTINGS#>
+   <div id="apply_others_div" style="display: none">
+   [#begin OTHER_DEVICES_TYPE#]
+   [#if ID!="<#ID#>"#]
+   <input type="checkbox" name="apply_others[]" value="[#LINKED_OBJECT#]"> [#TITLE#]<br/>
+   [#endif ID#]
+   [#end OTHER_DEVICES_TYPE#]
+   </div>
+  </div>
+ </div>
+ [#endif#]
+
 <div class="form-group">
- <label class="col-md-8 control-label">
-  &nbsp;
- </label>
-        <div class="col-md-4">
+ <div class="col-md-5">
+  &nbsp;&nbsp;
+ </div>
+        <div class="col-md-7">
  [#if ID!=""#]
  <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_SUBMIT#></button>
  [#else ID#]

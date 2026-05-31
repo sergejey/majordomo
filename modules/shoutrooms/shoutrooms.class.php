@@ -5,7 +5,7 @@
 * Shoutrooms
 *
 * @package MajorDoMo
-* @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+* @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
 * @version 0.2 (wizard, 17:03:02 [Mar 29, 2007])
 */
 //

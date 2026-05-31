@@ -1,0 +1,12 @@
+<div style="width:100%;height:100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;"><img id="img%element_id%" src="%image_url%" style="width:100%;height:100%"></div>
+[#if "%refresh_interval%"!="0"#]
+<script type="text/javascript">
+    setInterval(function() {
+        var myImageElement = document.getElementById('img%element_id%');
+        myImageElement.src = '%image_url%?rand=' + Math.random();
+    },1000*parseInt("%refresh_interval%"));
+</script>
+[#endif#]

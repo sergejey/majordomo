@@ -3,7 +3,7 @@
 * Project Config
 *
 * @package MajorDoMo
-* @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+* @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
 * @version 1.1
 */
 
@@ -88,7 +88,7 @@ Define('GETURL_WARNING_TIMEOUT',5);                   // TIMEOUT LIMIT FOR getUR
 //Define('LOG_MAX_SIZE', 2);                 // MAXIMUM LOG FILE SIZE, MB
 //Define('LOG_CYCLES',1);             // Save working cycle log (or send to /dev/null if not defined)
 //Define('PATH_TO_FFMPEG','avconv');
-//Define('DISABLE_PANEL_ACCELERATION', 1);
+//Define('ENABLE_PANEL_ACCELERATION', 1);
 //Define('VERBOSE_LOG',1); // STORE SYSTEM ACTIVITY IN VERBOSE LOG
 //Define('VERBOSE_LOG_IGNORE','.checkstate, ThisComputer.uptime'); // IGNORE SOME DATA
 //Define('DISABLE_SIMPLE_DEVICES',1); // disables simple devices behavior
@@ -99,3 +99,10 @@ Define('GETURL_WARNING_TIMEOUT',5);                   // TIMEOUT LIMIT FOR getUR
 //Define('BTRACED', 1);
 //Define('LOWER_BACKGROUND_PROCESSES',1); // lower number of background processes created
 //define('USE_REDIS','127.0.0.1'); // use Redis for caching
+//define('LOG_FILES_EXPIRE', 5); // for delete log files
+//define('BACKUP_FILES_EXPIRE', 10); // for delete backup files
+//define('CACHED_FILES_EXPIRE', 30); // for delete cached files
+//define('SETTINGS_ERRORS_KEEP_HISTORY', 1); // for delete errors history
+//define('CACHE_VALUE_MAX_SIZE', 255); // max length of caching value
+//define('DISABLE_USERS_LIST',1); // hide list of users for login
+//define('LOG_PHP_WARNINGS',1); // Log php warnings

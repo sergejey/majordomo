@@ -1,6 +1,6 @@
 <?php
 
-if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES==1) return;
+if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES == 1) return;
 
 $ot = $this->object_title;
 
@@ -16,10 +16,24 @@ if (!$this->getProperty('SomebodyHere')) {
 if ($this->getProperty('IdleDelay')) {
     $activity_timeout = (int)$this->getProperty('IdleDelay');
 } else {
-    $activity_timeout = 10*60;
+    $activity_timeout = 10 * 60;
 }
 setTimeOut($ot . '_activity_timeout', "callMethod('" . $ot . ".onIdle');", $activity_timeout);
 
 if (getGlobal('NobodyHomeMode.active')) {
     callMethod('NobodyHomeMode.deactivate', array('sensor' => $params['sensor'], 'room' => $ot));
 }
+
+if ($this->getProperty('turnOffLightsOnIdle') &&
+    $this->getProperty('turnedOffAutomatically') &&
+    gg('DarknessMode.active')) {
+    $turnedOff = explode(',', $this->getProperty('turnedOffAutomatically'));
+    $this->setProperty('turnedOffAutomatically', '');
+    foreach ($turnedOff as $obj) {
+        if (!gg($obj . '.status')) {
+            callMethod($obj . '.turnOn');
+            usleep(50000);
+        }
+    }
+}
+

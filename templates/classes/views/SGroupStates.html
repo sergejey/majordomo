@@ -1,0 +1,28 @@
+<script type="text/javascript">
+    function state_%.object_id%_restore_pressed() {
+        callMethod("%.object_title%.restore");
+        $(".icon%.object_id%_button").addClass("pressed");
+        setTimeout("$(\".icon%.object_id%_button\").removeClass(\"pressed\");",300);
+        $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
+        return false;
+    }
+    function state_%.object_id%_save_pressed() {
+        if (!confirm('<#LANG_ARE_YOU_SURE#>')) {
+            return false;
+        }
+        callMethod("%.object_title%.save");
+        $(".icon%.object_id%_button").addClass("pressed");
+        setTimeout("$(\".icon%.object_id%_button\").removeClass(\"pressed\");",300);
+        $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));
+        return false;
+    }
+</script>
+<div class="device-widget">
+    <div class="device-icon group_state icon%.object_id%_button" id="icon%.object_id%_button" style='%.icon|"background-image:url(%.icon%)"%'></div>
+    <div class="device-header">%.object_description%</div>
+    <div class="device-details">
+        <a href="#" onclick="return state_%.object_id%_save_pressed();"><#LANG_DEVICES_GROUP_STATE_SAVE#></a>
+        |
+        <a href="#" onclick="return state_%.object_id%_restore_pressed();"><#LANG_DEVICES_GROUP_STATE_RESTORE#></a>
+    </div>
+</div>

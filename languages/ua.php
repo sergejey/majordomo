@@ -3,7 +3,7 @@
  * Ukranian language file
  *
  * @package MajorDoMo
- * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+ * @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
  * @version 1.0
  */
 
@@ -12,11 +12,11 @@ $dictionary = array (
 
     /* general */
     'SETTINGS_SITE_LANGUAGE_CODE' => 'uk_UA',
-    'WIKI_URL' => 'http://smartliving.ru/',
+    'WIKI_URL' => 'https://majordomohome.com/',
     'KB_URL'=>'https://kb.smartliving.ru/',
     'DEFAULT_COMPUTER_NAME' => 'Аліса',
     'WELCOME_GREETING' => 'Ласкаво просимо!',
-    'WELCOME_TEXT' => 'Дякуємо, що користуєтеся MajorDoMo - відкритою платформою домашньої автоматизації.<br /><br/>Дізнайтеся більше і приєднуйтесь до спільноти: <a href="http://smartliving.ru/" target=_blank>Веб-сайт</a> | <a href="http://smartliving.ru/forum/" target=_blank>Форум</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook сторінка</a><br /><br /><small>P.S. Ви можете змінити або видалити цю сторінку через <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Панель керування</a></small>',
+    'WELCOME_TEXT' => 'Дякуємо, що користуєтеся MajorDoMo - відкритою платформою домашньої автоматизації.<br /><br/>Дізнайтеся більше і приєднуйтесь до спільноти: <a href="https://majordomohome.com/" target=_blank>Веб-сайт</a> | <a href="https://majordomohome.com/forum/" target=_blank>Форум</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook сторінка</a><br /><br /><small>P.S. Ви можете змінити або видалити цю сторінку через <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Панель керування</a></small>',
     'CONTROL_PANEL' => 'Панель керування',
     'TERMINAL' => 'Термінал',
     'USER' => 'Користувач',
@@ -364,6 +364,7 @@ $dictionary = array (
 
 
     'AUTO_UPDATE_PERIOD' => 'Період автооновления',
+    'UPDATEARHIVE_DONE' => 'Скачуємо архів',
     'POLLING_PERIOD' => 'Період опитування',
 
 
@@ -1227,6 +1228,8 @@ $dictionary = array (
     'DEVICES_LINK_ACTION_TYPE' => 'Дія',
     'DEVICES_LINK_TYPE_TURN_ON' => 'Ввімкнути',
     'DEVICES_LINK_TYPE_TURN_OFF' => 'Вимкнути',
+    'DEVICES_LINK_TYPE_OPEN' => 'Відкрити',
+    'DEVICES_LINK_TYPE_CLOSE' => 'Закрити',
     'DEVICES_LINK_TYPE_SWITCH' => 'Перемкнути',
 
     'DEVICES_LINK_SWITCH_IT' => 'Ввімкнути / Вимкнути',
@@ -1528,6 +1531,29 @@ $dictionary = array (
     'NEWDASH_SHOW_LAST_SCRIPTS' => 'Тут виводяться останні 6 запущених сценаріїв',
     'NEWDASH_HINT_BIG_DATA_DB' => '7 найбільших таблиць в вашій базі данних.',
     'NEWDASH_WEB_PAGE' => 'Веб-сторінки',
+    'NEWDASH_DB_REQ_SEC' => 'Запитів до БД за секунду',
+	'NEWDASH_DB_REQ_MIN' => 'Запитів до БД за хвилину',
+	'NEWDASH_DB_REQ_HOUR' => 'Запитів до БД за годину',
+	
+	'NEWDASH_DMB_TITLE' => 'Добавити свій блок',
+	'NEWDASH_DMB_TITLE_MODAL' => 'Добавляння свого блоку',
+	'NEWDASH_DMB_TITLE_MODAL_HINT' => 'Описание функционала и подробное описание доступно на нашем форуме:',
+	'NEWDASH_DMB_TITLE_MODAL_HINT_FORUM' => 'перейти на форум',
+	'NEWDASH_DMB_TITLE_MODAL_STEP1' => '1. Створіть сценарій з ім\`ям:',
+	'NEWDASH_DMB_TITLE_MODAL_STEP2' => '2. Сценарій повинен віддавати слідуючий JSON об\`єкт:',
+	'NEWDASH_DMB_TITLE_MODAL_STEP3' => '3. На цьому все. Панель керування сама підхватить скрипт и выведе содержимое на головну сторінку.',
+	
+	'NEWDASH_CONSOLE_CHOOSE_MODULE' => 'Оберіть модуль...',
+	'NEWDASH_CONSOLE_SIZE_HINT' => 'Розмір консолі можна змінити',
+	'NEWDASH_SEARCH_HINT' => 'Глобальний пошук по всій системі. Почніть вводити...',
+	'NEWDASH_CONNECT_CONNECT_ERROR_1' => 'Ваша копія MajorDoMo не може зв\`язатися з сервером Connect. Через це, маркет та деякі інші функції неможливо виконати.',
+	'NEWDASH_CONNECT_CONNECT_ERROR_2' => 'Зазвичай, ситуайція виправляється за декілька хвилин.',
+	
+	'NEWDASH_RESULT' => 'Результат',
+	'NEWDASH_MJDM_VERSION' => 'Теперішня версія MJDM',
+	
+	'NEWDASH_OBJ_ADD_NEW_PROP_NAME' => 'Ім\`я для нової властивості',
+	'NEWDASH_OBJ_ADD_NEW_PROP_VALUE' => 'Значення властивості',
 
     'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'Все чудово!',
     'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'Це чудово, що ви вчасно оновлюєтесь. Наразі у вас остання версія системи. Але в випадку необхідності, ви можете перезавантажити файли з репозитарію GitHub.',

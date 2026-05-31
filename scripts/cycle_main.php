@@ -6,8 +6,6 @@ include_once("./config.php");
 include_once("./lib/loader.php");
 include_once("./lib/threads.php");
 
-set_time_limit(0);
-
 include_once("./load_settings.php");
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 
@@ -41,7 +39,7 @@ if ($timerClass['SUB_LIST'] != '') {
 
 $old_minute = date('i');
 $old_hour = date('h');
-if ($_GET['onetime']) {
+if (isset($_GET['onetime'])) {
     $old_minute = -1;
     if (date('i') == '00') {
         $old_hour = -1;
@@ -53,12 +51,20 @@ $checked_time = 0;
 $started_time = time();
 
 echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
-
+set_time_limit(0);
 while (1) {
     if (time() - $checked_time > 5) {
         $checked_time = time();
         setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-//       saveToCache("MJD:$cycleVarName", $checked_time);
+
+    }
+
+    $m = date('i');
+    $h = date('h');
+    $dt = date('Y-m-d');
+
+    #NewMinute
+    if ($m != $old_minute) {
 
         $timestamp = time() - getGlobal('ThisComputer.started_time');
         setGlobal('ThisComputer.uptime', $timestamp);
@@ -82,14 +88,6 @@ while (1) {
         }
         setGlobal('ThisComputer.uptimeText', trim($timestring));
 
-    }
-
-    $m = date('i');
-    $h = date('h');
-    $dt = date('Y-m-d');
-
-    #NewMinute
-    if ($m != $old_minute) {
         processSubscriptionsSafe('MINUTELY');
         $sqlQuery = "SELECT ID, TITLE
                      FROM objects

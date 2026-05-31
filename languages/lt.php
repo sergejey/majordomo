@@ -3,13 +3,13 @@
 * lt language file
 *
 * @package MajorDoMo
-* @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+* @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
 * @version 1.0
 */
 
 $dictionary=array(
 'SETTINGS_SITE_LANGUAGE_CODE' => 'lt-LT',
-'WIKI_URL'=>'http://smartliving.ru/',
+'WIKI_URL'=>'https://majordomohome.com/',
 'DEFAULT_COMPUTER_NAME'=>'Alisa',
 'WELCOME_GREETING'=>'Sveiki!',
 'WELCOME_TEXT'=>'Ačiu, kad naudojates MajorDoMo -- namų automatizacijos atvira platforma. <br/><br/>Sužinokite daugiau ir prisijunkite prie bendruomenės: <a href="<#LANG_WIKI_URL#>" target=_blank>Tinklapis</a> | <a href="<#LANG_WIKI_URL#>forum/" target=_blank>Forumas</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook puslapis</a> <br/>&nbsp;<br/>&nbsp;<br/><small>P.S. Jus galite keisti arba panaikinti šį puslapį per <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Valdymo panelė</a></small>',

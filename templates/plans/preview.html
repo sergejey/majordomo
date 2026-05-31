@@ -70,6 +70,12 @@
                 } else {
                     elem.text(obj[i].CONTENT);
                 }
+                if (obj[i].ATTRIBUTES instanceof Array) {
+                	var attrCnt = obj[i].ATTRIBUTES.length;
+                	for (var ai=0; ai<attrCnt; ai++) {
+                		elem.attr(obj[i].ATTRIBUTES[ai].NAME, obj[i].ATTRIBUTES[ai].CONTENT);
+                	}
+                }
             }
         }
     }

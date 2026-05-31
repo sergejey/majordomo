@@ -1,5 +1,8 @@
 <div class="device-widget sensor %.alive|"offline;online"%" onclick="var url=('<#ROOTHTML#>pChart/?p=%.object_title%'+'.value&op=log&subop=24h&minimal=1');parent.$.fancybox.open({ src: url, type: 'iframe',iframe:{preload:false} });return false;">
     <div class="device-icon"></div>
     <div class="device-header">%.value%</div>
-    <div class="device-details">%.object_description%</div>
+    <div class="device-details">%.object_description%
+        <span style="display:%.batteryOperated|"none;inline"%;
+        %.batteryWarning|"0=color:green;1=color:red;2=color:lightsalmon"%;"><i class="glyphicon glyphicon-flash"></i>%.batteryLevel%%</span>
+    </div>
 </div>

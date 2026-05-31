@@ -16,7 +16,7 @@
    include_once(DIR_MODULES.'classes/classes.class.php');
    $cl=new classes();
    $out['PARENT_PROPERTIES']=$cl->getParentProperties($this->class_id);
-   if (!$out['PARENT_PROPERTIES'][0]['ID']) {
+   if (!isset($out['PARENT_PROPERTIES'][0]['ID'])) {
     unset($out['PARENT_PROPERTIES']);
    }
 
@@ -34,7 +34,7 @@
   // FIELDS ORDER
   global $sortby;
   if (!$sortby) {
-   $sortby=$session->data['properties_sort'];
+   $sortby=isset($session->data['properties_sort'])?$session->data['properties_sort']:'';
   } else {
    if ($session->data['properties_sort']==$sortby) {
     if (Is_Integer(strpos($sortby, ' DESC'))) {

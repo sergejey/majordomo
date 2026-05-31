@@ -5,7 +5,7 @@
 * Locations
 *
 * @package MajorDoMo
-* @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+* @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
 * @version 0.2 (wizard, 12:05:35 [May 22, 2009])
 */
 //
@@ -122,6 +122,9 @@ function admin(&$out) {
  }
  if ($this->data_source=='locations' || $this->data_source=='') {
   if ($this->view_mode=='' || $this->view_mode=='search_locations') {
+      if (gr('location_id')) {
+          $this->redirect("?view_mode=edit_locations&id=".gr('location_id'));
+      }
    $this->search_locations($out);
   }
 

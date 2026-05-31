@@ -42,7 +42,7 @@ $(window).load(function() {
 <form action="?" method="get" class="form">
 	<select name="method" onchange="this.form.submit();" class="form-control">
 		[#begin METHODS#]
-		<option value="[#TITLE#]" [#if SELECTED="1"#] selected[#endif#]><#LANG_METHOD#>: [#DESCRIPTION#]</option>
+		<option value="[#TITLE#]" [#if TITLE="<#METHOD#>"#] selected[#endif#]><#LANG_METHOD#>: [#DESCRIPTION#]</option>
 		[#end METHODS#]
 	</select>
 	<input type="hidden" name="id" value="<#ID#>">

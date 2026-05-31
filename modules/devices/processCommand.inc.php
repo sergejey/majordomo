@@ -259,13 +259,15 @@ for ($i = 0; $i < $total; $i++) {
     }
 
     // ищем по старому принципу
-    if (preg_match('/' . preg_quote($devices[$i]['TITLE']) . '/uis', $compare_title)) {
-        $device_matched = 1;
-    } elseif (preg_match('/' . preg_quote($compare_title) . '/uis', $devices[$i]['TITLE'])) {
-        $device_matched = 1;
-    } elseif ($phpmorphy_loaded) {
-        if (preg_match('/' . preg_quote($devices[$i]['TITLE']) . '/isu', implode('@@@@', $lines), $matches)) {
+    if (!$device_matched) {
+        if (preg_match('/' . preg_quote($devices[$i]['TITLE']) . '/uis', $compare_title)) {
             $device_matched = 1;
+        } elseif (preg_match('/' . preg_quote($compare_title) . '/uis', $devices[$i]['TITLE'])) {
+            $device_matched = 1;
+        } elseif ($phpmorphy_loaded) {
+            if (preg_match('/' . preg_quote($devices[$i]['TITLE']) . '/isu', implode('@@@@', $lines), $matches)) {
+                $device_matched = 1;
+            }
         }
     }
 
@@ -401,10 +403,14 @@ for ($i = 0; $i < $total; $i++) {
 if ($run_code != '' && $period_delay > 0) {
     setTimeout('delay' . md5($run_code), $run_code, $period_delay);
 } elseif ($run_code != '' && $period_run_for > 0 && $opposite_code != '') {
+    setEvalCode($run_code);
     eval($run_code);
+    setEvalCode();
     setTimeout('opposite' . md5($run_code), $opposite_code, $period_run_for);
 } elseif ($run_code != '') {
+    setEvalCode($run_code);
     eval($run_code);
+    setEvalCode();
 }
 
 if ($reply_say != '') {

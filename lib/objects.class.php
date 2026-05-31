@@ -40,7 +40,7 @@ function addClass($class_name, $parent_class = '')
  * @param mixed $object_name Object name
  * @return mixed
  */
-function getClassTemplate($class_id,$view='')
+function getClassTemplate($class_id, $view = '')
 {
 
     $can_cache = false;
@@ -49,17 +49,18 @@ function getClassTemplate($class_id,$view='')
         global $class_templates_cached;
     }
 
-    if ($can_cache && isset($class_templates_cached[$class_id.'_'.$view])) {
-        return $class_templates_cached[$class_id.'_'.$view];
+    if ($can_cache && isset($class_templates_cached[$class_id . '_' . $view])) {
+        return $class_templates_cached[$class_id . '_' . $view];
     }
 
     $class = SQLSelectOne("SELECT ID, TITLE, PARENT_ID, TEMPLATE FROM classes WHERE ID=" . $class_id);
     if (!$class['ID']) {
         return '';
     }
-    if ($view!='' && file_exists(DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '_'.$view.'.html')) {
-        $class_file_path = DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '_'.$view.'.html';
-        $alt_class_file_path = ROOT . 'templates_alt/classes/views/' . $class['TITLE'] . '_'.$view.'.html';
+
+    if ($view != '' && file_exists(DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '_' . $view . '.html')) {
+        $class_file_path = DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '_' . $view . '.html';
+        $alt_class_file_path = ROOT . 'templates_alt/classes/views/' . $class['TITLE'] . '_' . $view . '.html';
     } else {
         $class_file_path = DIR_TEMPLATES . 'classes/views/' . $class['TITLE'] . '.html';
         $alt_class_file_path = ROOT . 'templates_alt/classes/views/' . $class['TITLE'] . '.html';
@@ -71,12 +72,12 @@ function getClassTemplate($class_id,$view='')
     } elseif (file_exists($class_file_path)) {
         $data = LoadFile($class_file_path);
     } elseif ($class['PARENT_ID']) {
-        $data = getClassTemplate($class['PARENT_ID'],$view);
+        $data = getClassTemplate($class['PARENT_ID'], $view);
     } else {
         //$data='Template for ['.$class['TITLE'].'] not found';
         $data = '<b>%.object_title%</b>';
         $props = SQLSelect("SELECT ID,TITLE FROM properties WHERE CLASS_ID=" . $class['ID'] . " AND DATA_KEY=1 ORDER BY TITLE");
-        if (!IsSet($props[0])) {
+        if (!isset($props[0])) {
             $props = SQLSelect("SELECT ID,TITLE FROM properties WHERE CLASS_ID=" . $class['ID'] . " ORDER BY TITLE");
         }
         if (is_array($props)) {
@@ -87,7 +88,7 @@ function getClassTemplate($class_id,$view='')
     }
 
     if ($can_cache) {
-        $class_templates_cached[$class_id.'_'.$view] = $data;
+        $class_templates_cached[$class_id . '_' . $view] = $data;
     }
 
     return $data;
@@ -98,7 +99,7 @@ function getClassTemplate($class_id,$view='')
  * @param mixed $object_name Object name
  * @return mixed
  */
-function getObjectClassTemplate($object_name,$view='')
+function getObjectClassTemplate($object_name, $view = '')
 {
     startMeasure('getObjectClassTemplate');
     startMeasure('getObject');
@@ -127,7 +128,7 @@ function getObjectClassTemplate($object_name,$view='')
     $object->description = $rec['DESCRIPTION'];
     endMeasure('getObject');
     startMeasure('getClassTemplate');
-    $data = getClassTemplate((int)$object->class_id,$view);
+    $data = getClassTemplate((int)$object->class_id, $view);
     endMeasure('getClassTemplate');
     $data = preg_replace('/<#ROOTHTML#>/uis', ROOTHTML, $data);
     $data = preg_replace('/%\.object_title%/uis', $object_name, $data);
@@ -240,7 +241,7 @@ function addClassObject($class_name, $object_name, $system = '')
                   FROM objects
                  WHERE TITLE = '" . DBSafe($object_name) . "'";
     $object = SQLSelectOne($sqlQuery);
-    if ($object['ID'])
+    if (isset($object['ID']))
         return $object['ID'];
 
     if ($system != '') {
@@ -248,7 +249,7 @@ function addClassObject($class_name, $object_name, $system = '')
                   FROM objects
                  WHERE `SYSTEM` = '" . DBSafe($system) . "'";
         $object = SQLSelectOne($sqlQuery);
-        if ($object['ID'])
+        if (isset($object['ID']))
             return $object['ID'];
     }
 
@@ -318,13 +319,12 @@ function addLinkedProperty($object, $property, $module)
 
     $value = SQLSelectOne($sqlQuery);
 
-    if (IsSet($value['ID'])) {
+    if (isset($value['ID'])) {
         if (!$value['LINKED_MODULES']) {
             $tmp = array();
         } else {
             $tmp = explode(',', $value['LINKED_MODULES']);
         }
-
         if (!in_array($module, $tmp)) {
             $tmp[] = $module;
 
@@ -332,18 +332,20 @@ function addLinkedProperty($object, $property, $module)
 
             SQLUpdate('pvalues', $value);
         }
+        return $value['ID'];
     } else {
         return 0;
     }
 }
 
-/**
- * Summary of removeLinkedProperty
- * @param mixed $object Object
- * @param mixed $property Property
- * @param mixed $module Module
- * @return int
- */
+function removeLinkedPropertyIfNotUsed($table_name, $object, $property, $module)
+{
+    $tmp = SQLSelectOne("SELECT ID FROM " . DBSafe($table_name) . " WHERE LINKED_OBJECT='" . DBSafe($object) . "' AND LINKED_PROPERTY='" . DBSafe($property) . "'");
+    if (!isset($tmp['ID'])) {
+        removeLinkedProperty($object, $property, $module);
+    }
+}
+
 function removeLinkedProperty($object, $property, $module)
 {
     $sqlQuery = "SELECT *
@@ -352,27 +354,21 @@ function removeLinkedProperty($object, $property, $module)
 
     $value = SQLSelectOne($sqlQuery);
 
-    if ($value['ID']) {
+    if (isset($value['ID'])) {
         if (!$value['LINKED_MODULES']) {
             $tmp = array();
         } else {
             $tmp = explode(',', $value['LINKED_MODULES']);
         }
-
         if (in_array($module, $tmp)) {
             $total = count($tmp);
             $res = array();
-
             for ($i = 0; $i < $total; $i++) {
                 if ($tmp[$i] != $module) {
                     $res[] = $tmp[$i];
                 }
             }
-
-            $tmp = $res;
-
-            $value['LINKED_MODULES'] = implode(',', $tmp);
-
+            $value['LINKED_MODULES'] = implode(',', $res);
             SQLUpdate('pvalues', $value);
         }
     } else {
@@ -389,7 +385,7 @@ function removeLinkedProperty($object, $property, $module)
 function getObject($name)
 {
 
-    if (trim($name)=='') return 0;
+    if (trim($name) == '') return 0;
 
     if (preg_match('/^(.+?)\.(.+?)$/', $name, $m)) {
         $class_name = $m[1];
@@ -409,14 +405,14 @@ function getObject($name)
         //$rec = SQLSelectOne("SELECT objects.* FROM objects WHERE TITLE = '".DBSafe($name)."'");
     }
 
-    if (!$rec['ID']) {
+    if (!isset($rec['ID'])) {
         $sqlQuery = "SELECT objects.*
                      FROM objects
                     WHERE TITLE = '" . DBSafe($name) . "'";
         $rec = SQLSelectOne($sqlQuery);
     }
 
-    if ($rec['ID']) {
+    if (isset($rec['ID'])) {
         include_once(DIR_MODULES . 'objects/objects.class.php');
         $obj = new objects();
         $obj->id = $rec['ID'];
@@ -505,13 +501,13 @@ function getObjectsByClass($class_name)
 
     $sub_classes = SQLSelect($sqlQuery);
 
-    if (IsSet($sub_classes[0]['ID'])) {
+    if (isset($sub_classes[0]['ID'])) {
         $total = count($sub_classes);
 
         for ($i = 0; $i < $total; $i++) {
             $sub_objects = getObjectsByClass($sub_classes[$i]['TITLE']);
 
-            if (IsSet($sub_objects[0]['ID'])) {
+            if (isset($sub_objects[0]['ID'])) {
                 foreach ($sub_objects as $obj) {
                     $objects[] = $obj;
                 }
@@ -537,6 +533,10 @@ function getClassProperties($class_id, $def = '')
     if (isset($cached_class_properties[$class_id])) return $cached_class_properties[$class_id];
 
     $class = SQLSelectOne("SELECT ID, PARENT_ID FROM classes WHERE (ID='" . (int)$class_id . "' OR TITLE = '" . DBSafe($class_id) . "')");
+    if (!isset($class['ID'])) {
+        return array();
+    }
+
     $properties = SQLSelect("SELECT properties.*, classes.TITLE AS CLASS_TITLE FROM properties LEFT JOIN classes ON properties.CLASS_ID=classes.ID WHERE CLASS_ID='" . $class['ID'] . "' AND OBJECT_ID=0");
     $res = $properties;
     if (!is_array($def)) {
@@ -551,9 +551,9 @@ function getClassProperties($class_id, $def = '')
             $def[] = $p['TITLE'];
         }
     }
-    if ($class['PARENT_ID']) {
+    if (isset($class['PARENT_ID'])) {
         $p_res = getClassProperties($class['PARENT_ID'], $def);
-        if ($p_res[0]['ID']) {
+        if (isset($p_res[0]['ID'])) {
             foreach ($p_res as $k => $p) {
                 if (!in_array($p['TITLE'], $def)) {
                     $res[] = $p;
@@ -584,6 +584,18 @@ function getKeyData($object_id)
     return $add_description;
 }
 
+function returnTypedValue($value)
+{
+    if (is_numeric($value) && preg_match('/^[\-\d\.]+$/', $value)) {
+        if (strpos($value, '.') !== false) {
+            return floatval($value);
+        } elseif (!preg_match('/^0/', $value)) {
+            return (int)$value;
+        }
+    }
+    return $value;
+}
+
 /**
  * Summary of getGlobal
  * @param mixed $varname Variable name
@@ -591,9 +603,12 @@ function getKeyData($object_id)
  */
 function getGlobal($varname)
 {
+    $varname = trim($varname);
     $tmp = explode('.', $varname);
 
+    $class_name = '';
     if (isset($tmp[2])) {
+        $class_name = $tmp[0];
         $object_name = $tmp[0] . '.' . $tmp[1];
         $varname = $tmp[2];
     } elseif (isset($tmp[1])) {
@@ -603,19 +618,34 @@ function getGlobal($varname)
         $object_name = 'ThisComputer';
     }
     $cached_name = 'MJD:' . $object_name . '.' . $varname;
-    $cached_value = checkFromCache($cached_name);
 
-    if ($cached_value !== false) {
-        return $cached_value;
-    }
-    $obj = getObject($object_name);
-    if ($obj) {
-        $value = $obj->getProperty($varname);
-        return $value;
+    if (strpos($varname, 'cycle_') === 0) {
+        $cached_value = checkCycleFromCache($varname);
     } else {
-        return 0;
+        $cached_value = checkFromCache($cached_name);
     }
+    if ($cached_value !== false) {
+        return returnTypedValue($cached_value);
+    }
+
+    if ($class_name != '' && isModuleInstalled($class_name)) {
+        include_once(DIR_MODULES . $class_name . '/' . $class_name . '.class.php');
+        $module = new $class_name();
+        if (method_exists($module, 'getModuleProperty')) {
+            $data = $module->getModuleProperty($tmp[1] . '.' . $tmp[2]);
+            return returnTypedValue($data);
+        }
+    } else {
+        $obj = getObject($object_name);
+        if ($obj) {
+            $value = $obj->getProperty($varname);
+            return returnTypedValue($value);
+        }
+    }
+    return false;
+
 }
+
 
 /**
  * getHistoryValueId
@@ -626,6 +656,9 @@ function getGlobal($varname)
  */
 function getHistoryValueId($varname)
 {
+
+    startMeasure('getHistoryValueId');
+
     $tmp = explode('.', $varname);
 
     if (isset($tmp[2])) {
@@ -639,13 +672,18 @@ function getHistoryValueId($varname)
 
     // Get object
     $obj = getObject($object_name);
-    if (!$obj) return false;
+    if (!$obj) {
+        endMeasure('getHistoryValueId');
+        return false;
+    }
 
     // Get property
     $prop_id = $obj->getPropertyByName($varname, $obj->class_id, $obj->id);
     if ($prop_id == false) return false;
 
     $rec = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='" . (int)$prop_id . "' AND OBJECT_ID='" . (int)$obj->id . "'");
+
+    endMeasure('getHistoryValue');
 
     if (!$rec['ID'])
         return false;
@@ -662,6 +700,7 @@ function getHistoryValueId($varname)
  */
 function getHistory($varname, $start_time, $stop_time = 0)
 {
+    startMeasure('getHistory');
     if ($start_time <= 0) $start_time = (time() + $start_time);
     if ($stop_time <= 0) $stop_time = (time() + $stop_time);
 
@@ -675,11 +714,16 @@ function getHistory($varname, $start_time, $stop_time = 0)
     }
 
     // Get data
-    return SQLSelect("SELECT VALUE, ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "') ORDER BY ADDED");
+    $data = SQLSelect("SELECT VALUE, ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "') ORDER BY ADDED");
+
+    endMeasure('getHistory');
+    return $data;
+
 }
 
 function getHistoryAvgDay($varname, $start_time, $stop_time = 0)
 {
+    startMeasure('getHistoryAvgDay');
     if ($start_time <= 0) $start_time = (time() + $start_time);
     if ($stop_time <= 0) $stop_time = (time() + $stop_time);
 
@@ -693,7 +737,12 @@ function getHistoryAvgDay($varname, $start_time, $stop_time = 0)
     }
 
     // Get data
-    return SQLSelect("SELECT round(avg(VALUE),2) VALUE,  date(ADDED) ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "') group by  date(ADDED) ORDER BY ADDED");
+    $data = SQLSelect("SELECT round(avg(VALUE),2) VALUE,  date(ADDED) ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "') group by  date(ADDED) ORDER BY ADDED");
+
+    endMeasure('getHistoryAvgDay');
+
+    return $data;
+
 }
 
 
@@ -706,7 +755,13 @@ function getHistoryAvgDay($varname, $start_time, $stop_time = 0)
  */
 function getHistoryMin($varname, $start_time, $stop_time = 0)
 {
-    if ($start_time <= 0) $start_time = (time() + $start_time);
+    startMeasure('getHistoryMin');
+    if ($start_time <= 0) {
+        $start_time = (time() + $start_time);
+        $latest_data = true;
+    } else {
+        $latest_data = false;
+    }
     if ($stop_time <= 0) $stop_time = (time() + $stop_time);
 
     // Get hist val id
@@ -722,8 +777,10 @@ function getHistoryMin($varname, $start_time, $stop_time = 0)
     $data = SQLSelectOne("SELECT MIN(VALUE+0.0) AS VALUE FROM $table_name " .
         "WHERE VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "')");
 
-    if (!$data['VALUE'])
-        return false;
+    endMeasure('getHistoryMin');
+
+    if (!isset($data['VALUE']) && $latest_data) return getGlobal($varname);
+    if (!isset($data['VALUE'])) return false;
 
     return $data['VALUE'];
 }
@@ -737,7 +794,13 @@ function getHistoryMin($varname, $start_time, $stop_time = 0)
  */
 function getHistoryMax($varname, $start_time, $stop_time = 0)
 {
-    if ($start_time <= 0) $start_time = (time() + $start_time);
+    startMeasure('getHistoryMax');
+    if ($start_time <= 0) {
+        $start_time = (time() + $start_time);
+        $latest_data = true;
+    } else {
+        $latest_data = false;
+    }
     if ($stop_time <= 0) $stop_time = (time() + $stop_time);
 
     // Get hist val id
@@ -750,8 +813,10 @@ function getHistoryMax($varname, $start_time, $stop_time = 0)
     // Get data
     $data = SQLSelectOne("SELECT MAX(VALUE+0.0) AS VALUE FROM $table_name " .
         "WHERE VALUE != \"\" AND  VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "')");
-    if (!$data['VALUE'])
-        return false;
+
+    endMeasure('getHistoryMax');
+    if (!isset($data['VALUE']) && $latest_data) return getGlobal($varname);
+    if (!isset($data['VALUE'])) return false;
 
     return $data['VALUE'];
 }
@@ -765,6 +830,9 @@ function getHistoryMax($varname, $start_time, $stop_time = 0)
  */
 function getHistoryCount($varname, $start_time, $stop_time = 0)
 {
+
+    startMeasure('getHistoryCount');
+
     if ($start_time <= 0) $start_time = (time() + $start_time);
     if ($stop_time <= 0) $stop_time = (time() + $stop_time);
 
@@ -778,7 +846,10 @@ function getHistoryCount($varname, $start_time, $stop_time = 0)
     // Get data
     $data = SQLSelectOne("SELECT COUNT(VALUE+0.0) AS VALUE FROM $table_name " .
         "WHERE VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "')");
-    if (!$data['VALUE'])
+
+    endMeasure('getHistoryCount');
+
+    if (!isset($data['VALUE']))
         return false;
 
     return $data['VALUE'];
@@ -793,6 +864,7 @@ function getHistoryCount($varname, $start_time, $stop_time = 0)
  */
 function getHistorySum($varname, $start_time, $stop_time = 0)
 {
+    startMeasure('getHistorySum');
     if ($start_time <= 0) $start_time = (time() + $start_time);
     if ($stop_time <= 0) $stop_time = (time() + $stop_time);
 
@@ -806,7 +878,10 @@ function getHistorySum($varname, $start_time, $stop_time = 0)
     // Get data
     $data = SQLSelectOne("SELECT SUM(VALUE+0.0) AS VALUE FROM $table_name " .
         "WHERE  VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "')");
-    if (!$data['VALUE'])
+
+    endMeasure('getHistorySum');
+
+    if (!isset($data['VALUE']))
         return false;
 
     return $data['VALUE'];
@@ -819,9 +894,15 @@ function getHistorySum($varname, $start_time, $stop_time = 0)
  *
  * @access public
  */
-function getHistoryAvg($varname, $start_time, $stop_time = 0)
+function getHistoryAvg($varname, $start_time, $stop_time = 0, $integral = false)
 {
-    if ($start_time <= 0) $start_time = (time() + $start_time);
+    startMeasure('getHistoryAvg');
+    if ($start_time <= 0) {
+        $start_time = (time() + $start_time);
+        $latest_data = true;
+    } else {
+        $latest_data = false;
+    }
     if ($stop_time <= 0) $stop_time = (time() + $stop_time);
 
     // Get hist val id
@@ -832,18 +913,115 @@ function getHistoryAvg($varname, $start_time, $stop_time = 0)
         $table_name = 'phistory';
     }
 
-    // Get data
-    $data = SQLSelectOne("SELECT AVG(VALUE+0.0) AS VALUE FROM $table_name " .
-        "WHERE  VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "')");
+    $data = [];
+    if ($integral) { // Calculate average value using integral trapezoidal rule 
+        // and interpolating start/stop values when no data exist on given timestamps
+        // read history values from DB
+        $firstValue = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED<('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED>=('" . date('Y-m-d H:i:s', $start_time - 7 * 24 * 60 * 60) . "') ORDER BY ADDED DESC LIMIT 1");
+        if (!isset($firstValue['VALUE'])) {
+            $firstValue = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED<('" . date('Y-m-d H:i:s', $start_time) . "') ORDER BY ADDED DESC LIMIT 1");
+        }
+        $values = SQLSelect("SELECT UNIX_TIMESTAMP(ADDED) AS ADDED, VALUE AS VALUE FROM $table_name " .
+            "WHERE  VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "') ORDER BY ADDED ASC");
+        $lastValue = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED>('" . date('Y-m-d H:i:s', $stop_time) . "') ORDER BY ADDED LIMIT 1");
+        if (count($values) == 0) {
+            $values = [$firstValue];
+        }
+        if (isset($firstValue['VALUE']) && intval($firstValue['ADDED']) < intval($values[0]['ADDED'])) {
+            $values = array_merge([$firstValue], $values);
+        }
+        if (isset($lastValue['VALUE'])) {
+            $values = array_merge($values, [$lastValue]);
+        }
 
-    if (!$data['VALUE']) {
-        $data = SQLSelectOne("SELECT VALUE+0.0 FROM $table_name " .
-            "WHERE  VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED<('" . date('Y-m-d H:i:s', $start_time) . "') ORDER BY ADDED DESC LIMIT 1");
+        // convert result to $points array with X as timestamp, and Y as float value
+        $points = [];
+        $valuesCount = count($values);
+        for ($i = 0; $i < $valuesCount; $i++) {
+            $timestamp = intval($values[$i]['ADDED']);
+            $value = floatval($values[$i]['VALUE']);
+            $points[] = ['X' => $timestamp, 'Y' => $value];
+        }
+
+        if ($valuesCount > 0) {
+            // prepare virtual points for $start_time and $stop_time
+            $virtualPointX1 = ['X' => $start_time, 'Y' => null];
+            $virtualPointX2 = ['X' => $stop_time, 'Y' => null];
+
+            // find points next to start_time and stop_time for interpolation
+            $pointBeforeX1 = $pointBeforeX2 = $pointAfterX1 = $pointAfterX2 = null;
+            foreach ($points as $point) {
+                if ($point['X'] <= $start_time && ($pointBeforeX1 === null || $point['X'] > $pointBeforeX1['X'])) {
+                    $pointBeforeX1 = $point;
+                }
+                if ($point['X'] <= $stop_time && ($pointBeforeX2 === null || $point['X'] > $pointBeforeX2['X'])) {
+                    $pointBeforeX2 = $point;
+                }
+                if ($point['X'] >= $start_time && ($pointAfterX1 === null || $point['X'] < $pointAfterX1['X'])) {
+                    $pointAfterX1 = $point;
+                }
+                if ($point['X'] >= $stop_time && ($pointAfterX2 === null || $point['X'] < $pointAfterX2['X'])) {
+                    $pointAfterX2 = $point;
+                }
+            }
+            if ($pointBeforeX1 === null) {
+                $pointBeforeX1 = $pointAfterX1;
+            }
+            if ($pointAfterX2 === null) {
+                $pointAfterX2 = $pointBeforeX2;
+            }
+
+            // interpolate virtual values Y1 and Y2
+            if (!function_exists('getHistoryAvgLinearInterpolation')) {
+                function getHistoryAvgLinearInterpolation($x, $x1, $y1, $x2, $y2)
+                {
+                    if ($x1 == $x2) {
+                        return $y1;
+                    }
+                    return $y1 + (($x - $x1) / ($x2 - $x1)) * ($y2 - $y1);
+                }
+            }
+            $virtualPointX1['Y'] = getHistoryAvgLinearInterpolation($start_time, $pointBeforeX1['X'], $pointBeforeX1['Y'], $pointAfterX1['X'], $pointAfterX1['Y']);
+            $virtualPointX2['Y'] = getHistoryAvgLinearInterpolation($stop_time, $pointBeforeX2['X'], $pointBeforeX2['Y'], $pointAfterX2['X'], $pointAfterX2['Y']);
+
+            // add virtual points into array
+            $pointsWithVirtual = [];
+            foreach ($points as $point) {
+                $pointsWithVirtual[] = $point;
+                if ($point === $pointBeforeX1) {
+                    $pointsWithVirtual[] = $virtualPointX1;
+                }
+                if ($point === $pointBeforeX2) {
+                    $pointsWithVirtual[] = $virtualPointX2;
+                }
+            }
+
+            // find indicies of virtual points
+            $indexX1 = array_search($virtualPointX1, $pointsWithVirtual);
+            $indexX2 = array_search($virtualPointX2, $pointsWithVirtual);
+
+            // calculate average value using Trapezoidal rule
+            $areaUnderCurve = 0;
+            for ($i = $indexX1 + 1; $i <= $indexX2; $i++) {
+                $areaUnderCurve += ($pointsWithVirtual[$i]['X'] - $pointsWithVirtual[$i - 1]['X']) * (($pointsWithVirtual[$i]['Y'] + $pointsWithVirtual[$i - 1]['Y']) / 2);
+            }
+            $averageY = $areaUnderCurve / ($virtualPointX2['X'] - $virtualPointX1['X']);
+            $data['VALUE'] = $averageY;
+        }
+
+    } else { // Simple average value based on all stored values between start and stop timestamps
+        // Get data
+        $data = SQLSelectOne("SELECT AVG(VALUE+0.0) AS VALUE FROM $table_name " .
+            "WHERE  VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $stop_time) . "')");
+
+        if (!isset($data['VALUE'])) {
+            $data = SQLSelectOne("SELECT VALUE+0.0 FROM $table_name " .
+                "WHERE  VALUE != \"\" AND VALUE_ID='" . $id . "' AND ADDED<('" . date('Y-m-d H:i:s', $start_time) . "') ORDER BY ADDED DESC LIMIT 1");
+        }
     }
-
-
-    if (!$data['VALUE'])
-        return false;
+    endMeasure('getHistoryAvg');
+    if (!isset($data['VALUE']) && $latest_data) return getGlobal($varname);
+    if (!isset($data['VALUE'])) return false;
 
     return $data['VALUE'];
 }
@@ -857,6 +1035,10 @@ function getHistoryAvg($varname, $start_time, $stop_time = 0)
  */
 function getHistoryValue($varname, $time, $nerest = false)
 {
+
+    startMeasure('getHistoryValue');
+
+    $time = (int)$time;
     if ($time <= 0) $time = (time() + $time);
 
     // Get hist val id
@@ -876,31 +1058,80 @@ function getHistoryValue($varname, $time, $nerest = false)
     // Get val after
     $val2 = SQLSelectOne("SELECT VALUE, UNIX_TIMESTAMP(ADDED) AS ADDED FROM $table_name WHERE VALUE_ID='" . $id . "' AND ADDED>=('" . date('Y-m-d H:i:s', $time) . "') ORDER BY ADDED LIMIT 1");
 
+    endMeasure('getHistoryValue');
+
     // Not found values
-    if ((!$val1['VALUE']) && (!$val2['VALUE']))
+    if ((!isset($val1['VALUE'])) && (!isset($val2['VALUE'])))
         return false;
 
     // Only before
-    if (($val1['VALUE']) && (!$val2['VALUE']))
+    if (isset($val1['VALUE']) && (!isset($val2['VALUE'])))
         return $val1['VALUE'];
 
     // Only after
-    if ((!$val1['VALUE']) && ($val2['VALUE']))
+    if (!isset($val1['VALUE']) && isset($val2['VALUE']))
         return $val2['VALUE'];
 
     // Nerest
     if ($nerest) {
-        if (($time - $val1['ADDED']) < ($val2['ADDED'] - $time))
+        if (($time - (int)$val1['ADDED']) < ((int)$val2['ADDED'] - $time))
             return $val1['VALUE'];
         else
             return $val2['VALUE'];
     } // Interpolation
     else {
-        if ($val2['ADDED'] - $val1['ADDED'] == 0)
+        if ((int)$val2['ADDED'] - (int)$val1['ADDED'] == 0)
             return $val1['VALUE'];
         else
-            return $val1['VALUE'] + ($val2['VALUE'] - $val1['VALUE']) * ($time - $val1['ADDED']) / ($val2['ADDED'] - $val1['ADDED']);
+            return (int)$val1['VALUE'] + ((int)$val2['VALUE'] - (int)$val1['VALUE']) * ($time - (int)$val1['ADDED']) / ((int)$val2['ADDED'] - (int)$val1['ADDED']);
     }
+}
+
+
+function cleanUpValueHistory($value_id, $max_age_days, $data_type = 0)
+{
+    $total_removed = 0;
+
+    if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
+        $table_name = 'phistory_value_' . $value_id;
+    } else {
+        $table_name = 'phistory';
+    }
+
+    $start_tm = date('Y-m-d H:i:s', (time() - $max_age_days * 24 * 60 * 60));
+    $qry = "VALUE_ID='" . $value_id . "' AND ADDED<('" . $start_tm . "')";
+
+    if ($data_type == 5) {
+        $values = SQLSelect("SELECT * FROM $table_name WHERE $qry");
+        $totalv = count($values);
+        for ($iv = 0; $iv < $totalv; $iv++) {
+            $file_path = ROOT . 'cms/images/' . $values[$iv]['VALUE'];
+            if ($values[$iv]['VALUE'] != '' && file_exists($file_path)) {
+                unlink($file_path);
+            }
+        }
+    }
+
+    $tmp = SQLSelectOne("SELECT COUNT(*) as TOTAL FROM $table_name WHERE $qry");
+    if (isset($tmp['TOTAL']) && $tmp['TOTAL'] > 0) {
+        $total_removed = (int)$tmp['TOTAL'];
+        SQLExec("DELETE FROM $table_name WHERE $qry");
+    }
+    return $total_removed;
+}
+
+function cleanUpPropertyHistory($property_id, $max_age_days)
+{
+    $total_removed = 0;
+    $property = SQLSelectOne("SELECT * FROM properties WHERE ID=" . (int)$property_id);
+    if (isset($property['ID'])) {
+        $pvalues = SQLSelect("SELECT * FROM pvalues WHERE PROPERTY_ID='" . $property_id . "'");
+        $total = count($pvalues);
+        for ($i = 0; $i < $total; $i++) {
+            $total_removed += cleanUpValueHistory($pvalues[$i]['ID'], $max_age_days, $property['DATA_TYPE']);
+        }
+    }
+    return $total_removed;
 }
 
 /**
@@ -912,6 +1143,12 @@ function getHistoryValue($varname, $time, $nerest = false)
  */
 function setGlobal($varname, $value, $no_linked = 0, $source = '')
 {
+
+    $varname = trim($varname);
+    if (strpos($varname, 'cycle_') === 0) {
+        saveCycleToCache($varname, $value);
+        return;
+    }
 
     $tmp = explode('.', $varname);
 
@@ -934,6 +1171,7 @@ function setGlobal($varname, $value, $no_linked = 0, $source = '')
     }
 }
 
+
 /**
  * Summary of callMethod
  * @param mixed $method_name Method name
@@ -942,11 +1180,12 @@ function setGlobal($varname, $value, $no_linked = 0, $source = '')
  */
 function callMethod($method_name, $params = 0)
 {
+    $method_name = trim($method_name);
     $tmp = explode('.', $method_name);
-    if (IsSet($tmp[2])) {
+    if (isset($tmp[2])) {
         $object_name = $tmp[0] . '.' . $tmp[1];
         $varname = $tmp[2];
-    } elseif (IsSet($tmp[1])) {
+    } elseif (isset($tmp[1])) {
         $object_name = $tmp[0];
         $method_name = $tmp[1];
     } else {
@@ -954,7 +1193,7 @@ function callMethod($method_name, $params = 0)
     }
 
     if ($object_name == 'AllScripts') {
-        return runScript($method_name,$params);
+        return runScript($method_name, $params);
     }
 
     $obj = getObject($object_name);
@@ -969,17 +1208,17 @@ function callMethod($method_name, $params = 0)
 function callMethodSafe($method_name, $params = 0)
 {
     $tmp = explode('.', $method_name);
-    if (IsSet($tmp[2])) {
+    if (isset($tmp[2])) {
         $object_name = $tmp[0] . '.' . $tmp[1];
         $varname = $tmp[2];
-    } elseif (IsSet($tmp[1])) {
+    } elseif (isset($tmp[1])) {
         $object_name = $tmp[0];
         $method_name = $tmp[1];
     } else {
         $object_name = 'ThisComputer';
     }
     if ($object_name == 'AllScripts') {
-        return runScriptSafe($method_name,$params);
+        return runScriptSafe($method_name, $params);
     }
     $obj = getObject($object_name);
 
@@ -990,10 +1229,20 @@ function callMethodSafe($method_name, $params = 0)
     }
 }
 
-function callAPI($api_url, $method = 'GET', $params = 0)
+function callAPISync($api_url, $method = 'GET', $params = 0)
+{
+    return callAPI($api_url, $method, $params, true);
+}
+
+function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
 {
     $is_child = false;
     $fork_disabled = true;
+
+    if (is_array($method)) {
+        $params = $method;
+        $method = 'GET';
+    }
 
     if (defined('ENABLE_FORK') && ENABLE_FORK && function_exists('pcntl_fork')) {
         $fork_disabled = false;
@@ -1010,23 +1259,25 @@ function callAPI($api_url, $method = 'GET', $params = 0)
         } else {
             // child
             $is_child = true;
-            register_shutdown_function(create_function('$pars', 'posix_kill(getmypid(), SIGKILL);'), array());
+            if (function_exists('create_function')) {
+                register_shutdown_function(create_function('$pars', 'posix_kill(getmypid(), SIGKILL);'), array());
+            }
             set_time_limit(60);
         }
     }
 
 
-    startMeasure('callAPI');
+    startMeasure('callAPI ' . $api_url);
     if (!is_array($params)) {
         $params = array();
     }
-    $params['no_session']=1;
+    $params['no_session'] = 1;
 
 
-    $url = preg_replace('/^\/api\//', BASE_URL.'/api.php/', $api_url);
-    $url = preg_replace('/([^:])\/\//','\1/',$url);
+    $url = preg_replace('/^\/api\//', BASE_URL . '/api.php/', $api_url);
+    $url = preg_replace('/([^:])\/\//', '\1/', $url);
 
-    $method=strtoupper($method);
+    $method = strtoupper($method);
     global $api_ch;
     if (!isset($api_ch)) {
         $api_ch = curl_init();
@@ -1035,10 +1286,8 @@ function callAPI($api_url, $method = 'GET', $params = 0)
         curl_setopt($api_ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
         curl_setopt($api_ch, CURLOPT_MAXREDIRS, 2);
         curl_setopt($api_ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
-        curl_setopt($api_ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($api_ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($api_ch, CURLOPT_NOSIGNAL, 1);
-        if (!$is_child) {
+        if (!$is_child && !$wait_response) {
             curl_setopt($api_ch, CURLOPT_TIMEOUT_MS, 50);
         }
     }
@@ -1051,13 +1300,31 @@ function callAPI($api_url, $method = 'GET', $params = 0)
         curl_setopt($api_ch, CURLOPT_POSTFIELDS, $params);
     }
     curl_setopt($api_ch, CURLOPT_URL, $url);
-    curl_exec($api_ch);
+    $result = curl_exec($api_ch);
 
-    endMeasure('callAPI');
+    if (curl_errno($api_ch)) {
+        $errorInfo = curl_error($api_ch);
+        $info = curl_getinfo($api_ch);
+        //DebMes("Call to $url finished with error: \n" . $errorInfo . "\n" . json_encode($info), 'callAPI_errors');
+    }
+
+    endMeasure('callAPI ' . $api_url);
 
     if ($is_child) {
         exit();
     }
+
+    if ($result != '') {
+        $data = json_decode($result, true);
+        if (is_array($data) && isset($data['apiHandleResult'])) {
+            return $data['apiHandleResult'];
+        } elseif (is_array($data)) {
+            return $data;
+        } else {
+            return $result;
+        }
+    }
+
     return true;
 
 }
@@ -1065,10 +1332,10 @@ function callAPI($api_url, $method = 'GET', $params = 0)
 function injectObjectMethodCode($method_name, $key, $code)
 {
     $tmp = explode('.', $method_name);
-    if (IsSet($tmp[2])) {
+    if (isset($tmp[2])) {
         $object_name = $tmp[0] . '.' . $tmp[1];
         $varname = $tmp[2];
-    } elseif (IsSet($tmp[1])) {
+    } elseif (isset($tmp[1])) {
         $object_name = $tmp[0];
         $method_name = $tmp[1];
     } else {
@@ -1130,10 +1397,8 @@ function processTitle($title, $object = 0)
     //startMeasure('processTitle ['.$in_title.']');
 
     if ($in_title != '') {
-        if (IsSet($_SERVER['REQUEST_METHOD'])) {
-            if ($title_memory_cache[$key]) {
-                return $title_memory_cache[$key];
-            }
+        if (isset($_SERVER['REQUEST_METHOD']) && isset($title_memory_cache[$key])) {
+            return $title_memory_cache[$key];
         }
 
         if (preg_match('/\[#.+?#\]/is', $title)) {
@@ -1170,15 +1435,14 @@ function processTitle($title, $object = 0)
                 for ($i = 0; $i < $total; $i++) {
                     $property_name = $m[1][$i] . '.' . $m[2][$i];
                     $data = getGlobal($property_name);
-                    if ($data == '') $data = 0;
                     $descr = $m[3][$i];
-                    $descr = preg_replace('#(?<!\\\)\;#', ";-;;-;", $descr); 
-                    $descr = preg_replace('#\\\;#', ";", $descr); 
+                    $descr = preg_replace('#(?<!\\\)\;#', ";-;;-;", $descr);
+                    $descr = preg_replace('#\\\;#', ";", $descr);
                     $tmp = explode(';-;;-;', $descr);
                     $totald = count($tmp);
                     $hsh = array();
                     if ($totald == 1) {
-                        if ($data != 0) {
+                        if ($data != '') {
                             $hsh[$data] = $descr;
                         } else {
                             $hsh[$data] = '';
@@ -1188,16 +1452,23 @@ function processTitle($title, $object = 0)
                             $item = trim($tmp[$id]);
                             if (preg_match('/(.*?)=(.+)/uis', $item, $md)) {
                                 $search_value = $md[1];
+                                if ($search_value == '') $search_value = '<empty>';
                                 $search_replace = $md[2];
                             } else {
-                                $search_value = $id;
+                                $search_value = $id . '';
                                 $search_replace = $item;
                             }
                             $hsh[$search_value] = $search_replace;
                         }
-                        if ($data == '') $data='0';
+                        if ($data == '' && isset($hsh['<empty>'])) {
+                            $data = '<empty>';
+                        } elseif ($data == '') {
+                            $data = '0';
+                        }
                     }
-                    $title = str_replace($m[0][$i], $hsh[$data], $title);
+                    if (isset($hsh[$data])) {
+                        $title = str_replace($m[0][$i], $hsh[$data], $title);
+                    }
                 }
 
                 endMeasure('processTitlePropertiesReplace');
@@ -1246,7 +1517,7 @@ function processTitle($title, $object = 0)
     }
 
     //endMeasure('processTitle ['.$in_title.']', 1);
-    if (IsSet($_SERVER['REQUEST_METHOD'])) {
+    if (isset($_SERVER['REQUEST_METHOD'])) {
         $title_memory_cache[$key] = $title;
     }
 
@@ -1321,7 +1592,7 @@ function getRoomObjectByLocation($location_id, $auto_add = 0)
         $location_title = 'Room' . $location_id;
     }
     $room_object = SQLSelectOne("SELECT * FROM objects WHERE TITLE = '" . DBSafe($location_title) . "'");
-    if ($room_object['ID']) return $room_object['TITLE'];
+    if (isset($room_object['ID'])) return $room_object['TITLE'];
 
     $class_id = addClass("Rooms");
     $room_object = SQLSelectOne("SELECT * FROM objects WHERE LOCATION_ID=" . $location_id . " AND CLASS_ID=" . $class_id);
@@ -1401,8 +1672,26 @@ function objectClassChanged($object_id)
 
 function checkOperationsQueue($topic)
 {
+    if (defined('USE_REDIS')) {
+        global $redisConnection;
+        if (!isset($redisConnection)) {
+            $redisConnection = new Redis();
+            $redisConnection->pconnect(USE_REDIS);
+        }
+        $queueName = "mjd:queue:" . $topic;
+        $result = array();
+        while ($redisConnection->lLen($queueName)) {
+            $data = $redisConnection->lPop($queueName);
+            $data = explode('|', $data);
+            $item['TOPIC'] = $queueName;
+            $item['DATANAME'] = $data[0];
+            $item['DATAVALUE'] = $data[1];
+            $result[] = $item;
+        }
+        return $result;
+    }
     $data = SQLSelect("SELECT * FROM operations_queue WHERE TOPIC='" . DBSafe($topic) . "' ORDER BY EXPIRE");
-    if ($data[0]['TOPIC']) {
+    if (isset($data[0]['TOPIC'])) {
         SQLExec("DELETE FROM operations_queue WHERE TOPIC='" . DBSafe($topic) . "'");
     }
     return $data;
@@ -1410,10 +1699,23 @@ function checkOperationsQueue($topic)
 
 function addToOperationsQueue($topic, $dataname, $datavalue = '', $uniq = false, $ttl = 60)
 {
+    startMeasure('addToOperationsQueue');
+    if (defined('USE_REDIS')) {
+        global $redisConnection;
+        if (!isset($redisConnection)) {
+            $redisConnection = new Redis();
+            $redisConnection->pconnect(USE_REDIS);
+        }
+        $value = $dataname . "|" . $datavalue;
+        $queueName = "mjd:queue:" . $topic;
+        $result = $redisConnection->rPush($queueName, $value);
+        endMeasure('addToOperationsQueue');
+        return $result;
+    }
     $rec = array();
     $rec['TOPIC'] = $topic;
     $rec['DATANAME'] = $dataname;
-    if (strlen($datavalue) < 255) {
+    if (strlen($datavalue) < 1024) {
         $rec['DATAVALUE'] = $datavalue;
     }
     $rec['EXPIRE'] = date('Y-m-d H:i:s', time() + $ttl);
@@ -1422,5 +1724,6 @@ function addToOperationsQueue($topic, $dataname, $datavalue = '', $uniq = false,
     }
     $rec['ID'] = SQLInsert('operations_queue', $rec);
     SQLExec("DELETE FROM operations_queue WHERE EXPIRE<NOW();");
+    endMeasure('addToOperationsQueue');
     return $rec['ID'];
 }

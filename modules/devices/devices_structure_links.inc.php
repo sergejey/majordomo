@@ -1,7 +1,7 @@
 <?php
 
 $this->device_links=array(
-    'SMotions,SButtons,SOpenClose,SCameras'=>array(
+    'SMotions,SButtons,SOpenClose,SOpenable,SCameras,SLeak,SSmoke,SRelays'=>array(
         array(
             'LINK_NAME'=>'switch_timer',
             'LINK_TITLE'=>LANG_DEVICES_LINK_SWITCH_TIMER,
@@ -11,7 +11,7 @@ $this->device_links=array(
                 array(
                     'PARAM_NAME'=>'action_delay',
                     'PARAM_TITLE'=>LANG_DEVICES_LINK_SWITCH_TIMER_PARAM_ACTION_DELAY,
-                    'PARAM_TYPE'=>'num'
+                    'PARAM_TYPE'=>'duration'
                 ),
                 array(
                     'PARAM_NAME'=>'darktime',
@@ -28,7 +28,7 @@ $this->device_links=array(
             'LINK_NAME'=>'switch_it',
             'LINK_TITLE'=>LANG_DEVICES_LINK_SWITCH_IT,
             'LINK_DESCRIPTION'=>LANG_DEVICES_LINK_SWITCH_IT_DESCRIPTION,
-            'TARGET_CLASS'=>'SControllers',
+            'TARGET_CLASS'=>'SControllers,SOpenable',
             'PARAMS'=>array(
                 array(
                     'PARAM_NAME'=>'action_type',
@@ -37,13 +37,17 @@ $this->device_links=array(
                     'PARAM_OPTIONS'=>array(
                         array('TITLE'=>LANG_DEVICES_LINK_TYPE_TURN_ON,'VALUE'=>'turnon'),
                         array('TITLE'=>LANG_DEVICES_LINK_TYPE_TURN_OFF,'VALUE'=>'turnoff'),
-                        array('TITLE'=>LANG_DEVICES_LINK_TYPE_SWITCH,'VALUE'=>'switch')
+                        array('TITLE'=>LANG_DEVICES_LINK_TYPE_SYNC,'VALUE'=>'sync'),
+                        array('TITLE'=>LANG_DEVICES_LINK_TYPE_SYNC_INVERTED,'VALUE'=>'sync_inverted'),
+                        array('TITLE'=>LANG_DEVICES_LINK_TYPE_SWITCH,'VALUE'=>'switch'),
+                        array('TITLE'=>LANG_DEVICES_LINK_TYPE_OPEN,'VALUE'=>'open'),
+                        array('TITLE'=>LANG_DEVICES_LINK_TYPE_CLOSE,'VALUE'=>'close'),
                         )
                 ),
                 array(
                     'PARAM_NAME'=>'action_delay',
                     'PARAM_TITLE'=>LANG_DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY,
-                    'PARAM_TYPE'=>'num'
+                    'PARAM_TYPE'=>'duration'
                 )
             )
             ),
@@ -61,7 +65,7 @@ $this->device_links=array(
                 array(
                     'PARAM_NAME'=>'action_delay',
                     'PARAM_TITLE'=>LANG_DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY,
-                    'PARAM_TYPE'=>'num'
+                    'PARAM_TYPE'=>'duration'
                 )
             )
         )
@@ -90,8 +94,29 @@ $this->device_links=array(
             'LINK_NAME'=>'sensor_switch',
             'LINK_TITLE'=>LANG_DEVICES_LINK_SENSOR_SWITCH,
             'LINK_DESCRIPTION'=>LANG_DEVICES_LINK_SENSOR_SWITCH_DESCRIPTION,
-            'TARGET_CLASS'=>'SControllers',
+            'TARGET_CLASS'=>'SControllers,SOpenable',
             'PARAMS'=>array(
+                array(
+                    'PARAM_NAME'=>'source_value_type',
+                    'PARAM_TITLE'=>LANG_DEVICES_LINK_SENSOR_VALUE_TYPE,
+                    'PARAM_TYPE'=>'select',
+                    'PARAM_OPTIONS'=>array(
+                        array('TITLE'=>LANG_DEVICES_LINK_SENSOR_VALUE_TYPE_CURRENT,'VALUE'=>''),
+                        array('TITLE'=>LANG_DEVICES_LINK_SENSOR_VALUE_TYPE_MIN,'VALUE'=>'min'),
+                        array('TITLE'=>LANG_DEVICES_LINK_SENSOR_VALUE_TYPE_AVG,'VALUE'=>'avg'),
+                        array('TITLE'=>LANG_DEVICES_LINK_SENSOR_VALUE_TYPE_MAX,'VALUE'=>'max'),
+                    )
+                ),
+                array(
+                    'PARAM_VISIBLE_CONDITION'=>array(
+                        'CHECK_PARAM_NAME'=>'source_value_type',
+                        'CHECK_PARAM_CONDITION'=>'!=',
+                        'CHECK_PARAM_VALUE'=>'',
+                    ),
+                    'PARAM_NAME'=>'source_value_time',
+                    'PARAM_TITLE'=>LANG_DEVICES_LINK_SENSOR_VALUE_FOR_PERIOD,
+                    'PARAM_TYPE'=>'duration'
+                ),
                 array(
                     'PARAM_NAME'=>'condition_type',
                     'PARAM_TITLE'=>LANG_DEVICES_LINK_SENSOR_SWITCH_PARAM_CONDITION,
@@ -112,7 +137,9 @@ $this->device_links=array(
                     'PARAM_TYPE'=>'select',
                     'PARAM_OPTIONS'=>array(
                         array('TITLE'=>LANG_DEVICES_LINK_TYPE_TURN_ON,'VALUE'=>'turnon'),
-                        array('TITLE'=>LANG_DEVICES_LINK_TYPE_TURN_OFF,'VALUE'=>'turnoff')
+                        array('TITLE'=>LANG_DEVICES_LINK_TYPE_TURN_OFF,'VALUE'=>'turnoff'),
+                        array('TITLE'=>LANG_DEVICES_LINK_TYPE_OPEN,'VALUE'=>'open'),
+                        array('TITLE'=>LANG_DEVICES_LINK_TYPE_CLOSE,'VALUE'=>'close'),
                     )
                 )
             )
@@ -121,7 +148,7 @@ $this->device_links=array(
             'LINK_NAME'=>'sensor_pass',
             'LINK_TITLE'=>LANG_DEVICES_LINK_SENSOR_PASS,
             'LINK_DESCRIPTION'=>LANG_DEVICES_LINK_SENSOR_PASS_DESCRIPTION,
-            'TARGET_CLASS'=>'SThermostats',
+            'TARGET_CLASS'=>'SThermostats,SAirConditioners',
         )
     ),
     'SOpenClose' =>array(

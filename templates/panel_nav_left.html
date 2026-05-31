@@ -1,0 +1,47 @@
+<div class="col-lg-2 col-md-3 col-sm-4 col-xs-12" style="margin-bottom: 10px;" id="left_block">
+    <div class="panel-group">
+        <div id="hint_alert_hide_hint2" style="display:none;">
+            <div class="hidden-xs">
+                <div class="alert" id="hideMenuHint" onClick="return leftPanelToggle();" style="margin-bottom: 0px;cursor:pointer;font-size: 8pt;background: radial-gradient(circle farthest-corner at 450px 10px, #198f22, #86bea4);color: white;padding: 5px;text-align: center;">
+                    <i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;margin-right: 5px;"></i>
+                    <#LANG_NEWDASH_HIDE_MENU_HINT#> <i class="glyphicon glyphicon-resize-horizontal"></i>
+                </div>
+                <div onclick="hideHintCookie('alert_hide_hint2');" style="cursor:pointer;text-align: center;font-size: 7pt;margin-top: 5px;color: gray;font-style: italic;margin-bottom:20px"><#LANG_NEWDASH_DONTSHOW_THIS_BLOCK#> <i class="glyphicon glyphicon-arrow-up"></i></div>
+            </div>
+        </div>
+        [#begin SUB_MODULES#]
+        [#if NEW_CATEGORY#]
+        <div class="panel panel-default">
+            <div class="panel-heading" onClick="return toggleCategory('[#CATEGORY_ID#]');" style="cursor: pointer;">
+                <h4 class="panel-title">
+                    [#CATEGORY#]
+                </h4>
+            </div>
+            <div id="row_[#CATEGORY_ID#]" class="panel-collapse collapse out">
+                <div class="panel-body" style="padding: 5px;">
+                    <ul class="nav nav-list">
+                        [#endif NEW_CATEGORY#]
+                        [#if !DENIED#]
+                        <li class="[#if SELECTED#]active[#endif#] category[#CATEGORY_ID#]" id="module_[#NAME#]_link">
+                            <a class="leftmenutab" href="?action=[#NAME#]"><img src="[#ICON_SM#]" style="width: 20px;height: 20px;">&nbsp;[#TITLE#]
+                                [#if NOTIFICATIONS_COUNT != 0#]
+                                <span class="badge pull-right alert-[#NOTIFICATIONS_TYPE#]" style="border: 1px solid;cursor: pointer;"  data-container="body" data-toggle="popover" data-trigger="manual" data-placement="bottom" data-html="true" >[#NOTIFICATIONS_COUNT#]</span>
+                                [#endif NOTIFICATIONS_COUNT#]</a>
+                        </li>
+                        [#endif DENIED#]
+                        [#if LAST_IN_CATEGORY#]
+                    </ul>
+                </div>
+            </div>
+        </div>
+        [#endif#]
+        [#end SUB_MODULES#]
+    </div>
+    [#begin SUB_MODULES#]
+    [#if NEW_CATEGORY#]
+    <script language='javascript'>
+        checkCategory('[#CATEGORY_ID#]');
+    </script>
+    [#endif NEW_CATEGORY#]
+    [#end SUB_MODULES#]
+</div>

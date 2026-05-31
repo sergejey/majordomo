@@ -5,7 +5,7 @@
 * Master
 *
 * @package MajorDoMo
-* @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+* @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
 * @version 0.2 (wizard, 16:10:24 [Oct 26, 2006])
 */
 //

@@ -1,0 +1,54 @@
+<p><a href="#" class="btn btn-default" id="new_schedule_link" onclick="$('#new_schedule_link').hide();$('#new_schedule').show();"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#></a>
+<div id="new_schedule" style="display:none">
+    <form method="get" action="?">
+        <div class="form-group">
+            <select name="id" onchange="this.form.submit();" class="form-control">
+                <option value="0"><#LANG_DEVICES#></option>
+                [#begin ALL_DEVICES#]
+                <option value="[#ID#]">[#TITLE#]</option>
+                [#end ALL_DEVICES#]
+            </select>
+        </div>
+        <input type="hidden" name="view_mode" value="edit_devices">
+        <input type="hidden" name="tab" value="schedule">
+    </form>
+</div>
+</p>
+
+<table class="table">
+    [#begin DEVICES#]
+    <tr>
+        <td><a href="?view_mode=edit_devices&id=[#ID#]&tab=schedule">[#TITLE#]</a></td>
+        <td>
+
+            <table class="table table-striped">
+                [#begin POINTS#]
+                <tr>
+                    <td>
+                        <b><a href="?id=<#DEVICES.ID#>&view_mode=edit_devices&tab=schedule&point_id=[#ID#]">[#SET_TIME#]</a></b>
+                        [#if HAS_RULE#]
+                        <a onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);"
+                           class="btn-sm btn-success"
+                           href="?(panel:{action=security_rules})&object_type=spoint&object_id=[#ID#]&print=1&types[]=times&types[]=conditions" target=_blank>
+                            <i class="glyphicon glyphicon-cog"></i></a>
+                        [#endif#]
+                    </td>
+
+                    <td>[#SET_DAYS#]</td>
+                    <td><b>[#LINKED_METHOD#]
+                        [#if VALUE!=""#]([#VALUE#])[#endif#]
+                    </b>
+                    </td>
+
+                    <td class="text-right">
+                        <a href="?id=<#DEVICES.ID#>&view_mode=edit_devices&tab=schedule&point_id=[#ID#]" class="btn btn-default btn-sm"><#LANG_EDIT#></a>
+                        <a href="?id=<#DEVICES.ID#>&view_mode=edit_devices&tab=schedule&delete_id=[#ID#]" onclick="return confirm('<#LANG_ARE_YOU_SURE#>');" class="btn btn-default btn-sm"><#LANG_DELETE#></a>
+                    </td>
+                </tr>
+                [#end POINTS#]
+            </table>
+
+        </td>
+    </tr>
+    [#end DEVICES#]
+</table>

@@ -21,6 +21,7 @@ set_time_limit(0);
         &gtype=curve - тип графика (может быть: curve, bar, line -- плавная линия, столбцы, ступенчатый)
         &type=8h - Период (8h = 8 часов, 8d = 8 дней, 8m = 8 месяцев)
         &start=2014/09/25 - дата с которой берется начало графика в формате (гггг/мм/дд)
+        &end=2014/09/25 - дата с которой берется конец графика в формате (гггг/мм/дд)
         &interval= секунд в интервале
         &width=610 - ширина графика в пикселях
         &height=210 - высота графика в пикселях
@@ -41,7 +42,7 @@ $threshold_fontsize = 6;
 $w_delta = 80;
 $px_per_point = 6;
 $unit = "°C";
-$end_time = time();
+
 $approx = 'avg';
 $fil01 = 0;
 
@@ -52,13 +53,29 @@ include_once("./load_settings.php");
 include(dirname(__FILE__) . "/class/pDraw.class.php");
 include(dirname(__FILE__) . "/class/pImage.class.php");
 include(dirname(__FILE__) . "/class/pData.class.php");
-if ($width) $w = (int)$width;
-if ($height) $h = (int)$height;
-if ($_GET['px']) $px_per_point = (int)$_GET['px'];
+
+$end = gr('end');
+if (preg_match('/(\d+)\/(\d+)\/(\d+)/', $end, $m)) {
+    $end_time = mktime(23, 59, 59, $m[2], $m[3], $m[1]);
+} else {
+    $end_time = time();
+}
+
+$op = gr('op');
+
+$width = gr('width','int');
+if ($width) $w = $width;
+
+$height = gr('height','int');
+if ($height) $h = $height;
+
+$px = gr('px','int');
+if ($px) $px_per_point = $px;
 
 // Dataset definition   
 $DataSet = new pData;
 
+$p = gr('p');
 if (is_array($p)) {
     $p = $p[0];
 }
@@ -74,23 +91,23 @@ $property = SQLSelectOne("SELECT * FROM properties WHERE ID=" . (int)$prop_id);
 $pvalue = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='" . $prop_id . "' AND OBJECT_ID='" . $obj->id . "'");
 
 if (!$pvalue['ID']) {
-    echo "Incorrect property name";
+    echo LANG_NO_RECORDS_FOUND;
     exit;
 }
 
-if ($_GET['op'] == 'value') {
+if ($op == 'value') {
     echo $pvalue['VALUE'];
     exit;
 }
 
+$type = gr('type');
 if (!$type) {
     $type = '7d';
 }
 
-if ($_GET['group']) {
-    $group = $_GET['group'];
-}
+$group = gr('group');
 
+$total = 0;
 if (preg_match('/(\d+)d/', $type, $m)) {
     $total = (int)$m[1];
     $period = round(($total * 24 * 60 * 60) / (($w - $w_delta) / $px_per_point)); // seconds
@@ -106,10 +123,12 @@ if (preg_match('/(\d+)d/', $type, $m)) {
     $period = round(($total * 31 * 24 * 60 * 60) / (($w - $w_delta) / $px_per_point)); // seconds
     $start_time = $end_time - $total * 31 * 24 * 60 * 60;
 
-} elseif (preg_match('/(\d+)\/(\d+)\/(\d+)/', $_GET['start'], $m) && $_GET['interval']) {
-    $period = (int)$_GET['interval']; //seconds
+} elseif (preg_match('/(\d+)\/(\d+)\/(\d+)/', gr('start'), $m) && gr('interval')) {
+    $period = gr('interval','int'); //seconds
     $start_time = mktime(0, 0, 0, $m[2], $m[3], $m[1]);
     $total = 1;
+} else {
+    $start_time = 0;
 }
 
 if ($total > 0) {
@@ -127,19 +146,19 @@ if ($total > 0) {
         $history = array();
     } else {
         $history = SQLSelect("SELECT ID, VALUE, ADDED, SOURCE FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' AND ADDED>=('" . date('Y-m-d H:i:s', $start_time) . "') AND ADDED<=('" . date('Y-m-d H:i:s', $end_time) . "')"); // ORDER BY ADDED
-        if (!$history[0]['ID'] && $op == 'log') {
-            $history = SQLSelect("SELECT ID, VALUE, ADDED, SOURCE FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC LIMIT 20");
+        if (!isset($history[0]['ID']) && $op == 'log') {
+            $history = SQLSelect("SELECT ID, VALUE, ADDED, SOURCE FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC, ID DESC LIMIT 20");
             $history = array_reverse($history);
         }
 
-        if ($history[0]['ID']) {
+        if (isset($history[0]['ID'])) {
             $total = count($history);
             for ($i = 0; $i < $total; $i++) {
                 $history[$i]['UNX'] = strtotime($history[$i]['ADDED']);
             }
             usort($history, function ($a, $b) {
                 if ($a['UNX'] == $b['UNX']) {
-                    return 0;
+                    return ($a['ID'] < $b['ID']) ? -1: 1;
                 }
                 return ($a['UNX'] < $b['UNX']) ? -1 : 1;
             });
@@ -149,10 +168,11 @@ if ($total > 0) {
     //echo "test";exit;
 
     $total_values = count($history);
-    $start_time = $history[0]['UNX'];
+    if (isset($history[0]['UNX'])) {
+        $start_time = $history[0]['UNX'];
+    }
 
-    if ($_GET['op'] == 'timed') {
-        //header("Content-type: text/json");
+    if ($op == 'timed') {
         $tret = array();
         $t_times = array();
         $t_values = array();
@@ -166,10 +186,11 @@ if ($total > 0) {
         exit;
     }
 
-    if ($_GET['op'] == 'log') {
+    $op = gr('op');
+    if (gr('op') == 'log') {
         if ($total_values > 0) {
-            if ($_GET['subop'] == 'clear') {
-                if (!$_GET['id']) {
+            if (gr('subop') == 'clear') {
+                if (!gr('id')) {
                     $values = SQLSelect("SELECT * FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "'");
                     $total = count($values);
                     for ($i = 0; $i < $total; $i++) {
@@ -179,7 +200,7 @@ if ($total > 0) {
                     }
                     SQLExec("DELETE FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "'");
                 } else {
-                    $value = SQLSelectOne("SELECT * FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' AND ID='" . (int)$_GET['id'] . "'");
+                    $value = SQLSelectOne("SELECT * FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' AND ID='" . gr('id','int') . "'");
                     if ($property['DATA_TYPE'] == 5) {
                         @unlink(ROOT . 'cms/images/' . $value['VALUE']);
                     }
@@ -190,7 +211,7 @@ if ($total > 0) {
             }
             //OPTIMIZE_LOG
             if ($_GET['subop'] == 'optimize') {
-                $data = SQLSelect("SELECT * FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC");
+                $data = SQLSelect("SELECT * FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED DESC, ID DESC");
                 $total = count($data);
                 $old_value = $data[0]['VALUE'];
                 for ($i = 1; $i < $total; $i++) {
@@ -204,8 +225,32 @@ if ($total > 0) {
                 exit;
             }
 
+            if ($_GET['export']) {
+                $data = SQLSelect("SELECT * FROM $history_table WHERE VALUE_ID='" . $pvalue['ID'] . "' ORDER BY ADDED, ID");
+                //dprint($data);
+
+                $csv = implode("\t", array('ADDED', 'VALUE', 'SOURCE')) . PHP_EOL;
+                foreach ($data as $row) {
+                    $csv .= $row['ADDED'] . "\t" . $row['VALUE'] . "\t" . $row['SOURCE'];
+                    $csv .= PHP_EOL;
+                }
+
+                $filename = 'data_' . date('Y-m-d-H_i_s') . '.txt';
+                $now = gmdate("D, d M Y H:i:s");
+                // force download
+                header("Content-Type: application/force-download");
+                header("Content-Type: application/octet-stream");
+                header("Content-Type: application/download");
+                // disposition / encoding on response body
+                header("Content-Disposition: attachment;filename={$filename}");
+                header("Content-Transfer-Encoding: binary");
+                echo $csv;
+                exit;
+            }
+
             echo "<html><head>";
             $roothtml = ROOTHTML;
+            $url = str_replace('&end=', '&', $_SERVER['REQUEST_URI']);
             echo <<<FF
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
@@ -215,32 +260,41 @@ if ($total > 0) {
 <script type="text/javascript"  src="{$roothtml}3rdparty/jquery/jquery-migrate-3.0.0.min.js"></script>
 <link rel="stylesheet" href="{$roothtml}3rdparty/bootstrap/css/bootstrap.min.css" type="text/css">
 <script type="text/javascript" src="{$roothtml}3rdparty/bootstrap/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="{$roothtml}3rdparty/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css"/>
+<script type="text/javascript" src="{$roothtml}3rdparty/moment/moment.min.js"></script>
+<script type="text/javascript" src="{$roothtml}3rdparty/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript">
+ $(document).ready(function() {
+    $('.datepicker').datetimepicker({
+    format:'YYYY/MM/DD',
+    }).on('dp.change',function(e) {
+         var formatedValue = e.date.format(e.date._f);
+         dateChanged(formatedValue);
+     }); 
+ });
+ function dateChanged(dt) {
+     url = "{$url}";
+     window.location.href = url + '&end='+encodeURI(dt);
+ }
+</script>
 FF;
             echo "</head><body><div>";
-            //echo "<table width=100%><tr><td width='99%'>";
 
             $_SERVER['REQUEST_URI'] = preg_replace('/&subop=(\w+)/', '', $_SERVER['REQUEST_URI']);
-            echo "<ul class='nav nav-tabs'>";
-            echo '<li'.($_GET['subop']==''?' class="active"':'').'><a href="' . $_SERVER['REQUEST_URI'] . '&subop=">H</a></li>';
-            echo '<li'.($_GET['subop']=='1h'?' class="active"':'').'><a href="' . $_SERVER['REQUEST_URI'] . '&subop=1h">1h</a></li>';
-            echo '<li'.($_GET['subop']=='24h'?' class="active"':'').'><a href="' . $_SERVER['REQUEST_URI'] . '&subop=24h">24h</a></li>';
-            echo '<li'.($_GET['subop']=='7d'?' class="active"':'').'><a href="' . $_SERVER['REQUEST_URI'] . '&subop=7d">7d</a></li>';
-            echo '<li'.($_GET['subop']=='31d'?' class="active"':'').'><a href="' . $_SERVER['REQUEST_URI'] . '&subop=31d">31d</a></li>';
+            echo "<div class='row'><div class='col-md-10'><ul class='nav nav-tabs'>";
+            echo '<li' . ($_GET['subop'] == '' ? ' class="active"' : '') . '><a href="' . $_SERVER['REQUEST_URI'] . '&subop=">H</a></li>';
+            echo '<li' . ($_GET['subop'] == '1h' ? ' class="active"' : '') . '><a href="' . $_SERVER['REQUEST_URI'] . '&subop=1h">1h</a></li>';
+            echo '<li' . ($_GET['subop'] == '24h' ? ' class="active"' : '') . '><a href="' . $_SERVER['REQUEST_URI'] . '&subop=24h">24h</a></li>';
+            echo '<li' . ($_GET['subop'] == '7d' ? ' class="active"' : '') . '><a href="' . $_SERVER['REQUEST_URI'] . '&subop=7d">7d</a></li>';
+            echo '<li' . ($_GET['subop'] == '31d' ? ' class="active"' : '') . '><a href="' . $_SERVER['REQUEST_URI'] . '&subop=31d">31d</a></li>';
             if (!$_GET['minimal']) {
                 echo '<li><a href="' . $_SERVER['REQUEST_URI'] . '&subop=clear" onClick="return confirm(\'' . LANG_ARE_YOU_SURE . '\')">' . LANG_CLEAR_ALL . '</a></li>';
                 echo '<li><a href="' . $_SERVER['REQUEST_URI'] . '&subop=optimize" onClick="return confirm(\'' . LANG_ARE_YOU_SURE . '\')">' . LANG_OPTIMIZE_LOG . '</a></li>';
             }
             echo "</ul>";
-            //echo "</td>";
-            /*
-            if (!$_GET['minimal']) {
-                echo "<td>";
-                echo '<a href="javascript:window.close();">X</a>';
-                echo "</td>";
-            }
-            */
-            //echo "</tr></table>";
-            //echo '<br/>';
+            echo "</div><div class='col-md-2'><form class='form' method='get'>";
+            echo '<input type="text" id="end" name="end" value="' . date('Y-m-d', $end_time) . '" class="form-control datepicker">';
+            echo "</form></div></div>";
 
             if (preg_match('/^\d+\w$/', $_GET['subop'])) {
 
@@ -250,37 +304,62 @@ FF;
                     if ($_GET['minimal']) {
                         $height = 500;
                     }
-
-
+                    $p_url = '';
                     if (!is_array($_GET['p'])) {
-                        $code = '<iframe allowfullscreen="true" src="' . ROOTHTML . 'module/charts.html?id=config&enable_fullscreen=1&period=' . $_GET['subop'] . '&chart_type=' . urlencode($_GET['chart_type']) . '&group=' . $group . '&property=' . urlencode($_GET['p']) . '&height=' . $height . '&theme=grid-light" width=100% height=' . ($height) . ' frameBorder=0></iframe>';
+                        $properties = array($_GET['p']);
                     } else {
-                        $p_url = '';
-                        foreach ($_GET['p'] as $p) {
-                            $p_url .= '&properties[]=' . urlencode($p);
-                        }
+                        $properties = $_GET['p'];
                         $p_url .= '&height=' . $height;
-                        $code = '<iframe allowfullscreen="true" src="' . ROOTHTML . 'module/charts.html?id=config&enable_fullscreen=1&period=' . $_GET['subop'] . '&chart_type=' . urlencode($_GET['chart_type']) . '&group=' . $group . $p_url . '&theme=grid-light&frameBorder=0" width=100% height=' . $height . '></iframe>';
                     }
+                    foreach ($properties as $p) {
+                        $p_url .= '&properties[]=' . urlencode($p);
+                        if (preg_match('/^(\w+)\.(\w+)$/', $p, $m)) {
+                            $object = getObject($m[1]);
+                            if ($object->description) {
+                                $p_url .= '&legend[]=' . urlencode($object->description . ' (' . $m[2] . ')');
+                            } else {
+                                $p_url .= '&legend[]=' . urlencode($p);
+                            }
+                        }
+                    }
+                    $code = '&nbsp;<iframe allowfullscreen="true" border="0" frameborder="0" src="' . ROOTHTML . 'module/charts.html?id=config&enable_fullscreen=1&period=' . $_GET['subop'] . '&end=' . urlencode($_GET['end']) . '&chart_type=' . urlencode(gr('chart_type')) . '&group=' . $group . $p_url . '&theme=grid-light&frameBorder=0" style="height:80% !important" width=100% ></iframe>';//height=' . $height . '
                 } else {
-                    $code = '<img src="' . ROOTHTML . '3rdparty/jpgraph/?p=' . $p . '&type=' . $_GET['subop'] . '&width=500&"/>';
+                    $code = '&nbsp;<img src="' . ROOTHTML . '3rdparty/jpgraph/?p=' . $p . '&type=' . $_GET['subop'] . '&end=' . urlencode($_GET['end']) . '&width=500&"/>';
                 }
                 echo $code;
-                if (!$_GET['minimal']) {
-                    echo "<br/>" . htmlspecialchars($code);
-                }
                 exit;
             }
         }
+
+
         $history = array_reverse($history);
-        if (!$_GET['full']) {
-            $history = array_slice($history, 0, 25);
-            $total_values = count($history);
-        }
+
+        require(ROOT . '3rdparty/Paginator/Paginator.php');
+        $page = gr('page','int');
+        if (!$page) $page = 1;
+
+        $on_page = 20;
+        $start_offset = (($page - 1) * $on_page);
+        $url = $_SERVER['REQUEST_URI'];
+        $url = preg_replace('/&page=\d+/', '', $url);
+        $urlPattern = $url . '&page=(:num)';
+        $paginator = new JasonGrimes\Paginator($total_values, $on_page, $page, $urlPattern);
+
+        $history = array_slice($history, $start_offset, $on_page);
+        $total_values = count($history);
+
+        echo "<div class='row'><div class='col-md-1'>&nbsp;</div>";
+        echo "<div class='col-md-5'>";
+        echo $paginator;
+        echo "</div>";
+        echo "<div class='col-md-5 text-right pagination'>";
+        echo "<a href=\"" . $_SERVER['REQUEST_URI'] . "&type=1&export=1\" class='btn btn-default'><i class='glyphicon glyphicon-export'></i> " . LANG_EXPORT . "</a>";
+        echo "</div>";
+        echo "<div class='col-md-1'>&nbsp;</div></div>";
+
         echo "<table class='table table-striped'>";
-        echo "<thead><tr><th>T</th><th>V</th><th>Src</th><th>&nbsp;</th></tr></thead>";
+        echo "<thead><tr><th>" . LANG_ADDED . "</th><th>" . LANG_VALUE . "</th><th>Src</th><th>&nbsp;</th></tr></thead>";
         for ($i = 0; $i < $total_values; $i++) {
-            //echo date('Y-m-d H:i:s', $history[$i]['UNX']);
             echo "<tr><td>";
             echo $history[$i]['ADDED'];
             echo "</td>";
@@ -288,36 +367,27 @@ FF;
             if ($property['DATA_TYPE'] == 5) {
                 echo "<a href='" . ROOTHTML . "cms/images/" . $history[$i]['VALUE'] . "' target='_blank'><img src='" . ROOTHTML . "cms/images/" . $history[$i]['VALUE'] . "' height=100></a>";
             } else {
-                echo "<b>".htmlspecialchars($history[$i]['VALUE']) . "</b>";
+                echo "<b>" . htmlspecialchars($history[$i]['VALUE']) . "</b>";
             }
             echo "</td>";
             echo "<td>";
             if ($history[$i]['SOURCE']) {
-                if (strlen($history[$i]['SOURCE']) > 30) {
-                    $src = substr($history[$i]['SOURCE'], 0, 30) . ' ...';
-                } else {
-                    $src = $history[$i]['SOURCE'];
-                }
-                echo '<input class="form-control" type=text value="' . $history[$i]['SOURCE'] . '"/>';
+                $src = $history[$i]['SOURCE'];
+                $src = str_replace("\n", ' ', $src);
+                $src = str_replace('"', '&quot;', $src);
+                echo '<input class="form-control" type=text value="' . $src . '"/>';
             }
             echo "</td>";
             echo '<td><a href="' . $_SERVER['REQUEST_URI'] . '&subop=clear&id=' . $history[$i]['ID'] . '" onClick="return confirm(\'' . LANG_ARE_YOU_SURE . '\')" class="btn btn-default btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i></a></td>';
             echo "</tr>";
         }
         echo "</table>";
-        if (!$_GET['full']) {
-            echo ' <br/><a href="' . $_SERVER['REQUEST_URI'] . '&type=1&full=1" class="btn btn-default btn-warning">Load all values</a> ';
-        }
 
         echo "</div></body></html>";
         exit;
     }
 
     $next_index = 0;
-    /*if ($approx=='count' && $total_values>1) {
-            $temp_array=array(round($history[1]['VALUE']-$history[0]['VALUE'],2));
-    } else */
-    //$temp_array=array($history[0]['VALUE']);
     $last_value = $history[0]['VALUE'];
 
     if ($_GET['approx']) {
@@ -326,7 +396,7 @@ FF;
 
     $index = 0;
     while ($start_time <= $end_time) {
-        if ($next_index < $total_values) {        //���������� ��������
+        if ($next_index < $total_values) {
             for ($i = $next_index; $i < $total_values; $i++) {
                 $next_index = $i + 1;
                 if ($history[$i]['UNX'] >= $start_time || $next_index >= $total_values) {
@@ -347,44 +417,36 @@ FF;
                     } else {
                         $value = $last_value;
                     }
-                    if ($_GET['op'] == 'debug') {
+                    if (gr('op') == 'debug') {
                         echo "<tt>Take value = </tt><b>" . $value . "</b><tt> from ";
-                        //print_r($temp_array);         //������ �������������� �� �����, ������� ���������������
-                        //var_dump($temp_array);        //������ �������������� �� �����, ������� ���������������
-                        var_export($temp_array);        //������ �������������� �� �����, ������� ���������������
+                        var_export($temp_array);
                         echo "<tt><br>Period time: " . date('Y-m-d H:i:s', $start_time - $period) . " - " . date('Y-m-d H:i:s', $start_time) . " (" . $period . " sec)</tt><br>";
                         echo "<hr></tt>";
                     }
 
-                    //����� ���������� ������
                     if ($i >= 1 && $i < $total_values - 1) $last_value = $history[$i - 1]['VALUE'];
                     elseif ($i == $total_values - 1) $last_value = $history[$total_values - 1]['VALUE'];
                     else                                                            $last_value = $history[0]['VALUE'];
-                    if (($start_time + $period) < $history[$i]['UNX']) { //��� ��������� � ��������
-                        $temp_array = array($last_value); //����� �������� ���������� �������
+                    if (($start_time + $period) < $history[$i]['UNX']) {
+                        $temp_array = array($last_value);
                         $next_index = $i;
-                    } elseif ($start_time > $history[$i]['UNX']) { //��� ��������� � �����
-                        $temp_array = array($history[$total_values - 1]['VALUE']); //����� �������� ��������� �������
+                    } elseif ($start_time > $history[$i]['UNX']) {
+                        $temp_array = array($history[$total_values - 1]['VALUE']);
                         $next_index = $i;
                     } else
-                        $temp_array = array($history[$i]['VALUE']); //�������� ����������� ����� ������
-                    //}
-                    //if ($_GET['op']=='debug') echo "<tt>".$history[$i]['UNX'].">".$start_time.": ".$history[$i]['VALUE']."</tt><br>";
+                        $temp_array = array($history[$i]['VALUE']);
                     break;
                 } else {
                     if ($history[$i]['UNX'] < $start_time)
-                        $temp_array[] = $history[$i]['VALUE']; //���������� ����������� ������, ��������� ��������� ��������
-                    //if ($_GET['op']=='debug') echo "<tt>".$history[$i]['UNX']."<".$start_time.": ".$history[$i]['VALUE']."</tt><br>";
+                        $temp_array[] = $history[$i]['VALUE'];
                 }
             }
         } else {
-            // ��������� ��������� ��������
             if ($approx == 'count') {
                 $value = round($history[$total_values - 1]['VALUE'] - $last_value, 2);
             } else {
                 $value = $history[$total_values - 1]['VALUE'];
             }
-            //$values[]=$value;
         }
         if (isset($value)) $values[] = $value;
         if ($_GET['op'] == 'debug') {
@@ -427,7 +489,6 @@ FF;
     }
 
     if ($_GET['op'] == 'debug') {
-        //$history=array_reverse($history);
         echo "This array in pChart:<br>";
         $all = count($values);
         for ($i = 0; $i < $all; $i++) {
@@ -439,13 +500,9 @@ FF;
         }
         exit;
     }
-
     $DataSet->AddPoints($values, "Serie1");
-    //$DataSet->AddPoints($hours,"Serie3");
-
 } else {
     $DataSet->AddPoints(0, "Serie1");
-    //$DataSet->AddPoints(0,"Serie3");
 }
 
 if ($_GET['op'] == 'values') {
@@ -454,7 +511,6 @@ if ($_GET['op'] == 'values') {
 }
 
 if ($_GET['op'] == 'json') {
-    //header("Content-type: text/json");
     $ret = array();
     $ret['VALUES'] = $values;
     $ret['TIME'] = $hours;
@@ -467,7 +523,6 @@ $DataSet->addPoints($hours, "Labels");
 $DataSet->setSerieDescription("Labels", "�����");
 $DataSet->setAbscissa("Labels");
 
-//���� �������
 if ($_GET['gcolor'] == 'red') {
     $ColorPalete = array("R" => 220, "G" => 50, "B" => 50);
 } elseif ($_GET['gcolor'] == 'brown') {
@@ -485,7 +540,6 @@ if ($_GET['gcolor'] == 'red') {
         $ColorPalete = array("R" => 250, "G" => 250, "B" => 250);
     }
 }
-//$ColorPalete["Alpha"] = 100; //������������
 $DataSet->setPalette("Serie1", $ColorPalete);
 
 // Initialise the graph  
@@ -494,7 +548,6 @@ $Test = new pImage($w, $h, $DataSet);
 /* Define the boundaries of the graph area */
 $Test->setGraphArea($left_border, $top_border, $w - $right_border, $h - $bottom_border);
 
-//����������� ������� ����
 if (SETTINGS_THEME == 'light' || $_GET['bg'] == 'light') {
     $Settings = array(
         "StartR" => 240,
@@ -515,7 +568,7 @@ if (SETTINGS_THEME == 'light' || $_GET['bg'] == 'light') {
         "Alpha" => 100);
 }
 $Test->drawGradientArea(0, 0, $w, $h, DIRECTION_VERTICAL, $Settings);
-//����������� ������� ���� �������
+
 $Settings["StartR"] = $Settings["StartR"] + 40;
 $Settings["StartG"] = $Settings["StartG"] + 40;
 $Settings["StartB"] = $Settings["StartB"] + 40;
@@ -541,17 +594,17 @@ if (SETTINGS_THEME == 'light' || $_GET['bg'] == 'light') {
         "ManualScale" => $AxisBoundaries,
         "DrawXLines" => FALSE,
         "DrawYLines" => FALSE,
-        //���� ������������ ���
+
         "AxisR" => 100,
         "AxisG" => 100,
         "AxisB" => 100,
-        //���� ����� �� ������������ ���
+
         "TickR" => 100,
         "TickG" => 100,
         "TickB" => 100,
         "InnerTickWidth" => 0,
         "OuterTickWidth" => 5,
-        "LabelSkip" => 0, //���������� ����
+        "LabelSkip" => 0,
         "GridTicks" => 1,
         "ScaleSpacing" => 100,
         "XMargin" => 0,
@@ -575,7 +628,7 @@ if (SETTINGS_THEME == 'light' || $_GET['bg'] == 'light') {
         "DrawBox" => FALSE,
         "CaptionOffset" => -18,
         "NoMargin" => TRUE,
-        "Border" => FALSE,                                //������� ������� ������������ �������� ��� drawXThresholdArea
+        "Border" => FALSE,
         "CaptionAlign" => CAPTION_RIGHT_BOTTOM);
     /* Choose a nice font */
     $Test->setFontProperties(array("FontName" => $font, "R" => 100, "G" => 100, "B" => 100, "FontSize" => $scale_fontsize));
@@ -585,17 +638,17 @@ if (SETTINGS_THEME == 'light' || $_GET['bg'] == 'light') {
         "ManualScale" => $AxisBoundaries,
         "DrawXLines" => FALSE,
         "DrawYLines" => FALSE,
-        //���� ������������ ���
+
         "AxisR" => 240,
         "AxisG" => 240,
         "AxisB" => 240,
-        //���� ����� �� ������������ ���
+
         "TickR" => 240,
         "TickG" => 240,
         "TickB" => 240,
         "InnerTickWidth" => 0,
         "OuterTickWidth" => 5,
-        "LabelSkip" => 0, //���������� ����
+        "LabelSkip" => 0,
         "GridTicks" => 1,
         "ScaleSpacing" => 100,
         "XMargin" => 0,
@@ -619,17 +672,16 @@ if (SETTINGS_THEME == 'light' || $_GET['bg'] == 'light') {
         "DrawBox" => FALSE,
         "CaptionOffset" => -18,
         "NoMargin" => TRUE,
-        "Border" => FALSE,                                //������� ������� ������������ �������� ��� drawXThresholdArea
+        "Border" => FALSE,
         "CaptionAlign" => CAPTION_RIGHT_BOTTOM);
     /* Choose a nice font */
     $Test->setFontProperties(array("FontName" => $font, "R" => 240, "G" => 240, "B" => 240, "FontSize" => $scale_fontsize));
 }
 
 $Test->drawScale($scaleSettings);
-//$Test->drawGraphAreaGradient(162,183,202,50);
 $Test->setFontProperties(array("FontName" => $font, "FontSize" => $threshold_fontsize));
 $drawThreshold = $ThresholdSettings;
-$drawThreshold["Alpha"] = 10;  //������������ ������������ ��������
+$drawThreshold["Alpha"] = 10;
 $index = 0;
 $Alpha = $drawThreshold["Alpha"];
 while ($index < sizeof($thresholds)) {
@@ -645,10 +697,10 @@ while ($index < sizeof($thresholds)) {
     ++$index;
 }
 $drawThreshold["Alpha"] = $Alpha;
-$Test->drawThreshold(round(max($values), 1), $ThresholdSettings); //�������������� ����� �� ������������� ��������
-$Test->drawThreshold(round(min($values), 1), $ThresholdSettings); //�������������� ����� �� ������������ ��������
-$Test->drawThreshold(round(array_sum($values) / sizeof($values), 1), $ThresholdSettings); //�������������� ����� �� �������� ��������
-//$Test->drawGrid(1,TRUE,230,230,230,10);
+$Test->drawThreshold(round(max($values), 1), $ThresholdSettings);
+$Test->drawThreshold(round(min($values), 1), $ThresholdSettings);
+$Test->drawThreshold(round(array_sum($values) / sizeof($values), 1), $ThresholdSettings);
+
 if ($_GET['scale'] == 'zero') {
     $temp = $ThresholdSettings["WriteCaption"];
     $ThresholdSettings["WriteCaption"] = FALSE;
@@ -656,9 +708,7 @@ if ($_GET['scale'] == 'zero') {
     $ThresholdSettings["WriteCaption"] = $temp;
 }
 
-//������� ��������� �������
-
-if (IsSet($_GET['title'])) {
+if (isset($_GET['title'])) {
     $_GET['title'] = strip_tags($_GET['title']);
 }
 
@@ -676,23 +726,15 @@ if (SETTINGS_THEME == 'light' || $_GET['bg'] == 'light') {
     }
 }
 
-// ������ ������
-if ($_GET['gtype'] == 'curve') { //������ ��������� ������
-    //$Test->drawCubicCurve($DataSet->GetData(),$DataSet->GetDataDescription());
-    //$Test->clearShadow();
-    //$Test->drawFilledCubicCurve($DataSet->GetData(),$DataSet->GetDataDescription(),.1,30, FALSE);
+if ($_GET['gtype'] == 'curve') {
     $Test->drawSplineChart(array(
         "DisplayValues" => FALSE,
         "BreakVoid" => FALSE,
         "VoidTicks" => 0,
         "DisplayColor" => DISPLAY_AUTO));
-    $Test->drawAreaChart(array("AroundZero" => FALSE)); // ���������� ����� �� ������ �������
-    // $Test->drawAreaChart(array("AroundZero"=>TRUE)); // ���������� �� ���� �� ������ �������
+    $Test->drawAreaChart(array("AroundZero" => FALSE));
 } elseif ($_GET['gtype'] == 'bar') { //������ ������
-    //$Test->drawFilledRectangle(60,60,450,190,array("R"=>255,"G"=>255,"B"=>255,"Surrounding"=>-200,"Alpha"=>10));
-    //$Test->drawScale(array("DrawSubTicks"=>TRUE));
     $Test->setShadow(TRUE, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
-    //$Test->setFontProperties(array("FontName"=>"../fonts/pf_arma_five.ttf","FontSize"=>6));
     $Test->drawBarChart(array(
         "DisplayValues" => FALSE,
         "Interleave" => 0.2,
@@ -701,17 +743,13 @@ if ($_GET['gtype'] == 'curve') { //������ ���������
         "Rounded" => FALSE,
         "AroundZero" => TRUE,
         "Surrounding" => 0));
-} else { //������ ������������� ������
-    //$Test->drawLineGraph($DataSet->GetData(),$DataSet->GetDataDescription());
-    //$Test->clearShadow();
-    //$Test->drawFilledLineGraph($DataSet->GetData(),$DataSet->GetDataDescription(), 30);
+} else {
     $Test->drawLineChart(array(
         "DisplayValues" => FALSE,
         "BreakVoid" => FALSE,
         "VoidTicks" => 0,
         "DisplayColor" => DISPLAY_AUTO));
-    //$Test->drawAreaChart(array("AroundZero"=>FALSE)); // ���������� ����� �� ������ �������
-    $Test->drawAreaChart(array("AroundZero" => TRUE)); // ���������� �� ���� �� ������ �������
+    $Test->drawAreaChart(array("AroundZero" => TRUE));
 }
 
 /* Render the picture (choose the best way) */

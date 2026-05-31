@@ -5,7 +5,7 @@
 * Pvalues
 *
 * @package MajorDoMo
-* @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+* @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
 * @version 0.3 (wizard, 12:05:33 [May 22, 2009])
 */
 //

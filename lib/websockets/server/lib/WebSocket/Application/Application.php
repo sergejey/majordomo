@@ -16,7 +16,7 @@ abstract class Application
      */
     protected function __construct() { }
 
-    final private function __clone() { }
+    final public function __clone() { }
     
     final public static function getInstance()
     {

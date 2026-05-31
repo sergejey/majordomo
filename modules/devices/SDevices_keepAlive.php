@@ -2,7 +2,7 @@
 
 $ot = $this->object_title;
 
-if ($this->getProperty('alive') == 0) {
+if (empty($this->getProperty('alive'))) {
     $this->setProperty('alive', 1);
 }
 

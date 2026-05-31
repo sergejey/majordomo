@@ -8,7 +8,7 @@
  * 404-error handler
  *
  * @package MajorDoMo
- * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+ * @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
  */
 list($usec, $sec) = explode(" ",microtime());
 $script_started_time = ((float)$usec + (float)$sec);
@@ -23,6 +23,10 @@ if ($ext == 'jpg' || $ext == 'gif' || $ext == 'css')
 {
    header("HTTP/1.0: 404 Page not found\n");
    exit;
+}
+
+if (preg_match('/\/ajax\//',$_SERVER["REQUEST_URI"])) {
+    Define('ALLOW_RUNNING_WITH_ERRORS', 1);
 }
 
 if (preg_match("/\?(.*?)$/", $_SERVER["REQUEST_URI"], $matches))
@@ -54,6 +58,7 @@ $requests = array(
    '/^'.$rootHTML.'panel\/class\/(\d+)\/object\/(\d+)\\/properties\.html/is'=> '?(panel:{action=classes}classes:{view_mode=edit_classes, tab=objects, id=\1, instance=adm})&md=objects&view_mode=edit_objects&id=\2&tab=properties',
    '/^'.$rootHTML.'panel\/scene\/(\d+)\/elements\/(\d+)\\/state(\d+)\.html/is'=> '?(panel:{action=scenes})&md=scenes&view_mode=edit_scenes&id=\1&tab=elements&view_mode2=edit_elements&element_id=\2&state_id=\3',
    '/^'.$rootHTML.'panel\/scene\/(\d+)\/elements\/(\d+)\.html/is'=> '?(panel:{action=scenes})&md=scenes&view_mode=edit_scenes&id=\1&tab=elements&view_mode2=edit_elements&element_id=\2',
+   '/^'.$rootHTML.'panel\/scene\/(\d+)\.html/is'=> '?(panel:{action=scenes})&md=scenes&view_mode=edit_scenes&id=\1&',
    '/^'.$rootHTML.'panel\/zwave\/(\d+)\.html/is'   => '?(panel:{action=zwave})&md=zwave&view_mode=edit_zwave_devices&id=\1',
    '/^'.$rootHTML.'panel\/devices\/(\d+)\.html/is'   => '?(panel:{action=devices})&md=devices&view_mode=edit_devices&id=\1',
    '/^'.$rootHTML.'panel\/app_gpstrack\/action_(\d+)\.html/is'=> '?(panel:{action=app_gpstrack})&md=app_gpstrack&data_source=gpsactions&view_mode=edit_gpsactions&id=\1',
@@ -75,6 +80,7 @@ $requests = array(
    '/^'.$rootHTML.'getlatestnote\.html/is'         => '?(application:{action=getlatestnote})',
    '/^'.$rootHTML.'getlatestmp3\.html/is'          => '?(application:{action=getlatestmp3})',
    '/^'.$rootHTML.'design_sample\.html/is'         => '?(application:{action=design_sample})',
+    '/^'.$rootHTML.'settings\/(.+?)\.html/is'         => '?(application:{app_action=1, action=settings}settings:{filter_name=\1})',
    '/^'.$rootHTML.'docs\/(\d+)\.html/is'           => '?(application:{action=docs, doc_id=\1})',
    '/^'.$rootHTML.'([\w-]+)\.html/is'              => '?(application:{action=docs, doc_name=\1})'
 );
@@ -98,7 +104,7 @@ foreach($requests as $key => $value)
    }
 }
 
-if (preg_match('/^moved:(.+)/is', $link, $matches))
+if (isset($link) && preg_match('/^moved:(.+)/is', $link, $matches))
 {
    Header("HTTP/1.1 301 Moved Permanently");
    header("Location:" . $matches[1]);
@@ -113,11 +119,11 @@ startMeasure('loader');
 include_once("./lib/loader.php");
 endMeasure('loader');
 
-if ($link != '')
+if (isset($link))
 {
    $mdl       = new module();
    $param_str = $mdl->parseLinks("<a href=\"$link\">");
- 
+
    if (preg_match("/<a href=\".+?\?pd=(.*?)&(.+)\">/", $param_str, $matches))
    {
       $pd    = $matches[1];

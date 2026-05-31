@@ -3,7 +3,7 @@
  * Russian language file
  *
  * @package MajorDoMo
- * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+ * @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
  * @version 1.0
  */
 
@@ -12,7 +12,7 @@ $dictionary = array(
 
     /* general */
     'SETTINGS_SITE_LANGUAGE_CODE' => 'ru_RU',
-    'WIKI_URL' => 'http://smartliving.ru/',
+    'WIKI_URL' => 'https://mjdm.ru/',
     'KB_URL'=>'https://kb.smartliving.ru/',
     'DEFAULT_COMPUTER_NAME' => 'Алиса',
     'WELCOME_GREETING' => 'Добро пожаловать!',
@@ -34,6 +34,7 @@ $dictionary = array(
     'TAKES_TOO_LONG' => ', если процесс загрузки занимает слишком много времени.',
     'SUBMIT_DIAGNOSTIC'=>'Отправка данных диагностики',
 
+    'GENERAL_HOME_NETWORK' => 'Домашняя сеть',
     'GENERAL_SENSORS' => 'Сенсоры',
     'GENERAL_OPERATIONAL_MODES' => 'Режимы работы',
     'GENERAL_ENERGY_SAVING_MODE' => 'Энергосбережение',
@@ -42,6 +43,7 @@ $dictionary = array(
     'GENERAL_WE_HAVE_GUESTS_MODE' => 'У нас гости',
     'GENERAL_NIGHT_MODE' => 'Ночной режим',
     'GENERAL_DARKNESS_MODE' => 'Тёмное время суток',
+    'GENERAL_PAIRING_MODE' => 'Привязка',
 
     'GENERAL_CLIMATE' => 'Климат',
     'GENERAL_WEATHER_FORECAST' => 'Прогноз погоды',
@@ -161,6 +163,8 @@ $dictionary = array(
     'MODULE_USERLOG' => 'Журнал действий',
     'MODULE_PLANS' => 'Планы',
     'MODULE_ACTIONS_LOG' => 'История действий',
+    'MODULE_DEVICES' => 'Простые устройства',
+    'MODULE_CHARTS' => 'Графики',
 
     'SCENE_HIDDEN' => 'Не включать в список переключающихся сцен',
     'SCENE_AUTO_SCALE' => 'Автоматически изменять размер сцены',
@@ -168,6 +172,7 @@ $dictionary = array(
     'SCALE_HEIGHT' => 'По высоте экрана',
     'SCALE_BOTH' => 'По ширине и высоте',
     'SCENE_DEVICES_BACKGROUND' => 'Фон для устройств',
+    'SCENE_RELOAD_INTERVAL' => 'Интервал перезагрузки, минут',
 
     'SETUP' => 'Настроить',
 
@@ -364,6 +369,7 @@ $dictionary = array(
 
 
     'AUTO_UPDATE_PERIOD' => 'Период автообновления',
+    'UPDATEARHIVE_DONE' => 'Скачиваем архив',
     'POLLING_PERIOD' => 'Период опроса',
 
 
@@ -992,6 +998,7 @@ $dictionary = array(
     'SETTINGS_SECTION_BEHAVIOR' => 'Поведение',
     'SETTINGS_SECTION_BACKUP' => 'Резервное копирование',
     'SETTINGS_SECTION_SCENES' => 'Сцены',
+    'SETTINGS_SECTION_REMOTE' => 'Внешний доступ',
 
     'DEVICE_ID' => 'ID устройства',
     'REQUEST_TYPE' => 'Тип запроса',
@@ -1022,6 +1029,7 @@ $dictionary = array(
     'POSITION_TYPE_SIDE' => 'Друг за другом',
 
     'CONTAINER' => 'Контейнер',
+    'SLIDER' => 'Слайдер',
     'INFORMER' => 'Информер',
 
     'NAV_LINK' => 'Нав. ссылка (новое окно)',
@@ -1042,7 +1050,7 @@ $dictionary = array(
 
     'COUNTER' => 'Счётчик',
     'USE_CLASS_SETTINGS' => 'использовать настройки свойств класса',
-
+    'VERSION_TOO_OLD' => 'Вы используете устаревшую версию системы',
     'USING_LATEST_VERSION' => 'Вы используете последнюю версию!',
     'LATEST_UPDATES' => 'Последние обновления',
     'UPDATE_TO_THE_LATEST' => 'Обновить систему',
@@ -1113,10 +1121,15 @@ $dictionary = array(
     'MODULES_UPDATES_AVAILABLE'=>'Доступны обновления модулей',
     'SYSTEM_UPDATES_AVAILABLE'=>'Доступны обновления системы',
     'ERRORS_SAVED'=>'Сохранены ошибки',
+    'RUNNING_WITH_ERRORS' => 'Внимание! Система работает с ошибками.',
 
 // DEVICES
     'DEVICES_MODULE_TITLE' => 'Простые устройства',
+    'DEVICES_COPY_SETTINGS' => 'Копировать настройки',
     'DEVICES_LINKED_WARNING' => 'Внимание: выбор существующего объекта приведёт к привязке его к новому классу.',
+    'DEVICES_SUB_DEVICES' => 'Дочерние устройства',
+    'DEVICES_PARENT_DEVICE' => 'Родительское устройство',
+
     'DEVICES_RELAY' => 'Реле/Управляемый выключатель',
     'DEVICES_DIMMER' => 'Освещение (Диммер)',
     'DEVICES_RGB' => 'Освещение (RGB)',
@@ -1146,6 +1159,7 @@ $dictionary = array(
     'DEVICES_MSG_OPENING'=>'Сообщение при открытии',
     'DEVICES_MSG_CLOSING'=>'Сообщение при закрытии',
     'DEVICES_MSG_REMINDER'=>'Сообщение при напоминании',
+    'DEVICES_CONFIRMATION_REQUIRED'=>'Требуется подтверждение доставки команд',
 
     'DEVICES_OPENABLE' => 'Открываемое (Ворота/Двери/Шторы/и т.п.)',
     'DEVICES_OPENABLE_SUPPORT_LEVEL' => 'Поддержка уровня открытия',
@@ -1167,6 +1181,7 @@ $dictionary = array(
 
     'DEVICES_LOGIC_ACTION' => 'Действия',
     'DEVICES_SCHEDULE' => 'Расписание',
+    'DEVICES_IS_ADDED' => 'Добавлено новое устройство',
 
     'DEVICES_CURRENT_VALUE' => 'Текущее значение',
     'DEVICES_CURRENT_HUMIDITY' => 'Влажность',
@@ -1185,10 +1200,20 @@ $dictionary = array(
     'DEVICES_NOTIFY_NOT_CLOSED' => 'Напоминать об открытом состоянии',
     'DEVICES_MOTION_IGNORE' => 'Игнорировать события от устройства, когда никого нет дома',
     'DEVICES_MOTION_RESET' => 'Сброс статуса "никого нет дома" без таймера установки',
+    'DEVICES_MOTION_PRESENCE' => 'Это датчик присутствия',
     'DEVICES_MOTION_TIMEOUT' => 'Время активности (секунд)',
+    'DEVICES_TURNOFF_LIGHTS_ON_IDLE' => 'Выключать освещение в комнате по истечение периода активности',
     'DEVICES_ALIVE_TIMEOUT' => 'Допустимое время отсутствия данных (часов)',
     'DEVICES_MAIN_SENSOR' => 'Основной сенсор помещения',
     'DEVICES_NOT_UPDATING' => 'не обновляется',
+    'DEVICES_BATTERY_OPERATED' => 'Устройство работает от батареи',
+    'DEVICES_BATTERY_LEVEL' => 'Уровень заряда батареи',
+    'DEVICES_BATTERY_WARNING' => 'Предупреждение о низком заряде батареи',
+    'DEVICES_LOW_BATTERY' => 'низкий уровень заряда',
+    'DEVICES_GROUP_STATE' => 'Состояние группы',
+    'DEVICES_GROUP_STATE_SAVE' => 'Сохранить',
+    'DEVICES_GROUP_STATE_RESTORE' => 'Восстановить',
+    'DEVICES_GROUP_OPERATION_DELAY' => 'Задержка исполнения команд (сек)',
 
     'DEVICES_IS_ON' => 'Включено',
     'DEVICES_IS_CLOSED' => 'Закрыто',
@@ -1210,6 +1235,7 @@ $dictionary = array(
     'DEVICES_LOADTYPE' => 'Тип устройства',
     'DEVICES_LOADTYPE_VENT' => 'Вентиляция',
     'DEVICES_LOADTYPE_HEATING' => 'Обогрев',
+    'DEVICES_LOADTYPE_AC' => 'Кондиционер',
     'DEVICES_LOADTYPE_CURTAINS' => 'Шторы',
     'DEVICES_LOADTYPE_GATES' => 'Ворота',
     'DEVICES_LOADTYPE_LIGHT' => 'Освещение',
@@ -1222,6 +1248,7 @@ $dictionary = array(
     'DEVICES_OPENTYPE_GATES' => 'Ворота',
     'DEVICES_OPENTYPE_WINDOW' => 'Окно',
     'DEVICES_OPENTYPE_DOOR' => 'Дверь',
+    'DEVICES_OPENTYPE_VALVE' => 'Кран',
 
     'DEVICES_ADD_MENU' => 'Добавить устройство в Меню',
     'DEVICES_ADD_SCENE' => 'Добавить устройство на Сцену',
@@ -1235,6 +1262,8 @@ $dictionary = array(
     'DEVICES_LINK_ACTION_TYPE' => 'Действие',
     'DEVICES_LINK_TYPE_TURN_ON' => 'Включить',
     'DEVICES_LINK_TYPE_TURN_OFF' => 'Выключить',
+    'DEVICES_LINK_TYPE_SYNC' => 'Синхронизировать включение/выключение по статусу',
+    'DEVICES_LINK_TYPE_SYNC_INVERTED' => 'Синхронизировать включение/выключение по статусу (инверсно)',
     'DEVICES_LINK_TYPE_OPEN' => 'Открыть',
     'DEVICES_LINK_TYPE_CLOSE' => 'Закрыть',
     'DEVICES_LINK_TYPE_SWITCH' => 'Переключить',
@@ -1251,6 +1280,13 @@ $dictionary = array(
     'DEVICES_LINK_SET_COLOR' => 'Установить цвет',
     'DEVICES_LINK_SET_COLOR_DESCRIPTION' => 'Установить цвет по событию',
     'DEVICES_LINK_SET_COLOR_PARAM_ACTION_COLOR' => 'Цвет',
+
+    'DEVICES_LINK_SENSOR_VALUE_TYPE' => 'Исходное значение',
+    'DEVICES_LINK_SENSOR_VALUE_TYPE_CURRENT' => 'Текущее значение сенсора',
+    'DEVICES_LINK_SENSOR_VALUE_TYPE_MIN' => 'Минимальное значение за период',
+    'DEVICES_LINK_SENSOR_VALUE_TYPE_AVG' => 'Среднее значение за период',
+    'DEVICES_LINK_SENSOR_VALUE_TYPE_MAX' => 'Максимальное значение за период',
+    'DEVICES_LINK_SENSOR_VALUE_FOR_PERIOD' => 'Использовать период',
 
     'DEVICES_LINK_SENSOR_SWITCH' => 'Условное управление',
     'DEVICES_LINK_SENSOR_SWITCH_DESCRIPTION' => 'Управление другим устройством по показаниям датчика',
@@ -1325,7 +1361,11 @@ $dictionary = array(
     'DEVICES_THERMOSTAT_CURRENT_TEMP' => 'Текущая температура',
     'DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP' => 'Целевая температура',
     'DEVICES_THERMOSTAT_THRESHOLD' => 'Порог срабатывания термостата (0.25 по-умолчанию)',
+    'DEVICES_THERMOSTAT_INCREMENT' => 'Шаг регулирования (0.5 по-умолчанию)',
     'DEVICES_THERMOSTAT_RELAY_STATUS' => 'Статус реле',
+    'DEVICES_THERMOSTAT_SET_TARGET_TEMPERATURE' => 'Установить желаемую температуру',
+    'DEVICES_THERMOSTAT_OPENABLE' => 'Окна/двери',
+    'DEVICES_THERMOSTAT_RELAY_READONLY' => 'Режим "только чтение" для реле нагрева/охлаждения',
     'DEVICES_ALL_BY_TYPE' => 'Все по типам',
     'DEVICES_ALL_BY_ROOM' => 'Все по комнатам',
     'DEVICES_LOAD_TIMEOUT'=>'Таймер изменения статуса нагрузки',
@@ -1350,15 +1390,39 @@ $dictionary = array(
     'DEVICES_DIMMER_MAX_WORK' => 'Макс. уровень (рабочий)',
     'DEVICES_DIMMER_SWITCH_LEVEL' => 'Не изменять уровень при переключении',
     'DEVICES_DIMMER_SET_MAX' => 'Устанавливать максимальную яркость при включении',
+    'DEVICES_DIMMER_SET_TARGET_LEVEL' => 'Установить желаемый уровень, %',
 
     'DEVICES_COLLECTION_IS_ON' => 'Сейчас включено',
     'DEVICES_COLLECTION_IS_OPEN' => 'Сейчас открыто',
     'DEVICES_COLLECTION_IS_HEATING' => 'Сейчас греет',
 
+    'WIDGET' => 'Виджет',
+    'WIDGETS' => 'Виджеты',
+    'ADD_WIDGET' => 'Добавить виджет',
+
+    'WIDGET_TEXT_BLOCK' => 'Текстовый блок',
+    'WIDGET_TEXT_BLOCK_DESCRIPTION' => 'Виджет позволяет добавить блок текста',
+    'WIDGET_TEXT_BLOCK_VALUE' => 'Текст',
+    'WIDGET_TEXT_BLOCK_DEFAULT_VALUE' => 'Привет, мир!',
+    'WIDGET_TEXT_BLOCK_SIZE' => 'Размер текста (pt)',
+    'WIDGET_TEXT_ALIGNMENT' => 'Выравнивание текста',
+    'WIDGET_TEXT_ALIGNMENT_LEFT' => 'По левому краю',
+    'WIDGET_TEXT_ALIGNMENT_CENTER' => 'По центру',
+    'WIDGET_TEXT_ALIGNMENT_RIGHT' => 'По правому краю',
+    'WIDGET_TEXT_BLOCK_COLOR' => 'Цвет текста',
+    'WIDGET_TEXT_BLOCK_BACKGROUND_COLOR' => 'Цвет фона',
+    'WIDGET_TEXT_BLOCK_BACKGROUND_OPACITY' => 'Степень прозрачности фона, %',
+
+    'WIDGET_IMAGE_BLOCK' => 'Изображение',
+    'WIDGET_IMAGE_BLOCK_DESCRIPTION' => 'Виджет позволяет добавить изображение',
+    'WIDGET_IMAGE_URL' => 'Ссылка на изображение (URL)',
+    'WIDGET_IMAGE_REFRESH_INTERVAL' => 'Период обновления, секунд',
+
     'AUTO_LINK' => 'Автоматический запуск сценария',
     'FAVORITE_DEVICE' => 'В списке быстрого доступа',
     'SYSTEM_DEVICE' => 'Системное устройство',
 	'ARCHIVED_DEVICE' => 'Архивное утройство',
+    'INACTIVE_DEVICE' => 'Неактивное устройство',
 
     'ROOMS' => 'Комнаты',
     'APPEARANCE' => 'Внешний вид',
@@ -1368,6 +1432,7 @@ $dictionary = array(
     'DID_YOU_KNOW' => 'А знаете ли вы что...',
     'NEWS' => 'Новости MajorDoMo',
     'KNOWLEDGE_BASE' => 'База знаний',
+    'MODULE_SUPPORT' => 'Сайт модуля',
     'ACTIVITIES' => 'Поведение',
     'COMMANDS' => 'Команды',
     'ADDON_FILE' => 'Файл дополнения',
@@ -1389,7 +1454,7 @@ $dictionary = array(
     'THEME_LIGHT' => 'Светлая',
 
     'DATA_SOURCE' => 'Источник данных',
-    'WIDGET' => 'Виджет',
+
     'PANE' => 'Панель',
     'COLUMNS' => 'Колонки',
     'SIZE' => 'Размер',
@@ -1505,6 +1570,7 @@ $dictionary = array(
 	'NEWDASH_DISCONNECTED' => 'Нет подключения',
 	'NEWDASH_MJDM_RESOURCE' => 'Ресурсы MJDM',
 	'NEWDASH_FORUM' => 'Форум',
+    'NEWDASH_FORUM_DISCUSSION' => 'Обсуждение на форуме',
 	'NEWDASH_CHAT_TELEGRAM' => 'Чаты Telegram',
 	'NEWDASH_CHAT_TELEGRAM_MAIN' => 'Общий чат (RUS)',
 	'NEWDASH_CHAT_TELEGRAM_SMOKE' => 'Курилка (RUS)',
@@ -1543,6 +1609,7 @@ $dictionary = array(
 	'NEWDASH_DB_REQ_SEC' => 'Запросов к БД в секунду',
 	'NEWDASH_DB_REQ_MIN' => 'Запросов к БД в минуту',
 	'NEWDASH_DB_REQ_HOUR' => 'Запросов к БД в час',
+    'NEWDASH_DB_CONNECTIONS' => 'Соединений с БД',
 	
 	'NEWDASH_DMB_TITLE' => 'Добавить свой блок',
 	'NEWDASH_DMB_TITLE_MODAL' => 'Добавление своего блока',
@@ -1555,14 +1622,15 @@ $dictionary = array(
 	'NEWDASH_CONSOLE_CHOOSE_MODULE' => 'Выберите модуль...',
 	'NEWDASH_CONSOLE_SIZE_HINT' => 'Размер консоли можно изменить',
 	'NEWDASH_SEARCH_HINT' => 'Глобальный поиск по всей системе. Начните вводить...',
-	'NEWDASH_CONNECT_CONNECT_ERROR_1' => 'Ваша копия MajorDoMo не может связаться с сервером Connect. Ввиду этого, маркет и некоторые другие функции будут недоступны.',
-	'NEWDASH_CONNECT_CONNECT_ERROR_2' => 'Обычно, ситуация налаживаться спустя несколько минут.',
+	'NEWDASH_CONNECT_CONNECT_ERROR_1' => 'Ваша копия MajorDoMo не может связаться с сервером Connect. Ввиду этого, маркет и некоторые другие функции могут быть недоступны.',
+	'NEWDASH_CONNECT_CONNECT_ERROR_2' => 'Обычно, ситуация налаживается спустя несколько минут.',
 	
 	'NEWDASH_RESULT' => 'Результат',
 	'NEWDASH_MJDM_VERSION' => 'Текущая версия MJDM',
 	
 	'NEWDASH_OBJ_ADD_NEW_PROP_NAME' => 'Имя для нового свойства',
 	'NEWDASH_OBJ_ADD_NEW_PROP_VALUE' => 'Значение свойства',
+    'NEWDASH_RESET_VISIBILITY' => 'Сбросить настройки видимости блоков',
 	
 	'NEWSAVERESTORE_NONE_UPDATE_HEADER' => 'Все хорошо!',
 	'NEWSAVERESTORE_NONE_UPDATE_TEXT' => 'Классно, что вы вовремя обновляетесь. Сейчас у вас последняя доступная версия системы. Но в случае необходимости, вы можете перекачать файлы из репозитория GitHub.',

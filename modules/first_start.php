@@ -51,7 +51,7 @@ foreach ($tzlist as $k=>$v) {
 $total=count($zn);
 for($i=0;$i<$total;$i++) {
  $z = new DateTimeZone($zn[$i]);
- $c = new DateTime(null, $z);
+ $c = new DateTime('now', $z);
  $offset=$z->getOffset($c)/60/60;
  if ($offset>0) {
   $offset_text='+'.$offset;

@@ -76,14 +76,30 @@ $(document).ready(function() {
 	</form>
 	[#endif VIEW_MODE#]
 	<div class="row" style="margin-right: -15px;margin-left: -15px;margin-top: 10px;">
-		<div class="col-md-12">
+		<div class="col-md-[#if VIEW_MODE=""#]8[#else#]12[#endif VIEW_MODE#]">
 			<div style="padding:0 10px">
 				<div class="progress" style="height:3px">
 					<div class="progress-bar progress-bar-success" id="reloadProgress" role="progressbar" data-now="0" style=""></div>
 				</div>
 			</div>
-			<div id="xrayContent" style="padding: 10px;border-top: 1px solid #ddd;[#if VIEW_MODE=""#]font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;margin: 10px;[#endif#]"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
+			<div id="xrayContent" style="overflow-wrap: anywhere;padding: 10px;border-top: 1px solid #ddd;[#if VIEW_MODE=""#]font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;margin: 10px;[#endif#]"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
 		</div>
+        [#if VIEW_MODE=""#]
+		<div class="col-md-4">
+			<table class="table">
+			[#begin TODAY_FILES#]
+				<tr>
+					<td>
+						<a href="?files[]=[#TITLE#]">[#BASENAME#]</a>
+					</td>
+					<td>[#SIZE#]</td>
+					<td>[#PASSED#]</td>
+					<td><a href="?download_file=[#TITLE#]"><i class="glyphicon glyphicon-download"></a></td>
+				</tr>
+			[#end TODAY_FILES#]
+			</table>
+		</div>
+        [#endif VIEW_MODE#]
 	</div>
 	</div>
 

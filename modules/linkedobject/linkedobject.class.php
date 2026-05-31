@@ -5,14 +5,17 @@
  * Linkedobject
  *
  * @package project
- * @author Serge J. <jey@tut.by>
- * @copyright http://www.atmatic.eu/ (c)
+ * @author Serge J. <sergejey@gmail.com>
+ * @copyright https://majordomohome.com/ (c)
  * @version 0.1 (wizard, 13:11:32 [Nov 19, 2014])
  */
 //
 //
 class linkedobject extends module
 {
+    var $property_field;
+    var $method_field;
+
     /**
      * linkedobject
      *
@@ -38,16 +41,16 @@ class linkedobject extends module
     function saveParams($data = 0)
     {
         $p = array();
-        if (IsSet($this->id)) {
+        if (isset($this->id)) {
             $p["id"] = $this->id;
         }
-        if (IsSet($this->view_mode)) {
+        if (isset($this->view_mode)) {
             $p["view_mode"] = $this->view_mode;
         }
-        if (IsSet($this->edit_mode)) {
+        if (isset($this->edit_mode)) {
             $p["edit_mode"] = $this->edit_mode;
         }
-        if (IsSet($this->tab)) {
+        if (isset($this->tab)) {
             $p["tab"] = $this->tab;
         }
         return parent::saveParams($p);
@@ -100,10 +103,10 @@ class linkedobject extends module
         } else {
             $this->usual($out);
         }
-        if (IsSet($this->owner->action)) {
+        if (isset($this->owner->action)) {
             $out['PARENT_ACTION'] = $this->owner->action;
         }
-        if (IsSet($this->owner->name)) {
+        if (isset($this->owner->name)) {
             $out['PARENT_NAME'] = $this->owner->name;
         }
 
@@ -119,10 +122,10 @@ class linkedobject extends module
             $first_run = 1;
         }
 
-        if ($this->width) {
-			$ifPX = substr($this->width, -1);
-			if($ifPX != 'x' && $ifPX != '%') $this->width = $this->width.'px';
-			
+        if (isset($this->width)) {
+            $ifPX = substr($this->width, -1);
+            if ($ifPX != 'x' && $ifPX != '%') $this->width = $this->width . 'px';
+
             $out['WIDTH'] = $this->width;
         } else {
             $out['WIDTH'] = '90%';
@@ -135,8 +138,13 @@ class linkedobject extends module
         }
 
         if ($op == 'redirect') {
-            global $object;
-            global $sub;
+            $device_id = gr('device_id', 'int');
+            if ($device_id) {
+                redirect(ROOTHTML . 'panel/devices/' . $device_id . '.html?tab=settings','',1);
+            }
+
+            $object = gr('object');
+            $sub = gr('sub');
             if (!$object) {
                 redirect(ROOTHTML);
             }
@@ -160,7 +168,7 @@ class linkedobject extends module
                 for ($i = 0; $i < $total; $i++) {
                     $res[] = $tmp[$i];
                 }
-                $res[]=array('ID'=>'scripts','TITLE'=>'AllScripts','DESCRIPTION'=>LANG_SCRIPTS);
+                $res[] = array('ID' => 'scripts', 'TITLE' => 'AllScripts', 'DESCRIPTION' => LANG_SCRIPTS);
                 $res['OBJECTS'] = $res;
 
                 //$tmp=SQLSelectOne("SELECT TITLE FROM objects ORDER BY ID DESC LIMIT 1");
@@ -175,8 +183,11 @@ class linkedobject extends module
                 $properties = array();
                 do {
                     if (!$object) break;
-                    if ($object=='AllScripts') break;
+                    if ($object == 'AllScripts') break;
                     $obj = getObject($object);
+                    if (isset($obj->device_id)) {
+                        $res['DEVICE_ID'] = $obj->device_id;
+                    }
                     if (!$obj) break;
                     $parent_properties = $obj->getParentProperties($obj->class_id, '', 1);
                     if ($parent_properties && is_array($parent_properties)) {
@@ -201,8 +212,8 @@ class linkedobject extends module
                 $properties = array();
                 do {
                     if (!$object) break;
-                    if ($object=='AllScripts') {
-                        $properties=SQLSelect("SELECT * FROM scripts ORDER BY TITLE");
+                    if ($object == 'AllScripts') {
+                        $properties = SQLSelect("SELECT TITLE FROM scripts ORDER BY TITLE");
                         break;
                     }
                     $obj = getObject($object);
@@ -210,7 +221,7 @@ class linkedobject extends module
                     $parent_properties = $obj->getParentMethods($obj->class_id, '', 1);
                     if ($parent_properties && is_array($parent_properties)) {
                         foreach ($parent_properties as $v) {
-                            if (!$seen[$v['TITLE']]) {
+                            if (!isset($seen[$v['TITLE']])) {
                                 $properties[] = $v;
                                 $seen[$v['TITLE']] = 1;
                             }
@@ -219,7 +230,7 @@ class linkedobject extends module
                     $tmp = SQLSelect("SELECT * FROM methods WHERE OBJECT_ID='" . (int)$obj->id . "'");
                     if ($tmp && is_array($tmp)) {
                         foreach ($tmp as $i) {
-                            if (!$seen[$i['TITLE']]) {
+                            if (!isset($seen[$i['TITLE']])) {
                                 $properties[] = $i;
                                 $seen[$i['TITLE']] = 1;
                             }
@@ -236,10 +247,42 @@ class linkedobject extends module
         }
 
         if ($this->object_field) {
-            $objects = SQLSelect("SELECT * FROM objects ORDER BY CLASS_ID, TITLE");
-			
+            $objects = SQLSelect("SELECT objects.CLASS_ID, objects.TITLE, objects.DESCRIPTION, classes.TITLE AS CLASS_NAME FROM objects JOIN classes ON CLASS_ID=classes.ID ORDER BY CLASS_ID, TITLE");
+
+            $objects[] = array('ID' => 'scripts', 'TITLE' => 'AllScripts', 'DESCRIPTION' => LANG_SCRIPTS);
+
+            $total = count($objects);
+            $old_class_id = 0;
+
+            $list_result = '';
+
+            if ($total) {
+                $objects[0]['FIRST'] = 1;
+                $objects[$total - 1]['LAST'] = 1;
+                for ($i = 0; $i < $total; $i++) {
+                    if (isset($objects[$i]['CLASS_ID']) && $objects[$i]['CLASS_ID'] != $old_class_id) {
+                        $objects[$i]['NEW_GROUP'] = 1;
+                        $old_class_id = $objects[$i]['CLASS_ID'];
+                        if ($i > 0) {
+                            $list_result .= '</optgroup>';
+                        }
+                        $list_result .= '<optgroup label="' . $objects[$i]['CLASS_NAME'] . '">';
+                    }
+
+                    $value = $objects[$i]['TITLE'];
+                    $list_result .= '<option value="' . $value . '">';
+                    $list_result .= $objects[$i]['TITLE'];
+                    if ($objects[$i]['DESCRIPTION'] != '') {
+                        $list_result .= ' - ' . $objects[$i]['DESCRIPTION'];
+                    }
+                    $list_result .= '</option>';
+                }
+                $list_result .= '</optgroup>';
+            }
+            $out['OBJECTS_LIST_RESULT'] = $list_result;
+
+            /*
 			foreach($objects as $key => $object) {
-				$className = SQLSelectOne("SELECT TITLE FROM classes WHERE ID = '".$object['CLASS_ID']."'");
 				if($object['CLASS_ID'] != $objects[$key-1]['CLASS_ID']) {
 					$objects[$key]['NEW_GROUP_START'] = 1; 
 				} else {
@@ -250,15 +293,15 @@ class linkedobject extends module
 				} else {
 					$objects[$key]['NEW_GROUP_END'] = 0; 
 				}
-				
-				$objects[$key]['CLASS_NAME'] = $className['TITLE'];
-				
 			}
-			
-            $objects[]=array('ID'=>'scripts','TITLE'=>'AllScripts','DESCRIPTION'=>LANG_SCRIPTS);
-			//echo '<pre>';
-			//var_dump($objects);
-			//die();
+            */
+
+
+            //echo '<pre>';
+            //var_dump($objects);
+            //die();
+
+
             $out['OBJECTS'] = $objects;
             $out['OBJECT_FIELD'] = $this->object_field;
         }

@@ -5,7 +5,7 @@
  * Objects
  *
  * @package MajorDoMo
- * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+ * @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
  * @version 0.4 (wizard, 12:05:51 [May 22, 2009])
  */
 //
@@ -26,6 +26,7 @@ class objects extends module
         $this->title = "<#LANG_MODULE_OBJECT_INSTANCES#>";
         $this->module_category = "<#LANG_SECTION_OBJECTS#>";
         $this->checkInstalled();
+        $this->id = '';
     }
 
     /**
@@ -38,16 +39,16 @@ class objects extends module
     function saveParams($data = 1)
     {
         $data = array();
-        if (IsSet($this->id)) {
+        if (isset($this->id)) {
             $data["id"] = $this->id;
         }
-        if (IsSet($this->view_mode)) {
+        if (isset($this->view_mode)) {
             $data["view_mode"] = $this->view_mode;
         }
-        if (IsSet($this->edit_mode)) {
+        if (isset($this->edit_mode)) {
             $data["edit_mode"] = $this->edit_mode;
         }
-        if (IsSet($this->tab)) {
+        if (isset($this->tab)) {
             $data["tab"] = $this->tab;
         }
         return parent::saveParams($data);
@@ -100,10 +101,10 @@ class objects extends module
         } else {
             $this->usual($out);
         }
-        if (IsSet($this->owner->action)) {
+        if (isset($this->owner->action)) {
             $out['PARENT_ACTION'] = $this->owner->action;
         }
-        if (IsSet($this->owner->name)) {
+        if (isset($this->owner->name)) {
             $out['PARENT_NAME'] = $this->owner->name;
         }
         $out['VIEW_MODE'] = $this->view_mode;
@@ -294,6 +295,31 @@ class objects extends module
     function delete_objects($id)
     {
         $rec = SQLSelectOne("SELECT * FROM objects WHERE ID='$id'");
+
+        if (!isset($rec['ID'])) return false;
+
+        // DELETE LINKED OBJECT FROM ALL TABLES
+
+        $tables = SQLSelect("SELECT DISTINCT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME IN ('LINKED_OBJECT') AND TABLE_SCHEMA='" . DB_NAME . "';");
+        $total = count($tables);
+        for ($i = 0; $i < $total; $i++) {
+            $table_name = $tables[$i]['TABLE_NAME'];
+            $rows = SQLSelect("SELECT * FROM $table_name WHERE LINKED_OBJECT = '" . DBSafe($rec['TITLE']) . "'");
+            if (isset($rows[0]['ID'])) {
+                $total_rows = count($rows);
+                for ($ir = 0; $ir < $total_rows; $ir++) {
+                    $rows[$ir]['LINKED_OBJECT'] = '';
+                    if (isset($rows[$ir]['LINKED_PROPERTY'])) {
+                        $rows[$ir]['LINKED_PROPERTY'] = '';
+                    }
+                    if (isset($rows[$ir]['LINKED_METHOD'])) {
+                        $rows[$ir]['LINKED_METHOD'] = '';
+                    }
+                    SQLUpdate($table_name, $rows[$ir]);
+                }
+            }
+        }
+
         // some action for related tables
         SQLExec("DELETE FROM history WHERE OBJECT_ID='" . $rec['ID'] . "'");
         SQLExec("DELETE FROM methods WHERE OBJECT_ID='" . $rec['ID'] . "'");
@@ -322,7 +348,7 @@ class objects extends module
     function loadObject($id)
     {
         $rec = SQLSelectOne("SELECT * FROM objects WHERE ID=" . (int)$id);
-        if (IsSet($rec['ID'])) {
+        if (isset($rec['ID'])) {
             $this->id = $rec['ID'];
             $this->object_title = $rec['TITLE'];
             $this->class_id = $rec['CLASS_ID'];
@@ -332,10 +358,9 @@ class objects extends module
             }
             $this->description = $rec['DESCRIPTION'];
             $this->location_id = $rec['LOCATION_ID'];
-            if (preg_match('/^sdevice(.+?)/', $rec['SYSTEM'], $m)) {
+            if (preg_match('/^sdevice(\d+)/', $rec['SYSTEM'], $m)) {
                 $this->device_id = $m[1];
             }
-            //$this->keep_history=$rec['KEEP_HISTORY'];
         } else {
             return false;
         }
@@ -446,7 +471,7 @@ class objects extends module
 
         if ($id) {
             $meth = SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID='" . (int)$id . "' AND TITLE = '" . DBSafe($name) . "'");
-            if ($meth['ID']) {
+            if (isset($meth['ID'])) {
                 return $meth['ID'];
             }
         }
@@ -492,6 +517,9 @@ class objects extends module
         startMeasure('callMethodSafe');
         $current_call = $this->object_title . '.' . $name;
         $call_stack = array();
+        $raiseEvent = '';
+        $run_SafeMethod = '';
+
         if (is_array($params)) {
             if (isset($params['m_c_s']) && is_array($params['m_c_s']) && !empty($params['m_c_s'])) {
                 $call_stack = $params['m_c_s'];
@@ -507,18 +535,19 @@ class objects extends module
             }
             $current_call .= '.' . md5(json_encode($params));
         }
-        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
+        if (isset($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
             if (isset($_GET['m_c_s']) && is_array($_GET['m_c_s']) && !empty($_GET['m_c_s'])) {
                 $call_stack = $_GET['m_c_s'];
-                unset($params['m_c_s']);
             }
             if (isset($_GET['raiseEvent']) && !empty($_GET['raiseEvent'])) {
                 $raiseEvent = $_GET['raiseEvent'];
-                unset($params['raiseEvent']);
+            } else {
+                $raiseEvent = '';
             }
             if (isset($_GET['r_s_m']) && !empty($_GET['r_s_m'])) {
                 $run_SafeMethod = $_GET['r_s_m'];
-                unset($params['r_s_m']);
+            } else {
+                $run_SafeMethod = '';
             }
         }
 
@@ -536,7 +565,7 @@ class objects extends module
         $params['raiseEvent'] = $raiseEvent;
         $params['m_c_s'] = $call_stack;
         $params['r_s_m'] = $run_SafeMethod;
-        if (IsSet($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && ((!$raiseEvent && $run_SafeMethod) || (defined('LOWER_BACKGROUND_PROCESSES') && LOWER_BACKGROUND_PROCESSES == 1))) {
+        if (isset($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '') && ((!$raiseEvent && $run_SafeMethod) || (defined('LOWER_BACKGROUND_PROCESSES') && LOWER_BACKGROUND_PROCESSES == 1))) {
             $result = $this->callMethod($name, $params);
         } else {
             $params['r_s_m'] = 1;
@@ -567,6 +596,7 @@ class objects extends module
         //echo "<hr>";
         startMeasure('callMethod');
 
+        $name = trim($name);
         $original_method_name = $this->object_title . '.' . $name;
 
         startMeasure('callMethod (' . $original_method_name . ')');
@@ -580,19 +610,19 @@ class objects extends module
 
         if ($id) {
 
+            $source = '';
             $method = SQLSelectOne("SELECT * FROM methods WHERE ID='" . $id . "'");
             $update_rec = array('ID' => $method['ID']);
             $update_rec['EXECUTED'] = date('Y-m-d H:i:s');
             if (defined('CALL_SOURCE')) {
                 $source = CALL_SOURCE;
-            } else {
+            } elseif (isset($_SERVER['REQUEST_URI'])) {
                 $source = urldecode($_SERVER['REQUEST_URI']);
             }
-            if (strlen($source) > 250) {
-                $source = substr($source, 0, 250) . '...';
+            if (mb_strlen($source) > 250) {
+                $source = mb_substr($source, 0, 250) . '...';
             }
             $update_rec['EXECUTED_SRC'] = $source;
-
 
             if (!$method['OBJECT_ID']) {
                 if (!$params) {
@@ -607,8 +637,8 @@ class objects extends module
                 unset($saved_params['m_c_s']);
                 unset($saved_params['SOURCE']);
                 $update_rec['EXECUTED_PARAMS'] = json_encode($saved_params, JSON_UNESCAPED_UNICODE);
-                if (strlen($update_rec['EXECUTED_PARAMS']) > 250) {
-                    $update_rec['EXECUTED_PARAMS'] = substr($update_rec['EXECUTED_PARAMS'], 0, 250);
+                if (mb_strlen($update_rec['EXECUTED_PARAMS']) > 250) {
+                    $update_rec['EXECUTED_PARAMS'] = mb_substr($update_rec['EXECUTED_PARAMS'], 0, 250);
                 }
             }
             SQLUpdate('methods', $update_rec);
@@ -638,12 +668,15 @@ class objects extends module
             }
 
 
-            if ($code != '') {
-                if (isItPythonCode($code)) {
+            if (isset($code) && $code != '') {
+                if (defined('PYTHON_PATH') and isItPythonCode($code)) {
+                    echo($code);
                     python_run_code($code, $params, $this->object_title);
                 } else {
                     try {
+                        setEvalCode($code);
                         $success = eval($code);
+                        setEvalCode();
                         if ($success === false) {
                             //getLogger($this)->error(sprintf('Error in "%s.%s" method.', $this->object_title, $name));
                             registerError('method', sprintf('Exception in "%s.%s" method.', $this->object_title, $name));
@@ -701,15 +734,15 @@ class objects extends module
         }
 
         $rec = SQLSelectOne("SELECT ID FROM properties WHERE OBJECT_ID='" . (int)$object_id . "' AND TITLE = '" . DBSafe($name) . "'");
-        if ($rec['ID']) {
-            saveToCache($cached_name,$rec['ID']);
+        if (isset($rec['ID'])) {
+            saveToCache($cached_name, $rec['ID']);
             return $rec['ID'];
         }
         $props = $this->getParentProperties($class_id, '', 1);
         $total = count($props);
         for ($i = 0; $i < $total; $i++) {
             if (strtolower($props[$i]['TITLE']) == strtolower($name)) {
-                saveToCache($cached_name,$props[$i]['ID']);
+                saveToCache($cached_name, $props[$i]['ID']);
                 return $props[$i]['ID'];
             }
         }
@@ -717,13 +750,6 @@ class objects extends module
     }
 
 
-    /**
-     * Title
-     *
-     * Description
-     *
-     * @access public
-     */
     function getProperty($property, $cache_checked = false)
     {
         if (!$this->object_title) return false;
@@ -736,7 +762,7 @@ class objects extends module
         } elseif ($property == 'object_description') {
             return $this->description;
         } elseif ($property == 'object_id') {
-            return $this->id;
+            return returnTypedValue($this->id);
         } elseif ($property == 'class_title') {
             return $this->class_title;
         }
@@ -744,7 +770,7 @@ class objects extends module
         if (!$cache_checked) {
             $cached_value = checkFromCache($cached_name);
             if ($cached_value !== false) {
-                return $cached_value;
+                return returnTypedValue($cached_value);
             }
         }
 
@@ -772,7 +798,7 @@ class objects extends module
 
         if ($id) {
             $value = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='" . (int)$id . "' AND OBJECT_ID='" . (int)$this->id . "'");
-            if (!$value['PROPERTY_NAME'] && $this->object_title) {
+            if (isset($value['ID']) && !$value['PROPERTY_NAME'] && isset($this->object_title)) {
                 $value['PROPERTY_NAME'] = $this->object_title . '.' . $property;
                 SQLUpdate('pvalues', $value);
             }
@@ -785,7 +811,7 @@ class objects extends module
             $value['VALUE'] = false;
         }
         saveToCache($cached_name, $value['VALUE']);
-        return $value['VALUE'];
+        return returnTypedValue($value['VALUE']);
     }
 
     /**
@@ -797,7 +823,6 @@ class objects extends module
      */
     function setProperty($property, $value, $no_linked = 0, $source = '')
     {
-
         if (!preg_match('/cycle/is', $property) && function_exists('verbose_log')) {
             verbose_log('Property [' . $this->object_title . '.' . $property . '] set to \'' . $value . '\'');
         }
@@ -810,18 +835,23 @@ class objects extends module
             $value = '';
         }
 
+        if (!$source && is_array($no_linked)) {
+            $source = implode(',', array_keys($no_linked));
+        }
+
         if (!$source && is_string($no_linked)) {
             $source = $no_linked;
             $no_linked = 0;
         }
-        if (!$source && defined('CALL_SOURCE')) {
-            $source = CALL_SOURCE;
+        if (defined('CALL_SOURCE')) {
+            $source .= ' ' . CALL_SOURCE;
         }
-        if (!$source && $_SERVER['REQUEST_URI']) {
-            $source = urldecode($_SERVER['REQUEST_URI']);
+        if (isset($_SERVER['REQUEST_URI'])) {
+            $source .= ' ' . urldecode($_SERVER['REQUEST_URI']);
         }
-        if (strlen($source) > 250) {
-            $source = substr($source, 0, 250) . '...';
+        $source = str_replace("\n", '', $source);
+        if (mb_strlen($source) > 250) {
+            $source = mb_substr($source, 0, 250) . '...';
         }
 
         if (defined('TRACK_DATA_CHANGES') && TRACK_DATA_CHANGES == 1) {
@@ -899,7 +929,9 @@ class objects extends module
                 if (!in_array(mb_strtolower($value, 'UTF-8'), $items)) return false;
             }
             if ($prop['VALIDATION_TYPE'] == 100) {
+                setEvalCode($prop['VALIDATION_CODE']);
                 eval($prop['VALIDATION_CODE']);
+                setEvalCode();
                 if (is_null($value)) return false;
             }
 
@@ -907,7 +939,7 @@ class objects extends module
             startMeasure('setproperty_update_getvalue');
             $v = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID=" . (int)$id . " AND OBJECT_ID=" . (int)$this->id);
             endMeasure('setproperty_update_getvalue');
-            $old_value = $v['VALUE'];
+            $old_value = isset($v['VALUE']) ? $v['VALUE'] : false;
 
             if ($prop['DATA_TYPE'] == 5 && $value != $old_value) { // image
                 $path_parts = pathinfo($value);
@@ -948,10 +980,10 @@ class objects extends module
 
             $v['VALUE'] = $value . '';
             $v['SOURCE'] = $source . '';
-            if (!$v['PROPERTY_NAME']) {
+            if (!isset($v['PROPERTY_NAME'])) {
                 $v['PROPERTY_NAME'] = $this->object_title . '.' . $property;
             }
-            if ($v['ID']) {
+            if (isset($v['ID'])) {
                 $v['UPDATED'] = date('Y-m-d H:i:s');
                 SQLUpdate('pvalues', $v);
             } else {
@@ -982,12 +1014,13 @@ class objects extends module
 
         $p_lower = strtolower($property);
         if (!defined('DISABLE_SIMPLE_DEVICES') &&
-            $this->device_id &&
+            isset($this->device_id) &&
             ($p_lower == 'value' ||
                 $p_lower == 'valuehumidity' ||
                 $p_lower == 'status' ||
                 $p_lower == 'disabled' ||
                 $p_lower == 'level' ||
+                $p_lower == 'color' ||
                 $p_lower == 'volume' ||
                 $p_lower == 'channel' ||
                 $p_lower == 'mode' ||
@@ -998,7 +1031,7 @@ class objects extends module
             addToOperationsQueue('connect_device_data', $this->object_title . '.' . $property, $value, true);
         }
 
-        if (IsSet($v['LINKED_MODULES']) && $v['LINKED_MODULES']) { // TO-DO !
+        if (isset($v['LINKED_MODULES']) && $v['LINKED_MODULES']) { // TO-DO !
             if (!is_array($no_linked) && $no_linked) {
                 return;
             } elseif (!is_array($no_linked)) {
@@ -1031,11 +1064,13 @@ class objects extends module
 
         if (function_exists('postToWebSocketQueue')) {
             startMeasure('setproperty_postwebsocketqueue');
-            postToWebSocketQueue($this->object_title . '.' . $property, $value);
+            if ($old_value !== $value) {
+                postToWebSocketQueue($this->object_title . '.' . $property, $value);
+            }
             endMeasure('setproperty_postwebsocketqueue');
         }
 
-        if (IsSet($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY'] > 0)) {
+        if (isset($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY'] > 0)) {
             $q_rec = array();
             $q_rec['VALUE_ID'] = $v['ID'];
             $q_rec['ADDED'] = date('Y-m-d H:i:s');
@@ -1048,16 +1083,21 @@ class objects extends module
 
         if (isset($prop['ONCHANGE']) && $prop['ONCHANGE']) {
             global $property_linked_history;
-            if (!$property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]) {
+            if (!isset($property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']])) {
                 $property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']] = 1;
                 $params = array();
                 $params['PROPERTY'] = $property;
                 $params['NEW_VALUE'] = (string)$value;
                 $params['OLD_VALUE'] = (string)$old_value;
                 $params['SOURCE'] = (string)$source;
+                $params['NO_LINKED'] = $no_linked;
                 //$this->callMethod($prop['ONCHANGE'], $params);
                 //$this->callMethodSafe($prop['ONCHANGE'], $params);
-                $this->raiseEvent($prop['ONCHANGE'], $params);
+                if (isset($_SERVER['REQUEST_URI']) && ($_SERVER['REQUEST_URI'] != '')) {
+                    $this->callMethod($prop['ONCHANGE'], $params);
+                } else {
+                    $this->raiseEvent($prop['ONCHANGE'], $params);
+                }
                 unset($property_linked_history[$this->object_title . '.' . $property][$prop['ONCHANGE']]);
             }
         }
@@ -1085,7 +1125,7 @@ class objects extends module
             }
             if (is_array($props)) {
                 foreach ($props as $k => $v) {
-                    if (substr($v['TITLE'], 0, 1) == '_') continue;
+                    if (mb_substr($v['TITLE'], 0, 1) == '_') continue;
                     $properties[] = array('PROPERTY' => mb_strtolower($this->object_title . '.' . $v['TITLE'], 'UTF-8'), 'OBJECT_ID' => $object_id);
                 }
             }
@@ -1139,13 +1179,20 @@ class objects extends module
     function dbInstall($data)
     {
 
-        //SQLDropTable('cached_values');
+        if (defined('CACHE_VALUE_MAX_SIZE')) {
+            $cache_value_max_size = CACHE_VALUE_MAX_SIZE;
+        } else {
+            $cache_value_max_size = 255;
+        }
+
+        SQLDropTable('cached_values');
         $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_values`
                (`KEYWORD`   CHAR(100) NOT NULL,
-                `DATAVALUE` CHAR(255) NOT NULL,
+                `DATAVALUE` VARCHAR($cache_value_max_size) NOT NULL,
                 PRIMARY KEY (`KEYWORD`)
                ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
         SQLExec($sqlQuery);
+        //SQLExec("ALTER TABLE `cached_values` CHANGE COLUMN `DATAVALUE` `DATAVALUE` VARCHAR($cache_value_max_size) NOT NULL DEFAULT ''");
 
         $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_ws`
                (`PROPERTY`   CHAR(100) NOT NULL,
@@ -1156,17 +1203,14 @@ class objects extends module
                ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
         SQLExec($sqlQuery);
 
+        SQLDropTable('operations_queue');
         $sqlQuery = "CREATE TABLE IF NOT EXISTS `operations_queue` 
               (`TOPIC`   CHAR(255) NOT NULL,
-               `DATANAME` CHAR(255) NOT NULL,
-               `DATAVALUE` CHAR(255) NOT NULL,
-               `EXPIRE`    DATETIME  NOT NULL
+               `DATANAME` VARCHAR(1024) NOT NULL,
+               `DATAVALUE` VARCHAR(1024) NOT NULL,
+               `EXPIRE` DATETIME NOT NULL
               ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
         SQLExec($sqlQuery);
-
-        // Если вы дошли до этой записи, при проявлении ошибки, то данная ошибка проявляется на MariDB
-        $sqlQuery = "ALTER TABLE operations_queue DROP COLUMN `ID`;";
-        SQLExec($sqlQuery, true);
 
 
         /*
@@ -1179,7 +1223,6 @@ class objects extends module
  objects: CLASS_ID int(10) NOT NULL DEFAULT '0'
  objects: DESCRIPTION text
  objects: LOCATION_ID int(10) NOT NULL DEFAULT '0'
- objects: KEEP_HISTORY int(10) NOT NULL DEFAULT '0'
 
  properties: ID int(10) unsigned NOT NULL auto_increment
  properties: CLASS_ID int(10) NOT NULL DEFAULT '0'

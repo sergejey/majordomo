@@ -32,7 +32,7 @@ function getmicrotime()
  * @param mixed $mpoint Monitoring block name
  * @return void
  */
-function StartMeasure($mpoint)
+function startMeasure($mpoint)
 {
     global $perf_data;
 
@@ -43,11 +43,13 @@ function StartMeasure($mpoint)
         $perf_data[$mpoint]['START'] = getmicrotime();
     }
 
-    if ((isset($perf_data[$mpoint]['MEMORY_START']) && !$perf_data[$mpoint]['MEMORY_START'])
-        || !isset($perf_data[$mpoint]['MEMORY_START'])
-        && function_exists('memory_get_usage')
-    ) {
-        $perf_data[$mpoint]['MEMORY_START'] = memory_get_usage();
+    if (defined('TRACK_MEMORY_USAGE')) {
+        if ((isset($perf_data[$mpoint]['MEMORY_START']) && !$perf_data[$mpoint]['MEMORY_START'])
+            || !isset($perf_data[$mpoint]['MEMORY_START'])
+            && function_exists('memory_get_usage')
+        ) {
+            $perf_data[$mpoint]['MEMORY_START'] = memory_get_usage();
+        }
     }
 }
 
@@ -57,7 +59,7 @@ function StartMeasure($mpoint)
  * @param mixed $save_to_db Save to DB (Default 0) Currently not used
  * @return void
  */
-function EndMeasure($mpoint)
+function endMeasure($mpoint)
 {
     global $perf_data;
 
@@ -67,8 +69,10 @@ function EndMeasure($mpoint)
 
     $perf_data[$mpoint]['END'] = getmicrotime();
 
-    if (!isset($perf_data[$mpoint]['MEMORY_END']) && function_exists('memory_get_usage')) {
-        $perf_data[$mpoint]['MEMORY_END'] = memory_get_usage();
+    if (defined('TRACK_MEMORY_USAGE')) {
+        if (!isset($perf_data[$mpoint]['MEMORY_END']) && function_exists('memory_get_usage')) {
+            $perf_data[$mpoint]['MEMORY_END'] = memory_get_usage();
+        }
     }
 
     if (!isset($perf_data[$mpoint]['TIME'])) {
@@ -109,46 +113,44 @@ function EndMeasure($mpoint)
  * @param mixed $hidden n/a (default 1)
  * @return void
  */
-function PerformanceReport($hidden = 0)
+function PerformanceReport($no_print = 0)
 {
     global $perf_data;
 
-    if (!$hidden) {
-        echo "<!-- BEGIN PERFORMANCE REPORT\n";
-    }
+    $result = array();
+    if (!is_array($perf_data)) return $result;
 
     foreach ($perf_data as $k => $v) {
-        if (!$v['NUM']) {
+        if (!isset($v['NUM']) || !$v['NUM']) {
             EndMeasure($k);
         }
     }
 
     foreach ($perf_data as $k => $v) {
-        if ($perf_data['TOTAL']['TIME']) {
+        if (isset($perf_data['TOTAL']) && $perf_data['TOTAL']['TIME']) {
             $v['PROC'] = ((int)($v['TIME'] / $perf_data['TOTAL']['TIME'] * 100 * 100)) / 100;
+        } else {
+            $v['PROC'] = 0;
         }
-
         $rs = "$k (" . $v['NUM'] . "): " . round($v['TIME'], 4) . " " . round($v['PROC'], 2) . "%";
-
-        if ($v['MEMORY_START']) {
+        if (isset($v['MEMORY_START'])) {
             $rs .= ' M (s): ' . $v['MEMORY_START'] . 'b';
         }
-
-        if ($v['MEMORY_END']) {
+        if (isset($v['MEMORY_END'])) {
             $rs .= ' M (e): ' . $v['MEMORY_END'] . 'b';
         }
-
-        if (!$v['NUM']) {
-            $tmp[] = "Not finished $k";
+        if (!isset($v['NUM']) || !$v['NUM']) {
+            $result[] = "Not finished $k";
+        } else {
+            $result[] = $rs;
         }
-
-        $tmp[] = $rs;
     }
 
-    if (!$hidden) {
-        echo implode("\n", $tmp);
+    if (!$no_print) {
+        echo "<!-- BEGIN PERFORMANCE REPORT\n";
+        echo implode("\n", $result);
         echo "\n END PERFORMANCE REPORT -->";
     }
-    return $tmp;
+    return $result;
 }
 

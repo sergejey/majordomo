@@ -1,6 +1,8 @@
 [#if VIEW_MODE=""#]
 
- <a href="?view_mode=edit_file" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#></a>
+ <a href="?view_mode=edit_file" class="btn btn-default btn-primary"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#></a>
+ <a href="?view_mode=edit_file&file=panelBlockLeft" class="btn btn-default"><i class="glyphicon glyphicon-edit"></i> panelBlockLeft</a>
+<a href="?view_mode=edit_file&file=panelBlockRight" class="btn btn-default"><i class="glyphicon glyphicon-edit"></i> panelBlockRight</a>
 <br><br>
  <table class="table table-striped" width="100%" border="0" cellpadding=5>
  <tbody>
@@ -40,12 +42,17 @@
 
 <div class="form-group ">
         <label class="control-label" for="inputTitle"><#LANG_TITLE#>:</label>
-        <div class="col-lg-5"><input type="text"  class="form-control"  name="file" value="[#FILE#]" required="true"></div>
+        <div class="col-lg-8"><input type="text"  class="form-control"  name="file" value="[#FILE#]" required="true"></div>
 </div>
 
 <div class="form-group ">
         <label class="control-label" for="inputTitle"><#LANG_DATA#>:</label>
-        <div class="col-lg-5"><textarea name="data" class="span8 form-control" rows="30">[#DATA#]</textarea></div>
+        <div class="col-lg-8">
+            <textarea name="data" id="data" class="span8 form-control" rows="20">[#DATA#]</textarea>
+            [#if ADD_EDITOR="1"#]
+            [#module name="blockly_code" system_name="textfile_<#FILE#>" code_field="data" wraplines="1" type="html" action=""#]
+            [#endif#]
+        </div>
 </div>
 
 

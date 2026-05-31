@@ -262,7 +262,10 @@
     <div class="form-group ">
         <label class="col-lg-4 control-label" for="inputTitle"><#LANG_ACCESS_CONTROL#>:<#LANG_HCB#>access_control<#LANG_HCE#></label>
         <div class="col-lg-5">
-            <a class="btn btn-default " href="?(panel:{action=security_rules})&object_type=terminal&object_id=[#ID#]&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
+            <a  onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);"
+                    class="btn btn-default"
+                    href="?(panel:{action=security_rules})&object_type=terminal&object_id=[#ID#]&print=1"
+                    target=_blank><#LANG_SET#></a>
         </div>
     </div>
 [#endif ID#]

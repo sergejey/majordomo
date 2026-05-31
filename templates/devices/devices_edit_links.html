@@ -1,25 +1,37 @@
 [#if EDIT_MODE=""#]
 [#if LINKS#]
 <p><#LANG_DEVICES_LINKS_ADDED#>:<p>
+<div class="dynamic_content" id="links_content">
 <table class="table">
     [#begin LINKS#]
-    <tr>
+    <tr[#if IS_ACTIVE!="1"#] style="background-color:lightgrey"[#endif#]>
         <td>
             <b><a href="?view_mode=<#VIEW_MODE#>&id=[#DEVICE1_ID#]&tab=<#TAB#>">[#DEVICE1_TITLE#]</a></b>
             &rarr;
             <b><a href="?view_mode=<#VIEW_MODE#>&id=[#DEVICE2_ID#]&tab=<#TAB#>">[#TITLE#]</a></b>
+            [#if IS_ACTIVE!="1"#](disabled)[#endif#]
         </td>
         <td>
             [#if COMMENT!=""#][#COMMENT#]<br/>[#endif#]
-            [#LINK_TYPE#] ([#LINK_SETTINGS#])
+            [#LINK_TYPE#] [#if LINK_SETTINGS!=""#]([#LINK_SETTINGS#])[#endif#]
+            [#if HAS_RULE#]
+            <i class="glyphicon glyphicon-lock"></i>
+            [#endif#]
         </td>
+        <td>[#if LAST_EXECUTED!=""#]<#LANG_EXECUTED#>: [#LAST_EXECUTED#][#endif#]</td>
         <td>
+            [#if TIMER_NAME!=""#]
+            <#LANG_DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY#>: <span title="[#TIMER_NAME#]">[#RUNTIME#]</span> <a href="?view_mode=<#VIEW_MODE#>&id=[#DEVICE1_ID#]&tab=<#TAB#>&edit_mode=cancel_timer&timer=[#TIMER_NAME#]" onclick="return confirm('<#LANG_ARE_YOU_SURE#>');"><#LANG_CANCEL#></a>
+            [#endif#]
+        </td>
+        <td nowrap>
             <a href="?view_mode=<#VIEW_MODE#>&id=[#DEVICE1_ID#]&tab=<#TAB#>&edit_mode=edit_link&link_id=[#ID#]&link_name=[#LINK_TYPE#]" class="btn btn-default"><i class="glyphicon glyphicon-pencil"></i></a>
-            <a href="?view_mode=<#VIEW_MODE#>&id=[#DEVICE1_ID#]&tab=<#TAB#>&edit_mode=delete_link&link_id=[#ID#]" class="btn btn-default" onclick="return confirm('Are you sure?');"><i class="glyphicon glyphicon-remove"></i></a>
+            <a href="?view_mode=<#VIEW_MODE#>&id=[#DEVICE1_ID#]&tab=<#TAB#>&edit_mode=delete_link&link_id=[#ID#]" class="btn btn-default" onclick="return confirm('<#LANG_ARE_YOU_SURE#>');"><i class="glyphicon glyphicon-remove"></i></a>
         </td>
     </tr>
     [#end LINKS#]
 </table>
+<!--/dynamic_content--></div>
 [#else LINKS#]
 <p><#LANG_DEVICES_LINKS_NOT_ADDED#></p>
 [#endif LINKS#]
@@ -68,14 +80,56 @@
                 </select>
              </div>
            </div>
+        <script type="text/javascript">
+            function checkVisibleConditions() {
+                var checkValue;
+                var checkValueElement;
+                var paramVisible;
+                [#begin LINK_DETAILS_PARAMS#]
+                 paramVisible=true;
+                 [#if PARAM_VISIBLE_CONDITION#]
+                   [#begin PARAM_VISIBLE_CONDITION#]
+                    checkValueElement = $('[name="[#CHECK_PARAM_NAME#]_value"');
+                    if (checkValueElement.length) {
+                        paramVisible = false;
+                        if (checkValueElement.length == 1) {
+                            checkValue = checkValueElement.val();
+                        } else {
+                            checkValue = $('input[name="[#CHECK_PARAM_NAME#]_value"]:checked').val();
+                        }
+                        [#if CHECK_PARAM_CONDITION=='==' || CHECK_PARAM_CONDITION=='!='#]
+                            if (checkValue [#CHECK_PARAM_CONDITION#] "[#CHECK_PARAM_VALUE#]") {
+                             paramVisible = true;
+                            }
+                        [#endif#]
+                        [#if CHECK_PARAM_CONDITION=='>' || CHECK_PARAM_CONDITION=='<' || CHECK_PARAM_CONDITION=='<=' || CHECK_PARAM_CONDITION=='>='#]
+                        if (parseFloat(checkValue) [#CHECK_PARAM_CONDITION#] parseFloat([#CHECK_PARAM_VALUE#])) {
+                            paramVisible = true;
+                        }
+                        [#endif#]
+                    }
+                   [#end PARAM_VISIBLE_CONDITION#]
+                 [#endif#]
+                 if (paramVisible) {
+                     $('#[#PARAM_NAME#]_block').show();
+                 } else {
+                     $('#[#PARAM_NAME#]_block').hide();
+                 }
+                [#end LINK_DETAILS_PARAMS#]
+            }
+        </script>
         [#begin LINK_DETAILS_PARAMS#]
-        <div class="form-group">
+        <div class="form-group" id="[#PARAM_NAME#]_block">
             <label class="col-md-4 control-label">
                 [#PARAM_TITLE#]
             </label>
             <div class="col-md-8">
+                [#if PARAM_TYPE="duration"#]
+                <input type="text" value="[#VALUE#]" id="[#PARAM_NAME#]_value" name="[#PARAM_NAME#]_value" class="form-control" onchange="checkVisibleConditions();">
+                [#module name="duration_input" input_id="<#LINK_DETAILS_PARAMS.PARAM_NAME#>_value"#]
+                [#endif#]
                 [#if PARAM_TYPE="num" || PARAM_TYPE="text"#]
-                <input type="text" value="[#VALUE#]" name="[#PARAM_NAME#]_value" class="form-control">
+                <input type="text" value="[#VALUE#]" name="[#PARAM_NAME#]_value" class="form-control" onchange="checkVisibleConditions();">
                 [#endif#]
                 [#if PARAM_TYPE="color"#]
                 <script src='<#ROOTHTML#>3rdparty/spectrum/spectrum.min.js'></script>
@@ -91,11 +145,11 @@
                 </script>
                 [#endif#]
                 [#if PARAM_TYPE="yesno"#]
-                <input type="radio" value="1" name="[#PARAM_NAME#]_value" [#if VALUE="1"#] checked[#endif#]> <#LANG_YES#>
-                <input type="radio" value="0" name="[#PARAM_NAME#]_value" [#if VALUE!="1"#] checked[#endif#]> <#LANG_NO#>
+                <input type="radio" value="1" name="[#PARAM_NAME#]_value" [#if VALUE="1"#] checked[#endif#] onclick="checkVisibleConditions();"> <#LANG_YES#>
+                <input type="radio" value="0" name="[#PARAM_NAME#]_value" [#if VALUE!="1"#] checked[#endif#] onclick="checkVisibleConditions();"> <#LANG_NO#>
                 [#endif#]
                 [#if PARAM_TYPE="select"#]
-                 <select name="[#PARAM_NAME#]_value" class="form-control">
+                 <select name="[#PARAM_NAME#]_value" class="form-control" onchange="checkVisibleConditions();">
                      [#begin PARAM_OPTIONS#]
                      <option value="[#VALUE#]"[#if VALUE=="<#LINK_DETAILS_PARAMS.VALUE#>"#] selected[#endif#]>[#TITLE#]</option>
                      [#end PARAM_OPTIONS#]
@@ -104,12 +158,20 @@
             </div>
         </div>
         [#end LINK_DETAILS_PARAMS#]
+        <script type="text/javascript">
+            $(document).ready(function() {
+               checkVisibleConditions();
+            });
+        </script>
 
         [#if LINK_ID!=""#]
         <div class="form-group">
             <label class="control-label"><#LANG_ACCESS_CONTROL#>:<#LANG_HCB#>access_control<#LANG_HCE#></label>
             <div class="col-lg-5">
-                <a href="?(panel:{action=security_rules})&object_type=sdevice&object_id=<#LINK_ID#>&print=1" onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" target=_blank><#LANG_SET#></a>
+                [#if HAS_RULE#]
+                <i class="glyphicon glyphicon-lock"></i>
+                [#endif#]
+                <a onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);" href="?(panel:{action=security_rules})&object_type=sdevice&object_id=<#LINK_ID#>&print=1" target=_blank><#LANG_SET#></a>
             </div>
         </div>
         [#endif#]
@@ -120,6 +182,16 @@
             </label>
             <div class="col-md-8">
                 <input type="text" value="[#COMMENT#]" name="comment" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label">
+                <#LANG_DEVICES_STATUS#>:
+            </label>
+            <div class="col-md-8">
+                <input type="checkbox" name="is_active" value="1" [#if IS_ACTIVE="1"#] checked[#endif#]>
+                <#LANG_DEVICES_IS_ON#>
             </div>
         </div>
 

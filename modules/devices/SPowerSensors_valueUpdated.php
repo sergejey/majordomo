@@ -11,7 +11,7 @@ $loadTimeout = $this->getProperty('loadStatusTimeout');
 $tmp = explode(',', $loadTimeout);
 $tmp = array_map('trim', $tmp);
 $onTimeout = (int)$tmp[0];
-if ($tmp[1]) {
+if (isset($tmp[1])) {
     $offTimeout = (int)$tmp[1];
 } else {
     $offTimeout = $onTimeout;
@@ -25,15 +25,15 @@ $timerOn = $ot . '_turned_on';
 $timerOff = $ot . '_turned_off';
 
 if ($currentValue >= $min_value) {
+    clearTimeout($timerOff); //
     if (!$status) {
-        clearTimeout($timerOff);
         if (!timeOutExists($timerOn)) {
             setTimeout($timerOn, 'setGlobal("' . $ot . '.status", 1);callMethod("' . $ot . '.loadStatusChanged", array("status"=>1));', $onTimeout);
         }
     }
 } elseif ($currentValue<$min_value) {
+    clearTimeOut($timerOn); //
     if ($status) {
-        clearTimeOut($timerOn);
         if (!timeOutExists($timerOff)) {
             setTimeout($timerOff, 'setGlobal("' . $ot . '.status", 0);callMethod("' . $ot . '.loadStatusChanged", array("status"=>0));', $offTimeout);
         }

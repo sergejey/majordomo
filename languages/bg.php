@@ -3,12 +3,12 @@
 * bg language file
 *
 * @package MajorDoMo
-* @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+* @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
 * @version 1.0
 */
 
 $dictionary=array(
-'WIKI_URL'=>'http://smartliving.ru/',
+'WIKI_URL'=>'https://majordomohome.com/',
 'DEFAULT_COMPUTER_NAME'=>'Алиса',
 'WELCOME_GREETING'=>'Добре дошли',
 'WELCOME_TEXT'=>'Благодарим, че използвате MajorDoMo -- отворена платформа за домашна автоматизация. <br/><br/>Научете повече и се присъединете към съобществото на: <a href="<#LANG_WIKI_URL#>" target=_blank>Веб-сайт</a> | <a href="<#LANG_WIKI_URL#>forum/" target=_blank>Форум</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook страница</a> <br/>&nbsp;<br/>&nbsp;<br/><small>P.S. Вие може да смените или да премахнете тази страница чрез <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Панел за управление</a></small>',

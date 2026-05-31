@@ -16,11 +16,15 @@ if ($this->getProperty('snapshotURL')) {
     } elseif ($this->getProperty('streamURL')) {
         $link = $this->getProperty('streamURL');
     }
-} elseif ($this->getProperty('streamURL_HQ')) {
-    $streamURL = $this->getProperty('streamURL_HQ');
-    $link = $streamURL;
 } elseif ($this->getProperty('streamURL')) {
     $streamURL = $this->getProperty('streamURL');
+    if ($this->getProperty('streamURL_HQ')) {
+        $link = $this->getProperty('streamURL_HQ');
+    } else {
+        $link = $streamURL;
+    }
+} elseif ($this->getProperty('streamURL_HQ')) {
+    $streamURL = $this->getProperty('streamURL_HQ');
     $link = $streamURL;
 }
 

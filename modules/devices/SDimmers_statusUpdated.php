@@ -4,19 +4,23 @@ $status = $this->getProperty('status');
 $level = $this->getProperty('level');
 $levelSaved = $this->getProperty('levelSaved');
 $linked_room = $this->getProperty('linkedRoom');
+$switchLevel = $this->getProperty('switchLevel');
+
+$this->setProperty('updated', time());
 
 if ($this->getProperty('setMaxTurnOn')) {
     $levelSaved = 100;
 }
 
 //DebMes("DimmerStatusUpdated: Status $status; Level $level; LevelSaved $levelSaved",'dimming');
-if ($status > 0 && !$level && $levelSaved) {
-    $this->setProperty('level', $levelSaved);
-} else {
-    $this->callMethod('logicAction');
-    include_once(dirname(__FILE__) . '/devices.class.php');
-    $dv = new devices();
-    $dv->checkLinkedDevicesAction($this->object_title, $level);
+if (!$switchLevel) {
+    if ($status > 0) {
+        if (!$level && $levelSaved) {
+            $this->setProperty('level', $levelSaved, 1, 'SDimmers_statusUpdated');
+        }
+    } elseif ($level) {
+        $this->setProperty('level', 0, 1, 'SDimmers_statusUpdated');
+    }
 }
 
 if ($params['NEW_VALUE'] && $linked_room && $this->getProperty('isActivity')) {
@@ -35,3 +39,13 @@ if ($params['NEW_VALUE'] && $linked_room && $this->getProperty('isActivity')) {
         }
     }
 }
+
+if ($this->getProperty('isConfirmationRequired') && isset($params['PROPERTY'])) {
+    require(DIR_MODULES . 'devices/delivery_confirmation.inc.php');
+}
+
+$this->callMethod('logicAction');
+include_once(dirname(__FILE__) . '/devices.class.php');
+$dv = new devices();
+$dv->checkLinkedDevicesAction($this->object_title, $params);
+

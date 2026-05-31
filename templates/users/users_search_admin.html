@@ -33,6 +33,7 @@
 <table class="table table-striped">
 <thead>
         <tr>
+            <th>&nbsp;</th>
          <th>
                 <#LANG_USERNAME#>
          </th>
@@ -54,8 +55,12 @@
    [#else#]
    <a href="#" onClick="return switchTo('[#USERNAME#]');"><img src="<#ROOTHTML#>img/icons/user.png" border="0" height="30"></a>
    [#endif#] 
-   [#USERNAME#]
  </td>
+    <td>
+        [#USERNAME#]
+        [#if IS_DEFAULT="1"#](<#LANG_USE_DEFAULT#>)[#endif#]
+        [#if PASSWORD!=""#]+ <#LANG_PASSWORD#>[#endif#]
+    </td>
  <td
    >
   <b>

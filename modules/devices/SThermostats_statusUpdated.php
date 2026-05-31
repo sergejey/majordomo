@@ -5,6 +5,8 @@ $linked_room = $this->getProperty('linkedRoom');
 
 $this->setProperty('updated', time());
 
+$this->callMethod('modeTargetValueUpdated');
+
 if ($linked_room && $this->getProperty('isActivity')) {
     if (getGlobal('NobodyHomeMode.active')) {
         callMethodSafe('NobodyHomeMode.deactivate');

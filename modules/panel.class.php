@@ -42,45 +42,55 @@ class panel extends module
         global $session;
         Define('ALTERNATIVE_TEMPLATES', 'templates_alt');
 
+        if (isset($_COOKIE['theme'])) {
+            $out['PANEL_THEME'] = $_COOKIE['theme'];
+        } else {
+            $out['PANEL_THEME'] = 'light';
+        }
 
         if (gr('toggleLeftPanel')) {
             if (gg('HideLeftPanelAdmin')) {
-                sg('HideLeftPanelAdmin',0);
+                sg('HideLeftPanelAdmin', 0);
             } else {
-                sg('HideLeftPanelAdmin',1);
+                sg('HideLeftPanelAdmin', 1);
             }
 
-            $uri=str_replace('toggleLeftPanel=1','',$_SERVER['REQUEST_URI']);
+            $uri = str_replace('toggleLeftPanel=1', '', $_SERVER['REQUEST_URI']);
             $this->redirect($uri);
         }
-        $out['HIDE_LEFT_PANEL']=gg('HideLeftPanelAdmin');
+        $out['HIDE_LEFT_PANEL'] = gg('HideLeftPanelAdmin');
 
         global $action;
-        $out['TAB']=gr('tab');
+        $out['TAB'] = gr('tab');
 
         if (defined('NO_DATABASE_CONNECTION')) {
-         if (!$action) $action = 'saverestore';
-         $this->print = 1;
+            if (!$action) $action = 'saverestore';
+            $this->print = 1;
         }
-		
+
         if (!$this->action && $action) {
             $this->action = $action;
         }
 
         if ($this->action) {
-            $out['TITLE']=$this->action.' ('.LANG_CONTROL_PANEL.')';
-			//Узнаем название модуля
-			$result = SQLSelectOne("SELECT * FROM `project_modules` WHERE NAME = '".$this->action."'");
-			if($result) {
-				$out['NAV_MODULE_NAME'] = $result["TITLE"];
-				$out['NAV_MODULE_CAT'] = $result["CATEGORY"];
-				$out['TITLE'] = $result["TITLE"].' | '.$result["CATEGORY"].' | '.LANG_CONTROL_PANEL;
-			}
+            $out['TITLE'] = $this->action . ' (' . LANG_CONTROL_PANEL . ')';
+            //Узнаем название модуля
+            $result = SQLSelectOne("SELECT * FROM `project_modules` WHERE NAME = '" . $this->action . "'");
+            if ($result) {
+                $out['NAV_MODULE_NAME'] = $result["TITLE"];
+                $out['NAV_MODULE_CAT'] = $result["CATEGORY"];
+                $out['TITLE'] = $result["TITLE"] . ' | ' . $result["CATEGORY"] . ' | ' . LANG_CONTROL_PANEL;
+            }
+            if (defined('PROJECT_TITLE') && PROJECT_TITLE != 'MajordomoSL') {
+                $out['TITLE'] = PROJECT_TITLE . ' | ' . $out['TITLE'];
+            }
+        } else {
+            $out['TITLE'] = PROJECT_TITLE.' - '.LANG_CONTROL_PANEL;
         }
-		
-		$out['SETTINGS_SITE_LANGUAGE'] = SETTINGS_SITE_LANGUAGE;
-		
-        if (!$session->data['SITE_USERNAME']) {
+
+        $out['SETTINGS_SITE_LANGUAGE'] = SETTINGS_SITE_LANGUAGE;
+
+        if (!isset($session->data['SITE_USERNAME'])) {
             $users = SQLSelect("SELECT * FROM users ORDER BY NAME");
             $total = count($users);
 
@@ -101,7 +111,7 @@ class panel extends module
         }
 
 
-        if (!$session->data["AUTHORIZED"] && $session->data['SITE_USERNAME']) {
+        if (!isset($session->data["AUTHORIZED"]) && isset($session->data['SITE_USERNAME'])) {
             $user = SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '" . DBSafe($session->data['SITE_USERNAME']) . "'");
             if ($user['IS_ADMIN']) {
                 $user = SQLSelectOne("SELECT * FROM admin_users WHERE LOGIN='admin'");
@@ -109,22 +119,27 @@ class panel extends module
                 $session->data['USER_LEVEL'] = $user['PRIVATE'];
                 $session->data['USER_ID'] = $user['ID'];
                 $session->data["AUTHORIZED"] = 1;
-                logAction('control_panel_enter',$session->data['USER_NAME']);
+                logAction('control_panel_enter', $session->data['USER_NAME']);
             }
         }
 
-        if (IsSet($session->data["AUTHORIZED"]) || defined('NO_DATABASE_CONNECTION')) {
+        if (isset($session->data["AUTHORIZED"]) || defined('NO_DATABASE_CONNECTION')) {
             $this->authorized = 1;
         } else {
             $tmp = SQLSelectOne("SELECT ID FROM users WHERE IS_ADMIN=1");
             if ($tmp['ID']) {
                 redirect("/");
+                exit;
             }
-            //
         }
 
         global $ajax_panel;
         if ($ajax_panel) {
+            if (!$this->authorized) {
+                header('HTTP/1.0 403 Forbidden');
+                echo 'Authentication required';
+                exit;
+            }
             include_once(DIR_MODULES . 'inc_panel_ajax.php');
         }
 
@@ -153,14 +168,21 @@ class panel extends module
                  WHERE (`HIDDEN`='0' OR NAME='control_modules')
                  ORDER BY FIELD(CATEGORY, '<#LANG_SECTION_OBJECTS#>', '<#LANG_SECTION_DEVICES#>', '<#LANG_SECTION_APPLICATIONS#>',
                                 '<#LANG_SECTION_SETTINGS#>', '<#LANG_SECTION_SYSTEM#>'),
+                          FIELD(`NAME`,'classes','devices','settings','system_errors','xray','connect','saverestore','market') DESC,
                           `PRIORITY`, `TITLE`";
 
             $modules = SQLSelect($sqlQuery);
             $old_cat = 'some_never_should_be_category_name';
             $modulesCnt = count($modules);
-			
-			$getNOTY = SQLSelect("select pln.*, pl.MODULE_NAME from plugins_noty pln join plugins pl on pln.PLUGINS_ID=pl.id WHERE pln.READ = '0'");
-			
+
+            $notifications = array();
+            if (SQLTableExists('module_notifications')) {
+                $getNotifications = SQLSelect("select * from module_notifications WHERE IS_READ = 0 ORDER BY ADDED DESC");
+                foreach ($getNotifications as $notification) {
+                    $notifications[$notification['MODULE_NAME']][] = $notification;
+                }
+            }
+
             for ($i = 0; $i < $modulesCnt; $i++) {
                 if ($modules[$i]['NAME'] == $this->action) {
                     $modules[$i]['SELECTED'] = 1;
@@ -180,49 +202,70 @@ class panel extends module
                 } else {
                     $last_allow = $i;
                 }
-				
-				foreach($getNOTY as $keyNoty => $notyValue) {
-					if($notyValue['MODULE_NAME'] == $modules[$i]["NAME"]) {
-				
-						if(preg_match('|<#(.*?)#>|si', $notyValue['MODULE_NAME'], $arr)) {
-							$titleSearchNoty = constant($arr[1]);
-						} else {
-							$titleSearchNoty = $notyValue['MODULE_NAME'];
-						}
-					
-						$modules[$i]['PLUGINS_NOTY_COUNT'] = $modules[$i]['PLUGINS_NOTY_COUNT']+1;
-						$modules[$i]['PLUGINS_NOTY_COLOR'] = $notyValue['TYPE'];
-						$modules[$i]['PLUGINS_ID'] = $notyValue['PLUGINS_ID'];
-						
-						$getNOTY[$keyNoty]['ADD_HUMAN'] = date('d.m.Y H:i', $notyValue['ADD']);
-						
-						$modules[$i]['PLUGINS_NOTY'][] = $getNOTY[$keyNoty];
 
-						unset($getNOTY[$keyNoty]);
-					} else {
-						$modules[$i]['PLUGINS_ID'] = $notyValue['PLUGINS_ID'] ?? null;
-					}
-				}
-	
+                if (isset($notifications[$modules[$i]["NAME"]])) {
+                    $modules[$i]["NOTIFICATIONS"] = $notifications[$modules[$i]["NAME"]];
+                    $modules[$i]["NOTIFICATIONS_COUNT"] = count($modules[$i]["NOTIFICATIONS"]);
+                    $modules[$i]["NOTIFICATIONS_TYPE"] = $modules[$i]["NOTIFICATIONS"][0]['TYPE'];
+                } else {
+                    $modules[$i]["NOTIFICATIONS_COUNT"] = 0;
+                }
+
                 if (file_exists(ROOT . 'img/modules/' . $modules[$i]['NAME'] . '.png')) {
                     $modules[$i]['ICON_SM'] = ROOTHTML . 'img/modules/' . $modules[$i]['NAME'] . '.png';
                 } else {
                     $modules[$i]['ICON_SM'] = ROOTHTML . 'img/modules/default.png';
                 }
-                if ($modules[$i]['NAME']=='devices') {
+                if ($modules[$i]['NAME'] == 'devices') {
+                    $links = array();
                     $devices = SQLSelect("SELECT devices.LOCATION_ID, locations.TITLE, COUNT(devices.ID) as TOTAL FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE locations.ID>0 GROUP BY devices.LOCATION_ID ORDER BY locations.TITLE");
                     if (is_array($devices)) {
-                        $links=array();
-                        $links[]=array('TITLE'=>LANG_ALL,'LINK'=>ROOTHTML.'admin.php?action='.$modules[$i]['NAME']);
-                        foreach($devices as $device) {
-                            $links[]=array('TITLE'=>processTitle($device['TITLE']).' ('.$device['TOTAL'].')','LINK'=>ROOTHTML.'admin.php?action='.$modules[$i]['NAME'].'&location_id='.$device['LOCATION_ID']);
+                        $links[] = array('TITLE' => LANG_ALL, 'LINK' => ROOTHTML . 'admin.php?action=' . $modules[$i]['NAME']);
+                        foreach ($devices as $device) {
+                            $links[] = array('TITLE' => processTitle($device['TITLE']) . ' (' . $device['TOTAL'] . ')', 'LINK' => ROOTHTML . 'admin.php?action=' . $modules[$i]['NAME'] . '&location_id=' . $device['LOCATION_ID']);
                         }
-                        $modules[$i]['LINKS']=$links;
+                    }
+
+                    $devices = SQLSelect("SELECT devices.TYPE, COUNT(devices.ID) as TOTAL FROM devices GROUP BY devices.TYPE ORDER BY devices.TYPE");
+                    $totall = count($devices);
+                    if ($totall) {
+                        $links[] = array('DIVIDER' => 1);
+                        require DIR_MODULES . 'devices/devices_structure.inc.php';
+
+                        foreach ($devices as &$device) {
+                            if (!isset($this->device_types[$device['TYPE']])) {
+                                $device['TITLE'] = '';
+                            } else {
+                                $device['TITLE'] = processTitle($this->device_types[$device['TYPE']]['TITLE']);
+                            }
+                        }
+                        usort($devices, function ($a, $b) {
+                            return strcmp($a["TITLE"], $b["TITLE"]);
+                        });
+
+                        for ($il = 0; $il < $totall; $il++) {
+                            $links[] = array('TITLE' => $devices[$il]['TITLE'] . ' (' . $devices[$il]['TOTAL'] . ')', 'LINK' => ROOTHTML . 'admin.php?action=' . $modules[$i]['NAME'] . '&type=' . $devices[$il]['TYPE']);
+                        }
+                    }
+                    if (isset($links[0])) {
+                        $modules[$i]['LINKS'] = $links;
                     }
                 }
             }
             $modules[$last_allow]['LAST_IN_CATEGORY'] = 1;
             $out["SUB_MODULES"] = $modules;
+        }
+
+        if ($this->action && isset($notifications[$this->action])) {
+            $total = count($notifications[$this->action]);
+            for ($i = 0; $i < $total; $i++) {
+                $notifications[$this->action][$i]['ADDED'] = date('d.m.Y H:i:s', strtotime($notifications[$this->action][$i]['ADDED']));
+                if ($notifications[$this->action][$i]['TYPE'] == 'default') {
+                    $notifications[$this->action][$i]['TYPE'] = 'info';
+                }
+
+            }
+            $out['MODULE_NOTIFICATIONS'] = $notifications[$this->action];
         }
 
         if (is_dir(DIR_MODULES . 'app_tdwiki')) {
@@ -233,9 +276,18 @@ class panel extends module
         }
 
         $out["ACTION"] = $this->action;
-        if (!$out['TITLE']) {
+        if (!isset($out['TITLE'])) {
             $out['TITLE'] = LANG_CONTROL_PANEL;
         }
+
+        global $system_errors_detected;
+        if (isset($system_errors_detected) && is_array($system_errors_detected)) {
+            $out['RUNNING_WITH_ERRORS'] = 1;
+            foreach ($system_errors_detected as $body) {
+                $out['SYSTEM_ERRORS'][] = array('BODY' => $body);
+            }
+        }
+
         $this->data = $out;
         $p = new parser(DIR_TEMPLATES . $this->name . ".html", $this->data, $this);
         return $p->result;

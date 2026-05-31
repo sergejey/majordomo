@@ -11,7 +11,6 @@
  padding:0px;
 }
 
-
 [#begin ALL_TYPES#]
  [#if HAS_STYLE!=""#][#inc ../../cms/scenes/styles/<#ALL_TYPES.TITLE#>/style.css#][#endif HAS_STYLE#]
 [#end ALL_TYPES#]

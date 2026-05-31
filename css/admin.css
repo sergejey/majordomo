@@ -272,3 +272,7 @@ textarea.ow-display-text {
         font-family: 'Courier New', Monospace;
         height: 75px;
 }
+
+.html-duration-picker {
+    text-align: left !important;
+}

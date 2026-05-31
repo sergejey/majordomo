@@ -169,7 +169,7 @@ class Lexer
 
     for ($i = 1; $i < strlen($str); $i++)
     {
-      switch ($letter = $str{$i})
+      switch ($letter = $str[$i])
       {
       case '\\':
         $i++;
@@ -248,7 +248,7 @@ class Lexer
     }
 
     $heredoc = $match[0];
-    $quote = $heredoc{0};
+    $quote = $heredoc[0];
     $doc = $this->sanitize_heredoc($match[2], array('quote' => $quote, 'indent' => NULL));
 
     if ($quote === '"' && strpos($doc, '#{') !== FALSE)
@@ -473,9 +473,9 @@ class Lexer
     $pi = 0;
     $i = -1;
 
-    while ( isset($str{++$i}) )
+    while ( isset($str[++$i]) )
     {
-      $letter = $str{$i};
+      $letter = $str[$i];
 
       if ($letter === '\\')
       {
@@ -483,7 +483,7 @@ class Lexer
         continue;
       }
 
-      if ( ! ($letter === '#' && $str{$i + 1} === '{' && 
+      if ( ! ($letter === '#' && $str[$i + 1] === '{' && 
         ($expr = $this->balanced_string(substr($str, $i + 1), '}'))) )
       {
         continue;
@@ -582,7 +582,7 @@ class Lexer
 
   function js_token()
   {
-    if ( ! ($this->chunk{0} === '`' && preg_match(self::$JSTOKEN, $this->chunk, $match)))
+    if ( ! ($this->chunk[0] === '`' && preg_match(self::$JSTOKEN, $this->chunk, $match)))
     {
       return 0;
     }
@@ -661,7 +661,7 @@ class Lexer
     }
     else
     {
-      $value = $this->chunk{0};
+      $value = $this->chunk[0];
     }
 
     $tag = $value;
@@ -832,7 +832,7 @@ class Lexer
 
   function regex_token()
   {
-    if ($this->chunk{0} !== '/')
+    if ($this->chunk[0] !== '/')
     {
       return 0;
     }
@@ -918,7 +918,7 @@ class Lexer
 
   function string_token()
   {
-    switch ($this->chunk{0})
+    switch ($this->chunk[0])
     {
     case "'":
       if ( ! preg_match(self::$SIMPLESTR, $this->chunk, $match))
@@ -1087,7 +1087,7 @@ class Lexer
 
   function whitespace_token()
   {
-    if ( ! (preg_match(self::$WHITESPACE, $this->chunk, $match) || ($nline = ($this->chunk{0} === "\n"))))
+    if ( ! (preg_match(self::$WHITESPACE, $this->chunk, $match) || ($nline = ($this->chunk[0] === "\n"))))
     {
       return 0;
     }

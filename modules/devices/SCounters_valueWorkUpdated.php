@@ -3,6 +3,7 @@
 $old_value = (float)$params['OLD_VALUE'];
 $new_value = (float)$params['NEW_VALUE'];
 
+if ($new_value<0) return;
 /*
 //при частом обновлении данных
 $new_value = round($params['VALUE'], 1);

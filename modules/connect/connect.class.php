@@ -5,8 +5,8 @@
  * Connect
  *
  * @package project
- * @author Serge J. <jey@tut.by>
- * @copyright http://www.atmatic.eu/ (c)
+ * @author Serge J. <sergejey@gmail.com>
+ * @copyright https://majordomohome.com/ (c)
  * @version 0.1 (wizard, 13:07:13 [Jul 24, 2013])
  */
 //
@@ -38,16 +38,16 @@ class connect extends module
     function saveParams($data = 0)
     {
         $p = array();
-        if (IsSet($this->id)) {
+        if (isset($this->id)) {
             $p["id"] = $this->id;
         }
-        if (IsSet($this->view_mode)) {
+        if (isset($this->view_mode)) {
             $p["view_mode"] = $this->view_mode;
         }
-        if (IsSet($this->edit_mode)) {
+        if (isset($this->edit_mode)) {
             $p["edit_mode"] = $this->edit_mode;
         }
-        if (IsSet($this->tab)) {
+        if (isset($this->tab)) {
             $p["tab"] = $this->tab;
         }
         return parent::saveParams($p);
@@ -100,10 +100,10 @@ class connect extends module
         } else {
             $this->usual($out);
         }
-        if (IsSet($this->owner->action)) {
+        if (isset($this->owner->action)) {
             $out['PARENT_ACTION'] = $this->owner->action;
         }
-        if (IsSet($this->owner->name)) {
+        if (isset($this->owner->name)) {
             $out['PARENT_NAME'] = $this->owner->name;
         }
         $out['VIEW_MODE'] = $this->view_mode;
@@ -130,11 +130,12 @@ class connect extends module
         if ($event_name == 'SAY') {
             $level = (int)$details['level'];
             $message = $details['message'];
-            $this->sendMessageToConnect($message, $level);
+            $image = $details['image'];
+            $this->sendMessageToConnect($message, $level, $image);
         }
     }
 
-    function sendMessageToConnect($message, $level)
+    function sendMessageToConnect($message, $level = 0, $image = '')
     {
         $this->getConfig();
         $connect_username = $this->config['CONNECT_USERNAME']; //username
@@ -148,17 +149,30 @@ class connect extends module
             'message' => $message,
             'level' => (int)$level
         );
+        if ($image != '' && file_exists($image)) {
+            if (function_exists('curl_file_create')) { // php 5.6+
+                $size = getimagesize($image);
+                $cfile = curl_file_create($image, $size['mime'], basename($image));
+            } else { //
+                $cfile = '@' . realpath($image);
+            }
+            $fields['image'] = $cfile;
+        }
+        //DebMes("sending data: " . json_encode($fields), 'connect_msg');
         $url = 'https://connect.smartliving.ru/sync_device_data.php';
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
+        if ($this->config['CONNECT_INSECURE']) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        }
+        curl_setopt($ch, CURLOPT_HEADER, array("Content-Type:multipart/form-data"));
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
         curl_setopt($ch, CURLOPT_TIMEOUT, 120);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_USERPWD, $connect_username . ":" . $connect_password);
         if (defined('USE_PROXY') && USE_PROXY != '') {
             curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
@@ -167,8 +181,8 @@ class connect extends module
             }
         }
         $result = curl_exec($ch);
+        //DebMes("sending result: " . $result, 'connect_msg');
         curl_close($ch);
-        //DebMes("Sending message result: $result",'connect_push');
     }
 
     function cloudBackup()
@@ -207,14 +221,16 @@ class connect extends module
             DebMes("Cloudbackup file $dest_file to $url", 'cloudbackup');
 
             curl_setopt($ch, CURLOPT_URL, $url);
+            if ($this->config['CONNECT_INSECURE']) {
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            }
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
             curl_setopt($ch, CURLOPT_TIMEOUT, 120);
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
             curl_setopt($ch, CURLOPT_USERPWD, $connect_username . ":" . $connect_password);
             if (defined('USE_PROXY') && USE_PROXY != '') {
                 curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
@@ -230,9 +246,9 @@ class connect extends module
             DebMes("Cloudbackup result: " . $result, 'cloudbackup');
 
             //echo "POST RESULT: ".$result;
-            if ($result == 'OK') {
+            if ($result == 'OK' || preg_match('/OK: (.+?)/', $result, $m)) {
                 @unlink($dest_file);
-                return true;
+                return $result;
             } else {
                 return false;
             }
@@ -306,7 +322,11 @@ class connect extends module
         if ($this->mode == 'sendbackup') {
             $result = $this->cloudBackup();
             if ($result) {
-                $this->redirect("?ok_msg=" . urlencode('Backup sent'));
+                if (preg_match('/OK: (\w+)/', $result, $m)) {
+                    $this->redirect("?ok_msg=" . urlencode('Backup sent, code: <b>' . $m[1] . '</b>'));
+                } else {
+                    $this->redirect("?ok_msg=" . urlencode('Backup sent.'));
+                }
             } else {
                 $this->redirect("?err_msg=" . urlencode('Error sending backup'));
             }
@@ -403,11 +423,13 @@ class connect extends module
         $url .= "&local_url=" . urlencode(getLocalIp());
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
+        if ($this->config['CONNECT_INSECURE']) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        }
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
         if (defined('USE_PROXY') && USE_PROXY != '') {
@@ -419,6 +441,40 @@ class connect extends module
         $result = curl_exec($ch);
         curl_close($ch);
         return $result;
+    }
+
+    function getMQTTQueue()
+    {
+        $queue = array();
+        $url = 'https://connect.smartliving.ru/sync_mqtt_queue.php';
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        if ($this->config['CONNECT_INSECURE']) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        }
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        if ($result != '') {
+            $data = json_decode($result, true);
+            if (isset($data['queue'])) {
+                $queue = $data['queue'];
+            }
+        }
+
+        return $queue;
     }
 
     function requestReverseFull($msg)
@@ -442,6 +498,10 @@ class connect extends module
         //DebMes("$method request to $url: ".$msg,'connect_post');
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
+        if ($this->config['CONNECT_INSECURE']) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        }
         if ($method != 'GET') {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
             //curl_setopt($ch, CURLOPT_POST, 1);
@@ -449,12 +509,8 @@ class connect extends module
         }
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
-        //curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
-        //@curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         @curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
         curl_setopt($ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         $tmpfname = ROOT . 'cms/cached/cookie.txt';
         curl_setopt($ch, CURLOPT_COOKIEJAR, $tmpfname);
         curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
@@ -467,7 +523,7 @@ class connect extends module
         $result = curl_exec($ch);
         $redirectURL = curl_getinfo($ch, CURLINFO_REDIRECT_URL);
         if ($redirectURL != '') {
-            $redirectURL = str_replace(BASE_URL,'',$redirectURL);
+            $redirectURL = str_replace(BASE_URL, '', $redirectURL);
             $result = 'redirect:' . $redirectURL;
             $data['content_type'] = 'redirect';
         } else {
@@ -499,10 +555,10 @@ class connect extends module
         $header = array('Content-Type: multipart/form-data');
         $url_requested = $data['url'];
         $fields = array('url' => $url_requested);
-        if (IsSet($data['watermark'])) {
+        if (isset($data['watermark'])) {
             $fields['watermark'] = $data['watermark'];
         }
-        if (IsSet($data['content_type'])) {
+        if (isset($data['content_type'])) {
             $fields['content_type'] = $data['content_type'];
         }
         if (preg_match('/\.css$/is', $url_requested)
@@ -537,14 +593,16 @@ class connect extends module
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
+        if ($this->config['CONNECT_INSECURE']) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        }
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
         if (defined('USE_PROXY') && USE_PROXY != '') {
@@ -564,7 +622,11 @@ class connect extends module
 // POST TO SERVER
         $url = 'https://connect.smartliving.ru/sync_device_data.php';
         $fields = array();
-        $devices = SQLSelect("SELECT devices.ID, devices.TITLE, devices.ALT_TITLES, devices.TYPE, devices.SUBTYPE, devices.LINKED_OBJECT, locations.TITLE AS ROOM_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE devices.SYSTEM_DEVICE=0");
+        $devices = SQLSelect("SELECT devices.ID, devices.PARENT_ID, devices.TITLE, devices.ALT_TITLES, devices.FAVORITE, devices.TYPE, devices.SUBTYPE, devices.LINKED_OBJECT, locations.TITLE AS ROOM_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE devices.SYSTEM_DEVICE=0 AND devices.ARCHIVED=0");
+        $total_devices = count($devices);
+
+        if (!$total_devices) return true;
+
         include_once(DIR_MODULES . 'classes/classes.class.php');
         $cl = new classes();
 
@@ -573,7 +635,7 @@ class connect extends module
             if (is_object($object)) {
                 $props = $cl->getParentProperties($object->class_id, '', 1);
                 $my_props = SQLSelect("SELECT ID,TITLE FROM properties WHERE OBJECT_ID='" . $object->id . "'");
-                if (IsSet($my_props[0])) {
+                if (isset($my_props[0])) {
                     foreach ($my_props as $p) {
                         if ($p['TITLE'] == 'updated' || $p['TITLE'] == 'updatedText') continue;
                         $props[] = $p;
@@ -592,17 +654,20 @@ class connect extends module
         $fields['devices_data'] = json_encode($devices);
         $fields['local_url'] = getLocalIp();
 
-        //DebMes("Posting all devices to $url",'device_sync');
+        DebMes("Posting all devices ($total_devices = " . strlen($fields['devices_data']) . " bytes) to $url", 'device_sync');
         //DebMes($fields['devices_data'],'device_sync');
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
+        if ($this->config['CONNECT_INSECURE']) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        }
         curl_setopt($ch, CURLOPT_POST, count($fields));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 60000);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
         if (defined('USE_PROXY') && USE_PROXY != '') {
@@ -612,14 +677,14 @@ class connect extends module
             }
         }
         $result = curl_exec($ch);
-        if (curl_errno($ch) && !$background) {
+        if (curl_errno($ch)) {
             $errorInfo = curl_error($ch);
             $info = curl_getinfo($ch);
             DebMes("Error: " . $errorInfo, 'device_sync');
-        } else {
-            //DebMes("Result : ".$result,'device_sync');
+            $result = false;
         }
         curl_close($ch);
+        return $result;
     }
 
     function sendDeviceProperty($property, $value)
@@ -628,12 +693,13 @@ class connect extends module
         $url = 'https://connect.smartliving.ru/sync_device_data.php';
         $fields = array();
         list($object_name, $property_name) = explode('.', $property);
-        $device_rec = SQLSelectOne("SELECT ID, TITLE, TYPE, SUBTYPE, SYSTEM_DEVICE FROM devices WHERE LINKED_OBJECT='" . DBSafe($object_name) . "' AND SYSTEM_DEVICE=0");
-        if (!$device_rec['ID'] || $device_rec['SYSTEM_DEVICE']) return;
+        $device_rec = SQLSelectOne("SELECT ID, TITLE, TYPE, SUBTYPE, SYSTEM_DEVICE, ARCHIVED, FAVORITE FROM devices WHERE LINKED_OBJECT='" . DBSafe($object_name) . "' AND SYSTEM_DEVICE=0 AND ARCHIVED=0");
+        if (!$device_rec['ID'] || $device_rec['SYSTEM_DEVICE'] || $device_rec['ARCHIVED']) return;
         $fields['object'] = $object_name;
         $fields['property'] = $property_name;
         $fields['value'] = $value;
         unset($device_rec['SYSTEM_DEVICE']);
+        unset($device_rec['ARCHIVED']);
         if ($device_rec['TITLE']) {
             $fields['device_data'] = json_encode($device_rec);
         }
@@ -644,12 +710,14 @@ class connect extends module
         //DebMes("Posting $property = $value to $url",'device_sync');
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
+        if ($this->config['CONNECT_INSECURE']) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        }
         curl_setopt($ch, CURLOPT_POST, count($fields));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_TIMEOUT, 5);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
@@ -663,7 +731,7 @@ class connect extends module
         if (curl_errno($ch) && !$background) {
             $errorInfo = curl_error($ch);
             $info = curl_getinfo($ch);
-            DebMes("Error: " . $errorInfo, 'device_sync');
+            DebMes("Send device property error: " . $errorInfo, 'device_sync');
         } else {
             //DebMes("Result : ".$result,'device_sync');
         }
@@ -687,13 +755,15 @@ class connect extends module
         $ch = curl_init();
         //set the url, number of POST vars, POST data
         curl_setopt($ch, CURLOPT_URL, $url);
+        if ($this->config['CONNECT_INSECURE']) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        }
         curl_setopt($ch, CURLOPT_POST, count($fields));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
         if (defined('USE_PROXY') && USE_PROXY != '') {
@@ -761,14 +831,16 @@ class connect extends module
         //open connection
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
+        if ($this->config['CONNECT_INSECURE']) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        }
         curl_setopt($ch, CURLOPT_POST, count($fields));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ch, CURLOPT_HEADER, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
 
@@ -835,13 +907,15 @@ class connect extends module
         $ch = curl_init();
         //set the url, number of POST vars, POST data
         curl_setopt($ch, CURLOPT_URL, $url);
+        if ($this->config['CONNECT_INSECURE']) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        }
         curl_setopt($ch, CURLOPT_POST, count($fields));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
         if (defined('USE_PROXY') && USE_PROXY != '') {
@@ -972,14 +1046,16 @@ class connect extends module
         $ch = curl_init();
         //set the url, number of POST vars, POST data
         curl_setopt($ch, CURLOPT_URL, $url);
+        if ($this->config['CONNECT_INSECURE']) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        }
         curl_setopt($ch, CURLOPT_POST, count($fields));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
         curl_setopt($ch, CURLOPT_TIMEOUT, 120);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     // bad style, I know...
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
         if (defined('USE_PROXY') && USE_PROXY != '') {
             curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
@@ -1018,17 +1094,17 @@ class connect extends module
                 $this->requestReverseFull($msg);
             }
         }
-		
-		if ($this->ajax && $_GET['op'] == 'status') {
-			$status = gg('ThisComputer.cycle_connectRun');
-			
+
+        if ($this->ajax && $_GET['op'] == 'status') {
+            $status = gg('ThisComputer.cycle_connectRun');
+
             if ($status == '') {
-				echo json_encode(array('status' => 0));
+                echo json_encode(array('status' => 0));
             } else {
-				echo json_encode(array('status' => 1));
-			}
-            
-			exit;
+                echo json_encode(array('status' => 1));
+            }
+
+            exit;
         }
     }
 

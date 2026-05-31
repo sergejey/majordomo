@@ -39,8 +39,14 @@
             <li[#if TAB="devices"#] class="active"[#endif#]>
             <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=devices"><#LANG_DEVICES#></a>
             </li>
+            <li[#if TAB="widgets"#] class="active"[#endif#]>
+            <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=widgets"><#LANG_WIDGETS#></a>
+            </li>
         <li[#if TAB="preview"#] class="active"[#endif#]>
-        <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=preview"><#LANG_PREVIEW#> / <#LANG_EDIT#></a>
+        <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=preview"><#LANG_PREVIEW#> / <#LANG_EDIT#>
+            <span onclick="window.open('<#ROOTHTML#>popup/scenes/[#ID#].html?draggable=1', '_blank');">&nbsp;<i class="glyphicon glyphicon-export"></i></span>
+        </a>
+
         </li>
             <li>
             <a href="<#ROOTHTML#>popup/scenes/<#ID#>.html" target="_blank"><#LANG_PREVIEW#></a>
@@ -59,6 +65,10 @@
 
 [#if TAB="devices"#]
 [#inc scenes_edit_devices.html#]
+[#endif TAB#]
+
+[#if TAB="widgets"#]
+[#inc scenes_edit_widgets.html#]
 [#endif TAB#]
 
    [#if TAB="preview"#]

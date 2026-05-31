@@ -91,13 +91,7 @@
    if ($ok) {
     if ($rec['ID']) {
      SQLUpdate($table_name, $rec); // update
-     if (!$rec['KEEP_HISTORY']) {
-      $pvalues=SQLSelect("SELECT * FROM pvalues WHERE PROPERTY_ID='".$rec['ID']."'");
-      $total=count($pvalues);
-      for($i=0;$i<$total;$i++) {
-       SQLExec("DELETE FROM phistory WHERE VALUE_ID='".$pvalues[$i]['ID']."'");
-      }
-     }
+     cleanUpPropertyHistory($rec['ID'], $rec['KEEP_HISTORY']);
     } else {
      $new_rec=1;
      $rec['ID']=SQLInsert($table_name, $rec); // adding new record
@@ -110,7 +104,7 @@
      $replaces=array();
      for($i=0;$i<$total;$i++) {
       $property=SQLSelectOne("SELECT ID FROM properties WHERE TITLE LIKE '".DBSafe($rec['TITLE'])."' AND OBJECT_ID=".(int)$objects[$i]['ID']." AND CLASS_ID!=".(int)$rec['CLASS_ID']);
-      if ($property['ID']) {
+      if (isset($property['ID'])) {
        $replaces[]=$property['ID'];
       }
      }

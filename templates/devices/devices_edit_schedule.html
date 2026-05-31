@@ -11,9 +11,18 @@
     </thead>
     [#begin POINTS#]
     <tr>
-        <td>[#SET_TIME#]</td>
+        <td><b>[#SET_TIME#]</b>
+            [#if HAS_RULE#]
+            <a onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);"
+               class="btn-sm btn-success"
+               href="?(panel:{action=security_rules})&object_type=spoint&object_id=[#ID#]&print=1&types[]=times&types[]=conditions" target=_blank>
+                <i class="glyphicon glyphicon-cog"></i></a>
+            [#endif#]
+        </td>
         <td>[#SET_DAYS#]</td>
-        <td>[#LINKED_METHOD#]</td>
+        <td><b>[#LINKED_METHOD#]
+            [#if VALUE!=""#]([#VALUE#])[#endif#]</b>
+        </td>
         <td>[#LATEST_RUN#]</td>
         <td>
             <a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&point_id=[#ID#]" class="btn btn-default btn-sm"><#LANG_EDIT#></a>
@@ -27,16 +36,41 @@
 [#endif POINTS#]
 
 <form class="form form-horizontal" method="post">
+    <script type="text/javascript">
+        function checkValueRequired(method_name) {
+            [#begin SHOW_METHODS#]
+            if ('[#NAME#]'==method_name) {
+                [#if _CONFIG_REQ_VALUE!=""#]
+                $('#value_block').show();
+                [#else#]
+                $('#value_block').hide();
+                [#endif#]
+            }
+            [#end SHOW_METHODS#]
+        }
+    </script>
     <div class="form-group[#if ERR_METHOD#] has-error[#endif#]">
         <label for="linked_method" class="control-label col-sm-2"><#LANG_ACTION#>:</label>
         <div class="col-sm-4">
-            <select name="linked_method" id="linked_method" class="form-control">
+            <select name="linked_method" id="linked_method" class="form-control" onchange="checkValueRequired(this.value);">
                 [#begin SHOW_METHODS#]
                 <option[#if NAME="<#POINT_LINKED_METHOD#>"#] selected[#endif#] value="[#NAME#]">[#DESCRIPTION#]</option>
                 [#end SHOW_METHODS#]
             </select>
         </div>
     </div>
+
+    <div class="form-group[#if ERR_VALUE#] has-error[#endif#]" id="value_block" style="display:none">
+        <label for="method_value" class="control-label col-sm-2"><#LANG_VALUE#>:</label>
+        <div class="col-sm-4">
+            <input type="text" name="value" value="[#POINT_VALUE#]" id="method_value" class="form-control">
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        checkValueRequired($('#linked_method').val());
+    </script>
+
     <div class="form-group[#if ERR_SET_TIME#] has-error[#endif#]">
         <label for="set_time" class="control-label col-sm-2"><#LANG_RUN_TIME#>:</label>
         <div class="col-sm-4">
@@ -61,6 +95,18 @@
             [#end DAYS#]
         </div>
     </div>
+    [#if POINT_ID!=""#]
+    <div class="form-group">
+        <label class="control-label col-sm-2"><#LANG_ACCESS_CONTROL#>:<#LANG_HCB#>access_control<#LANG_HCE#></label>
+        <div class="col-sm-4">
+            <a onClick="return openModalTWindow('security', '<#LANG_ACCESS_CONTROL#>', this.href, 800, 600);"
+               class="btn btn-sm[#if POINT_ACCESS_DEFINED#] btn-success[#endif#]"
+               href="?(panel:{action=security_rules})&object_type=spoint&object_id=<#POINT_ID#>&print=1&types[]=times&types[]=conditions" target=_blank>
+                <i class="glyphicon glyphicon-cog"></i>
+                <#LANG_SET#></a>
+        </div>
+    </div>
+    [#endif POINT_ID#]
     <div class="form-group">
         <label class="control-label col-sm-2">&nbsp;</label>
         <div class="col-sm-4">

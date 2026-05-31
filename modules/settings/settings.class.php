@@ -5,7 +5,7 @@
 * Settings
 *
 * @package MajorDoMo
-* @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+* @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
 * @version 0.2 (wizard, 23:11:54 [Nov 12, 2006])
 */
 //
@@ -140,6 +140,7 @@ class settings extends module {
 */
  function usual(&$out) {
  $this->admin($out);
+ $out['HIDE_FILTERS'] = 1;
 }
 /**
 * settings search
@@ -157,9 +158,6 @@ class settings extends module {
 * @access private
 */
  function install($parent_name="") {
-  if (!Is_Dir(ROOT."./settings")) {
-   mkdir(ROOT."./settings", 0777);
-  }
   parent::install($parent_name);
  }
 /**
@@ -190,9 +188,9 @@ $data = <<<EOD
  settings: TITLE varchar(255) NOT NULL DEFAULT ''        // Setting Title
  settings: NAME varchar(50) NOT NULL DEFAULT ''          // Setting system name
  settings: TYPE varchar(59) NOT NULL DEFAULT ''          // Setting value type
- settings: NOTES text NOT NULL DEFAULT ''                // Setting Notes / Description
- settings: DATA text NOT NULL DEFAULT ''                 // Additional data
- settings: VALUE text NOT NULL DEFAULT ''                // Setting Value
+ settings: NOTES text                                    // Setting Notes / Description
+ settings: DATA text                                     // Additional data
+ settings: VALUE text                                    // Setting Value
  settings: DEFAULTVALUE varchar(255) NOT NULL DEFAULT '' // Setting Default Value
  settings: URL varchar(255) NOT NULL DEFAULT ''          // URL for more details
  settings: URL_TITLE varchar(255) NOT NULL DEFAULT ''    // URL description

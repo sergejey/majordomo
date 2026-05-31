@@ -5,7 +5,7 @@
  * Dashboard
  *
  * @package MajorDoMo
- * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+ * @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
  * @version 0.2 (wizard, 12:02:17 [Feb 23, 2009])
  */
 //

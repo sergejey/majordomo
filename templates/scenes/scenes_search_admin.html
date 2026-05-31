@@ -13,13 +13,14 @@
 <form action="?" method="post" name="frmList_scenes">
 [#begin RESULT#]
 <div class="well relative">
-<span class="scene-title">[#TITLE#]</span>
+<span class="scene-title"><a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_scenes&id=[#ID#]&tab=elements">[#TITLE#]</a></span>
 <div class="btn-group pull-right">
 
         <a class="btn btn-default btn-sm" href="?data_source=<#DATA_SOURCE#>&view_mode=edit_scenes&id=[#ID#]"><i class="glyphicon glyphicon-pencil"></i></a> 
         <a class="btn btn-default btn-sm" href="?data_source=<#DATA_SOURCE#>&view_mode=edit_scenes&id=[#ID#]&tab=elements"><i class="glyphicon glyphicon-th-list"></i></a>
-        <a class="btn btn-default btn-sm" href="<#ROOTHTML#>popup/scenes/[#ID#].html" target=_blank><i class="glyphicon glyphicon-eye-open"></i></a> 
-
+        <a class="btn btn-default btn-sm" href="<#ROOTHTML#>popup/scenes/[#ID#].html" target=_blank><i class="glyphicon glyphicon-eye-open"></i></a>
+        <a class="btn btn-default btn-sm" href="<#ROOTHTML#>popup/scenes/[#ID#].html?draggable=1" target=_blank><i class="glyphicon glyphicon-edit"></i></a>
+    <br/>&nbsp;<br/>
   <a href="?view_mode=moveup&id=[#ID#]" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-arrow-up"></i></a>
   <a href="?view_mode=movedown&id=[#ID#]" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-arrow-down"></i></a>
 

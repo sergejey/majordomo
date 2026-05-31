@@ -9,7 +9,7 @@ if($('#tab>li.active').text() == '<#LANG_UPDATES#>') {
 [#if PLUGINS#]
     [#begin PLUGINS#]
 	<div class="media" style="border: 1px solid [#if PRICE = ""#]#ddd[#else#]#47a447[#endif#];padding: 10px;margin-bottom: 10px;border-radius: 5px;">
-		<a class="pull-left" href="#">
+		<a class="pull-left" [#if EXIST="1"#]href="<#ROOTHTML#>panel/market.html?op=details&plugin=[#MODULE_NAME#]"[#endif#]>
 			<img class="media-object" style="border-radius: 5px;padding: 5px;border: 1px solid #ddd;" width="64" height="64" src='https://connect.smartliving.ru/cms/addons/[#ID#]_icon.png' onerror="this.src='<#ROOTHTML#>img/modules/default.png'">
 		</a>
 		<div class="media-body">
@@ -47,7 +47,7 @@ if($('#tab>li.active').text() == '<#LANG_UPDATES#>') {
 				[#endif#]
 			[#endif#]
 			</div>
-			<div class="col-md-4 text-right" style="margin: auto;">
+			<div class="col-md-4 text-right">
 				<div class="btn-group">
 				[#if CAN_DOWNLOAD="1"#]
 					[#if SUPPORT_URL !="" AND PRICE != ""#]<a class="btn btn-default" target="_blank" href="[#SUPPORT_URL#]"><i class="glyphicon glyphicon-bullhorn"></i> <#LANG_NEWMARKET_MODULE_DISCUSS#></a>[#endif#]
@@ -60,7 +60,9 @@ if($('#tab>li.active').text() == '<#LANG_UPDATES#>') {
 					[#endif PRICE#]
 				[#endif#]
 				
-				[#if EXISTS#]<a class="btn btn-danger" href="<#ROOTHTML#>panel/market.html?mode=iframe&mode2=uninstall&name=[#MODULE_NAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-trash"></i> <#LANG_DELETE#></a>[#endif#]
+				[#if EXISTS#]
+					<a href="<#ROOTHTML#>panel/market.html?op=details&plugin=[#MODULE_NAME#]" class="btn btn-default"><i class="glyphicon glyphicon-info-sign"></i> <#LANG_HISTORY#></a>
+					<a class="btn btn-danger" href="<#ROOTHTML#>panel/market.html?mode=iframe&mode2=uninstall&name=[#MODULE_NAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-trash"></i> <#LANG_DELETE#></a>[#endif#]
 				</div>
 			</div>
 			</div>

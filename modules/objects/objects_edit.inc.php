@@ -10,23 +10,26 @@ if ($this->owner->name == 'panel') {
 $table_name = 'objects';
 $rec = SQLSelectOne("SELECT * FROM $table_name WHERE ID='$id'");
 
-$device_rec=SQLSelectOne("SELECT * FROM devices WHERE LINKED_OBJECT='".$rec['TITLE']."'");
-if ($device_rec['ID']) {
-    $out['DEVICE_ID']=$device_rec['ID'];
-    $out['DEVICE_TITLE']=$device_rec['TITLE'];
+if (isset($rec['TITLE'])) {
+    $device_rec = SQLSelectOne("SELECT * FROM devices WHERE LINKED_OBJECT='" . $rec['TITLE'] . "'");
+    if (isset($device_rec['ID'])) {
+        $out['DEVICE_ID'] = $device_rec['ID'];
+        $out['DEVICE_TITLE'] = $device_rec['TITLE'];
+    }
 }
 
+$class_changed_from = '';
 if ($this->mode == 'update') {
     $ok = 1;
     // step: default
     if ($this->tab == '') {
         //updating 'TITLE' (varchar, required)
 
-        $rec['TITLE'] = gr('title','trim');
+        $rec['TITLE'] = gr('title', 'trim');
         $rec['TITLE'] = str_replace(' ', '', $rec['TITLE']);
 
         $tmp = SQLSelectOne("SELECT ID FROM objects WHERE TITLE LIKE '" . DBSafe($rec['TITLE']) . "' AND ID!=" . (int)$rec['ID']);
-        if ($tmp['ID']) {
+        if (isset($tmp['ID'])) {
             $rec['TITLE'] = '';
         }
 
@@ -92,8 +95,10 @@ if ($this->tab == '') {
     for ($classes_i = 0; $classes_i < $classes_total; $classes_i++) {
         $class_id_opt[$tmp[$classes_i]['ID']] = $tmp[$classes_i]['TITLE'];
     }
-    for ($i = 0; $i < $classes_total; $i++) {
-        if ($rec['CLASS_ID'] == $tmp[$i]['ID']) $tmp[$i]['SELECTED'] = 1;
+    if (isset($rec['CLASS_ID'])) {
+        for ($i = 0; $i < $classes_total; $i++) {
+            if ($rec['CLASS_ID'] == $tmp[$i]['ID']) $tmp[$i]['SELECTED'] = 1;
+        }
     }
     $out['CLASS_ID_OPTIONS'] = $tmp;
     //options for 'Location' (select)
@@ -102,8 +107,10 @@ if ($this->tab == '') {
     for ($locations_i = 0; $locations_i < $locations_total; $locations_i++) {
         $location_id_opt[$tmp[$locations_i]['ID']] = $tmp[$locations_i]['TITLE'];
     }
-    for ($i = 0; $i < $locations_total; $i++) {
-        if ($rec['LOCATION_ID'] == $tmp[$i]['ID']) $tmp[$i]['SELECTED'] = 1;
+    if (isset($rec['LOCATION_ID'])) {
+        for ($i = 0; $i < $locations_total; $i++) {
+            if ($rec['LOCATION_ID'] == $tmp[$i]['ID']) $tmp[$i]['SELECTED'] = 1;
+        }
     }
     $out['LOCATION_ID_OPTIONS'] = $tmp;
 }
@@ -115,8 +122,8 @@ if ($this->tab == 'properties') {
         $pr = SQLSelectOne("SELECT * FROM properties WHERE ID='" . $delete_prop . "'");
         if ($pr['ID']) {
             $value = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='" . $delete_prop . "' AND OBJECT_ID='" . $rec['ID'] . "'");
-            if ($value['ID']) {
-                SQLExec("DELETE FROM phistory WHERE VALUE_ID='" . $value['ID'] . "'");
+            if (!empty($value['ID'])) {
+                cleanUpValueHistory($value['ID'], 0, $pr['DATA_TYPE']);
                 SQLExec("DELETE FROM pvalues WHERE PROPERTY_ID='" . $delete_prop . "' AND OBJECT_ID='" . $rec['ID'] . "'");
             }
             if (!$pr['CLASS_ID']) {
@@ -128,19 +135,37 @@ if ($this->tab == 'properties') {
 
     if ($this->mode == 'update') {
         clearCacheData();
-        $new_property = gr('new_property','trim');
-        $new_property = str_replace(' ','',$new_property);
+        $new_property = gr('new_property', 'trim');
+        $new_property = str_replace(' ', '', $new_property);
+		$new_description = gr('new_description', 'trim');
+		$new_history = gr('new_history', 'trim');
+		$onchange = gr('onchange', 'trim');
         $new_value = gr('new_value');
-
+		$prop_id = gr('prop_id');
+		
+		$tmp = SQLSelectOne("SELECT * FROM properties WHERE ID='" . $prop_id . "'");
         if ($new_property != '') {
-            $tmp = array();
             $tmp['TITLE'] = $new_property;
             $tmp['OBJECT_ID'] = $rec['ID'];
-            $tmp['ID'] = SQLInsert('properties', $tmp);
-            if ($new_value != '') {
-                setGlobal($rec['TITLE'] . '.' . $new_property, $new_value);
-            }
-        }
+            $tmp['DESCRIPTION'] = $new_description;
+            $tmp['KEEP_HISTORY'] = !empty($new_history) ? $new_history : 0;
+            $tmp['ONCHANGE'] = $onchange;
+			if(empty($tmp['ID'])){
+				//проверяем, есть ли свойство в объекте с таким же именем
+				$prop = SQLSelectOne("SELECT * FROM properties WHERE OBJECT_ID='" . $rec['ID'] . "' AND TITLE='" . $new_property . "'");
+				if(empty($prop['ID'])){
+					$tmp['ID'] = SQLInsert('properties', $tmp);
+					if ($new_value != '') {
+						setGlobal($rec['TITLE'] . '.' . $new_property, $new_value);
+					}
+				}
+			}else{
+				SQLUpdate('properties', $tmp);
+				if (getGlobal($rec['TITLE'] . '.' . $new_property) != $new_value) {
+					setGlobal($rec['TITLE'] . '.' . $new_property, $new_value);
+				}
+			}
+		}
     }
 
 
@@ -149,11 +174,22 @@ if ($this->tab == 'properties') {
     $props = $cl->getParentProperties($rec['CLASS_ID'], '', 1);
 
     $my_props = SQLSelect("SELECT * FROM properties WHERE OBJECT_ID='" . $rec['ID'] . "'");
-    if ($my_props[0]['ID']) {
+    if (isset($my_props[0]['ID'])) {
         foreach ($my_props as $p) {
             $props[] = $p;
         }
     }
+	$methods = $cl->getParentMethods($rec['CLASS_ID'], '', 1);
+    $total = count($methods);
+    for ($i = 0; $i < $total; $i++) {
+        $my_meth = SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID='" . $rec['ID'] . "' AND TITLE LIKE '" . DBSafe($methods[$i]['TITLE']) . "'");
+        $obj_name = SQLSelectOne("SELECT TITLE FROM `objects` WHERE ID = {$rec['ID']}");
+        $methods[$i]['OBJECT_TITLE'] = $obj_name['TITLE'];
+        if (isset($my_meth['ID'])) {
+            $methods[$i]['CUSTOMIZED'] = 1;
+        }
+    }
+    $out['METHODS'] = $methods;
 
     $total = count($props);
     //print_R($props);exit;
@@ -165,44 +201,61 @@ if ($this->tab == 'properties') {
         if ($this->mode == 'update') {
             global ${"value" . $props[$i]['ID']};
             if (isset(${"value" . $props[$i]['ID']})) {
-                $this->class_id = $rec['CLASS_ID'];
-                $this->id = $rec['ID'];
-                $this->object_title = $rec['TITLE'];
-                $this->setProperty($props[$i]['TITLE'], ${"value" . $props[$i]['ID']});
+                setGlobal($rec['TITLE'] . "." . $props[$i]['TITLE'], ${"value" . $props[$i]['ID']});
             }
         }
-        $props[$i]['VALUE'] = $value['VALUE'];
+        $props[$i]['VALUE'] = isset($value['VALUE']) ? $value['VALUE'] : '';
         $props[$i]['VALUE_HTML'] = htmlspecialchars($props[$i]['VALUE']);
-        $props[$i]['SOURCE'] = $value['SOURCE'];
-        $props[$i]['UPDATED'] = date('d.m.Y H:i:s', strtotime($value['UPDATED']));
+        $props[$i]['SOURCE'] = isset($value['SOURCE']) ? $value['SOURCE'] : '';
+        $props[$i]['SOURCE_HTML'] = htmlspecialchars($props[$i]['SOURCE']);
+        $props[$i]['UPDATED'] = isset($value['UPDATED']) ? date('d.m.Y H:i:s', strtotime($value['UPDATED'])) : '';
+
+        $value['LINKED_MODULES'] = isset($value['LINKED_MODULES']) ? explode(',', $value['LINKED_MODULES']) : false;
+        $props[$i]['LINKED_MODULES'] = '';
+        if (is_array($value['LINKED_MODULES'])) {
+            foreach ($value['LINKED_MODULES'] as $prop_link) {
+                if (!$prop_link) break;
+                $props[$i]['LINKED_MODULES'] .= '<span class="label label-success" style="margin-right: 3px;"><a style="color: white;text-decoration: none;" href="?(panel:{action=' . $prop_link . '})&md=' . $prop_link . '&go_linked_object=' . urlencode($rec['TITLE']) . '&go_linked_property=' . urlencode($props[$i]['TITLE']) . '">' . $prop_link . '</a></span>';
+            }
+        }
 		
-		$value['LINKED_MODULES'] = explode(',', $value['LINKED_MODULES']);
-		if(is_array($value['LINKED_MODULES'])) {
-			foreach($value['LINKED_MODULES'] as $prop_link) {
-				if(!$prop_link) break; 
-				$props[$i]['LINKED_MODULES'] .= '<span class="label label-success" style="margin-right: 3px;"><a style="color: white;text-decoration: none;" href="?(panel:{action='.$prop_link.'})&md='.$prop_link.'&go_linked_object='.urlencode($rec['TITLE']).'&go_linked_property='.urlencode($props[$i]['TITLE']).'">'.$prop_link.'</a></span>';
-			}
-		}
+        //Добавим к неклассовым свойствам возможные к привязке методы и исключим из списка уже привязанный метод
+        if($props[$i]['CLASS_ID'] == 0){
+            $props[$i]['METHODS'] = $methods;
+            if(!empty($props[$i]['ONCHANGE'])){
+                $counter = count($methods);
+                for($m=0; $m < $counter; $m++){
+                    if($props[$i]['METHODS'][$m]['TITLE'] == $props[$i]['ONCHANGE']){
+                        $delete_method = $m;
+                    }
+                }
+                array_splice($props[$i]['METHODS'], $delete_method, true);
+            }
+        }
     }
     if ($this->mode == 'update') {
         $this->redirect("?view_mode=" . $this->view_mode . "&id=" . $rec['ID'] . "&tab=" . $this->tab);
     }
-	
+
     $out['PROPERTIES'] = $props;
 }
 // step: methods
 if ($this->tab == 'methods') {
-	
+
 
     global $overwrite;
     global $delete_meth;
-	
-	if(defined('SETTINGS_CODEEDITOR_TURNONSETTINGS')) {
-		$out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = SETTINGS_CODEEDITOR_TURNONSETTINGS;
-		$out['SETTINGS_CODEEDITOR_UPTOLINE'] = SETTINGS_CODEEDITOR_UPTOLINE;
-		$out['SETTINGS_CODEEDITOR_SHOWERROR'] = SETTINGS_CODEEDITOR_SHOWERROR;
-	}
-	
+
+    if (defined('SETTINGS_CODEEDITOR_TURNONSETTINGS')) {
+        $out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = SETTINGS_CODEEDITOR_TURNONSETTINGS;
+    }
+    if (defined('SETTINGS_CODEEDITOR_UPTOLINE')) {
+        $out['SETTINGS_CODEEDITOR_UPTOLINE'] = SETTINGS_CODEEDITOR_UPTOLINE;
+    }
+    if (defined('SETTINGS_CODEEDITOR_SHOWERROR')) {
+        $out['SETTINGS_CODEEDITOR_SHOWERROR'] = SETTINGS_CODEEDITOR_SHOWERROR;
+    }
+
     if ($delete_meth) {
         $method = SQLSelectOne("SELECT * FROM methods WHERE ID='" . (int)$delete_meth . "'");
         $my_meth = SQLSelectOne("SELECT * FROM methods WHERE OBJECT_ID='" . $rec['ID'] . "' AND TITLE LIKE '" . DBSafe($method['TITLE']) . "'");
@@ -234,9 +287,9 @@ if ($this->tab == 'methods') {
             global $call_parent;
             global $run_type;
 
-			$old_code=$my_meth['CODE'];
-			$my_meth['CODE'] = $code;
-			
+            $old_code = $my_meth['CODE'];
+            $my_meth['CODE'] = $code;
+
             $my_meth['CALL_PARENT'] = $call_parent;
             $my_meth['TITLE'] = $method['TITLE'];
             $my_meth['OBJECT_ID'] = $rec['ID'];
@@ -250,22 +303,26 @@ if ($this->tab == 'methods') {
 
             if ($run_type == 'code' && $my_meth['CODE'] != '') {
                 //echo $content;
-                
-				$errors = php_syntax_error($my_meth['CODE']);
-		
-				if ($errors) {
-					$out['ERR_LINE'] = preg_replace('/[^0-9]/', '', substr(stristr($errors, 'php on line '), 0, 18))-2;
-					$out['ERR_CODE'] = 1;
-					$errorStr = explode('Parse error: ', str_replace("'", '', strip_tags(nl2br($errors))));
-					$errorStr = explode('Errors parsing', $errorStr[1]);
-					$errorStr = explode(' in ', $errorStr[0]);
-					//var_dump($errorStr);
-					$out['ERRORS'] = $errorStr[0];
-					$ok = 0;
-					$out['OK'] = $ok;
-					$out['ERR_OLD_CODE'] = $old_code;
-				}
-				
+                if (!defined('PYTHON_PATH') and !isItPythonCode($my_meth['CODE'])) {
+
+
+                    $errors = php_syntax_error($my_meth['CODE']);
+
+                    if ($errors) {
+                        $out['ERR_LINE'] = preg_replace('/[^0-9]/', '', substr(stristr($errors, 'php on line '), 0, 18)) - 2;
+                        $out['ERR_CODE'] = 1;
+                        $errorStr = explode('Parse error: ', str_replace("'", '', strip_tags(nl2br($errors))));
+                        $errorStr = explode('Errors parsing', $errorStr[1]);
+                        $errorStr = explode(' in ', $errorStr[0]);
+                        //var_dump($errorStr);
+                        $out['ERRORS'] = $errorStr[0];
+                        $ok = 0;
+                        $out['OK'] = $ok;
+                        $out['ERR_OLD_CODE'] = $old_code;
+                    }
+                } else {
+                    // chek python code
+                }
                 $out['CODE'] = $my_meth['CODE'];
             }
 
@@ -296,8 +353,8 @@ if ($this->tab == 'methods') {
     for ($i = 0; $i < $total; $i++) {
         $my_meth = SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID='" . $rec['ID'] . "' AND TITLE LIKE '" . DBSafe($methods[$i]['TITLE']) . "'");
         $obj_name = SQLSelectOne("SELECT TITLE FROM `objects` WHERE ID = {$rec['ID']}");
-			 $methods[$i]['OBJECT_TITLE'] = $obj_name['TITLE'];
-		if ($my_meth['ID']) {
+        $methods[$i]['OBJECT_TITLE'] = $obj_name['TITLE'];
+        if (isset($my_meth['ID'])) {
             $methods[$i]['CUSTOMIZED'] = 1;
         }
     }
@@ -316,12 +373,12 @@ if (is_array($rec)) {
 }
 outHash($rec, $out);
 
-if (!$rec['ID'] && $this->class_id) {
+if (!isset($rec['ID']) && isset($this->class_id)) {
     $out['CLASS_ID'] = $this->class_id;
 }
 
 $out['SCRIPTS'] = SQLSelect("SELECT ID, TITLE FROM scripts ORDER BY TITLE");
 
-if ($out['TITLE']) {
+if (isset($out['TITLE']) && isset($this->owner) && isset($this->owner->owner) && isset($this->owner->owner->data)) {
     $this->owner->owner->data['TITLE'] = $out['TITLE'];
 }

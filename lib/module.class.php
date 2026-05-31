@@ -64,6 +64,16 @@ class module
      * @var array module configuration
      */
     var $config;
+    var $ajax;
+    var $action;
+    var $mode;
+    var $view_mode;
+    var $edit_mode;
+    var $tab;
+    var $parent_item;
+    var $data_source;
+    var $single_rec;
+    var $mobile;
 
     /**
      * Module constructor
@@ -72,6 +82,13 @@ class module
      */
     public function __construct()
     {
+        $php_version = (float)phpversion();
+        if ($php_version >= 8) {
+            $class_name = get_class($this);
+            if (method_exists($this, $class_name)) {
+                $this->$class_name();
+            }
+        }
     }
 
     /**
@@ -164,12 +181,15 @@ class module
         return $res;
     }
     // --------------------------------------------------------------------
+
     /**
      * Restoring module data from query string
      *
      */
     public function restoreParams()
     {
+        $global_params = array();
+
         $pd = gr('pd');
         if (strpos($pd, 'm' . STRING_DELIMITER)) {
             $this->restoreParamsOld();
@@ -203,7 +223,7 @@ class module
 
                     // setting params for current module
                     // module has instance in params
-                    if ($cr['instance'] != '') {
+                    if (isset($cr['instance']) && $cr['instance'] != '') {
                         $instance_params[$module_name][$cr['instance']] = $cr;
                     } else {
                         // module has no instance
@@ -223,7 +243,11 @@ class module
             }
         } elseif (!isset($this->instance)) {
             // module has no instances at all
-            $module_data = $global_params[$this->name];
+            if (isset($global_params[$this->name])) {
+                $module_data = $global_params[$this->name];
+            } else {
+                $module_data = array();
+            }
         }
 
         // setting module data
@@ -236,13 +260,13 @@ class module
 
     /**
      * Restoring module data from query string (old version)
-     * @deprecated
      * @return void
+     * @deprecated
      */
     public function restoreParamsOld()
     {
-        $md=gr('md');             // query param - current module
-        $pd=gr('pd');             // query param - all params
+        $md = gr('md');             // query param - current module
+        $pd = gr('pd');             // query param - all params
 
         $global_params = array();
 
@@ -307,18 +331,8 @@ class module
      */
     public function checkInstalled()
     {
-
-        $flag_filename = ROOT.'cms/modules_installed/'.$this->name . '.installed';
-        if (!file_exists($flag_filename)) {
+        if (!isModuleInstalled($this->name)) {
             $this->install();
-        } else {
-            /*
-            $sqlQuery = "SELECT ID FROM project_modules WHERE NAME = '" . $this->name . "'";
-            $rec = SQLSelectOne($sqlQuery);
-            if (!isset($rec["ID"])) {
-                $this->install();
-            }
-            */
         }
     }
 
@@ -330,15 +344,19 @@ class module
      */
     public function getConfig()
     {
+        $this->config = array();
+
         $sqlQuery = "SELECT *
                      FROM project_modules
                     WHERE NAME = '" . $this->name . "'";
 
         $rec = SQLSelectOne($sqlQuery);
-        $data = $rec["DATA"];
-
-        $this->config = unserialize($data);
-
+        if (isset($rec["DATA"])) {
+            $data = $rec["DATA"];
+            if ($data) {
+                $this->config = unserialize($data);
+            }
+        }
         return $this->config;
     }
 
@@ -397,13 +415,13 @@ class module
         } else {
             SQLUpdate("project_modules", $rec);
         }
-        SQLExec("DELETE FROM project_modules WHERE NAME = '".$this->name."' AND ID!=".$rec["ID"]);
+        SQLExec("DELETE FROM project_modules WHERE NAME = '" . $this->name . "' AND ID!=" . $rec["ID"]);
 
-        if (!is_dir(ROOT.'cms/modules_installed')) {
+        if (!is_dir(ROOT . 'cms/modules_installed')) {
             umask(0);
-            mkdir(ROOT.'cms/modules_installed',0777);
+            mkdir(ROOT . 'cms/modules_installed', 0777);
         }
-        $flag_filename = ROOT.'cms/modules_installed/'.$this->name . '.installed';
+        $flag_filename = ROOT . 'cms/modules_installed/' . $this->name . '.installed';
         if (!file_exists($flag_filename)) SaveFile($flag_filename, date("H:m d.M.Y"));
     }
 
@@ -430,12 +448,13 @@ class module
             SQLExec($sqlQuery);
         }
 
-        $flag_filename = ROOT.'cms/modules_installed/'.$this->name . '.installed';
+        $flag_filename = ROOT . 'cms/modules_installed/' . $this->name . '.installed';
         if (file_exists($flag_filename)) unlink($flag_filename);
     }
 
 
     // --------------------------------------------------------------------
+
     /**
      * Module data installation
      *
@@ -495,7 +514,7 @@ class module
                 }
 
             } elseif ((strtolower($field) == 'key') || (strtolower($field) == 'index') || (strtolower($field) == 'fulltext')) {
-                if (!$indexes_retrieved[$table]) {
+                if (!isset($indexes_retrieved[$table])) {
                     $result = SQLGetIndexes($table);
                     foreach ($result as $row) {
                         $tbl_indexes[$table][$row['Key_name']] = 1;
@@ -513,18 +532,18 @@ class module
                     $definition = str_replace('`', '', $definition);
                     $sql = "ALTER TABLE $table ADD $definition;";
                     SQLExec($sql);
-                    SQLExec("FLUSH TABLES ".$table.";");
+                    SQLExec("FLUSH TABLES " . $table . ";");
                     $to_optimize[] = $table;
                 }
             } elseif (!isset($tbl_fields[$table][$field])) {
                 // new field
                 $sql = "ALTER TABLE $table ADD $definition;";
                 SQLExec($sql);
-                SQLExec("FLUSH TABLES ".$table.";");
+                SQLExec("FLUSH TABLES " . $table . ";");
             }
         }
 
-        if ($to_optimize[0]) {
+        if (isset($to_optimize[0])) {
             foreach ($to_optimize as $table) {
                 SQLExec("OPTIMIZE TABLE " . $table . ";");
             }
@@ -541,7 +560,7 @@ class module
             $queryCnt = count($query) - 1;
 
             for ($i = 0; $i < $queryCnt; $i++) {
-                if ($query[$i]{0} != "#") {
+                if ($query[$i][0] != "#") {
                     SQLExec($query[$i]);
                     $mdf[] = "#" . $query[$i];
                 } else {
@@ -582,25 +601,31 @@ class module
     public function redirect($url)
     {
         global $session;
-        global $db;
 
-        $url = $this->makeRealURL($url);
+        $new_url = $this->makeRealURL($url);
+        if (isset($this->owner) && $this->owner->name == 'panel' && preg_match('/nf\.php/', $new_url)) {
+            $new_url = str_replace('nf.php', 'admin.php', $new_url);
+        }
 
         $session->save();
 
-        if ($_GET['part_load']) {
+        $part_load = gr('part_load');
+        if ($part_load) {
             $res = array();
             $res['CONTENT'] = '';
             $res['NEED_RELOAD'] = 1;
-            $res['REDIRECT'] = $url;
+            $res['REDIRECT'] = $new_url;
             echo json_encode($res);
             exit;
         }
 
-        if (!headers_sent()) {
-            header("Location: $url\n\n");
+        if (!headers_sent($filename, $linenum)) {
+            header("Location: $new_url\n\n");
         } else {
-            print "Headers already sent in $filename on line $linenum<br>\n" . "Cannot redirect instead\n";
+            $message = "Headers already sent in $filename on line $linenum";
+            $details = majordomoGetErrorDetails();
+            majordomoSaveError($message . "\n" . $details, 'php_errors_redirect');
+            echo "<p>$message</p><p>Click <a href='$new_url'>here</a> to continue</p>";
         }
 
         exit;
@@ -680,7 +705,7 @@ class module
             $url .= "?ajt=" . $h;
         }
 
-        $res .= "<div id='aj_" . $h . "'>Loading...</div>";
+        $res = "<div id='aj_" . $h . "'>Loading...</div>";
         $res .= "<script language='javascript' type='text/JavaScript'>getBlockData('aj_" . $h . "', '" . $url . "')</script>";
 
         return $res;
@@ -706,12 +731,11 @@ class module
      */
     public function parseLinks($result)
     {
-        $md=gr('md');
+        $md = gr('md');
         if (!isset($_SERVER['PHP_SELF'])) {
             global $PHP_SELF;
             $_SERVER['PHP_SELF'] = $PHP_SELF;
         }
-
         $param_str = '';
 
         if ($md != $this->name) {
@@ -827,48 +851,60 @@ class module
 
         return $res_str;
     }
-	
-	public function sendnotification($str, $type = 'default')
+
+    public function sendNotification($str, $type = 'default')
     {
-		if($type != 'info' && $type != 'danger' && $type != 'warning' && $type != 'success' && $type != 'default') {
-			$type = 'default';
-		}
-		
-		$rec["ADD"] = time();
-		$rec["TYPE"] = $type;
-		$rec["PLUGINS_ID"] = SQLSelectOne("SELECT `ID` FROM `plugins` WHERE `MODULE_NAME` = '".$this->name."'")['ID'];
-		$rec["MESSAGE"] = htmlspecialchars(strip_tags($str));
-		$rec["READ"] = 0;
-		
-		if(!$rec["PLUGINS_ID"]) return json_encode(array('status' => false, 'error' => 'Only extension plugins allowed! Not system plugins!'));
 
-		if(SQLSelectOne("SELECT COUNT(*) AS TOTAL_UNREAD FROM `plugins_noty` WHERE `PLUGINS_ID` = '".$rec["PLUGINS_ID"]."' AND `READ` = '0'")['TOTAL_UNREAD'] > 10) {
-			return json_encode(array('status' => false, 'error' => 'More than 10 notifications in the unread status.'));
-		}
-		
-		$ifExest = SQLSelectOne("SELECT ID FROM `plugins_noty` WHERE `MESSAGE` = '".$str."' AND `READ` = '0'")['ID'];
-		if($ifExest['ID']) {
-			return json_encode(array('status' => false, 'error' => 'Such a record already exists. ID - '.$ifExest['ID'], 'id' => $ifExest['ID']));
-		}
-		
-		$rec["ID"] = SQLInsert("plugins_noty", $rec);
+        if (!SQLTableExists('module_notifications')) {
+            return json_encode(array('status' => false));
+        }
 
-		return json_encode(array('status' => true, 'id' => $rec["ID"]));
+        if ($type != 'info' && $type != 'danger' && $type != 'warning' && $type != 'success' && $type != 'default') {
+            $type = 'default';
+        }
+
+        $rec["ADDED"] = date('Y-m-d H:i:s');
+        $rec["TYPE"] = $type;
+        $rec["MODULE_NAME"] = $this->name;
+        $rec["MESSAGE"] = htmlspecialchars(strip_tags($str));
+
+        DebMes($this->name . ' (' . $rec["TYPE"] . '): ' . $rec["MESSAGE"], 'module_notifications');
+
+        if (SQLSelectOne("SELECT COUNT(*) AS TOTAL_UNREAD FROM `module_notifications` WHERE `MODULE_NAME` = '" . $rec["MODULE_NAME"] . "' AND `IS_READ` = '0'")['TOTAL_UNREAD'] > 10) {
+            return json_encode(array('status' => false, 'error' => 'More than 10 notifications in the unread status.'));
+        }
+
+        $ifExist = SQLSelectOne("SELECT ID FROM `module_notifications` WHERE `MODULE_NAME` = '" . $rec["MODULE_NAME"] . "' AND`MESSAGE` = '" . DBSafe($rec['MESSAGE']) . "' AND TYPE='" . DBSafe($rec['TYPE']) . "' AND `IS_READ` = '0'");
+        if (!empty($ifExist) && is_array($ifExist)) {
+            return json_encode(array('status' => false, 'error' => 'Notification already exists. ID: ' . $ifExist['ID'], 'id' => $ifExist['ID']));
+        }
+
+        $rec["ID"] = SQLInsert("module_notifications", $rec);
+
+
+        return json_encode(array('status' => true, 'id' => $rec["ID"]));
 
     }
-	
-	public function readnotification($noty_id)
-    {
-		$rec["ID"] = $noty_id;
-		$rec["READ"] = 1;
-		
-		if(empty(SQLSelectOne("SELECT ID FROM `plugins_noty` WHERE `ID` = '".$rec["ID"]."' AND `READ` = '0'")['ID'])) {
-			return json_encode(array('status' => false, 'error' => 'No such noty found'));
-		}
-		
-		SQLUpdate("plugins_noty", $rec);
-		
-		return json_encode(array('status' => true));
 
+    public function readNotification($notification_id)
+    {
+        if (!SQLTableExists('module_notifications')) {
+            return json_encode(array('status' => false));
+        }
+        if (is_int($notification_id)) {
+            $rec["ID"] = $notification_id;
+        } else {
+            $rec = SQLSelectOne("SELECT * FROM `module_notifications` WHERE `MODULE_NAME` = '" . $this->name . "' AND `MESSAGE` = '" . DBSafe($notification_id) . "' AND IS_READ=0");
+        }
+        $rec["IS_READ"] = 1;
+
+        if (empty(SQLSelectOne("SELECT ID FROM `module_notifications` WHERE `ID` = '" . (int)$rec["ID"] . "' AND `IS_READ` = '0'")['ID'])) {
+            return json_encode(array('status' => false, 'error' => 'No such noty found'));
+        }
+        SQLUpdate("module_notifications", $rec);
+
+        DebMes($this->name . ' (' . $rec["TYPE"] . ' - marked as read): ' . $rec["MESSAGE"], 'module_notifications');
+
+        return json_encode(array('status' => true));
     }
 }

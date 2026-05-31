@@ -1,10 +1,10 @@
 <?php
 
 /**
- * This file is part of MajorDoMo system. More details at http://smartliving.ru/
+ * This file is part of MajorDoMo system. More details at https://majordomohome.com/
  *
  * @package MajorDoMo
- * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+ * @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
  * @version 1.1
  */
 

@@ -81,7 +81,7 @@ $this->callMethodSafe('logicAction');
 startMeasure('statusUpdatedLinkedDevices');
 include_once(dirname(__FILE__) . '/devices.class.php');
 $dv = new devices();
-$dv->checkLinkedDevicesAction($ot, $params['NEW_VALUE']);
+$dv->checkLinkedDevicesAction($ot, $params);
 endMeasure('statusUpdatedLinkedDevices');
 
 

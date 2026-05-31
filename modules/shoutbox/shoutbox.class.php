@@ -5,12 +5,14 @@
 * Shoutbox
 *
 * @package MajorDoMo
-* @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+* @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
 * @version 0.3 (wizard, 23:01:48 [Jan 30, 2007])
 */
 //
 //
 class shoutbox extends module {
+    var $importance;
+    var $mobile;
 /**
 * shoutbox
 *
@@ -229,6 +231,8 @@ function usual(&$out) {
 * @access private
 */
  function dbInstall($data) {
+	 
+ SQLExec("ALTER TABLE `shouts` CHANGE COLUMN `MESSAGE` `MESSAGE` text");
 /*
 shouts - Shoutbox
 */
@@ -236,10 +240,11 @@ shouts - Shoutbox
  shouts: ID int(10) unsigned NOT NULL auto_increment
  shouts: ROOM_ID int(10) NOT NULL DEFAULT '0'
  shouts: MEMBER_ID int(10) NOT NULL DEFAULT '0'
- shouts: MESSAGE varchar(255) NOT NULL DEFAULT ''
+ shouts: MESSAGE text
  shouts: IMPORTANCE int(10) NOT NULL DEFAULT '0'
  shouts: ADDED datetime
  shouts: SOURCE varchar(255) NOT NULL DEFAULT ''
+ shouts: IMAGE varchar(255) NOT NULL DEFAULT ''
 EOD;
   parent::dbInstall($data);
  }

@@ -4,49 +4,13 @@
  *
  * Frequiently Used Functions
  *
- * @package MajorDoMo
- * @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
- * @version 1.3
  */
+include_once(ROOT . '3rdparty/php-mailer/Exception.php');
+include_once(ROOT . '3rdparty/php-mailer/PHPMailer.php');
+include_once(ROOT . '3rdparty/php-mailer/SMTP.php');
 
-if (defined('HOME_NETWORK') && HOME_NETWORK != '' && !isset($argv[0]) && (!(preg_match('/\/gps\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/\/trackme\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/\/btraced\.php/is', $_SERVER['REQUEST_URI']) || preg_match('/\/rss\.php/is', $_SERVER['REQUEST_URI'])) || $_REQUEST['op'] != '')) {
-    $p = preg_quote(HOME_NETWORK);
-    $p = str_replace('\*', '\d+?', $p);
-    $p = str_replace(',', ' ', $p);
-    $p = str_replace('  ', ' ', $p);
-    $p = str_replace(' ', '|', $p);
-
-    $remoteAddr = $_SERVER["REMOTE_ADDR"];
-
-    if (defined('LOCAL_IP') && LOCAL_IP!='') {
-        $local_ip = LOCAL_IP;
-    } else {
-        $local_ip = '127.0.0.1';
-    }
-
-    if ((($_SERVER["REMOTE_ADDR"] == $local_ip) || (trim($_SERVER["REMOTE_ADDR"]) == '::1')) && (getenv('HTTP_X_FORWARDED_FOR') != '')) {
-        $remoteAddr = getenv('HTTP_X_FORWARDED_FOR');
-    }
-
-
-    if (!preg_match('/' . $p . '/is', $remoteAddr) && $remoteAddr != $local_ip && trim($remoteAddr) != '::1') {
-        if (defined('EXT_ACCESS_USERNAME') && defined('EXT_ACCESS_PASSWORD') && $_SERVER['PHP_AUTH_USER'] == EXT_ACCESS_USERNAME && $_SERVER['PHP_AUTH_PW'] == EXT_ACCESS_PASSWORD) {
-            $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password valid. Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
-            DebMes($data, 'auth');
-        } elseif (!defined('EXT_ACCESS_USERNAME') && !defined('EXT_ACCESS_PASSWORD')) {
-            $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password dont defined and dont needed" . "\n";
-            DebMes($data, 'auth');
-        } else {
-            // header("Location:$PHP_SELF\n\n");
-            header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
-            header("HTTP/1.0 401 Unauthorized");
-            echo "Authorization required\n";
-            $data = $_SERVER['REMOTE_ADDR'] . " " . date("[d/m/Y:H:i:s]") . " Username and/or password invalid. Login: " . $_SERVER['PHP_AUTH_USER'] . " Password: " . $_SERVER['PHP_AUTH_PW'] . "\n";
-            DebMes($data, 'auth');
-            exit;
-        }
-    }
-}
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 if (isset($_SERVER['REQUEST_METHOD'])) {
     $blocked = array('_SERVER', '_COOKIE', 'HTTP_POST_VARS', 'HTTP_GET_VARS', 'HTTP_SERVER_VARS',
@@ -112,6 +76,12 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
 
 function gr($var_name, $type = 'trim')
 {
+
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'DELETE') {
+        $content = file_get_contents('php://input');
+        parse_str($content, $_REQUEST);
+    }
+
     if (isset($_REQUEST[$var_name])) {
         $value = $_REQUEST[$var_name];
     } else {
@@ -143,14 +113,14 @@ function redirect($url, $owner = "", $no_sid = 0)
         $owner->redirect($url);
     } else {
         $param_str = "";
-
         if (!$no_sid) {
             $replaceStr = $_SERVER['PHP_SELF'] . '?' . session_name() . '=' . session_id();
-            $replaceStr .= '&pd=' . $param_str . '&md=' . $owner->name . '&inst=' . $owner->instance . '&';
-
+            $replaceStr .= '&pd=' . $param_str;
+            if (is_object($owner)) {
+                $replaceStr .= '&md=' . $owner->name . '&inst=' . $owner->instance . '&';
+            }
             $url = str_replace('?', $replaceStr, $url);
         }
-
         $url = "Location:$url\n\n";
         $session->save();
         header($url);
@@ -211,7 +181,7 @@ function paging(&$data, $onPage, &$out)
         $page = ceil($total_data / $onPage);
 
     $out['PAGE'] = $page;
-    $from = ($page - 1) * $onPage;
+    $from = ((int)$page - 1) * (int)$onPage;
     $selPage = 9999;
     $pages = array();
 
@@ -287,72 +257,120 @@ function checkGeneral($field)
     return (strlen($field) >= 2) ? 1 : 0;
 }
 
-/**
- * Summary of SendMail
- * @param mixed $from From
- * @param mixed $to To
- * @param mixed $subj Subject
- * @param mixed $body Body
- * @param mixed $attach Attachement (default '')
- * @return bool
- */
-function SendMail($from, $to, $subj, $body, $attach = "")
+function SendMail($from, $to, $subj, $body = "", $attach = "")
 {
-    $mail = new htmlMimeMail();
-    $mail->setHeadCharset('UTF-8');
-    $mail->setTextCharset('UTF-8');
-    $mail->setFrom($from);
-    $mail->setSubject($subj);
-    $mail->setText($body);
-
-    if ($attach != '') {
-        $attach_data = $mail->getFile($attach);
-        $mail->addAttachment($attach_data, basename($attach), '');
+    if ($body == '') {
+        $body = $subj;
+        $subj = strip_tags($subj);
+        $subj = str_replace("\n", " ", $subj);
+        if (mb_strlen($subj) > 50) {
+            $subj = mb_substr($subj, 0, 50) . '...';
+        }
     }
-
-    $result = $mail->send(array($to));
-
-    return $result;
+    return SendMail_HTML($from, $to, $subj, "<pre>" . htmlspecialchars($body) . "</pre>", $attach);
 }
 
-/**
- * Summary of SendMail_HTML
- * @param mixed $from From
- * @param mixed $to To
- * @param mixed $subj Subject
- * @param mixed $body Body
- * @param mixed $attach Attache (default '')
- * @return bool
- */
-function SendMail_HTML($from, $to, $subj, $body, $attach = "")
+function SendMail_HTML($from, $to, $subj, $body = "", $attach = "")
 {
-    $mail = new htmlMimeMail();
+    $max_file_size = 50 * 1024 * 1024; //50Mb
 
-    $mail->setHeadCharset('UTF-8');
-    $mail->setHTMLCharset('UTF-8');
-    $mail->setFrom($from);
-    $mail->setSubject($subj);
-    $mail->setHTML($body);
+    if ($body == '') {
+        $body = $subj;
+        $subj = strip_tags($subj);
+        $subj = str_replace("\n", " ", $subj);
+        if (mb_strlen($subj) > 50) {
+            $subj = mb_substr($subj, 0, 50) . '...';
+        }
+    }
 
-    if (is_array($attach)) {
-        $total = count($attach);
-        for ($i = 0; $i < $total; $i++) {
-            if (file_exists($attach[$i])) {
-                $attach_data = $mail->getFile($attach[$i]);
-                $mail->addAttachment($attach_data, basename($attach[$i]), '');
+    if (defined('SETTINGS_MAIL_TYPE')) {
+        $mailer_type = SETTINGS_MAIL_TYPE; //sendmail
+    } else {
+        $mailer_type = 'sendmail'; //sendmail
+    }
+    if (defined('SETTINGS_MAIL_HOST')) {
+        $smtp_host = SETTINGS_MAIL_HOST;
+    } else {
+        $smtp_host = '';
+    }
+    if (defined('SETTINGS_MAIL_AUTH')) {
+        if (SETTINGS_MAIL_AUTH) $smtp_auth = true;
+        else $smtp_auth = false;
+    } else {
+        $smtp_auth = true;
+    }
+    if (defined('SETTINGS_MAIL_USER')) {
+        $smtp_user = SETTINGS_MAIL_USER;
+    } else {
+        $smtp_user = '';
+    }
+    if (defined('SETTINGS_MAIL_PASSWORD')) {
+        $smtp_password = SETTINGS_MAIL_PASSWORD;
+    } else {
+        $smtp_password = '';
+    }
+    if (defined('SETTINGS_MAIL_SECURE')) {
+        $smtp_secure = SETTINGS_MAIL_SECURE;
+    } else {
+        $smtp_secure = '';
+    }
+    if (defined('SETTINGS_MAIL_PORT')) {
+        $smtp_port = SETTINGS_MAIL_PORT;
+    } else {
+        $smtp_port = 465;
+    }
+
+    if ($mailer_type == 'smtp') {
+        if ($smtp_auth && (!$smtp_user || !$smtp_password)) {
+            DebMes("SMTP username/password is not set", 'sendmail');
+            return false;
+        }
+        if (!$smtp_host) {
+            DebMes("SMTP host is not set", 'sendmail');
+            return false;
+        }
+    }
+    $mail = new PHPMailer(true);
+    try {
+        if ($mailer_type == 'sendmail') {
+            $mail->isSendmail();
+        } else {
+            $mail->Host = $smtp_host;  // Specify main and backup SMTP servers
+            $mail->SMTPAuth = $smtp_auth;                               // Enable SMTP authentication
+            $mail->Username = $smtp_user;                 // SMTP username
+            $mail->Password = $smtp_password;                           // SMTP password
+            $mail->SMTPSecure = $smtp_secure;                            // Enable TLS encryption, `ssl` also accepted
+            $mail->Port = $smtp_port;
+            $mail->isSMTP();                                      // Set mailer to use SMTP
+        }
+        $mail->CharSet = 'UTF-8';
+        $mail->setFrom($smtp_user, $from);
+        $mail->addAddress($to);
+        $mail->isHTML(true);                                  // Set email format to HTML
+        $mail->Subject = $subj;
+        $mail->Body = $body;
+
+        if (is_array($attach)) {
+            $total_file_size = 0;
+            $total = count($attach);
+            for ($i = 0; $i < $total; $i++) {
+                if (file_exists($attach[$i])) {
+                    $total_file_size += filesize($attach[$i]);
+                    if ($total_file_size <= $max_file_size) {
+                        $mail->addAttachment($attach[$i], basename($attach[$i]));
+                    }
+                }
+            }
+        } elseif ((file_exists($attach)) && ($attach != "")) {
+            $total_file_size = filesize($attach);
+            if ($total_file_size <= $max_file_size) {
+                $mail->addAttachment($attach, basename($attach));
             }
         }
-    } elseif ((file_exists($attach)) && ($attach != "")) {
-        $attach_data = $mail->getFile($attach);
-        $mail->addAttachment($attach_data, basename($attach), '');
-    }
-    $result = $mail->send(array($to));
-    if (!$result) {
-        DebMes('Message could not be sent. Mailer Error: ' . $mail->ErrorInfo . ' (' . __FILE__ . ')');
-        //getLogger(__FILE__)->error('Message could not be sent. Mailer Error: ' . $mail->ErrorInfo);
-    } else {
-        DebMes('Message has been sent');
-        //getLogger(__FILE__)->debug('Message has been sent');
+        $result = $mail->send();
+    } catch (Exception $e) {
+        DebMes("Message could not be sent: " . $mail->ErrorInfo, 'sendmail');
+        return false;
     }
     return $result;
 }
@@ -461,15 +479,34 @@ function DebMes($errorMessage, $logLevel = "debug")
         umask(0);
         mkdir($path, 0777);
     }
-    if (is_array($errorMessage) || is_object($errorMessage)) {
-        $errorMessage = json_encode($errorMessage, JSON_PRETTY_PRINT);
+
+    $today_path = $path . '/' . date('Y-m-d');
+    if (!is_dir($today_path)) {
+        umask(0);
+        mkdir($today_path, 0777);
     }
 
-    if ($logLevel != 'debug') {
-        $today_file = $path . '/' . date('Y-m-d') . '_' . $logLevel . '.log';
-    } else {
-        $today_file = $path . '/' . date('Y-m-d') . '.log';
+    $tmp = explode('/', $logLevel);
+    $total = count($tmp);
+    for ($i = 0; $i < $total; $i++) {
+        $today_path .= '/' . $tmp[$i];
+        if (!is_dir($today_path) && ($i < $total - 1)) {
+            umask(0);
+            mkdir($today_path, 0777);
+        }
     }
+    $today_file = $today_path . '.log';
+
+    if (is_array($errorMessage) || is_object($errorMessage)) {
+        $errorMessage = json_encode($errorMessage, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    }
+
+
+    //if ($logLevel != 'debug') {
+    //    $today_file = $path . '/' . date('Y-m-d') . '_' . $logLevel . '.log';
+    //} else {
+    //    $today_file = $path . '/' . date('Y-m-d') . '.log';
+    //}
 
     if (file_exists($today_file) && filesize($today_file) > $max_log_size) return;
 
@@ -722,4 +759,36 @@ function CreateDir($dirPath)
 {
     if (!is_dir($dirPath))
         @mkdir($dirPath, 0777);
+}
+
+function isModuleInstalled($module_name)
+{
+    $flag_filename = ROOT . 'cms/modules_installed/' . $module_name . '.installed';
+    if (file_exists($flag_filename)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function setEvalCode($code = '')
+{
+    global $evalCodeInProgress;
+    $evalCodeInProgress = $code;
+}
+
+function getEvalCode()
+{
+    global $evalCodeInProgress;
+    if (isset($evalCodeInProgress) && $evalCodeInProgress != '') {
+        $tmp = explode("\n", $evalCodeInProgress);
+        $total_lines = count($tmp);
+        for ($i = 0; $i < $total_lines; $i++) {
+            $line = $i + 1;
+            $tmp[$i] = "($line) " . $tmp[$i];
+        }
+        return implode("\n", $tmp);
+    } else {
+        return false;
+    }
 }

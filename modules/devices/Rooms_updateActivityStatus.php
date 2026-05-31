@@ -30,7 +30,7 @@ if (getGlobal('NobodyHomeMode.active')) {
     $res_rooms = array();
     for ($i = 0; $i < $total; $i++) {
         if ($rooms[$i]['active']) {
-            $res_rooms[] = $rooms[$i]['room'];
+            $res_rooms[] = $rooms[$i]['room'].' ('.getPassedText($rooms[$i]['time']).')';
         }
     }
     $somebodyHomeText = LANG_DEVICES_ROOMS_SOMEBODYHOME.'.';

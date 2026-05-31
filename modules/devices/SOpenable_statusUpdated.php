@@ -24,6 +24,10 @@ if ($this->getProperty('isActivity')) {
     }
 }
 
+if ($this->getProperty('isConfirmationRequired') && isset($params['PROPERTY'])) {
+    require(DIR_MODULES . 'devices/delivery_confirmation.inc.php');
+}
+
 $description = $this->description;
 if (!$description) {
     $description = $ot;
@@ -64,11 +68,10 @@ if ($this->getProperty('notify_nc')) {
 }
 
 
-DebMes("Calling logicAction for $ot",'openable');
 $this->callMethodSafe('logicAction');
 
 startMeasure('statusUpdatedLinkedDevices');
 include_once(dirname(__FILE__) . '/devices.class.php');
 $dv = new devices();
-$dv->checkLinkedDevicesAction($ot, $params['NEW_VALUE']);
+$dv->checkLinkedDevicesAction($ot, $params);
 endMeasure('statusUpdatedLinkedDevices');

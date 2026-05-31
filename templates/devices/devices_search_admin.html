@@ -16,12 +16,14 @@
   </div>
 
  <div class="form-group">
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <#LANG_SEARCH#>:
-  </div>
+  <input type="text" name="search" value="[#SEARCH#]" placeholder="<#LANG_SEARCH#>" class="form-control">
+ </div>
+ <div class="form-group">
+  <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+ </div>
 
  <div class="form-group">
-  <select name="type" class="form-control" onchange="this.form.submit();">
+  <select name="type" class="form-control" style="max-width:200px" onchange="this.form.submit();">
    <option value=""><#LANG_TYPE#> (<#LANG_TOTAL#>: [#TOTAL#])</option>
    [#begin TYPES#]
    <option value="[#NAME#]"[#if NAME="<#TYPE#>"#] selected[#endif#]>[#TITLE#] ([#TOTAL#])</option>
@@ -31,8 +33,8 @@
  </div>
 
  <div class="form-group ">
-  <select name="location_id" class="form-control" onchange="this.form.submit();">
-   <option value=""><#LANG_LOCATION#>
+  <select name="location_id" class="form-control" style="max-width:200px" onchange="this.form.submit();">
+   <option value=""><#LANG_ROOMS#> (<#LANG_ALL#>)
     [#begin LOCATIONS#]<option value="[#ID#]"[#if ID="<#LOCATION_ID#>"#] selected[#endif#]>[#TITLE#] ([#TOTAL#])
    [#end LOCATIONS#]
    <option value="manage_locations">[ <#LANG_ADD#> / <#LANG_EDIT#> ]</option>
@@ -40,11 +42,16 @@
  </div>
 
  <div class="form-group">
-  <select name="group_name" class="form-control"  onchange="this.form.submit();">
-   <option value=""><#LANG_GROUPS#></option>
+  <select name="group_name" class="form-control" style="max-width:200px"  onchange="this.form.submit();">
+   <option value=""><#LANG_GROUPS#> (<#LANG_ALL#>)</option>
    [#begin GROUPS#]
    <option value="[#SYS_NAME#]"[#if SYS_NAME="<#GROUP_NAME#>"#] selected[#endif#]>[#TITLE#]</option>
    [#end GROUPS#]
+   <option value="is:battery"[#if GROUP_NAME="is:battery"#] selected[#endif#]>(*) <#LANG_DEVICES_BATTERY_OPERATED#></option>
+   <option value="is:battery_low"[#if GROUP_NAME="is:battery_low"#] selected[#endif#]>(*) <#LANG_DEVICES_BATTERY_WARNING#></option>
+   <option value="is:archived"[#if GROUP_NAME="is:archived"#] selected[#endif#]>(*) <#LANG_ARCHIVED_DEVICE#></option>
+   <option value="is:system"[#if GROUP_NAME="is:system"#] selected[#endif#]>(*) <#LANG_SYSTEM_DEVICE#></option>
+   <option value="is:inactive"[#if GROUP_NAME="is:inactive"#] selected[#endif#]>(*) <#LANG_INACTIVE_DEVICE#></option>
    <option value="manage_groups">[ <#LANG_ADD#> / <#LANG_EDIT#> ]</option>
   </select>
  </div>
@@ -144,26 +151,34 @@
 [#begin RESULT#]
 [#if NEW_LOCATION#]
 <div class="row">
- <h3>[#LOCATION_TITLE#]</h3>
+ <h3><a href="?view_mode=manage_rooms&location_id=[#LOCATION_ID#]">[#LOCATION_TITLE#]</a>
+  <a href="?view_mode=manage_rooms&location_id=[#LOCATION_ID#]" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-wrench"></i></a>
+ </h3>
 </div>
 [#endif#]
 <div class="row">
-  <div class="col-md-4">
-  <b>
-   [#TITLE#]
-  </a></b><br/>
-  [#TYPE_TITLE#] <a href="/panel/linkedobject.html?op=redirect&object=[#LINKED_OBJECT#]">[#LINKED_OBJECT#]</a>
+ <div class="col-md-4"><div class="device[#ID#]">[#HTML#]</div>
+  <span id="device_type[#ID#]" style="display:none">[#TYPE#]</span></div>
+ <div class="col-md-3">
+  [#if ALT_TITLES!=""#]<div style="color:grey">[#ALT_TITLES#]</div>[#endif#]
+  [#TYPE_TITLE#]
   [#if FAVORITE="1"#]<i class="glyphicon glyphicon-star"></i>[#endif#]
+  &mdash; <a href="/panel/linkedobject.html?op=redirect&object=[#LINKED_OBJECT#]">[#LINKED_OBJECT#]</a>
+
  </div>
- <div class="col-md-5"><div class="device[#ID#]">[#HTML#]</div><span id="device_type[#ID#]" style="display:none">[#TYPE#]</span></div>
+ <div class="col-md-2">
+  [#if LINKED_MODULES#]
+  [#begin LINKED_MODULES#]
+  <a href="?(panel:{action=[#MODULE#]})&md=[#MODULE#]&go_linked_object=[#OBJECT#]&go_linked_property=[#PROPERTY#]" class="label label-success">[#MODULE#]</a>
+  [#end LINKED_MODULES#]
+  [#endif LINKED_MODULES#]
+ </div>
  <div class="col-md-3" nowrap>
-  [#if "<#ACTION#>"=="admin"#]
    <a href="?view_mode=edit_devices&id=[#ID#]" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
    <a href="?view_mode=edit_devices&id=[#ID#]&tab=settings" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-wrench"></i></a>
    <a href="?view_mode=edit_devices&id=[#ID#]&tab=links" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-link"></i>[#if LINKED!=""#] ([#LINKED#])[#endif#]</a>
-   <a href="?view_mode=edit_devices&id=[#ID#]&tab=logic" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-flash"></i></a>
-    <a href="?view_mode=delete_devices&id=[#ID#]&location_id=<#LOCATION_ID#>&type=<#TYPE#>&group_name=<#GROUP_NAME#>" onClick="return confirm('Are you sure? Please confirm.')" class="btn btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i></a>
-  [#endif ACTION#]
+   <a href="?view_mode=edit_devices&id=[#ID#]&tab=logic" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-flash"></i>[#if METHODS!=""#] ([#METHODS#])[#endif#]</a>
+   <a href="?view_mode=delete_devices&id=[#ID#]&location_id=<#LOCATION_ID#>&type=<#TYPE#>&group_name=<#GROUP_NAME#>" onClick="return confirm('Are you sure? Please confirm.')" class="btn btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i></a>
  </div>
 </div>
 [#end RESULT#]

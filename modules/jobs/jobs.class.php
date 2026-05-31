@@ -5,7 +5,7 @@
 * jobs
 *
 * @package MajorDoMo
-* @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+* @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
 * @version 0.2 (wizard, 15:03:07 [Mar 27, 2009])
 */
 //

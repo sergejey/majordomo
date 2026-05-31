@@ -5,7 +5,7 @@
 * Layouts
 *
 * @package MajorDoMo
-* @author Serge Dzheigalo <jey@tut.by> http://smartliving.ru/
+* @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
 * @version 0.2 (wizard, 18:09:58 [Sep 10, 2010])
 */
 Define('DEF_TYPE_OPTIONS', 'html=HTML Code|app=Application|url=URL|dashboard=Dashboard'); // options for 'TYPE' //page=Page|

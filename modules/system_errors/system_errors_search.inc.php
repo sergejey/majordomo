@@ -24,13 +24,13 @@
   if (!$qry) $qry="1";
   // FIELDS ORDER
   global $sortby_system_errors;
-  if (!$sortby_system_errors) {
+  if (!$sortby_system_errors && isset($session->data['system_errors_sort'])) {
    $sortby_system_errors=$session->data['system_errors_sort'];
   } else {
-   if ($session->data['system_errors_sort']==$sortby_system_errors) {
+   if (isset($session->data['system_errors_sort']) && $session->data['system_errors_sort']==$sortby_system_errors) {
     if (Is_Integer(strpos($sortby_system_errors, ' DESC'))) {
      $sortby_system_errors=str_replace(' DESC', '', $sortby_system_errors);
-    } else {
+    } elseif ($sortby_system_errors) {
      $sortby_system_errors=$sortby_system_errors." DESC";
     }
    }
