@@ -112,18 +112,18 @@ while (1) {
             } elseif ($value == $old_value) {
 
                 $tmp_history = SQLSelect("SELECT * FROM $table_name WHERE VALUE_ID='" . $q_rec['VALUE_ID'] . "' ORDER BY ID DESC LIMIT 2");
-                $prev_value = $tmp_history[0]['VALUE'];
-                $prev_prev_value = $tmp_history[1]['VALUE'];
+                $prev_value = $tmp_history[0]['VALUE'] ?? null;
+                $prev_prev_value = $tmp_history[1]['VALUE'] ?? null;
 
                 $this_source = $q_rec['SOURCE'];
                 $this_source = preg_replace('/\d+/is', 'N', $this_source);
 
-                $prev_source = $tmp_history[0]['SOURCE'];
+                $prev_source = $tmp_history[0]['SOURCE'] ?? '';
                 $prev_source = preg_replace('/\d+/is', 'N', $prev_source);
 
                 if ($this_source == $prev_source &&
                     $prev_value == $prev_prev_value &&
-                    $tmp_history[0]['ID']) {
+                    !empty($tmp_history[0]['ID'])) {
                     debug_echo(" Update same value " . $q_rec['VALUE_ID']);
                     SQLExec("UPDATE $table_name SET ADDED='" . $q_rec['ADDED'] . "' WHERE ID=" . $tmp_history[0]['ID']);
                     /*
@@ -136,7 +136,7 @@ while (1) {
                     //SQLUpdate($table_name, $tmp_history[0]);
                     debug_echo(" Done ");
                 } else {
-                    debug_echo(" Insert same new value " . $h['VALUE_ID']);
+                    debug_echo(" Insert same new value " . $q_rec['VALUE_ID']);
                     $h = array();
                     $h['VALUE_ID'] = $q_rec['VALUE_ID'];
                     $h['ADDED'] = $q_rec['ADDED'];

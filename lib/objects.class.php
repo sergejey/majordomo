@@ -1673,19 +1673,26 @@ function objectClassChanged($object_id)
 function checkOperationsQueue($topic)
 {
     if (defined('USE_REDIS')) {
-        global $redisConnection;
-        if (!isset($redisConnection)) {
-            $redisConnection = new Redis();
-            $redisConnection->pconnect(USE_REDIS);
+        $redisConnection = mjdGetRedisConnection();
+        if (!is_object($redisConnection)) {
+            return array();
         }
         $queueName = "mjd:queue:" . $topic;
         $result = array();
         while ($redisConnection->lLen($queueName)) {
             $data = $redisConnection->lPop($queueName);
-            $data = explode('|', $data);
-            $item['TOPIC'] = $queueName;
-            $item['DATANAME'] = $data[0];
-            $item['DATAVALUE'] = $data[1];
+            $decoded = json_decode($data, true);
+            if (is_array($decoded) && isset($decoded['DATANAME'])) {
+                $item['TOPIC'] = $topic;
+                $item['DATANAME'] = $decoded['DATANAME'];
+                $item['DATAVALUE'] = $decoded['DATAVALUE'] ?? '';
+            } else {
+                // Backward compatibility with legacy "name|value" format.
+                $parts = explode('|', (string)$data, 2);
+                $item['TOPIC'] = $topic;
+                $item['DATANAME'] = $parts[0] ?? '';
+                $item['DATAVALUE'] = $parts[1] ?? '';
+            }
             $result[] = $item;
         }
         return $result;
@@ -1701,12 +1708,15 @@ function addToOperationsQueue($topic, $dataname, $datavalue = '', $uniq = false,
 {
     startMeasure('addToOperationsQueue');
     if (defined('USE_REDIS')) {
-        global $redisConnection;
-        if (!isset($redisConnection)) {
-            $redisConnection = new Redis();
-            $redisConnection->pconnect(USE_REDIS);
+        $redisConnection = mjdGetRedisConnection();
+        if (!is_object($redisConnection)) {
+            endMeasure('addToOperationsQueue');
+            return false;
         }
-        $value = $dataname . "|" . $datavalue;
+        $value = json_encode(array(
+            'DATANAME' => (string)$dataname,
+            'DATAVALUE' => (string)$datavalue
+        ));
         $queueName = "mjd:queue:" . $topic;
         $result = $redisConnection->rPush($queueName, $value);
         endMeasure('addToOperationsQueue');
@@ -1715,7 +1725,7 @@ function addToOperationsQueue($topic, $dataname, $datavalue = '', $uniq = false,
     $rec = array();
     $rec['TOPIC'] = $topic;
     $rec['DATANAME'] = $dataname;
-    if (strlen($datavalue) < 1024) {
+    if (strlen((string)$datavalue) < 1024) {
         $rec['DATAVALUE'] = $datavalue;
     }
     $rec['EXPIRE'] = date('Y-m-d H:i:s', time() + $ttl);

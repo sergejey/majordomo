@@ -218,7 +218,10 @@ class Threads
             echo date('H:i:s') . " Closing thread: " . $this->commandLines[$id] . "\n";
             DebMes("Closing thread: " . $this->commandLines[$id],'threads');
             
-            $result .= "THREAD CLOSED: [" . $this->commandLines[$id] . "]\n";
+            $exitCode = isset($proc_status['exitcode']) ? (int)$proc_status['exitcode'] : -1;
+            $termSig = isset($proc_status['termsig']) ? (int)$proc_status['termsig'] : 0;
+            $stopSig = isset($proc_status['stopsig']) ? (int)$proc_status['stopsig'] : 0;
+            $result .= "THREAD CLOSED: [" . $this->commandLines[$id] . "] EXIT_CODE=" . $exitCode . " TERM_SIG=" . $termSig . " STOP_SIG=" . $stopSig . "\n";
             
             fclose($this->pipes[$id][0]);
             fclose($this->pipes[$id][1]);
@@ -291,4 +294,3 @@ class Threads
 class ThreadsException extends Exception
 {
 }
-

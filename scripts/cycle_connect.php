@@ -18,11 +18,14 @@ include_once(ROOT . "3rdparty/phpmqtt/phpMQTT.php");
 
 const CONNECT_HOST = 'connect.smartliving.ru';
 const MAX_RUN_TIME = 2 * 60 * 60;
+const MQTT_CONNECT_RETRY_DELAY = 15;
+const POLLING_FALLBACK_RETRY_SECONDS = 5 * 60;
 
 $menu_sent_time = 0;
 $devices_sent_time = 0;
 $simple_devices_queue_checked = 0;
 $started_time = time();
+$previousMillis = 0;
 
 set_time_limit(0);
 
@@ -31,124 +34,142 @@ setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 
 while (1) {
 
-    DebMes("STARTING CONNECT CYCLE", 'connect');
-    $connect = new connect();
-    $connect->getConfig();
+    try {
+        DebMes("STARTING CONNECT CYCLE", 'connect');
+        $connect = new connect();
+        $connect->getConfig();
 
-    if (!$connect->config['CONNECT_SYNC']) {
-        echo "Connect sync turned off.";
-        exit;
-    }
-
-    $devices_data = array();
-    $devices_data_queue = checkOperationsQueue('connect_device_data');
-
-    $sync_required = checkOperationsQueue('connect_sync_devices');
-    echo date('Y-m-d H:i:s') . " Sending all devices\n";
-    DebMes("Sending all devices", 'connect');
-    $devices_sent_time = time();
-    $connect->sendAllDevices();
-    DebMes("Devicese sent.", 'connect');
-    $saved_devices_data = array(); // clear sent data cache
-
-
-    $sqlQuery = "SELECT * FROM commands";
-    $commands = SQLSelect($sqlQuery);
-    $total = count($commands);
-
-    for ($i = 0; $i < $total; $i++) {
-        $cmd_values[$commands[$i]['ID']] = $commands[$i]['CUR_VALUE'];
-        $cmd_titles[$commands[$i]['ID']] = $commands[$i]['RENDER_TITLE'];
-        $cmd_data[$commands[$i]['ID']] = $commands[$i]['RENDER_DATA'];
-    }
-
-    $username = strtolower($connect->config['CONNECT_USERNAME']);
-    $password = $connect->config['CONNECT_PASSWORD'];
-
-    $host = CONNECT_HOST;
-    if ($connect->config['CONNECT_INSECURE']) {
-        $port = '1883';
-        $ca_file = NULL;
-    } else {
-        $port = '8883';
-        $ca_file = dirname(__FILE__) . '/../modules/connect/fullchain.pem';
-    }
-    $connect_topics = array(
-        '/incoming_urls', '/menu_session', '/reverse_requests', '/forward/#', '/ping'
-    );
-    $topics = array();
-    foreach ($connect_topics as $topic) {
-        $topics[] = $username . $topic;
-        if ($username != $connect->config['CONNECT_USERNAME']) {
-            $topics[] = $connect->config['CONNECT_USERNAME'] . $topic;
+        $connectSync = (int)($connect->config['CONNECT_SYNC'] ?? 0);
+        if (!$connectSync) {
+            echo "Connect sync turned off.";
+            exit;
         }
-    }
-    $query = implode(',', $topics);
-    $ping_topic = $username . '/ping';
-    $client_name = "MJD_" . $username . "_" . time();
-    $mqtt_client = new Bluerhinos\phpMQTT($host, $port, $client_name, $ca_file);
+        $connectUsernameRaw = trim((string)($connect->config['CONNECT_USERNAME'] ?? ''));
+        $connectPassword = (string)($connect->config['CONNECT_PASSWORD'] ?? '');
+        if ($connectUsernameRaw === '' || $connectPassword === '') {
+            DebMes("CONNECT_SYNC enabled, but username/password not set. Waiting before retry.", 'connect');
+            sleep(MQTT_CONNECT_RETRY_DELAY);
+            continue;
+        }
 
-    echo date('H:i:s') . " Connecting to $host:$port\n";
-    DebMes("Connecting to $host:$port", 'connect');
-    if ($mqtt_client->connect(true, NULL, $username, $password)) {
-        echo date('H:i:s') . " MQTT CONNECTED\n";
-        DebMes("MQTT CONNECTED.", 'connect');
-        $query_list = explode(',', $query);
-        $total = count($query_list);
-        echo date('H:i:s') . " Topics to watch: $query (Total: $total)\n";
-        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-        $topics = array();
+        $devices_data = array();
+        $devices_data_queue = checkOperationsQueue('connect_device_data');
+
+        $sync_required = checkOperationsQueue('connect_sync_devices');
+        echo date('Y-m-d H:i:s') . " Sending all devices\n";
+        DebMes("Sending all devices", 'connect');
+        $devices_sent_time = time();
+        $connect->sendAllDevices();
+        DebMes("Devicese sent.", 'connect');
+        $saved_devices_data = array(); // clear sent data cache
+
+
+        $sqlQuery = "SELECT * FROM commands";
+        $commands = SQLSelect($sqlQuery);
+        $total = count($commands);
+
         for ($i = 0; $i < $total; $i++) {
-            $path = trim($query_list[$i]);
-            echo date('H:i:s') . " Path: $path\n";
-            $topics[$path] = array("qos" => 0, "function" => "procmsg");
+            $cmd_values[$commands[$i]['ID']] = $commands[$i]['CUR_VALUE'];
+            $cmd_titles[$commands[$i]['ID']] = $commands[$i]['RENDER_TITLE'];
+            $cmd_data[$commands[$i]['ID']] = $commands[$i]['RENDER_DATA'];
         }
-        foreach ($topics as $k => $v) {
-            echo date('H:i:s') . " Subscribing to: $k\n";
-            DebMes("Subscribing to $k", 'connect');
+
+        $username = strtolower($connectUsernameRaw);
+        $password = $connectPassword;
+
+        $host = CONNECT_HOST;
+        if (!empty($connect->config['CONNECT_INSECURE'])) {
+            $port = '1883';
+            $ca_file = NULL;
+        } else {
+            $port = '8883';
+            $ca_file = dirname(__FILE__) . '/../modules/connect/fullchain.pem';
         }
-        $mqtt_client->subscribe($topics, 0);
-        echo date('H:i:s') . " SUBSCRIBED\n";
-        DebMes("SUBSCRIBED.", 'connect');
-        $ping_timestamp = 0;
-        while ($mqtt_client->proc()) {
-            pollingCycle('mqtt');
-            if ((time() - $ping_timestamp) > 60) {
-                $ping_timestamp = time();
-                set_time_limit(10);
-                echo date('Y-m-d H:i:s') . " Pinging MQTT server ($ping_topic) with timestamp " . time() . "\n";
-                DebMes("Pinging MQTT server ($ping_topic) with timestamp " . time(), 'connect');
-                $bytes_published = $mqtt_client->publish($ping_topic, time());
-                if ($bytes_published) {
-                    echo date('Y-m-d H:i:s') . " PING OK (" . $bytes_published . ")\n";
-                    DebMes("Pinging MQTT server OK", 'connect');
-                    setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-                } else {
-                    echo date('Y-m-d H:i:s') . " PING FAILED\n";
-                    DebMes("Pinging MQTT server FAILED", 'connect');
+        $topics = array();
+        $connect_topics = array(
+            '/incoming_urls', '/menu_session', '/reverse_requests', '/forward/#', '/ping'
+        );
+        foreach ($connect_topics as $topic) {
+            $topics[] = $username . $topic;
+            if ($username != $connectUsernameRaw) {
+                $topics[] = $connectUsernameRaw . $topic;
+            }
+        }
+        $query = implode(',', $topics);
+        $ping_topic = $username . '/ping';
+        $client_name = "MJD_" . $username . "_" . time();
+        $mqtt_client = new Bluerhinos\phpMQTT($host, $port, $client_name, $ca_file);
+
+        echo date('H:i:s') . " Connecting to $host:$port\n";
+        DebMes("Connecting to $host:$port", 'connect');
+        if ($mqtt_client->connect(true, NULL, $username, $password)) {
+            echo date('H:i:s') . " MQTT CONNECTED\n";
+            DebMes("MQTT CONNECTED.", 'connect');
+            $query_list = explode(',', $query);
+            $total = count($query_list);
+            echo date('H:i:s') . " Topics to watch: $query (Total: $total)\n";
+            setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+            $topics = array();
+            for ($i = 0; $i < $total; $i++) {
+                $path = trim($query_list[$i]);
+                echo date('H:i:s') . " Path: $path\n";
+                $topics[$path] = array("qos" => 0, "function" => "procmsg");
+            }
+            foreach ($topics as $k => $v) {
+                echo date('H:i:s') . " Subscribing to: $k\n";
+                DebMes("Subscribing to $k", 'connect');
+            }
+            $mqtt_client->subscribe($topics, 0);
+            echo date('H:i:s') . " SUBSCRIBED\n";
+            DebMes("SUBSCRIBED.", 'connect');
+            $ping_timestamp = 0;
+            while ($mqtt_client->proc()) {
+                pollingCycle('mqtt');
+                if ((time() - $ping_timestamp) > 60) {
+                    $ping_timestamp = time();
+                    set_time_limit(10);
+                    echo date('Y-m-d H:i:s') . " Pinging MQTT server ($ping_topic) with timestamp " . time() . "\n";
+                    DebMes("Pinging MQTT server ($ping_topic) with timestamp " . time(), 'connect');
+                    $bytes_published = $mqtt_client->publish($ping_topic, time());
+                    if ($bytes_published) {
+                        echo date('Y-m-d H:i:s') . " PING OK (" . $bytes_published . ")\n";
+                        DebMes("Pinging MQTT server OK", 'connect');
+                        setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+                    } else {
+                        echo date('Y-m-d H:i:s') . " PING FAILED\n";
+                        DebMes("Pinging MQTT server FAILED", 'connect');
+                        break;
+                    }
+                    set_time_limit(0);
+                }
+            }
+            DebMes("Closing MQTT connection", 'connect');
+            $mqtt_client->close();
+        } else {
+            echo date('Y-m-d H:i:s') . " Failed to connect ...\n";
+            DebMes("Failed to connect to MQTT, switching to polling.", 'connect');
+            $polling_started = time();
+            while (1) {
+                $queue = $connect->getMQTTQueue();
+                if (is_array($queue) && count($queue) > 0) {
+                    foreach ($queue as $item) {
+                        procmsg($item['TOPIC'], $item['VALUE']);
+                    }
+                }
+                pollingCycle('polling');
+                if ((time() - $polling_started) > POLLING_FALLBACK_RETRY_SECONDS) {
+                    DebMes("Polling fallback timeout reached. Retrying MQTT connection.", 'connect');
                     break;
                 }
-                set_time_limit(0);
+                sleep(3);
             }
         }
-        DebMes("Closing MQTT connection", 'connect');
-        $mqtt_client->close();
-    } else {
-        echo date('Y-m-d H:i:s') . " Failed to connect ...\n";
-        DebMes("Failed to connect to MQTT, switching to polling.", 'connect');
-
-        while (1) {
-            $queue = $connect->getMQTTQueue();
-            if (is_array($queue) && count($queue) > 0) {
-                foreach ($queue as $item) {
-                    procmsg($item['TOPIC'], $item['VALUE']);
-                }
-            }
-            pollingCycle('polling');
-            sleep(3);
-        }
-
+    } catch (Throwable $e) {
+        DebMes("Connect cycle error: " . $e->getMessage(), 'connect');
+        echo date('Y-m-d H:i:s') . " Connect cycle error: " . $e->getMessage() . "\n";
+        sleep(MQTT_CONNECT_RETRY_DELAY);
     }
+
 }
 
 function pollingCycle($protocol = 'mqtt')
@@ -181,7 +202,7 @@ function pollingCycle($protocol = 'mqtt')
             }
         }
         $sync_required = checkOperationsQueue('connect_sync_devices');
-        if ((time() - $devices_sent_time > 60 * 60) || is_array($sync_required[0])) {
+        if ((time() - $devices_sent_time > 60 * 60) || (!empty($sync_required) && is_array($sync_required[0]))) {
             echo date('Y-m-d H:i:s') . " Sending all devices\n";
             DebMes("Sending all devices", 'connect');
             $devices_sent_time = time();
@@ -238,23 +259,21 @@ function procmsg($topic, $msg)
         echo date("Y-m-d H:i:s") . " Incoming url: $url\n";
         //DebMes("Incoming URL: $url",'connect');
         getURLBackground($url, 0);
-    } elseif (preg_match('/reverse_urls/is', $topic)) {
+    } elseif (preg_match('/reverse_urls/is', $topic) || preg_match('/reverse_requests/is', $topic)) {
         //DebMes("Reverse URL: $msg",'connect');
-        $url = BASE_URL . '/ajax/connect.html?no_session=1&op=reverse_request&msg=' . urlencode($msg);
-        echo date("Y-m-d H:i:s") . " Incoming reverse url: $msg\n";
-        getURLBackground($url, 0);
+        if (preg_match('/reverse_urls/is', $topic)) {
+            $url = BASE_URL . '/ajax/connect.html?no_session=1&op=reverse_request&msg=' . urlencode($msg);
+            echo date("Y-m-d H:i:s") . " Incoming reverse url: $msg\n";
+            getURLBackground($url, 0);
+        } else {
+            $url = BASE_URL . '/ajax/connect.html?no_session=1&op=reverse_request_full&msg=' . urlencode($msg);
+            echo date("Y-m-d H:i:s") . " Incoming reverse request: $msg\n";
+            getURLBackground($url, 0);
+        }
     } elseif (preg_match('/\/forward\/(.+)/is', $topic, $m)) {
         $forward_topic = $m[1];
         //DebMes("Forward $forward_topic: $msg",'connect');
         callAPI('/api/module/mqtt', 'GET', array('topic' => $forward_topic, 'msg' => $msg));
-    } elseif (preg_match('/reverse_requests/is', $topic)) {
-        //DebMes("Reverse request: $msg",'connect');
-        $url = BASE_URL . '/ajax/connect.html?no_session=1&op=reverse_request_full&msg=' . urlencode($msg);
-        echo date("Y-m-d H:i:s") . " Incoming reverse request: $msg\n";
-        getURLBackground($url, 0);
-        //echo "URL: ".$url."\n";
-        //$result = getURL($url, 0);
-        //echo "Result: ".$result."\n";
     }
     //DebMes("Processing complete.",'connect');
 
@@ -303,15 +322,15 @@ function update_menu_data($element_id = 0)
             SQLUpdate('commands', $commands[$i]);
         }
         $changed = 0;
-        if ($cmd_values[$commands[$i]['ID']] != $commands[$i]['CUR_VALUE']) {
+        if (($cmd_values[$commands[$i]['ID']] ?? null) != $commands[$i]['CUR_VALUE']) {
             $cmd_values[$commands[$i]['ID']] = $commands[$i]['CUR_VALUE'];
             $changed = 1;
         }
-        if ($cmd_titles[$commands[$i]['ID']] != $commands[$i]['RENDER_TITLE']) {
+        if (($cmd_titles[$commands[$i]['ID']] ?? null) != $commands[$i]['RENDER_TITLE']) {
             $cmd_titles[$commands[$i]['ID']] = $commands[$i]['RENDER_TITLE'];
             $changed = 1;
         }
-        if ($cmd_data[$commands[$i]['ID']] != $commands[$i]['RENDER_DATA']) {
+        if (($cmd_data[$commands[$i]['ID']] ?? null) != $commands[$i]['RENDER_DATA']) {
             $cmd_data[$commands[$i]['ID']] = $commands[$i]['RENDER_DATA'];
             $changed = 1;
         }

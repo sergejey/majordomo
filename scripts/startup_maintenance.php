@@ -69,8 +69,14 @@ if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH != '')
 }
 
 DebMes("Checking log files.", 'maintenance');
+if (!isset($files) || !is_array($files)) {
+    $files = array();
+}
 getDirTree($path, $files);
 foreach ($files as $file) {
+    if (empty($file['FILENAME'])) {
+        continue;
+    }
     if (filemtime($file['FILENAME']) < time() - LOG_FILES_EXPIRE * 24 * 60 * 60) {
         DebMes("Removing log file " . $file['FILENAME'], 'maintenance');
         unlink($file['FILENAME']);
@@ -166,7 +172,10 @@ DebMes('Checking database tables.', 'maintenance');
 $tables = SQLSelect("SHOW TABLES FROM `" . DB_NAME . "`");
 $total = count($tables);
 for ($i = 0; $i < $total; $i++) {
-    $table = $tables[$i]['Tables_in_' . DB_NAME];
+    $table = $tables[$i]['Tables_in_' . DB_NAME] ?? null;
+    if (!$table) {
+        continue;
+    }
     echo 'Checking table [' . $table . '] ...';
     if ($result = SQLExec("CHECK TABLE " . $table . ";")) {
         echo "OK\n";
@@ -186,9 +195,12 @@ $data = SQLSelect($sqlQuery);
 $total = count($data);
 $found_pvalues = array();
 for ($i = 0; $i < $total; $i++) {
-    if (!$data[$i]['PROP_ID'] || !$data[$i]['OBJ_ID']) {
-        echo "Removing incorrect property value: " . $data[$i]['PROPERTY_NAME'] . PHP_EOL;
-        DebMes("Removing incorrect property value: " . $data[$i]['PROPERTY_NAME'], 'maintenance');
+    $propId = $data[$i]['PROP_ID'] ?? null;
+    $objId = $data[$i]['OBJ_ID'] ?? null;
+    if (!$propId || !$objId) {
+        $propertyName = $data[$i]['PROPERTY_NAME'] ?? '';
+        echo "Removing incorrect property value: " . $propertyName . PHP_EOL;
+        DebMes("Removing incorrect property value: " . $propertyName, 'maintenance');
         SQLExec("DELETE FROM phistory WHERE VALUE_ID=" . $data[$i]['ID']);
         SQLExec("DELETE FROM pvalues WHERE ID=" . $data[$i]['ID']);
     } else {
@@ -213,7 +225,7 @@ $total = count($data);
 
 for ($i = 0; $i < $total; $i++) {
     $objectProperty = $data[$i]['OBJECT_TITLE'] . "." . $data[$i]['PROPERTY_TITLE'];
-    if ($data[$i]['PROPERTY_NAME']) {
+    if (!empty($data[$i]['PROPERTY_NAME'])) {
         echo "Incorrect: " . $data[$i]['PROPERTY_NAME'] . " should be $objectProperty" . PHP_EOL;
         DebMes("Incorrect: " . $data[$i]['PROPERTY_NAME'] . " should be $objectProperty", 'maintenance');
     } else {
@@ -293,6 +305,9 @@ for ($i = 0; $i < $total; $i++) {
         $class_id = $object_rec['CLASS_ID'];
         $class_property = array();
         $parent_props = $cls_module->getParentProperties($class_id, '', true);
+        if (!is_array($parent_props)) {
+            $parent_props = array();
+        }
         foreach ($parent_props as $class_prop) {
             if ($class_prop['TITLE'] == $prop_title) {
                 $class_property = $class_prop;
@@ -302,12 +317,16 @@ for ($i = 0; $i < $total; $i++) {
             DebMes('Fixing ' . json_encode($properties[$i]), 'maintenance');
             $object_pvalue = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID=" . $properties[$i]['ID'] . " AND OBJECT_ID=" . $properties[$i]['OBJECT_ID']);
             $class_pvalue = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID=" . $class_property['ID'] . " AND OBJECT_ID=" . $properties[$i]['OBJECT_ID']);
-            if (!$class_pvalue['ID']) {
-                $object_pvalue['PROPERTY_ID'] = $class_property['ID'];
-                SQLUpdate('pvalues', $object_pvalue);
+            if (empty($class_pvalue['ID'])) {
+                if (!empty($object_pvalue['ID'])) {
+                    $object_pvalue['PROPERTY_ID'] = $class_property['ID'];
+                    SQLUpdate('pvalues', $object_pvalue);
+                }
             } else {
-                SQLExec("DELETE FROM phistory WHERE VALUE_ID=" . $object_pvalue['ID']);
-                SQLExec("DELETE FROM pvalues WHERE ID=" . $object_pvalue['ID']);
+                if (!empty($object_pvalue['ID'])) {
+                    SQLExec("DELETE FROM phistory WHERE VALUE_ID=" . $object_pvalue['ID']);
+                    SQLExec("DELETE FROM pvalues WHERE ID=" . $object_pvalue['ID']);
+                }
             }
             SQLExec("DELETE FROM properties WHERE ID=" . $properties[$i]['ID']);
             $problems_found++;
@@ -348,6 +367,7 @@ $mkt->marketRequest('op=news');
 
 include_once DIR_MODULES . 'saverestore/saverestore.class.php';
 $sv = new saverestore();
+$out = array();
 $sv->admin($out);
 
 DebMes("Maintenance complete.", 'maintenance');
