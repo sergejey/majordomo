@@ -17,24 +17,24 @@ function buildCycleStopReason($cycleTitle, $closedThread, $exitCode = null, $ter
 {
     $reasons = array();
     if ($stopRequested && $restartRequested) {
-        $reasons[] = 'остановлен по команде перезапуска';
+        $reasons[] = LANG_CYCLE_STOP_REASON_RESTART_COMMAND;
     } elseif ($stopRequested) {
-        $reasons[] = 'остановлен по команде stop';
+        $reasons[] = LANG_CYCLE_STOP_REASON_STOP_COMMAND;
     } elseif ($restartRequested) {
-        $reasons[] = 'остановлен перед запланированным перезапуском';
+        $reasons[] = LANG_CYCLE_STOP_REASON_PRE_RESTART;
     } elseif ($lastError != '') {
-        $reasons[] = 'аварийное завершение (' . $lastError . ')';
+        $reasons[] = sprintf(LANG_CYCLE_STOP_REASON_CRASH_ERROR, $lastError);
     } elseif ((int)$termSig > 0) {
-        $reasons[] = 'завершен системным сигналом #' . (int)$termSig;
+        $reasons[] = sprintf(LANG_CYCLE_STOP_REASON_SIGNAL, (int)$termSig);
     } elseif ($exitCode !== null && (int)$exitCode !== 0 && (int)$exitCode !== -1) {
-        $reasons[] = 'аварийное завершение (exit code ' . (int)$exitCode . ')';
+        $reasons[] = sprintf(LANG_CYCLE_STOP_REASON_CRASH_EXIT_CODE, (int)$exitCode);
     } elseif ($exitCode !== null && (int)$exitCode === 0) {
-        $reasons[] = 'неожиданное завершение (exit code 0, вероятна внутренняя ошибка в цикле)';
+        $reasons[] = LANG_CYCLE_STOP_REASON_UNEXPECTED_EXIT_ZERO;
     } else {
-        $reasons[] = 'неожиданное завершение (причина неизвестна)';
+        $reasons[] = LANG_CYCLE_STOP_REASON_UNEXPECTED_UNKNOWN;
     }
 
-    $details = 'Цикл ' . $cycleTitle . ' остановлен: ' . implode(', ', $reasons) . '.';
+    $details = sprintf(LANG_CYCLE_STOP_DETAILS_HEADER, $cycleTitle, implode(', ', $reasons));
     if ($exitCode !== null) {
         $details .= "\nExit code: " . (int)$exitCode . '.';
     }
@@ -42,9 +42,9 @@ function buildCycleStopReason($cycleTitle, $closedThread, $exitCode = null, $ter
         $details .= "\nTerm signal: " . (int)$termSig . '.';
     }
     if ($lastError != '') {
-        $details .= "\nПоследняя ошибка цикла: " . $lastError;
+        $details .= "\n" . sprintf(LANG_CYCLE_STOP_DETAILS_LAST_ERROR, $lastError);
     }
-    $details .= "\nКоманда запуска: " . $closedThread;
+    $details .= "\n" . sprintf(LANG_CYCLE_STOP_DETAILS_COMMAND, $closedThread);
 
     return $details;
 }
