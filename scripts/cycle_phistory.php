@@ -13,11 +13,12 @@ include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 $ctl = new control_modules();
 setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 
+ensureHistorySchema();
+
 //SQLTruncateTable('phistory_queue');
 
-debug_echo("Optimizing phistory");
-SQLExec("OPTIMIZE TABLE phistory;");
-debug_echo("Done");
+// Intentionally do not run OPTIMIZE TABLE on each cycle start.
+// It is expensive on large installations and should be done via maintenance windows.
 
 $limit = (int)gg('phistory_queue_limit');
 if (!$limit) {
@@ -174,3 +175,33 @@ function debug_echo($line)
 }
 
 DebMes("Unexpected close of cycle: " . basename(__FILE__));
+
+function ensureHistorySchema()
+{
+    ensureTableIndex('phistory', 'idx_phistory_value_added', 'VALUE_ID,ADDED');
+    ensureTableIndex('phistory_queue', 'idx_phistory_queue_value_id', 'VALUE_ID');
+    ensureTableIndex('phistory_queue', 'idx_phistory_queue_added', 'ADDED');
+    ensureTableIndex('history', 'idx_history_object_added', 'OBJECT_ID,ADDED');
+    ensureTableIndex('history', 'idx_history_method_added', 'METHOD_ID,ADDED');
+    ensureTableIndex('history', 'idx_history_value_added', 'VALUE_ID,ADDED');
+}
+
+function ensureTableIndex($table_name, $index_name, $index_columns)
+{
+    $table_name_safe = preg_replace('/[^a-z0-9_]/i', '', (string)$table_name);
+    $index_name_safe = preg_replace('/[^a-z0-9_]/i', '', (string)$index_name);
+    $index_columns_safe = preg_replace('/[^a-z0-9_,]/i', '', (string)$index_columns);
+    if ($table_name_safe == '' || $index_name_safe == '' || $index_columns_safe == '') {
+        return;
+    }
+
+    $table_exists = SQLSelectOne("SHOW TABLES LIKE '" . DBSafe($table_name_safe) . "'");
+    if (!$table_exists) {
+        return;
+    }
+
+    $check = SQLSelectOne("SHOW INDEX FROM `$table_name_safe` WHERE Key_name='" . DBSafe($index_name_safe) . "' LIMIT 1");
+    if (!isset($check['Key_name'])) {
+        SQLExec("ALTER TABLE `$table_name_safe` ADD INDEX `$index_name_safe` ($index_columns_safe)");
+    }
+}
