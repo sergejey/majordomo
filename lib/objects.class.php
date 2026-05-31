@@ -1244,7 +1244,8 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
         $method = 'GET';
     }
 
-    if (defined('ENABLE_FORK') && ENABLE_FORK && function_exists('pcntl_fork')) {
+    $is_cli_runtime = (PHP_SAPI === 'cli');
+    if ($is_cli_runtime && defined('ENABLE_FORK') && ENABLE_FORK && function_exists('pcntl_fork')) {
         $fork_disabled = false;
     }
 
