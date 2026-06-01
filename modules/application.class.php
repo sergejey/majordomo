@@ -163,7 +163,7 @@ class application extends module
         $terminals = getAllTerminals(-1, 'TITLE');
         $total = count($terminals);
         for ($i = 0; $i < $total; $i++) {
-            if ($terminals[$i]['HOST'] != '' && $_SERVER['REMOTE_ADDR'] == $terminals[$i]['HOST'] && !$session->data['TERMINAL']) {
+            if ($terminals[$i]['HOST'] != '' && $_SERVER['REMOTE_ADDR'] == $terminals[$i]['HOST'] && empty($session->data['TERMINAL'])) {
                 $session->data['TERMINAL'] = $terminals[$i]['NAME'];
             }
             if (mb_strtoupper($terminals[$i]['NAME'], 'UTF-8') == mb_strtoupper(isset($session->data['TERMINAL']) ? $session->data['TERMINAL'] : '', 'UTF-8')) {
