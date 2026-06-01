@@ -327,13 +327,13 @@
             return;
         }
 
-        var urlDebug="<#ROOTHTML#>ajax/xray.html?op=getcontent&lines=10";
+        var urlDebug="<#ROOTHTML#>ajax/xray.html?ajax=1&op=getcontent&lines=10";
         $.ajax({
             url: urlDebug,
         }).done(function(data) {
-            try {
-                data = JSON.parse(data);
-            } catch (e) {
+            if (typeof data === 'string') {
+                data = safeJsonParse(data, {});
+            } else if (!data || typeof data !== 'object') {
                 data = {};
             }
 

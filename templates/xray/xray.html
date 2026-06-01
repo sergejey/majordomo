@@ -73,6 +73,9 @@ $(document).ready(function() {
 						<span class="input-group-btn">
 							<button type="submit" value="<#LANG_SUBMIT#>" class="btn btn-default btn-success" type="button"><#LANG_SUBMIT#></button>
 							<a href="#" class="btn btn-primary" onClick="return playPauseXRay();" id="playpausebtn"><i class="glyphicon glyphicon-pause"></i> <#LANG_XRAY_PAUSE#></a>
+							[#if VIEW_MODE=""#]
+							<a href="#" class="btn btn-danger" onClick="return clearXrayLogs();" id="clearlogsbtn" title="Очистить выбранные логи"><i class="glyphicon glyphicon-trash"></i> Очистить лог</a>
+							[#endif VIEW_MODE#]
 						</span>
 					</div>
 						
@@ -263,6 +266,41 @@ $(document).ready(function() {
 				} 
 				checkTimer=setTimeout('checkAllStates()', checkTimeout);
 			});
+			return false;
+		}
+
+		function clearXrayLogs() {
+			var selectedFiles = $('#files').val() || [];
+			if (!selectedFiles.length) {
+				alert('Выберите хотя бы один лог-файл.');
+				return false;
+			}
+			if (!confirm('Очистить выбранные лог-файлы?')) {
+				return false;
+			}
+
+			var url = window.location.href;
+			url += (url.indexOf('?') !== -1 ? '&' : '?') + 'ajax=1&op=clearlog';
+			$.ajax({
+				url: url,
+				type: 'POST',
+				data: { files: selectedFiles }
+			}).done(function(data) {
+				var dataJSON;
+				try {
+					dataJSON = JSON.parse(data);
+				} catch (e) {
+					dataJSON = {};
+				}
+				if (dataJSON.STATUS === 'OK') {
+					checkAllStates();
+				} else {
+					alert(dataJSON.MESSAGE || 'Не удалось очистить лог.');
+				}
+			}).fail(function() {
+				alert('Ошибка запроса при очистке лога.');
+			});
+
 			return false;
 		}
 		checkAllStates();

@@ -551,6 +551,13 @@ class xray extends module
                     $out['TODAY_FILES'][]=$item;
                 }
             }
+            unset($item);
+
+            // Fallback: if requested/default files are absent, select the latest available log.
+            if ($total_selected_files == 0 && count($out['FILES'])) {
+                $out['FILES'][0]['SELECTED'] = 1;
+                $total_selected_files = 1;
+            }
 
             usort($out['TODAY_FILES'], function ($a, $b) {
                 return strcmp($a['BASENAME'], $b['BASENAME']);
@@ -561,6 +568,59 @@ class xray extends module
         if ($ajax) {
             $op = gr('op');
             $filter = gr('filter');
+            if ($op == 'clearlog') {
+                header("HTTP/1.0: 200 OK\n");
+                header('Content-Type: application/json; charset=utf-8');
+
+                if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH != '') {
+                    $path = SETTINGS_SYSTEM_DEBMES_PATH;
+                } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY != '') {
+                    $path = LOG_DIRECTORY;
+                } else {
+                    $path = ROOT . 'cms/debmes';
+                }
+
+                $path_real = realpath($path);
+                $selected = gr('files');
+                if (!is_array($selected) || !count($selected)) {
+                    echo json_encode(array('STATUS' => 'ERROR', 'MESSAGE' => 'No files selected'));
+                    return;
+                }
+                if ($path_real === false) {
+                    echo json_encode(array('STATUS' => 'ERROR', 'MESSAGE' => 'Invalid log path'));
+                    return;
+                }
+
+                $base_path = str_replace('\\', '/', $path_real);
+                $base_path = rtrim($base_path, '/');
+                $cleared = 0;
+                foreach ($selected as $file) {
+                    $file = (string)$file;
+                    $file = str_replace('\\', '/', $file);
+                    $file = ltrim($file, '/');
+                    if ($file === '' || strpos($file, "\0") !== false) {
+                        continue;
+                    }
+                    $target = realpath($path_real . '/' . $file);
+                    if ($target === false || !is_file($target)) {
+                        continue;
+                    }
+                    $target_path = str_replace('\\', '/', $target);
+                    if (strpos($target_path, $base_path . '/') !== 0 && $target_path !== $base_path) {
+                        continue;
+                    }
+                    if (@file_put_contents($target, '') !== false) {
+                        $cleared++;
+                    }
+                }
+
+                if ($cleared > 0) {
+                    echo json_encode(array('STATUS' => 'OK', 'CLEARED' => $cleared));
+                } else {
+                    echo json_encode(array('STATUS' => 'ERROR', 'MESSAGE' => 'No files cleared'));
+                }
+                return;
+            }
             if ($op == 'getcontent') {
                 header("HTTP/1.0: 200 OK\n");
                 header('Content-Type: text/html; charset=utf-8');
