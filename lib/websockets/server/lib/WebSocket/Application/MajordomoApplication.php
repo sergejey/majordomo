@@ -271,13 +271,23 @@ class MajordomoApplication extends Application
                 }
                 $send_data = array();
                 foreach ($tmp as $property) {
+                    $property = trim($property);
+                    if ($property === '') {
+                        continue;
+                    }
                     $property_name_lc = mb_strtolower($property, 'UTF-8');
                     $this->_clients[$client_id]->subscribedTo['properties'][$property_name_lc] = 1;
                     $this->_clients[$client_id]->watchedProperties[$property_name_lc]['properties'] = 1;
-                    if (isSet($this->_cachedProperties[$property_name_lc]))
+                    // If only object name is passed (without Object.Property),
+                    // do not query getGlobal(Object): it always produces empty values.
+                    if (strpos($property_name_lc, '.') === false) {
+                        continue;
+                    }
+                    if (isSet($this->_cachedProperties[$property_name_lc])) {
                         $send_data[] = array('PROPERTY' => $property, 'VALUE' => $this->_cachedProperties[$property_name_lc]);
-                    else
+                    } else {
                         $send_data[] = array('PROPERTY' => $property, 'VALUE' => getGlobal($property));
+                    }
                 }
                 if (isset($send_data[0])) {
                     if (defined('DEBUG_WEBSOCKETS') && DEBUG_WEBSOCKETS == 1) {
