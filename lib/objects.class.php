@@ -619,10 +619,14 @@ function getGlobal($varname)
     }
     $cached_name = 'MJD:' . $object_name . '.' . $varname;
 
-    if (strpos($varname, 'cycle_') === 0) {
+    $is_updated_meta_property = (substr($varname, -9) == '__updated');
+
+    if (!$is_updated_meta_property && strpos($varname, 'cycle_') === 0) {
         $cached_value = checkCycleFromCache($varname);
-    } else {
+    } elseif (!$is_updated_meta_property) {
         $cached_value = checkFromCache($cached_name);
+    } else {
+        $cached_value = false;
     }
     if ($cached_value !== false) {
         return returnTypedValue($cached_value);
