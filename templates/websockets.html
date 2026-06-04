@@ -26,9 +26,9 @@
 		serverUrl += "//" + loc.hostname + ':<#WEBSOCKETS_PORT#>/majordomo';
 		try {
 			console.log('%c%s', 'color: gray;', '... Подключение к серверу '+serverUrl);
-			
 			$('#wsStatus').html('<#LANG_NEWDASH_DISCONNECTED#>');
-			$('#wsStatus').attr('style', 'background: lightcoral');
+            $('#wsStatus').removeClass('alert-success alert-warning alert-danger');
+            $('#wsStatus').addClass('alert-warning');
 		if (window.MozWebSocket) {
 		   wsSocket = new MozWebSocket(serverUrl);
 		} else if (window.WebSocket) {
@@ -47,7 +47,9 @@
 			$.publish('wsConnected');
 			
 			$('#wsStatus').html('<#LANG_NEWDASH_CONNECTED#>');
-			$('#wsStatus').attr('style', 'background: #5cb85c');
+            $('#wsStatus').removeClass('alert-success alert-warning alert-danger');
+            $('#wsStatus').addClass('alert-success');
+			//$('#wsStatus').attr('style', 'background: #5cb85c');
 		};
 		wsSocket.onmessage = function(msg) {
 			var response;
@@ -69,8 +71,9 @@
 			console.error('%c%s', 'color: red;', '❌ Отключен от сервера, повтор подключения через 5 секунд...');
 			
 			$('#wsStatus').html('<#LANG_NEWDASH_DISCONNECTED#>');
-			$('#wsStatus').attr('style', 'background: lightcoral');
-			
+			//$('#wsStatus').attr('style', 'background: lightcoral');
+            $('#wsStatus').removeClass('alert-success alert-warning alert-danger');
+            $('#wsStatus').addClass('alert-warning');
 			return;
 		};
 	}
