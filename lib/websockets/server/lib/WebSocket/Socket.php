@@ -140,8 +140,10 @@ class Socket
 		$stringLength = strlen($string);
 		for($written = 0; $written < $stringLength; $written += $fwrite)
 		{
-                if (!is_resource($resource) || feof($resource)) { return false; }
-                $fwrite = @fwrite($resource, substr($string, $written));
+				if (!is_resource($resource) || feof($resource)) { return false; }
+				set_error_handler(function() { return true; });
+				$fwrite = fwrite($resource, substr($string, $written));
+				restore_error_handler();
 			if($fwrite === false)
 			{
 				return false;
