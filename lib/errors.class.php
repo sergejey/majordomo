@@ -113,7 +113,9 @@ function majordomoGetErrorType($error_level = 0) {
         E_DEPRECATED => 'E_DEPRECATED',
         E_USER_DEPRECATED => 'E_USER_DEPRECATED',
     ];
-	if(phpversion() < 8) $error_names[E_STRICT] = 'E_STRICT';
+    if (defined('E_STRICT')) {
+        $error_names[E_STRICT] = 'E_STRICT';
+    }
     if (isset($error_names[$error_level])) {
         return $error_names[$error_level];
     } else {
