@@ -125,7 +125,6 @@ function majordomoGetErrorType($error_level = 0) {
 
 function majordomoGetErrorDetails($e = 0)
 {
-
     if (isset($_SERVER['REQUEST_URI'])) {
         $message = "URL: " . $_SERVER['REQUEST_URI'];
     } else {
@@ -135,8 +134,6 @@ function majordomoGetErrorDetails($e = 0)
             $message .= "\nArguments:" . implode(' ', $argv);
         }
     }
-
-
 
     $error = error_get_last();
     if (is_array($error)) {
@@ -214,6 +211,7 @@ function majordomoErrorHandler($errno, $errmsg, $filename, $linenum)
 
     $errorCode = $errno;
     $errorType = majordomoGetErrorType($errorCode);
+    majordomoRememberCycleCrash("PHP $errorType: $errmsg in " . basename($filename) . ':' . (int)$linenum);
     $message = "PHP error level $errorCode $errorType in $filename (line $linenum):\n" . $errmsg . "\n";
 
     $message .= majordomoGetErrorDetails();
@@ -222,7 +220,6 @@ function majordomoErrorHandler($errno, $errmsg, $filename, $linenum)
             majordomoSaveError($message, 'php_warnings');
         }
     } else {
-        majordomoRememberCycleCrash("PHP $errorType: $errmsg in " . basename($filename) . ':' . (int)$linenum);
         majordomoSaveError($message, 'php_errors');
     }
 }
