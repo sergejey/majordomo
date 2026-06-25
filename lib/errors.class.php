@@ -113,7 +113,9 @@ function majordomoGetErrorType($error_level = 0) {
         E_DEPRECATED => 'E_DEPRECATED',
         E_USER_DEPRECATED => 'E_USER_DEPRECATED',
     ];
-	if(phpversion() < 8) $error_names[E_STRICT] = 'E_STRICT';
+    if (PHP_VERSION_ID < 80000) {
+        $error_names[E_STRICT] = 'E_STRICT';
+    }
     if (isset($error_names[$error_level])) {
         return $error_names[$error_level];
     } else {
@@ -123,7 +125,6 @@ function majordomoGetErrorType($error_level = 0) {
 
 function majordomoGetErrorDetails($e = 0)
 {
-
     if (isset($_SERVER['REQUEST_URI'])) {
         $message = "URL: " . $_SERVER['REQUEST_URI'];
     } else {
@@ -133,8 +134,6 @@ function majordomoGetErrorDetails($e = 0)
             $message .= "\nArguments:" . implode(' ', $argv);
         }
     }
-
-
 
     $error = error_get_last();
     if (is_array($error)) {
