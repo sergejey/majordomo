@@ -10,6 +10,10 @@
     [#begin PROPERTIES#]
     <div class="form-group">
         <label>[#DESCRIPTION#]:</label>
+        [#if _CONFIG_TYPE=="duration"#]
+        <input type="text" id="property_[#NAME#]" name="property_[#NAME#]" value="[#VALUE#]" class="form-control">
+        [#module name="duration_input" input_id="property_<#PROPERTIES.NAME#>"#]
+        [#endif#]
         [#if _CONFIG_TYPE=="text"#]
          <input type="text" name="property_[#NAME#]" value="[#VALUE#]" class="form-control">
         [#endif#]

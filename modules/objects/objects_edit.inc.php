@@ -207,6 +207,7 @@ if ($this->tab == 'properties') {
         $props[$i]['VALUE'] = isset($value['VALUE']) ? $value['VALUE'] : '';
         $props[$i]['VALUE_HTML'] = htmlspecialchars($props[$i]['VALUE']);
         $props[$i]['SOURCE'] = isset($value['SOURCE']) ? $value['SOURCE'] : '';
+        $props[$i]['SOURCE_HTML'] = htmlspecialchars($props[$i]['SOURCE']);
         $props[$i]['UPDATED'] = isset($value['UPDATED']) ? date('d.m.Y H:i:s', strtotime($value['UPDATED'])) : '';
 
         $value['LINKED_MODULES'] = isset($value['LINKED_MODULES']) ? explode(',', $value['LINKED_MODULES']) : false;

@@ -868,16 +868,19 @@ class module
         $rec["MODULE_NAME"] = $this->name;
         $rec["MESSAGE"] = htmlspecialchars(strip_tags($str));
 
+        DebMes($this->name . ' (' . $rec["TYPE"] . '): ' . $rec["MESSAGE"], 'module_notifications');
+
         if (SQLSelectOne("SELECT COUNT(*) AS TOTAL_UNREAD FROM `module_notifications` WHERE `MODULE_NAME` = '" . $rec["MODULE_NAME"] . "' AND `IS_READ` = '0'")['TOTAL_UNREAD'] > 10) {
             return json_encode(array('status' => false, 'error' => 'More than 10 notifications in the unread status.'));
         }
 
-        $ifExist = SQLSelectOne("SELECT ID FROM `module_notifications` WHERE `MESSAGE` = '" . DBSafe($rec['MESSAGE']) . "' AND TYPE='" . DBSafe($rec['TYPE']) . "' AND `IS_READ` = '0'");
+        $ifExist = SQLSelectOne("SELECT ID FROM `module_notifications` WHERE `MODULE_NAME` = '" . $rec["MODULE_NAME"] . "' AND`MESSAGE` = '" . DBSafe($rec['MESSAGE']) . "' AND TYPE='" . DBSafe($rec['TYPE']) . "' AND `IS_READ` = '0'");
         if (!empty($ifExist) && is_array($ifExist)) {
             return json_encode(array('status' => false, 'error' => 'Notification already exists. ID: ' . $ifExist['ID'], 'id' => $ifExist['ID']));
         }
 
         $rec["ID"] = SQLInsert("module_notifications", $rec);
+
 
         return json_encode(array('status' => true, 'id' => $rec["ID"]));
 
@@ -885,21 +888,23 @@ class module
 
     public function readNotification($notification_id)
     {
-
         if (!SQLTableExists('module_notifications')) {
             return json_encode(array('status' => false));
         }
-
-        $rec["ID"] = $notification_id;
+        if (is_int($notification_id)) {
+            $rec["ID"] = $notification_id;
+        } else {
+            $rec = SQLSelectOne("SELECT * FROM `module_notifications` WHERE `MODULE_NAME` = '" . $this->name . "' AND `MESSAGE` = '" . DBSafe($notification_id) . "' AND IS_READ=0");
+        }
         $rec["IS_READ"] = 1;
 
-        if (empty(SQLSelectOne("SELECT ID FROM `module_notifications` WHERE `ID` = '" . $rec["ID"] . "' AND `IS_READ` = '0'")['ID'])) {
+        if (empty(SQLSelectOne("SELECT ID FROM `module_notifications` WHERE `ID` = '" . (int)$rec["ID"] . "' AND `IS_READ` = '0'")['ID'])) {
             return json_encode(array('status' => false, 'error' => 'No such noty found'));
         }
-
         SQLUpdate("module_notifications", $rec);
 
-        return json_encode(array('status' => true));
+        DebMes($this->name . ' (' . $rec["TYPE"] . ' - marked as read): ' . $rec["MESSAGE"], 'module_notifications');
 
+        return json_encode(array('status' => true));
     }
 }

@@ -19,20 +19,17 @@ $objects = getObjectsByProperty('group' . $group_name, 1);
 
 $firstOne = true;
 foreach ($objects as $object_title) {
-    if (getGlobal($object_title . '.status') != $status) {
-        if (!$firstOne) {
-            if ($delay_ms > 0) {
-                usleep($delay_ms);
-            } else {
-                sleep($delay);
-            }
-        }
-        $firstOne = false;
-        if ($status) {
-            callMethodSafe($object_title . '.turnOn', array('source' => $params['ORIGINAL_OBJECT_TITLE']));
+    if (!$firstOne) {
+        if ($delay_ms > 0) {
+            usleep($delay_ms);
         } else {
-            callMethodSafe($object_title . '.turnOff', array('source' => $params['ORIGINAL_OBJECT_TITLE']));
+            sleep($delay);
         }
-        //sleep(1);
+    }
+    $firstOne = false;
+    if ($status) {
+        callMethodSafe($object_title . '.turnOn', array('source' => $params['ORIGINAL_OBJECT_TITLE']));
+    } else {
+        callMethodSafe($object_title . '.turnOff', array('source' => $params['ORIGINAL_OBJECT_TITLE']));
     }
 }

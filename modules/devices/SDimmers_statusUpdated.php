@@ -40,7 +40,12 @@ if ($params['NEW_VALUE'] && $linked_room && $this->getProperty('isActivity')) {
     }
 }
 
+if ($this->getProperty('isConfirmationRequired') && isset($params['PROPERTY'])) {
+    require(DIR_MODULES . 'devices/delivery_confirmation.inc.php');
+}
+
 $this->callMethod('logicAction');
 include_once(dirname(__FILE__) . '/devices.class.php');
 $dv = new devices();
 $dv->checkLinkedDevicesAction($this->object_title, $params);
+

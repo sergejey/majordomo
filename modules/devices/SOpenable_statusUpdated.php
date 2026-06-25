@@ -24,6 +24,10 @@ if ($this->getProperty('isActivity')) {
     }
 }
 
+if ($this->getProperty('isConfirmationRequired') && isset($params['PROPERTY'])) {
+    require(DIR_MODULES . 'devices/delivery_confirmation.inc.php');
+}
+
 $description = $this->description;
 if (!$description) {
     $description = $ot;

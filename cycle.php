@@ -13,18 +13,54 @@ include_once("./config.php");
 include_once("./lib/loader.php");
 include_once("./lib/threads.php");
 
+function buildCycleStopReason($cycleTitle, $closedThread, $exitCode = null, $termSig = null, $stopRequested = false, $restartRequested = false, $lastError = '')
+{
+    $reasons = array();
+    if ($stopRequested && $restartRequested) {
+        $reasons[] = LANG_CYCLE_STOP_REASON_RESTART_COMMAND;
+    } elseif ($stopRequested) {
+        $reasons[] = LANG_CYCLE_STOP_REASON_STOP_COMMAND;
+    } elseif ($restartRequested) {
+        $reasons[] = LANG_CYCLE_STOP_REASON_PRE_RESTART;
+    } elseif ($lastError != '') {
+        $reasons[] = sprintf(LANG_CYCLE_STOP_REASON_CRASH_ERROR, $lastError);
+    } elseif ((int)$termSig > 0) {
+        $reasons[] = sprintf(LANG_CYCLE_STOP_REASON_SIGNAL, (int)$termSig);
+    } elseif ($exitCode !== null && (int)$exitCode !== 0 && (int)$exitCode !== -1) {
+        $reasons[] = sprintf(LANG_CYCLE_STOP_REASON_CRASH_EXIT_CODE, (int)$exitCode);
+    } elseif ($exitCode !== null && (int)$exitCode === 0) {
+        $reasons[] = LANG_CYCLE_STOP_REASON_UNEXPECTED_EXIT_ZERO;
+    } else {
+        $reasons[] = LANG_CYCLE_STOP_REASON_UNEXPECTED_UNKNOWN;
+    }
+
+    $details = sprintf(LANG_CYCLE_STOP_DETAILS_HEADER, $cycleTitle, implode(', ', $reasons));
+    if ($exitCode !== null) {
+        $details .= "\nExit code: " . (int)$exitCode . '.';
+    }
+    if ($termSig !== null && (int)$termSig > 0) {
+        $details .= "\nTerm signal: " . (int)$termSig . '.';
+    }
+    if ($lastError != '') {
+        $details .= "\n" . sprintf(LANG_CYCLE_STOP_DETAILS_LAST_ERROR, $lastError);
+    }
+    $details .= "\n" . sprintf(LANG_CYCLE_STOP_DETAILS_COMMAND, $closedThread);
+
+    return $details;
+}
+
 resetRebootRequired();
 
 set_time_limit(0);
 
 $db_filename = ROOT . 'database_backup/db.sql';
-if (file_exists($db_filename) && filesize($db_filename) == 0 && file_exists($db_filename . '.prev') && filesize($db_filename . '.prev') > 0) {
+if ((!file_exists($db_filename) || filesize($db_filename) == 0) && file_exists($db_filename . '.prev') && filesize($db_filename . '.prev') > 0) {
     DebMes("Main backup file is empty, restoring from previous: " . $db_filename . '.prev', 'boot');
     $db_filename = $db_filename . '.prev';
 }
 
 $db_history_filename = ROOT . 'database_backup/db_history.sql';
-if (file_exists($db_history_filename) && filesize($db_history_filename) == 0 && file_exists($db_history_filename . '.prev') && filesize($db_history_filename . '.prev') > 0) {
+if ((!file_exists($db_history_filename) || filesize($db_history_filename) == 0) && file_exists($db_history_filename . '.prev') && filesize($db_history_filename . '.prev') > 0) {
     DebMes("Main history backup file is empty, restoring from previous: " . $db_history_filename . '.prev', 'boot');
     $db_history_filename = $db_history_filename . '.prev';
 }
@@ -310,7 +346,7 @@ for ($i = 0; $i < $total; $i++) {
     if ($property_id) {
         $sqlQuery = "SELECT ID FROM pvalues WHERE PROPERTY_ID = " . (int)$property_id;
         $pvalue = SQLSelectOne($sqlQuery);
-        if ($pvalue['ID']) {
+        if (!empty($pvalue['ID'])) {
             DebMes("Deleting Pvalue: " . $pvalue['ID'], 'boot');
             cleanUpValueHistory($pvalue['ID'], 0);
             SQLExec("DELETE FROM pvalues WHERE ID=" . $pvalue['ID']);
@@ -388,6 +424,9 @@ foreach ($cycles as $path) {
         } else {
             $pipe_id = $threads->newThread($path);
         }
+        if (isset($title)) {
+            saveCycleToCache($title . 'LastError', '');
+        }
         $pipes[$pipe_id] = $path;
         echo "OK" . PHP_EOL;
     }
@@ -404,6 +443,7 @@ $auto_restarts = array();
 $to_start = array();
 $to_stop = array();
 $started_when = array();
+$is_running = array();
 
 $thisComputerObject = getObject('Computer.ThisComputer');
 
@@ -440,6 +480,13 @@ while (false !== ($result = $threads->iteration())) {
                 DebMes("Got control command '$control' for " . $title, 'boot');
                 if ($control == 'stop') {
                     $to_stop[$title] = time();
+                    // Explicit stop must cancel any delayed start/restart requests.
+                    unset($to_start[$title]);
+                    $key = array_search($title, $auto_restarts);
+                    if ($key !== false) {
+                        unset($auto_restarts[$key]);
+                        $auto_restarts = array_values($auto_restarts);
+                    }
                 } elseif ($control == 'restart' || $control == 'start') {
                     $to_stop[$title] = time();
                     $to_start[$title] = time() + 30;
@@ -460,7 +507,7 @@ while (false !== ($result = $threads->iteration())) {
                     DebMes("Adding $title to auto-recovery list", 'boot');
                     $auto_restarts[] = $title;
                 }
-                $cycle_updated_timestamp = $cyclesTimestamps[$title . 'Run'];
+                $cycle_updated_timestamp = $cyclesTimestamps[$title . 'Run'] ?? null;
 
                 if (!isset($to_start[$title]) && $cycle_updated_timestamp && in_array($title, $auto_restarts) && ((time() - $cycle_updated_timestamp) > 30 * 60)) { //
                     DebMes("Looks like $title is dead (updated: " . date('Y-m-d H:i:s', $cycle_updated_timestamp) . "). Need to recovery", 'boot');
@@ -522,32 +569,53 @@ while (false !== ($result = $threads->iteration())) {
     }
 
     if (!empty($result)) {
-        $closePattern = '/THREAD CLOSED:.+?(\.\/scripts\/cycle\_.+?\.php)/is';
-        if (preg_match_all($closePattern, $result, $matches) && !isRebootRequired()) {
-            $total_m = count($matches[1]);
+        $closePattern = '/THREAD CLOSED:\s*\[(.*?)\](?:\s+EXIT_CODE=([-\d]+)\s+TERM_SIG=([-\d]+)\s+STOP_SIG=([-\d]+))?/is';
+        if (preg_match_all($closePattern, $result, $matches, PREG_SET_ORDER) && !isRebootRequired()) {
+            $total_m = count($matches);
             for ($im = 0; $im < $total_m; $im++) {
-                $closed_thread = $matches[1][$im];
+                $closed_thread = $matches[$im][1];
+                $exit_code = isset($matches[$im][2]) && $matches[$im][2] !== '' ? (int)$matches[$im][2] : null;
+                $term_sig = isset($matches[$im][3]) && $matches[$im][3] !== '' ? (int)$matches[$im][3] : null;
                 $cycle_title = '';
                 $need_restart = 0;
+                $last_error = '';
+                $stop_requested = false;
                 if (preg_match('/(cycle_.+?)\.php/is', $closed_thread, $m)) {
                     $cycle_title = $m[1];
+                    $last_error = checkCycleFromCache($cycle_title . 'LastError');
+                    if ($last_error === false) {
+                        $last_error = '';
+                    }
                     DebMes("Thread closed: " . $cycle_title, 'boot');
+                    $stop_requested = isset($to_stop[$cycle_title]);
                     unset($to_stop[$cycle_title]);
                     setGlobal($cycle_title . 'Run', '');
-                    $key = array_search($cycle_title, $auto_restarts);
-                    if ($key !== false) {
-                        unset($auto_restarts[$key]);
-                        $auto_restarts = array_values($auto_restarts);
-                        $need_restart = 1;
-                    } elseif (isset($to_start[$cycle_title])) {
-                        $need_restart = 1;
+                    if (!$stop_requested) {
+                        $key = array_search($cycle_title, $auto_restarts);
+                        if ($key !== false) {
+                            unset($auto_restarts[$key]);
+                            $auto_restarts = array_values($auto_restarts);
+                            $need_restart = 1;
+                        } elseif (isset($to_start[$cycle_title])) {
+                            $need_restart = 1;
+                        }
                     }
                 }
                 if ($need_restart && $cycle_title) {
                     if (!isset($to_start[$cycle_title])) {
                         DebMes("AUTO-RECOVERY: " . $closed_thread, 'boot');
                         if (!preg_match('/websockets/is', $closed_thread) && !preg_match('/connect/is', $closed_thread)) {
-                            registerError('cycle_stop', $closed_thread . "\n" . $result);
+                            $details = buildCycleStopReason(
+                                $cycle_title,
+                                $closed_thread,
+                                $exit_code,
+                                $term_sig,
+                                $stop_requested,
+                                isset($to_start[$cycle_title]),
+                                $last_error
+                            );
+                            registerError('cycle_stop', $details);
+                            saveCycleToCache($cycle_title . 'LastError', '');
                         }
                         $to_start[$cycle_title] = time() + 2;
                     }
@@ -559,4 +627,3 @@ while (false !== ($result = $threads->iteration())) {
 }
 
 resetRebootRequired();
-

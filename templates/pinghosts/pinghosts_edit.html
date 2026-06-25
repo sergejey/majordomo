@@ -72,6 +72,10 @@ $(window).load(function() {
 				<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_HOSTNAME#>: <font color="red">*</font></label>
 				<div class="col-lg-10 col-md-8">
 					<input type="text"  class="form-control [#if ERR_HOSTNAME#]alert-danger[#endif#]"  name="hostname" value="[#HOSTNAME#]" required="true">
+					[#if HOSTNAME!=""#]
+					<div><img src="/panel/pinghosts.html?view_mode=img&ip=[#HOSTNAME#]">
+					&lt;img src="/panel/pinghosts.html?view_mode=img&ip=[#HOSTNAME#]"&gt;</div>
+					[#endif#]
 				</div>
 			</div>
 			<script>

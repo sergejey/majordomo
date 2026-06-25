@@ -109,11 +109,13 @@ function majordomoGetErrorType($error_level = 0) {
         E_USER_ERROR => 'E_USER_ERROR',
         E_USER_WARNING => 'E_USER_WARNING',
         E_USER_NOTICE => 'E_USER_NOTICE',
-        E_STRICT => 'E_STRICT',
         E_RECOVERABLE_ERROR => 'E_RECOVERABLE_ERROR',
         E_DEPRECATED => 'E_DEPRECATED',
         E_USER_DEPRECATED => 'E_USER_DEPRECATED',
     ];
+    if (PHP_VERSION_ID < 80000) {
+        $error_names[E_STRICT] = 'E_STRICT';
+    }
     if (isset($error_names[$error_level])) {
         return $error_names[$error_level];
     } else {
@@ -123,7 +125,6 @@ function majordomoGetErrorType($error_level = 0) {
 
 function majordomoGetErrorDetails($e = 0)
 {
-
     if (isset($_SERVER['REQUEST_URI'])) {
         $message = "URL: " . $_SERVER['REQUEST_URI'];
     } else {
@@ -133,8 +134,6 @@ function majordomoGetErrorDetails($e = 0)
             $message .= "\nArguments:" . implode(' ', $argv);
         }
     }
-
-
 
     $error = error_get_last();
     if (is_array($error)) {
@@ -174,8 +173,32 @@ function majordomoSaveError($details, $type)
     dprint($type . ': ' . $details, false);
 }
 
+function majordomoRememberCycleCrash($shortMessage)
+{
+    global $argv;
+    if (!isset($argv[0])) {
+        return;
+    }
+    if (!preg_match('/(cycle_.+?)\.php$/is', basename($argv[0]), $m)) {
+        return;
+    }
+    $cycleTitle = $m[1];
+    $shortMessage = trim((string)$shortMessage);
+    $shortMessage = preg_replace('/\s+/u', ' ', $shortMessage);
+    if (strlen($shortMessage) > 240) {
+        $shortMessage = substr($shortMessage, 0, 240);
+    }
+    if ($shortMessage !== '') {
+        saveCycleToCache($cycleTitle . 'LastError', $shortMessage);
+    }
+}
+
 function majordomoExceptionHandler($e)
 {
+    if (is_object($e)) {
+        $short = get_class($e) . ': ' . $e->getMessage() . ' in ' . basename($e->getFile()) . ':' . (int)$e->getLine();
+        majordomoRememberCycleCrash($short);
+    }
     $message = majordomoGetErrorDetails($e);
     majordomoSaveError($message, 'php_exceptions');
     return true;
@@ -188,6 +211,7 @@ function majordomoErrorHandler($errno, $errmsg, $filename, $linenum)
 
     $errorCode = $errno;
     $errorType = majordomoGetErrorType($errorCode);
+    majordomoRememberCycleCrash("PHP $errorType: $errmsg in " . basename($filename) . ':' . (int)$linenum);
     $message = "PHP error level $errorCode $errorType in $filename (line $linenum):\n" . $errmsg . "\n";
 
     $message .= majordomoGetErrorDetails();

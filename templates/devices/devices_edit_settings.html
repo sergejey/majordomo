@@ -35,6 +35,10 @@
     });
    </script>
    [#endif#]
+   [#if CONFIG_TYPE="duration"#]
+   <input type="text" value="[#VALUE#]" id="[#NAME#]_value" name="[#NAME#]_value" class="form-control">
+   [#module name="duration_input" input_id="<#PROPERTIES.NAME#>_value"#]
+   [#endif#]
    [#if CONFIG_TYPE="num" || CONFIG_TYPE="text"#]
    <input type="text" value="[#VALUE#]" name="[#NAME#]_value" class="form-control">
    [#endif#]

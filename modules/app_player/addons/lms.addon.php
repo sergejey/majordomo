@@ -85,8 +85,11 @@ class lms extends app_player_addon {
 			$playlist = $this->data;
 			$this->reset_properties(array('success'=>FALSE, 'message'=>"Track with position = $position not found!"));
 			if($position == -1) {
-				$this->reset_properties(array('success'=>TRUE, 'message'=>'OK'));
-				$this->data = $playlist[count($playlist)-1]['id'];
+				if (is_array($playlist) && !empty($playlist)) {
+					$this->reset_properties(array('success'=>TRUE, 'message'=>'OK'));
+					$last_track = end($playlist);
+					$this->data = isset($last_track['id']) ? $last_track['id'] : null;
+				}
 			} else {
 				foreach($playlist as $i=>$track) {
 					if($i == $position) {

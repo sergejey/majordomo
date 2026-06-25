@@ -156,13 +156,16 @@ if ($res[0]['ID']) {
         if (isset($res[$i]['COLOR']) && trim($res[$i]['COLOR'])) {
             $stl = ' style="color:' . $res[$i]['COLOR'] . '"';
         }
-        $txtdata .= "<span$stl>" . $res[$i]['DAT'] . " <b>" . $res[$i]['NAME'] . "</b>: " . nl2br($res[$i]['MESSAGE']) . "</span><br>";
+        $txtdata .= "<span$stl>" . $res[$i]['DAT'] . " <b>" . htmlspecialchars($res[$i]['NAME']) . "</b>: " . nl2br(htmlspecialchars($res[$i]['MESSAGE'])) . "</span><br>";
         if ($res[$i]['IMAGE'] != '' && file_exists($res[$i]['IMAGE'])) {
             if (preg_match('/^\//is', $res[$i]['IMAGE'])) {
                 $res[$i]['IMAGE'] = str_replace(ROOT, ROOTHTML, $res[$i]['IMAGE']);
             }
             $txtdata .= "<div class='thumbnail' style='max-width: 600px'><img src='" . $res[$i]['IMAGE'] . "' alt=''/></div>";
         }
+    }
+    for ($i = 0; $i < $total; $i++) {
+        $res[$i]['MESSAGE_HTML'] = htmlspecialchars($res[$i]['MESSAGE']);
     }
     $out['RESULT'] = $res;
     $out['TXT_DATA'] = $txtdata;

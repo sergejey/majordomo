@@ -67,7 +67,7 @@
 						</select>
 					</div>
 					<div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-						<textarea placeholder="<#LANG_NEWDASH_OBJ_ADD_NEW_PROP_VALUE#>" name="new_value" rows=2 cols="50" class="span5" style="width: 100%;resize: vertical;height: 40px;border-radius: 3px;margin-bottom: 5px;border: 1px solid #ccc;padding: 10px;">[#VALUE#]</textarea>
+						<textarea placeholder="<#LANG_NEWDASH_OBJ_ADD_NEW_PROP_VALUE#>" name="new_value" rows=2 cols="50" class="span5" style="width: 100%;resize: vertical;height: 40px;border-radius: 3px;margin-bottom: 5px;border: 1px solid #ccc;padding: 10px;">[#VALUE_HTML#]</textarea>
 					</div>
 				</div>
 				<div class="row" style="margin-right: -15px;margin-left: -15px;">
@@ -111,7 +111,7 @@
 			    				[#endif#]
 			    			[#endif#]
 			    			[#if DATA_TYPE="0"#]<pre style="[#if VALUE == ''#]color: #f6f6f6;background: white;[#endif#]cursor:text;">[#if VALUE == ''#]Property is empty[#else#][#VALUE_HTML#][#endif#]</pre>[#endif#]
-			    			<p style="font-size: 1rem;color: gray;margin: 0px;word-break: break-all;">[#if SOURCE!="" && VALUE != ''#]Source → [#SOURCE#][#endif#][#if VALUE !=''#] → [#UPDATED#]</p>[#else#]</p>[#endif#]
+			    			<p style="font-size: 1rem;color: gray;margin: 0px;word-break: break-all;">[#if SOURCE!="" && VALUE != ''#]Source → [#SOURCE_HTML#][#endif#][#if VALUE !=''#] → [#UPDATED#]</p>[#else#]</p>[#endif#]
 			    		</div>
 			    
 			    		<div id="prop[#ID#]_edit" style="display:none">
@@ -161,7 +161,7 @@
 									<p style="font-size: 1rem;color: gray;margin: 0px;word-break: break-all;"><#LANG_ONCHANGE_METHOD#></p>
 		                		</div>
 		                		<div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-		                			<textarea placeholder="<#LANG_NEWDASH_OBJ_ADD_NEW_PROP_VALUE#>" name="new_value" rows=2 cols="50" class="span5" style="width: 100%;resize: vertical;height: 40px;border-radius: 3px;margin-bottom: 5px;border: 1px solid #ccc;padding: 10px;">[#VALUE#]</textarea>
+		                			<textarea placeholder="<#LANG_NEWDASH_OBJ_ADD_NEW_PROP_VALUE#>" name="new_value" rows=2 cols="50" class="span5" style="width: 100%;resize: vertical;height: 40px;border-radius: 3px;margin-bottom: 5px;border: 1px solid #ccc;padding: 10px;">[#VALUE_HTML#]</textarea>
 									<p style="font-size: 1rem;color: gray;margin: 0px;word-break: break-all;"><#LANG_VALUE#></p>
 		                		</div>
 								<input type="hidden" name="prop_id" value="[#ID#]">

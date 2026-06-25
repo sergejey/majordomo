@@ -443,6 +443,40 @@ class connect extends module
         return $result;
     }
 
+    function getMQTTQueue()
+    {
+        $queue = array();
+        $url = 'https://connect.smartliving.ru/sync_mqtt_queue.php';
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        if ($this->config['CONNECT_INSECURE']) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        }
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ":" . $this->config['CONNECT_PASSWORD']);
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        if ($result != '') {
+            $data = json_decode($result, true);
+            if (isset($data['queue'])) {
+                $queue = $data['queue'];
+            }
+        }
+
+        return $queue;
+    }
+
     function requestReverseFull($msg)
     {
         $data = json_decode($msg, true);

@@ -124,6 +124,7 @@ if ($object != '') {
     if ($obj) {
         //DebMes("object [".$object."] FOUND");
         if ($op == 'get') {
+            header('Content-Type: text/plain; charset=utf-8');
             $value = $obj->getProperty($p);
             echo $value;
         }

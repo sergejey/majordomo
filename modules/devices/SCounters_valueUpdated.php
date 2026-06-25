@@ -21,7 +21,7 @@ if ($new_value != $old_value) {
     $timer_name = $ot . '_counter_update_h';
     $when_start = strtotime(date('Y-m-d H:59:59')) + 1;
     $timeout = $when_start - time() + 1;
-    setTimeOut($timer_name, "DebMes('H: Updating $ot.value to $new_value','counter_update');setGlobal('$ot.value', '" . $new_value . "');", $timeout);
+    setTimeOut($timer_name, "setGlobal('$ot.value', '" . $new_value . "');", $timeout);
     $prev_timeout = $timeout;
 
     // DAY
@@ -29,7 +29,7 @@ if ($new_value != $old_value) {
     $when_start = strtotime(date('Y-m-d 23:59:59')) + 1;
     $timeout = $when_start - time() + 1;
     if ($prev_timeout != $timeout) {
-        setTimeOut($timer_name, "DebMes('D: Updating $ot.value to $new_value','counter_update');setGlobal('$ot.value', '" . $new_value . "');", $timeout);
+        setTimeOut($timer_name, "setGlobal('$ot.value', '" . $new_value . "');", $timeout);
         $prev_timeout = $timeout;
     }
 
@@ -38,7 +38,7 @@ if ($new_value != $old_value) {
     $when_start = strtotime(date('Y-m-t 23:59:59')) + 1;
     $timeout = $when_start - time() + 1;
     if ($prev_timeout != $timeout) {
-        setTimeOut($timer_name, "DebMes('M: Updating $ot.value to $new_value','counter_update');setGlobal('$ot.value', '" . $new_value . "');", $timeout);
+        setTimeOut($timer_name, "setGlobal('$ot.value', '" . $new_value . "');", $timeout);
     }
 
 }

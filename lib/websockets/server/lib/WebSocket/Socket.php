@@ -45,13 +45,14 @@ class Socket
 		$protocol = ($this->ssl === true) ? 'tls://' : 'tcp://';
 		$url = $protocol.$host.':'.$port;
 		$this->context = stream_context_create();
+		stream_context_set_option($this->context, 'socket', 'so_reuseaddr', 1);
 		if($this->ssl === true)
 		{
 			$this->applySSLContext();
 		}
 		if(!$this->master = stream_socket_server($url, $errno, $err, STREAM_SERVER_BIND|STREAM_SERVER_LISTEN, $this->context))
 		{
-			die('Error creating socket: ' . $err);
+			throw new \RuntimeException('Error creating socket [' . (int)$errno . ']: ' . (string)$err);
 		}		
 		
 		$this->allsockets[] = $this->master;
@@ -59,8 +60,11 @@ class Socket
 	
 	private function applySSLContext()
 	{		
-		$pem_file = './server.pem';
-		$pem_passphrase = 'shinywss';		
+		$pem_file = defined('WEBSOCKETS_TLS_PEM_FILE') ? (string)WEBSOCKETS_TLS_PEM_FILE : './server.pem';
+		$pem_passphrase = defined('WEBSOCKETS_TLS_PEM_PASSPHRASE') ? (string)WEBSOCKETS_TLS_PEM_PASSPHRASE : 'shinywss';
+		$allow_self_signed = defined('WEBSOCKETS_TLS_ALLOW_SELF_SIGNED') ? (bool)WEBSOCKETS_TLS_ALLOW_SELF_SIGNED : true;
+		$verify_peer = defined('WEBSOCKETS_TLS_VERIFY_PEER') ? (bool)WEBSOCKETS_TLS_VERIFY_PEER : false;
+		$verify_peer_name = defined('WEBSOCKETS_TLS_VERIFY_PEER_NAME') ? (bool)WEBSOCKETS_TLS_VERIFY_PEER_NAME : false;
 		
 		// Generate PEM file
 		if(!file_exists($pem_file))
@@ -87,8 +91,9 @@ class Socket
 		// apply ssl context:
 		stream_context_set_option($this->context, 'ssl', 'local_cert', $pem_file);
 		stream_context_set_option($this->context, 'ssl', 'passphrase', $pem_passphrase);
-		stream_context_set_option($this->context, 'ssl', 'allow_self_signed', true);
-		stream_context_set_option($this->context, 'ssl', 'verify_peer', false);		
+		stream_context_set_option($this->context, 'ssl', 'allow_self_signed', $allow_self_signed);
+		stream_context_set_option($this->context, 'ssl', 'verify_peer', $verify_peer);
+		stream_context_set_option($this->context, 'ssl', 'verify_peer_name', $verify_peer_name);
 	}
 	
 	// method originally found in phpws project:
@@ -135,7 +140,8 @@ class Socket
 		$stringLength = strlen($string);
 		for($written = 0; $written < $stringLength; $written += $fwrite)
 		{
-			$fwrite = @fwrite($resource, substr($string, $written));			
+                if (!is_resource($resource) || feof($resource)) { return false; }
+                $fwrite = @fwrite($resource, substr($string, $written));
 			if($fwrite === false)
 			{
 				return false;

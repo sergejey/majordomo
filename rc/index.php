@@ -15,40 +15,43 @@ $param = stripslashes($_GET['param']);
 
 $done = FALSE;
 
-if(!empty($command) && file_exists('./rc/commands/'.$command.'.bat')) {
-	$commandPath = DOC_ROOT.'/rc/commands/'.$_GET['command'].'.bat';
+// Validate command name: alphanumeric and underscores only
+if (!empty($command) && !preg_match('/^[a-zA-Z0-9_]+$/', $command)) {
+	echo 'invalid command name';
+} elseif(!empty($command) && file_exists('./rc/commands/'.$command.'.bat')) {
+	$commandPath = DOC_ROOT.'/rc/commands/'.$command.'.bat';
 	if(!empty($param))
-		$commandPath .= ' "'.$param.'"';
-	
+		$commandPath .= ' ' . escapeshellarg($param);
+
 	if(safe_exec($commandPath)) {
 		$done = TRUE;
 	} else {
 		echo 'runtime error';
 	}
 } elseif(!empty($command) && file_exists('./rc/commands/'.$command.'.sh')) {
-	$commandPath = DOC_ROOT.'/rc/commands/'.$_GET['command'].'.sh';
+	$commandPath = DOC_ROOT.'/rc/commands/'.$command.'.sh';
 	if(!empty($param))
-		$commandPath .= ' "'.$param.'"';
-	
+		$commandPath .= ' ' . escapeshellarg($param);
+
 	if(exec($commandPath.' > /dev/null &')) {
 		$done = TRUE;
 	} else {
 		echo 'runtime error';
 	}
 } elseif(!empty($command) && file_exists('./rc/scripts/'.$command.'.aut')) {
-	$commandPath = SERVER_ROOT.'/apps/autoitv3/AutoIt3.exe '.DOC_ROOT.'/rc/scripts/'.$_GET['command'].'.aut';
+	$commandPath = SERVER_ROOT.'/apps/autoitv3/AutoIt3.exe '.DOC_ROOT.'/rc/scripts/'.$command.'.aut';
 	if(!empty($param))
-		$commandPath .= ' "'.$param.'"';
-	
+		$commandPath .= ' ' . escapeshellarg($param);
+
 	if(safe_exec('start '.$commandPath, 1)) {
 		$done = TRUE;
 	} else {
 		echo 'runtime error';
 	}
 } elseif(!empty($command) && file_exists('./rc/scripts/'.$command.'.au3')) {
-	$commandPath = SERVER_ROOT.'/apps/autoitv3/AutoIt3.exe '.DOC_ROOT.'/rc/scripts/'.$_GET['command'].'.au3';
+	$commandPath = SERVER_ROOT.'/apps/autoitv3/AutoIt3.exe '.DOC_ROOT.'/rc/scripts/'.$command.'.au3';
 	if(!empty($param))
-		$commandPath .= ' "'.$param.'"';
+		$commandPath .= ' ' . escapeshellarg($param);
 	if(safe_exec('start '.$commandPath, 1)) {
 		$done = TRUE;
 	} else {

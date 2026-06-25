@@ -1,0 +1,26 @@
+<script type="text/javascript">
+    let initialDurationSet[#INPUT_ID#] = false;
+    function updateDuration[#INPUT_ID#]() {
+        if (!initialDurationSet[#INPUT_ID#]) return true;
+        let duration = $('#[#INPUT_ID#]_duration').val();
+        let hours = Number(duration.split(':')[0]);
+        let minutes = Number(duration.split(':')[1]);
+        let seconds = Number(duration.split(':')[2]);
+        let value = hours * 3600 + minutes * 60 + seconds;
+        $('#[#INPUT_ID#]').val(value);
+    }
+    $(function () {
+        let origValue = $('#[#INPUT_ID#]').val();
+        if (origValue == '') origValue = 0;
+        let hours = Math.floor(origValue / 3600);
+        let minutes = Math.floor((origValue - (hours * 3600)) / 60);
+        let seconds = origValue - (hours * 3600) - (minutes * 60);
+        if (hours < 10) hours = '0' + hours;
+        if (minutes < 10) minutes = '0' + minutes;
+        if (seconds < 10) seconds = '0' + seconds;
+        $('#[#INPUT_ID#]_duration').val(hours + ':' + minutes + ':' + seconds);
+        initialDurationSet[#INPUT_ID#] = true;
+        $('#[#INPUT_ID#]').hide();
+    });
+</script>
+<input type="text" value="" id="[#INPUT_ID#]_duration" onchange="updateDuration[#INPUT_ID#]();" name="[#INPUT_ID#]_duration" class="form-control html-duration-picker">

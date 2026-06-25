@@ -43,7 +43,7 @@ class MajordomoApplication extends Application
             // @todo: invalid request trigger error...
         }
 
-        $actionName = '_action' . ucfirst($decodedData['action']);
+        $actionName = isset($decodedData['action']) ? '_action' . ucfirst($decodedData['action']) : '';
         if (method_exists($this, $actionName)) {
             call_user_func(array($this, $actionName), $decodedData['data'], $client->getClientId());
         }

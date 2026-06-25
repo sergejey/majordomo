@@ -182,7 +182,7 @@ if (!headers_sent()) {
 
 <form action="?" method="get" name="frmSearch" class="form-inline">
     <div class="form-group">
-    <input type="text" name="qry" value="<?php echo $qry; ?>" speech required x-webkit-speech
+    <input type="text" name="qry" value="<?php echo htmlspecialchars($qry, ENT_QUOTES, 'UTF-8'); ?>" speech required x-webkit-speech
            onspeechchange="startSearch" class="form-control"/>
     </div>
     <div class="form-group">
@@ -193,7 +193,7 @@ if (!headers_sent()) {
 <?php
 
 if ($qry != '') {
-    echo "<p>Command: <b>" . $qry . "</b></p>";
+    echo "<p>Command: <b>" . htmlspecialchars($qry, ENT_QUOTES, 'UTF-8') . "</b></p>";
 }
 
 $qry = "1";

@@ -619,10 +619,14 @@ function getGlobal($varname)
     }
     $cached_name = 'MJD:' . $object_name . '.' . $varname;
 
-    if (strpos($varname, 'cycle_') === 0) {
+    $is_updated_meta_property = (substr($varname, -9) == '__updated');
+
+    if (!$is_updated_meta_property && strpos($varname, 'cycle_') === 0) {
         $cached_value = checkCycleFromCache($varname);
-    } else {
+    } elseif (!$is_updated_meta_property) {
         $cached_value = checkFromCache($cached_name);
+    } else {
+        $cached_value = false;
     }
     if ($cached_value !== false) {
         return returnTypedValue($cached_value);
@@ -1238,14 +1242,20 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
 {
     $is_child = false;
     $fork_disabled = true;
+    static $fork_signal_configured = false;
 
     if (is_array($method)) {
         $params = $method;
         $method = 'GET';
     }
 
-    if (defined('ENABLE_FORK') && ENABLE_FORK && function_exists('pcntl_fork')) {
+    $is_cli_runtime = (PHP_SAPI === 'cli');
+    if ($is_cli_runtime && defined('ENABLE_FORK') && ENABLE_FORK && function_exists('pcntl_fork')) {
         $fork_disabled = false;
+        if (!$fork_signal_configured && function_exists('pcntl_signal') && defined('SIGCHLD')) {
+            pcntl_signal(SIGCHLD, SIG_IGN);
+            $fork_signal_configured = true;
+        }
     }
 
     if (!$fork_disabled) {
@@ -1278,18 +1288,19 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
     $url = preg_replace('/([^:])\/\//', '\1/', $url);
 
     $method = strtoupper($method);
-    global $api_ch;
-    if (!isset($api_ch)) {
-        $api_ch = curl_init();
-        curl_setopt($api_ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
-        curl_setopt($api_ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($api_ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
-        curl_setopt($api_ch, CURLOPT_MAXREDIRS, 2);
-        curl_setopt($api_ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
-        curl_setopt($api_ch, CURLOPT_NOSIGNAL, 1);
-        if (!$is_child && !$wait_response) {
-            curl_setopt($api_ch, CURLOPT_TIMEOUT_MS, 50);
-        }
+    $api_ch = curl_init();
+    curl_setopt($api_ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
+    curl_setopt($api_ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($api_ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
+    curl_setopt($api_ch, CURLOPT_MAXREDIRS, 2);
+    curl_setopt($api_ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
+    curl_setopt($api_ch, CURLOPT_NOSIGNAL, 1);
+
+    if (!$is_child && !$wait_response) {
+        // fire-and-forget mode: give local API enough time to accept request,
+        // but still return control quickly and avoid blocking the caller
+        curl_setopt($api_ch, CURLOPT_CONNECTTIMEOUT_MS, 300);
+        curl_setopt($api_ch, CURLOPT_TIMEOUT_MS, 800);
     }
     if ($method == 'GET') {
         $url .= '?' . http_build_query($params);
@@ -1311,20 +1322,25 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
     endMeasure('callAPI ' . $api_url);
 
     if ($is_child) {
-        exit();
+        curl_close($api_ch);
+        exit(0);
     }
 
     if ($result != '') {
         $data = json_decode($result, true);
         if (is_array($data) && isset($data['apiHandleResult'])) {
+            curl_close($api_ch);
             return $data['apiHandleResult'];
         } elseif (is_array($data)) {
+            curl_close($api_ch);
             return $data;
         } else {
+            curl_close($api_ch);
             return $result;
         }
     }
 
+    curl_close($api_ch);
     return true;
 
 }
@@ -1673,19 +1689,26 @@ function objectClassChanged($object_id)
 function checkOperationsQueue($topic)
 {
     if (defined('USE_REDIS')) {
-        global $redisConnection;
-        if (!isset($redisConnection)) {
-            $redisConnection = new Redis();
-            $redisConnection->pconnect(USE_REDIS);
+        $redisConnection = mjdGetRedisConnection();
+        if (!is_object($redisConnection)) {
+            return array();
         }
         $queueName = "mjd:queue:" . $topic;
         $result = array();
         while ($redisConnection->lLen($queueName)) {
             $data = $redisConnection->lPop($queueName);
-            $data = explode('|', $data);
-            $item['TOPIC'] = $queueName;
-            $item['DATANAME'] = $data[0];
-            $item['DATAVALUE'] = $data[1];
+            $decoded = json_decode($data, true);
+            if (is_array($decoded) && isset($decoded['DATANAME'])) {
+                $item['TOPIC'] = $topic;
+                $item['DATANAME'] = $decoded['DATANAME'];
+                $item['DATAVALUE'] = $decoded['DATAVALUE'] ?? '';
+            } else {
+                // Backward compatibility with legacy "name|value" format.
+                $parts = explode('|', (string)$data, 2);
+                $item['TOPIC'] = $topic;
+                $item['DATANAME'] = $parts[0] ?? '';
+                $item['DATAVALUE'] = $parts[1] ?? '';
+            }
             $result[] = $item;
         }
         return $result;
@@ -1701,12 +1724,15 @@ function addToOperationsQueue($topic, $dataname, $datavalue = '', $uniq = false,
 {
     startMeasure('addToOperationsQueue');
     if (defined('USE_REDIS')) {
-        global $redisConnection;
-        if (!isset($redisConnection)) {
-            $redisConnection = new Redis();
-            $redisConnection->pconnect(USE_REDIS);
+        $redisConnection = mjdGetRedisConnection();
+        if (!is_object($redisConnection)) {
+            endMeasure('addToOperationsQueue');
+            return false;
         }
-        $value = $dataname . "|" . $datavalue;
+        $value = json_encode(array(
+            'DATANAME' => (string)$dataname,
+            'DATAVALUE' => (string)$datavalue
+        ));
         $queueName = "mjd:queue:" . $topic;
         $result = $redisConnection->rPush($queueName, $value);
         endMeasure('addToOperationsQueue');
@@ -1715,7 +1741,7 @@ function addToOperationsQueue($topic, $dataname, $datavalue = '', $uniq = false,
     $rec = array();
     $rec['TOPIC'] = $topic;
     $rec['DATANAME'] = $dataname;
-    if (strlen($datavalue) < 1024) {
+    if (strlen((string)$datavalue) < 1024) {
         $rec['DATAVALUE'] = $datavalue;
     }
     $rec['EXPIRE'] = date('Y-m-d H:i:s', time() + $ttl);

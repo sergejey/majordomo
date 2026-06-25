@@ -141,9 +141,11 @@ class market extends module
     function admin(&$out)
     {
         $name = gr('name');
-        $mode = gr('mode');
-        if (!$this->mode && $mode) {
-            $this->mode = $mode;
+        if ($this->action == 'admin') {
+            $mode = gr('mode');
+            if (!$this->mode && $mode) {
+                $this->mode = $mode;
+            }
         }
 
         $op = gr('op');

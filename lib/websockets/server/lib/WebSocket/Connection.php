@@ -49,7 +49,7 @@ class Connection {
         if (!preg_match('/\AGET (\S+) HTTP\/1.1\z/', $lines[0], $matches)) {
             $this->log('Invalid request: ' . $lines[0]);
             $this->sendHttpResponse(400);
-            stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR);
+            if (is_resource($this->socket)) { stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR); }
             return false;
         }
 
@@ -59,7 +59,7 @@ class Connection {
         if (!$this->application) {
             $this->log('Invalid application: ' . $path);
             $this->sendHttpResponse(404);
-            stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR);
+            if (is_resource($this->socket)) { stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR); }
             $this->server->removeClientOnError($this);
             return false;
         }
@@ -77,7 +77,7 @@ class Connection {
         if (!isset($headers['Sec-WebSocket-Version']) || $headers['Sec-WebSocket-Version'] < 6) {
             $this->log('Unsupported websocket version.');
             $this->sendHttpResponse(501);
-            stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR);
+            if (is_resource($this->socket)) { stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR); }
             $this->server->removeClientOnError($this);
             return false;
         }
@@ -89,7 +89,7 @@ class Connection {
             if ($origin === false) {
                 $this->log('No origin provided.');
                 $this->sendHttpResponse(401);
-                stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR);
+                if (is_resource($this->socket)) { stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR); }
                 $this->server->removeClientOnError($this);
                 return false;
             }
@@ -97,7 +97,7 @@ class Connection {
             if (empty($origin)) {
                 $this->log('Empty origin provided.');
                 $this->sendHttpResponse(401);
-                stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR);
+                if (is_resource($this->socket)) { stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR); }
                 $this->server->removeClientOnError($this);
                 return false;
             }
@@ -105,7 +105,7 @@ class Connection {
             if ($this->server->checkOrigin($origin) === false) {
                 $this->log('Invalid origin provided.');
                 $this->sendHttpResponse(401);
-                stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR);
+                if (is_resource($this->socket)) { stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR); }
                 $this->server->removeClientOnError($this);
                 return false;
             }
@@ -202,7 +202,7 @@ class Connection {
 
         if (!isset($decodedData['type'])) {
             $this->sendHttpResponse(401);
-            stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR);
+            if (is_resource($this->socket)) { stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR); }
             $this->server->removeClientOnError($this);
             return false;
         }
@@ -296,7 +296,7 @@ class Connection {
         if ($this->application) {
             $this->application->onDisconnect($this);
         }
-        stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR);
+        if (is_resource($this->socket)) { stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR); }
         $this->server->removeClientOnClose($this);
     }
 

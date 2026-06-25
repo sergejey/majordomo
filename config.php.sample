@@ -1,108 +1,187 @@
 <?php
 /**
-* Project Config
-*
-* @package MajorDoMo
-* @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
-* @version 1.1
-*/
-
-Define('DB_HOST', 'localhost');
-Define('DB_NAME', 'db_terminal');
-Define('DB_USER', 'root');
-Define('DB_PASSWORD', '');
-
-Define('DIR_TEMPLATES', "./templates/");
-Define('DIR_MODULES', "./modules/");
-Define('DEBUG_MODE', 1);
-Define('UPDATES_REPOSITORY_NAME', 'smarthome');
-
-Define('PROJECT_TITLE', 'MajordomoSL');
-Define('PROJECT_BUGTRACK', "bugtrack@smartliving.ru");
-
-date_default_timezone_set('UTC');
-
- Define('DOC_ROOT', dirname(__FILE__));              // Your htdocs location (should be detected automatically)
-
- Define('SERVER_ROOT', '/var/www');
- Define('PATH_TO_PHP', 'php');
- Define('PATH_TO_MYSQLDUMP', "mysqldump");
-
- 
-if (isset($_ENV["S2G_BASE_URL"]) && $_ENV["S2G_BASE_URL"])
-{
-   Define('BASE_URL', $_ENV["S2G_BASE_URL"]);
-}
-else 
-{
-   // Your base URL:port (!!!)
-   Define('BASE_URL', 'http://127.0.0.1:80');              
-}
-
-Define('ROOT', DOC_ROOT."/");
-Define('ROOTHTML', "/");
-Define('PROJECT_DOMAIN', isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : php_uname("n"));
-
-// 1-wire OWFS server
-//Define('ONEWIRE_SERVER', 'tcp://localhost:8234');    
+ * ============================================================================
+ *  Project Config (sample)
+ * ============================================================================
+ *  Этот файл — пример. Для рабочего окружения используйте config.php | This file is a sample. Use config.php in production
+ * ============================================================================
+ */
 
 /*
-   Define('HOME_NETWORK', '192.168.0.*');                  // home network (optional)
-   Define('EXT_ACCESS_USERNAME', 'user');                  // access details for external network (internet)
-   Define('EXT_ACCESS_PASSWORD', 'password');
-*/
+ * ============================================================================
+ *  1) База данных | Database
+ * ============================================================================
+ */
+Define('DB_HOST', 'localhost');     // Хост MySQL/MariaDB | MySQL/MariaDB host
+Define('DB_NAME', 'db_terminal');   // Имя базы данных | Database name
+Define('DB_USER', 'root');          // Пользователь базы данных | Database user
+Define('DB_PASSWORD', '');          // Пароль пользователя базы данных | Database user password
 
-/// (Optional)
-//Define('DROPBOX_SHOPPING_LIST', 'c:/data/dropbox/list.txt');  
+/*
+ * ============================================================================
+ *  2) Пути и базовые директории | Paths and base directories
+ * ============================================================================
+ */
+Define('DIR_TEMPLATES', "./templates/"); // Путь к шаблонам интерфейса | Interface templates path
+Define('DIR_MODULES', "./modules/");     // Путь к модулям системы | System modules path
+Define('DOC_ROOT', dirname(__FILE__));   // Корень проекта (обычно определяется автоматически) | Project root (usually auto-detected)
+Define('SERVER_ROOT', '/var/www');       // Корень веб-сервера (для linux-сценариев) | Web server root (for Linux scenarios)
+Define('ROOT', DOC_ROOT . "/");          // Абсолютный корень проекта | Absolute project root
+Define('ROOTHTML', "/");                 // Веб-корень (путь в URL) | Web root (URL path)
 
- $restart_threads=array(
-                       'cycle_execs.php', 
-                       'cycle_main.php', 
-                       'cycle_ping.php', 
-                       'cycle_scheduler.php', 
-                       'cycle_states.php', 
-                       'cycle_webvars.php');
+/*
+ * ============================================================================
+ *  3) Исполняемые файлы и утилиты | Executables and utilities
+ * ============================================================================
+ */
+Define('PATH_TO_PHP', 'php');               // Команда/путь к интерпретатору PHP для фоновых циклов | Command/path to PHP interpreter for background cycles
+Define('PATH_TO_MYSQLDUMP', "mysqldump");   // Команда/путь к mysqldump для резервных копий | Command/path to mysqldump for backups
+//Define('PATH_TO_FFMPEG', 'avconv');       // Команда/путь к ffmpeg/avconv для мультимедиа | Command/path to ffmpeg/avconv for multimedia
+//Define('PYTHON_PATH', 'python');          // Команда/путь к Python | Command/path to Python
+//Define('AUDIO_PLAYER', 'omxplayer --no-osd'); // Команда системного аудиоплеера | System audio player command
 
- //Define('USE_PROXY', '127.0.0.1:8888');               //PROXY SERVER DETAILS (optional)
- //Define('USE_PROXY_AUTH', 'user:password');           //PROXY SERVER AUTH (optional)
+/*
+ * ============================================================================
+ *  4) Общие настройки проекта | General project settings
+ * ============================================================================
+ */
+Define('DEBUG_MODE', 1);                           // Режим отладки (1 — включен) | Debug mode (1 = enabled)
+Define('UPDATES_REPOSITORY_NAME', 'smarthome');   // Канал/ветка обновлений | Update channel/branch
+Define('PROJECT_TITLE', 'MajordomoSL');           // Название проекта/системы | Project/system title
+Define('PROJECT_BUGTRACK', "bugtrack@smartliving.ru"); // Контакт для ошибок (если задействовано) | Bug report contact (if used)
+Define('PROJECT_DOMAIN', isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : php_uname("n")); // Домен/имя узла | Domain/host name
+date_default_timezone_set('UTC');                 // Часовой пояс PHP по умолчанию | Default PHP timezone
 
- //Define('HISTORY_NO_OPTIMIZE', 1);
+/*
+ * ============================================================================
+ *  5) Базовый URL | Base URL
+ * ============================================================================
+ */
+if (isset($_ENV["S2G_BASE_URL"]) && $_ENV["S2G_BASE_URL"]) {
+    Define('BASE_URL', $_ENV["S2G_BASE_URL"]); // Базовый URL из переменной окружения | Base URL from environment variable
+} else {
+    Define('BASE_URL', 'http://127.0.0.1:80'); // Базовый URL системы | System base URL
+}
 
-Define('GIT_URL', 'https://github.com/sergejey/majordomo/');
-Define('MASTER_UPDATE_URL', GIT_URL.'archive/master.tar.gz'); // master update URL (https://github.com/sergejey/majordomo/archive/alpha.tar.gz)
+/*
+ * ============================================================================
+ *  6) Настройки сети и внешнего доступа (опционально) | Network and external access settings (optional)
+ * ============================================================================
+ */
+//Define('LOCAL_IP', '127.0.0.1');             // Локальный IP адрес хоста | Local host IP address
+//Define('HOME_NETWORK', '192.168.0.*');       // Домашняя сеть для упрощенного доступа | Home network for simplified access
+//Define('EXT_ACCESS_USERNAME', 'user');       // Логин для внешнего доступа | External access login
+//Define('EXT_ACCESS_PASSWORD', 'password');   // Пароль для внешнего доступа | External access password
+//Define('USE_PROXY', '127.0.0.1:8888');       // Прокси-сервер для исходящих HTTP-запросов | Proxy server for outgoing HTTP requests
+//Define('USE_PROXY_AUTH', 'user:password');   // Авторизация для прокси | Proxy authentication
+//Define('ONEWIRE_SERVER', 'tcp://localhost:8234'); // Сервер OWFS (1-wire), если используется | OWFS (1-wire) server, if used
 
-$aditional_git_urls = array(
-   //'https://github.com/AKEB/majordomo/archive/alpha.tar.gz' => 'AKEB/alpha',
-   //'https://github.com/AKEB/majordomo/archive/master.tar.gz' => 'AKEB/master',
+/*
+ * ============================================================================
+ *  7) Репозитории и обновления | Repositories and updates
+ * ============================================================================
+ */
+Define('GIT_URL', 'https://github.com/sergejey/majordomo/');          // Базовый URL репозитория | Repository base URL
+Define('MASTER_UPDATE_URL', GIT_URL . 'archive/master.tar.gz');       // URL архива для обновления | Update archive URL
+$aditional_git_urls = array(                                           // Дополнительные источники обновлений | Additional update sources
+    //'https://github.com/AKEB/majordomo/archive/alpha.tar.gz' => 'AKEB/alpha',
+    //'https://github.com/AKEB/majordomo/archive/master.tar.gz' => 'AKEB/master',
 );
 
+/*
+ * ============================================================================
+ *  8) Автозапуск/перезапуск циклов | Auto-start/restart of cycles
+ * ============================================================================
+ */
+$restart_threads = array( // Циклы, которые допускаются к автоперезапуску | Cycles allowed for auto-restart
+    'cycle_execs.php',
+    'cycle_main.php',
+    'cycle_ping.php',
+    'cycle_scheduler.php',
+    'cycle_states.php',
+    'cycle_webvars.php'
+);
+//Define('WAIT_FOR_MAIN_CYCLE', 1); // Ждать запуска main-цикла перед стартом остальных | Wait for main cycle startup before starting others
 
-//Define('WAIT_FOR_MAIN_CYCLE', 1);
-//Define('TRACK_DATA_CHANGES', 1);                                   // TRACK EVENTS
-//Define('TRACK_DATA_CHANGES_IGNORE', 'cycle_, clockchime, uptime, WSClientsTotal'); // IGNORE
+/*
+ * ============================================================================
+ *  9) Логирование и диагностика | Logging and diagnostics
+ * ============================================================================
+ */
+//Define('LOG_DIRECTORY', 'c:/temp');             // Папка для системных логов | Folder for system logs
+//Define('LOG_MAX_SIZE', 2);                      // Максимальный размер файла лога в МБ | Maximum log file size in MB
+//Define('LOG_CYCLES', 1);                        // Логировать stdout/stderr рабочих циклов | Log stdout/stderr of worker cycles
+//Define('VERBOSE_LOG', 1);                       // Расширенный подробный лог | Extended verbose logging
+//Define('VERBOSE_LOG_IGNORE', '.checkstate, ThisComputer.uptime'); // Исключения из verbose-лога | Verbose log exclusions
+//Define('LOG_PHP_WARNINGS', 1);                  // Логировать PHP warning/notices | Log PHP warnings/notices
+//Define('BTRACED', 1);                           // Историческая опция (требует валидации использования) | Legacy option (requires usage validation)
 
-Define('GETURL_WARNING_TIMEOUT',5);                   // TIMEOUT LIMIT FOR getURL function warning
+/*
+ * ============================================================================
+ *  10) Кэш, фоновые процессы и производительность | Cache, background processes, and performance
+ * ============================================================================
+ */
+//Define('ENABLE_FORK', 1);                 // Использовать pcntl_fork в ряде фоновых задач | Use pcntl_fork in selected background tasks
+//Define('LOWER_BACKGROUND_PROCESSES', 1);  // Снижать количество фоновых процессов | Reduce number of background processes
+//Define('ENABLE_PANEL_ACCELERATION', 1);   // Ускорение панели управления (если поддерживается) | Control panel acceleration (if supported)
+//Define('USE_REDIS', '127.0.0.1');         // Использовать Redis для кэша (host/IP) | Use Redis for cache (host/IP)
+//Define('REDIS_PORT', 6379);               // Порт Redis (по умолчанию 6379) | Redis port (default 6379)
+//Define('REDIS_DB', 0);                    // Номер базы Redis (по умолчанию 0) | Redis DB index (default 0)
+//Define('REDIS_USERNAME', '');             // ACL username (опционально, Redis 6+) | ACL username (optional, Redis 6+)
+//Define('REDIS_PASSWORD', '');             // Пароль Redis (опционально) | Redis password (optional)
+//Define('REDIS_TIMEOUT', 2.5);             // Таймаут подключения к Redis (сек) | Redis connection timeout (sec)
+//Define('CACHE_VALUE_MAX_SIZE', 255);      // Максимальный размер значения в кэше | Maximum cache value size
+//Define('HISTORY_NO_OPTIMIZE', 1);         // Отключить оптимизацию записи истории | Disable history write optimization
+//Define('SEPARATE_HISTORY_STORAGE', 1);     // Хранить историю в отдельных таблицах | Store history in separate tables
+//Define('TRACK_DATA_CHANGES', 1);           // Логировать изменения данных объектов | Log object data changes
+//Define('TRACK_DATA_CHANGES_IGNORE', 'cycle_, clockchime, uptime, WSClientsTotal'); // Исключения для трекинга | Tracking exclusions
 
-//Define('SEPARATE_HISTORY_STORAGE',1);                 // STORE HISTORY DATA IN DIFFERENT TABLES
-//Define('LOG_DIRECTORY', 'c:/temp');                 // PATH TO STORE LOGS
-//Define('LOG_MAX_SIZE', 2);                 // MAXIMUM LOG FILE SIZE, MB
-//Define('LOG_CYCLES',1);             // Save working cycle log (or send to /dev/null if not defined)
-//Define('PATH_TO_FFMPEG','avconv');
-//Define('ENABLE_PANEL_ACCELERATION', 1);
-//Define('VERBOSE_LOG',1); // STORE SYSTEM ACTIVITY IN VERBOSE LOG
-//Define('VERBOSE_LOG_IGNORE','.checkstate, ThisComputer.uptime'); // IGNORE SOME DATA
-//Define('DISABLE_SIMPLE_DEVICES',1); // disables simple devices behavior
-//Define('AUDIO_PLAYER','omxplayer --no-osd'); // audio-player for linux
-//Define('ENABLE_FORK',1); // enables process fork (consumes more memory but speeds up some operations)
-//Define('PYTHON_PATH','python'); // path to python
-//Define('LOCAL_IP','127.0.0.1); // local IP
-//Define('BTRACED', 1);
-//Define('LOWER_BACKGROUND_PROCESSES',1); // lower number of background processes created
-//define('USE_REDIS','127.0.0.1'); // use Redis for caching
-//define('LOG_FILES_EXPIRE', 5); // for delete log files
-//define('BACKUP_FILES_EXPIRE', 10); // for delete backup files
-//define('CACHED_FILES_EXPIRE', 30); // for delete cached files
-//define('SETTINGS_ERRORS_KEEP_HISTORY', 1); // for delete errors history
-//define('CACHE_VALUE_MAX_SIZE', 255); // max length of caching value
-//define('DISABLE_USERS_LIST',1); // hide list of users for login
-//define('LOG_PHP_WARNINGS',1); // Log php warnings
+/*
+ * ============================================================================
+ *  11) Жизненный цикл файлов и сервисные задачи | File lifecycle and service tasks
+ * ============================================================================
+ */
+//define('LOG_FILES_EXPIRE', 5);            // Сколько дней хранить лог-файлы | Log file retention days
+//define('BACKUP_FILES_EXPIRE', 10);        // Сколько дней хранить бэкапы | Backup retention days
+//define('CACHED_FILES_EXPIRE', 30);        // Сколько дней хранить кэш-файлы | Cache file retention days
+//define('SETTINGS_ERRORS_KEEP_HISTORY', 1);// Хранить историю ошибок | Keep error history
+Define('GETURL_WARNING_TIMEOUT', 5);        // Порог (сек.) для warning при медленном getURL | Threshold (sec) for warning on slow getURL
+
+/*
+ * ============================================================================
+ *  12) UI и доступ | UI and access
+ * ============================================================================
+ */
+//Define('DISABLE_SIMPLE_DEVICES', 1); // Отключить поведение модуля simple devices | Disable Simple Devices module behavior
+//Define('DISABLE_USERS_LIST', 1);     // Скрыть список пользователей на форме логина | Hide users list on login form
+
+/*
+ * ============================================================================
+ *  13) Интеграции (опционально) | Integrations (optional)
+ * ============================================================================
+ */
+//Define('DROPBOX_SHOPPING_LIST', 'c:/data/dropbox/list.txt'); // Путь к shopping-list в Dropbox | Path to shopping list in Dropbox
+
+/*
+ * ============================================================================
+ *  14) WebSockets
+ * ============================================================================
+ */
+//define('DISABLE_WEBSOCKETS', 1);             // Полностью отключить websocket-цикл | Fully disable websocket cycle
+//define('SETTINGS_SYSTEM_WEBSOCKETS_RESTART_TIMEOUT', 300); // Watchdog websocket (сек), 0 - отключить | Websocket watchdog (sec), 0 disables
+define('WEBSOCKETS_HOST', '0.0.0.0');          // Адрес bind для websocket-сервера | Bind address for websocket server
+define('WEBSOCKETS_PORT', 8002);               // Порт websocket-сервера | Websocket server port
+define('WEBSOCKETS_TLS', 0);                   // Использовать TLS: 0 — нет, 1 — да | Use TLS: 0 = no, 1 = yes
+define('WEBSOCKETS_MAX_CLIENTS', 100);         // Общий лимит одновременных websocket-клиентов | Total concurrent websocket clients limit
+define('WEBSOCKETS_MAX_CONNECTIONS_PER_IP', 100); // Лимит подключений с одного IP | Connection limit per IP
+define('WEBSOCKETS_MAX_REQUESTS_PER_MINUTE', 20000); // Лимит сообщений/запросов в минуту на клиента | Message/request limit per minute per client
+define('WEBSOCKETS_CLIENT_TIMEOUT', 30);       // Таймаут неактивного клиента в секундах | Inactive client timeout in seconds
+define('WEBSOCKETS_CHECK_ORIGIN', 0);          // Проверять Origin в handshake: 0/1 | Check Origin in handshake: 0/1
+define('WEBSOCKETS_ALLOWED_ORIGINS', '');      // Белый список Origin (через запятую), если CHECK_ORIGIN=1 | Allowed Origin list (comma-separated) when CHECK_ORIGIN=1
+
+// TLS-параметры (используются только если WEBSOCKETS_TLS=1) | TLS parameters (used only when WEBSOCKETS_TLS=1)
+define('WEBSOCKETS_TLS_PEM_FILE', './server.pem');       // Путь к PEM-сертификату | Path to PEM certificate
+define('WEBSOCKETS_TLS_PEM_PASSPHRASE', 'shinywss');     // Пароль PEM-ключа | PEM key passphrase
+define('WEBSOCKETS_TLS_ALLOW_SELF_SIGNED', 1);           // Разрешать self-signed сертификаты: 0/1 | Allow self-signed certificates: 0/1
+define('WEBSOCKETS_TLS_VERIFY_PEER', 0);                 // Проверять TLS peer: 0/1 | Verify TLS peer: 0/1
+define('WEBSOCKETS_TLS_VERIFY_PEER_NAME', 0);            // Проверять имя TLS peer: 0/1 | Verify TLS peer name: 0/1

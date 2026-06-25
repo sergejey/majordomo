@@ -44,12 +44,11 @@ function checkCycleFromCache($key)
  */
 function clearCacheData($prefix = '')
 {
-    $prefix = strtolower($prefix);
+    $prefix = strtolower((string)$prefix);
     if (defined('USE_REDIS')) {
-        global $redisConnection;
-        if (!isset($redisConnection)) {
-            $redisConnection = new Redis();
-            $redisConnection->pconnect(USE_REDIS);
+        $redisConnection = mjdGetRedisConnection();
+        if (!is_object($redisConnection)) {
+            return;
         }
         if (!$prefix) $redisConnection->flushDB();
         else {
@@ -59,8 +58,11 @@ function clearCacheData($prefix = '')
         }
         return;
     }
-    if (!$prefix) SQLTruncateTable('cached_values');
-    else SQLExec("delete from cached_values where KEYWORD like '$prefix%'");
+    if (!$prefix) {
+        SQLTruncateTable('cached_values');
+    } else {
+        SQLExec("delete from cached_values where KEYWORD like '" . DBSafe($prefix) . "%'");
+    }
 }
 
 /**
@@ -71,18 +73,19 @@ function clearCacheData($prefix = '')
  */
 function getAllCache($prefix = '')
 {
-    $prefix = strtolower($prefix);
+    $prefix = strtolower((string)$prefix);
     $out = array();
     if (defined('USE_REDIS')) {
-        global $redisConnection;
-        if (!isset($redisConnection)) {
-            $redisConnection = new Redis();
-            $redisConnection->pconnect(USE_REDIS);
+        $redisConnection = mjdGetRedisConnection();
+        if (!is_object($redisConnection)) {
+            return $out;
         }
         $list = $redisConnection->keys($prefix . "*");
         foreach ($list as $key1)
             $out[$key1] = $redisConnection->get($key1);
-    } else $out = SQLExec("select * from cached_values where KEYWORD like '$prefix%'");
+    } else {
+        $out = SQLSelect("select * from cached_values where KEYWORD like '" . DBSafe($prefix) . "%'");
+    }
     return $out;
 }
 
@@ -95,13 +98,12 @@ function getAllCache($prefix = '')
  */
 function saveToCache($key, $value)
 {
-    $key = strtolower($key);
+    $key = strtolower((string)$key);
     
     if (defined('USE_REDIS')) {
-        global $redisConnection;
-        if (!isset($redisConnection)) {
-            $redisConnection = new Redis();
-            $redisConnection->pconnect(USE_REDIS);
+        $redisConnection = mjdGetRedisConnection();
+        if (!is_object($redisConnection)) {
+            return;
         }
         $redisConnection->set($key, (string)$value);
         return;
@@ -113,7 +115,7 @@ function saveToCache($key, $value)
         $cache_value_max_size = 255;
     }
 
-    if (is_array($value) || strlen($value) > $cache_value_max_size) {
+    if (is_array($value) || strlen((string)$value) > $cache_value_max_size) {
         deleteFromCache($key);
         return;
     }
@@ -126,14 +128,11 @@ function saveToCache($key, $value)
 }
 
 function deleteFromCache($key) {
-    SQLExec("DELETE FROM cached_values WHERE KEYWORD='" . $key . "'");
+    $key = strtolower((string)$key);
+    SQLExec("DELETE FROM cached_values WHERE KEYWORD='" . DBSafe($key) . "'");
     if (defined('USE_REDIS')) {
-        global $redisConnection;
-        if (!isset($redisConnection)) {
-            $redisConnection = new Redis();
-            $redisConnection->pconnect(USE_REDIS);
-        }
-        if ($redisConnection->exists($key)) {
+        $redisConnection = mjdGetRedisConnection();
+        if (is_object($redisConnection) && $redisConnection->exists($key)) {
             $redisConnection->del($key);
         }
     }
@@ -146,12 +145,11 @@ function deleteFromCache($key) {
  */
 function checkFromCache($key)
 {
-    $key = strtolower($key);
+    $key = strtolower((string)$key);
     if (defined('USE_REDIS')) {
-        global $redisConnection;
-        if (!isset($redisConnection)) {
-            $redisConnection = new Redis();
-            $redisConnection->pconnect(USE_REDIS);
+        $redisConnection = mjdGetRedisConnection();
+        if (!is_object($redisConnection)) {
+            return false;
         }
         if ($redisConnection->exists($key)) {
             $value = $redisConnection->get($key);
@@ -262,6 +260,9 @@ function postToWebSocket($property, $value, $post_action = 'PostProperty')
 
     if (!$data_sent && !isset($_SERVER['REQUEST_METHOD'])) {
         //reconnect
+        if (Is_Object($wsClient)) {
+            $wsClient->disconnect();
+        }
         $wsClient = new WebsocketClient;
         if ((@$wsClient->connect('127.0.0.1', WEBSOCKETS_PORT, '/majordomo'))) {
             $data_sent = @$wsClient->sendData($payload);

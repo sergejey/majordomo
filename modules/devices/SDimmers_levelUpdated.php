@@ -10,6 +10,10 @@ if ($level > 0) {
     $this->setProperty('levelSaved', $level);
 }
 
+if ($this->getProperty('isConfirmationRequired') && isset($params['PROPERTY'])) {
+    require(DIR_MODULES . 'devices/delivery_confirmation.inc.php');
+}
+
 $statusUpdated = 0;
 if (!$switchLevel) {
     if ($level > 0) {
@@ -25,10 +29,9 @@ if (!$switchLevel) {
     }
 }
 
-
 if ($minWork != $maxWork) {
     $levelWork = round($minWork + round(($maxWork - $minWork) * $level / 100));
-    $diff = abs($this->getProperty('levelWork') - $levelWork);
+    $diff = abs((int)$this->getProperty('levelWork') - $levelWork);
     if ($diff >= 5) {
         $this->setProperty('levelWork', $levelWork);
     }

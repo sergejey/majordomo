@@ -35,7 +35,7 @@ if ($this->mode=='update') {
         if (preg_match('/newdevice(\d+)_l(\d+)/',$k,$m)) {
             $device_title = gr('newdevice'.$m[1].'_l'.$m[2]);
             $device_type= gr('newtype'.$m[1].'_l'.$m[2]);
-            $location_id=$location_ids[$m[2]];
+            $location_id = isset($location_ids[$m[2]]) ? $location_ids[$m[2]] : 0;
             if ($device_title && $device_type && $location_id) {
                 $rec=array();
                 $rec['TITLE']=$device_title;

@@ -27,6 +27,7 @@ $preload_libraries = array(
     'general.class.php',
     'module.class.php',
     'errors.class.php',
+    'redis_helper.class.php',
     'objects.class.php',
     'common.class.php',
     'caching.class.php'

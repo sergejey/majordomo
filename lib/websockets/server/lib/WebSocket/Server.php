@@ -67,7 +67,7 @@ class Server extends Socket
                         // periodically check for timed-out clients
                         $now = time();
                         foreach ($this->clientActivity as $sockId => $ts) {
-                                if ($now - $ts > $this->_clientTimeout) {
+                                if ($this->_clientTimeout > 0 && ($now - $ts > $this->_clientTimeout)) {
                                         $client = $this->clients[(int) $sockId] ?? null;
                                         if ($client) {
                                                 $this->log("[info] Client {$client->getClientIp()} timed out (>{$this->_clientTimeout}s), disconnecting");

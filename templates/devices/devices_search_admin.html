@@ -16,12 +16,14 @@
   </div>
 
  <div class="form-group">
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <#LANG_SEARCH#>:
-  </div>
+  <input type="text" name="search" value="[#SEARCH#]" placeholder="<#LANG_SEARCH#>" class="form-control">
+ </div>
+ <div class="form-group">
+  <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+ </div>
 
  <div class="form-group">
-  <select name="type" class="form-control" onchange="this.form.submit();">
+  <select name="type" class="form-control" style="max-width:200px" onchange="this.form.submit();">
    <option value=""><#LANG_TYPE#> (<#LANG_TOTAL#>: [#TOTAL#])</option>
    [#begin TYPES#]
    <option value="[#NAME#]"[#if NAME="<#TYPE#>"#] selected[#endif#]>[#TITLE#] ([#TOTAL#])</option>
@@ -31,7 +33,7 @@
  </div>
 
  <div class="form-group ">
-  <select name="location_id" class="form-control" onchange="this.form.submit();">
+  <select name="location_id" class="form-control" style="max-width:200px" onchange="this.form.submit();">
    <option value=""><#LANG_ROOMS#> (<#LANG_ALL#>)
     [#begin LOCATIONS#]<option value="[#ID#]"[#if ID="<#LOCATION_ID#>"#] selected[#endif#]>[#TITLE#] ([#TOTAL#])
    [#end LOCATIONS#]
@@ -40,7 +42,7 @@
  </div>
 
  <div class="form-group">
-  <select name="group_name" class="form-control"  onchange="this.form.submit();">
+  <select name="group_name" class="form-control" style="max-width:200px"  onchange="this.form.submit();">
    <option value=""><#LANG_GROUPS#> (<#LANG_ALL#>)</option>
    [#begin GROUPS#]
    <option value="[#SYS_NAME#]"[#if SYS_NAME="<#GROUP_NAME#>"#] selected[#endif#]>[#TITLE#]</option>
@@ -149,7 +151,9 @@
 [#begin RESULT#]
 [#if NEW_LOCATION#]
 <div class="row">
- <h3><a href="?view_mode=manage_rooms&location_id=[#LOCATION_ID#]">[#LOCATION_TITLE#]</a></h3>
+ <h3><a href="?view_mode=manage_rooms&location_id=[#LOCATION_ID#]">[#LOCATION_TITLE#]</a>
+  <a href="?view_mode=manage_rooms&location_id=[#LOCATION_ID#]" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-wrench"></i></a>
+ </h3>
 </div>
 [#endif#]
 <div class="row">

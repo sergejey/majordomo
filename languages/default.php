@@ -1162,6 +1162,7 @@ $dictionary = array(
     'DEVICES_MSG_OPENING'=>'Opening message text',
     'DEVICES_MSG_CLOSING'=>'Closing message text',
     'DEVICES_MSG_REMINDER'=>'Reminder message text',
+    'DEVICES_CONFIRMATION_REQUIRED'=>'Commands delivery confirmation required',
 
     'DEVICES_OPENABLE' => 'Openable (Gateways/Doors/Curtains/etc)',
     'DEVICES_OPENABLE_SUPPORT_LEVEL' => 'Support level of open',
@@ -1463,6 +1464,17 @@ $dictionary = array(
 
     'MAINCYCLEDOWN' => 'Main cycle is down',
     'MAINCYCLEDOWN_DETAILS' => '<b>Don\'t panic! :)</b><br/>Looks like main MajorDoMo process is stopped.<Br/>This page should reload in few seconds and if there will be error message, please proceed with following options.',
+    'CYCLE_STOP_REASON_RESTART_COMMAND' => 'stopped by restart command',
+    'CYCLE_STOP_REASON_STOP_COMMAND' => 'stopped by stop command',
+    'CYCLE_STOP_REASON_PRE_RESTART' => 'stopped before scheduled restart',
+    'CYCLE_STOP_REASON_CRASH_ERROR' => 'crashed (%s)',
+    'CYCLE_STOP_REASON_SIGNAL' => 'terminated by system signal #%d',
+    'CYCLE_STOP_REASON_CRASH_EXIT_CODE' => 'crashed (exit code %d)',
+    'CYCLE_STOP_REASON_UNEXPECTED_EXIT_ZERO' => 'unexpected termination (exit code 0, probable internal cycle error)',
+    'CYCLE_STOP_REASON_UNEXPECTED_UNKNOWN' => 'unexpected termination (unknown reason)',
+    'CYCLE_STOP_DETAILS_HEADER' => 'Cycle %s stopped: %s.',
+    'CYCLE_STOP_DETAILS_LAST_ERROR' => 'Last cycle error: %s',
+    'CYCLE_STOP_DETAILS_COMMAND' => 'Start command: %s',
 
     'RECENTLY_USED' => 'Recent',
 

@@ -139,7 +139,7 @@ class system_errors extends module
      */
     function admin(&$out)
     {
-        if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
+        if (isset($this->data_source) && !isset($_GET['data_source']) && !isset($_POST['data_source'])) {
             $out['SET_DATASOURCE'] = 1;
         }
 
@@ -184,9 +184,6 @@ class system_errors extends module
                 SQLExec("DELETE FROM system_errors_data WHERE ERROR_ID='" . (int)$this->id . "'");
                 $this->redirect("?data_source=system_errors");
             }
-        }
-        if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
-            $out['SET_DATASOURCE'] = 1;
         }
         if ($this->data_source == 'system_errors_data') {
             if ($this->view_mode == '' || $this->view_mode == 'search_system_errors_data') {

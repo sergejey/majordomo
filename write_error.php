@@ -12,8 +12,7 @@
 include_once("./config.php");
 include_once("./lib/loader.php");
 
-if ($error)
-{
+$error = gr('error');
+if ($error) {
    DebMes($error,'javascript_errors');
-   //DebMes("JAVASCRIPT Error: " . $error);
 }

@@ -124,11 +124,12 @@
                 [#PARAM_TITLE#]
             </label>
             <div class="col-md-8">
+                [#if PARAM_TYPE="duration"#]
+                <input type="text" value="[#VALUE#]" id="[#PARAM_NAME#]_value" name="[#PARAM_NAME#]_value" class="form-control" onchange="checkVisibleConditions();">
+                [#module name="duration_input" input_id="<#LINK_DETAILS_PARAMS.PARAM_NAME#>_value"#]
+                [#endif#]
                 [#if PARAM_TYPE="num" || PARAM_TYPE="text"#]
                 <input type="text" value="[#VALUE#]" name="[#PARAM_NAME#]_value" class="form-control" onchange="checkVisibleConditions();">
-                [#endif#]
-                [#if PARAM_TYPE="duration"#]
-                <input type="text" value="[#VALUE#]" name="[#PARAM_NAME#]_value" class="form-control html-duration-picker" data-duration-min="00:00:05" onchange="checkVisibleConditions();">
                 [#endif#]
                 [#if PARAM_TYPE="color"#]
                 <script src='<#ROOTHTML#>3rdparty/spectrum/spectrum.min.js'></script>

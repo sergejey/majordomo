@@ -49,16 +49,16 @@ if ($this->action != 'admin') {
 
     if ($this->parent_item != '') {
         //$out['IFRAME_MODE']=1;
-        $tmp = SQLSelectOne("SELECT ID FROM commands WHERE PARENT_ID='" . $_GET['parent'] . "'");
+        $tmp = SQLSelectOne("SELECT ID FROM commands WHERE PARENT_ID='" . (int)$this->parent_item . "'");
 
         if ($tmp['ID']) {
-            $qry .= " AND (commands.PARENT_ID='" . $this->parent_item . "')";
+            $qry .= " AND (commands.PARENT_ID='" . (int)$this->parent_item . "')";
         } else {
-            $qry .= " AND (commands.ID='" . $this->parent_item . "')";
+            $qry .= " AND (commands.ID='" . (int)$this->parent_item . "')";
         }
 
         //$qry.=" AND PARENT_ID='".$this->parent_item."'";
-        $parent_rec = SQLSelectOne("SELECT * FROM commands WHERE ID='" . $this->parent_item . "'");
+        $parent_rec = SQLSelectOne("SELECT * FROM commands WHERE ID='" . (int)$this->parent_item . "'");
         $parent_rec['TITLE'] = processTitle($parent_rec['TITLE'], $this);
         if ($paret_rec['SUB_PRELOAD']) {
             $parent_rec['ID'] = $parent_rec['PARENT_ID'];

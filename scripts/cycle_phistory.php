@@ -31,6 +31,7 @@ $cycleVarName = 'ThisComputer.' . str_replace('.php', '', basename(__FILE__)) . 
 echo date("H:i:s") . " running " . basename(__FILE__) . "\n";
 
 $processed = array();
+$processed_cleanup_time = 0;
 
 while (1) {
     if (time() - $checked_time > 5) {
@@ -66,6 +67,15 @@ while (1) {
 
     $queue = SQLSelect("SELECT * FROM phistory_queue ORDER BY ID LIMIT " . $limit);
     if (isset($queue[0]['ID'])) {
+        if ((time() - $processed_cleanup_time) > 60 * 60) {
+            $processed_cleanup_time = time();
+            foreach ($processed as $value_id => $processed_time) {
+                if ((time() - $processed_time) > 6 * 60 * 60) {
+                    unset($processed[$value_id]);
+                }
+            }
+        }
+
         if ($count_queue > $limit && !$queue_error_status) {
             sg('phistory_queue_problem', 1);
             $txt = 'Properties history queue is too long (' . $count_queue . ')';
@@ -111,13 +121,19 @@ while (1) {
                 debug_echo(" Done ");
             } elseif ($value == $old_value) {
 
-                //debug_echo(" Check history for same value ".$h['VALUE_ID']);
                 $tmp_history = SQLSelect("SELECT * FROM $table_name WHERE VALUE_ID='" . $q_rec['VALUE_ID'] . "' ORDER BY ID DESC LIMIT 2");
-                $prev_value = $tmp_history[0]['VALUE'];
-                $prev_prev_value = $tmp_history[1]['VALUE'];
-                //debug_echo(" Done ");
+                $prev_value = $tmp_history[0]['VALUE'] ?? null;
+                $prev_prev_value = $tmp_history[1]['VALUE'] ?? null;
 
-                if ($prev_value == $prev_prev_value && $tmp_history[0]['ID']) {
+                $this_source = $q_rec['SOURCE'];
+                $this_source = preg_replace('/\d+/is', 'N', $this_source);
+
+                $prev_source = $tmp_history[0]['SOURCE'] ?? '';
+                $prev_source = preg_replace('/\d+/is', 'N', $prev_source);
+
+                if ($this_source == $prev_source &&
+                    $prev_value == $prev_prev_value &&
+                    !empty($tmp_history[0]['ID'])) {
                     debug_echo(" Update same value " . $q_rec['VALUE_ID']);
                     SQLExec("UPDATE $table_name SET ADDED='" . $q_rec['ADDED'] . "' WHERE ID=" . $tmp_history[0]['ID']);
                     /*
@@ -130,7 +146,7 @@ while (1) {
                     //SQLUpdate($table_name, $tmp_history[0]);
                     debug_echo(" Done ");
                 } else {
-                    debug_echo(" Insert same new value " . $h['VALUE_ID']);
+                    debug_echo(" Insert same new value " . $q_rec['VALUE_ID']);
                     $h = array();
                     $h['VALUE_ID'] = $q_rec['VALUE_ID'];
                     $h['ADDED'] = $q_rec['ADDED'];
@@ -143,6 +159,7 @@ while (1) {
             }
             // delete old data
         }
+        unset($queue, $tmp_history, $h, $q_rec);
     } else
         sleep(1);
 

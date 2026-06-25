@@ -11,7 +11,7 @@ $this->device_links=array(
                 array(
                     'PARAM_NAME'=>'action_delay',
                     'PARAM_TITLE'=>LANG_DEVICES_LINK_SWITCH_TIMER_PARAM_ACTION_DELAY,
-                    'PARAM_TYPE'=>'num'
+                    'PARAM_TYPE'=>'duration'
                 ),
                 array(
                     'PARAM_NAME'=>'darktime',
@@ -47,7 +47,7 @@ $this->device_links=array(
                 array(
                     'PARAM_NAME'=>'action_delay',
                     'PARAM_TITLE'=>LANG_DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY,
-                    'PARAM_TYPE'=>'num'
+                    'PARAM_TYPE'=>'duration'
                 )
             )
             ),
@@ -65,7 +65,7 @@ $this->device_links=array(
                 array(
                     'PARAM_NAME'=>'action_delay',
                     'PARAM_TITLE'=>LANG_DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY,
-                    'PARAM_TYPE'=>'num'
+                    'PARAM_TYPE'=>'duration'
                 )
             )
         )

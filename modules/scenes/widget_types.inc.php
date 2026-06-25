@@ -77,7 +77,7 @@ $this->widget_types = array(
             'image_url' => array('DESCRIPTION' => LANG_WIDGET_IMAGE_URL,
                 'DEFAULT_VALUE' => '', '_CONFIG_TYPE' => 'image_url'),
             'refresh_interval' => array('DESCRIPTION' => LANG_WIDGET_IMAGE_REFRESH_INTERVAL,
-                'DEFAULT_VALUE' => '0', '_CONFIG_TYPE' => 'text'),
+                'DEFAULT_VALUE' => '0', '_CONFIG_TYPE' => 'duration'),
         ),
         'RESIZABLE' => 1,
         'DEFAULT_WIDTH' => 200,

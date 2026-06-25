@@ -158,12 +158,12 @@ class saverestore extends module
         }
         $out['MAX_SIZE'] = round($max_size / 1024 / 1024, 2) . ' Mb';
 
-        if (gr('mode') == 'force_update') {
+        if (gr('mode') == 'force_update' && $this->action == 'admin') {
             unset($_REQUEST['mode']);
             $this->autoUpdateSystem();
         }
 
-        if (gr('mode') == 'auto_update_settings') {
+        if (gr('mode') == 'auto_update_settings' && $this->action == 'admin') {
             $this->getConfig();
 
             $this->config['MASTER_UPDATE_URL'] = gr('set_update_url');
@@ -1664,13 +1664,19 @@ class saverestore extends module
      */
     function restoredatabase($filename)
     {
-        $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
-        $mysqlParam = " -u " . DB_USER;
-        if (DB_PASSWORD != '') $mysqlParam .= " --password=\"" . DB_PASSWORD . "\"";
-        $mysqlParam .= " " . DB_NAME . " <" . $filename;
-        $cmd = $mysql_path . $mysqlParam;
-        $result = exec($cmd, $output, $result_code);
-        if ($result !== false) {
+        if (SQLRestoreDBDump($filename)) {
+            $files_to_remove = array(
+                ROOT . 'database_backup/db.sql',
+                ROOT . 'database_backup/db.sql.prev',
+                ROOT . 'database_backup/db_history.sql',
+                ROOT . 'database_backup/db_history.sql.prev'
+            );
+            foreach ($files_to_remove as $file) {
+                if (file_exists($file)) {
+                    DebMes("Removing current db state file: " . $file, "restore");
+                    unlink($file);
+                }
+            }
             DebMes("DB restored", "restore");
             SQLExec("DELETE FROM cached_values");
             setGlobal('cycle_mainRun', time());
@@ -1690,13 +1696,7 @@ class saverestore extends module
      */
     function backupdatabase($filename)
     {
-        if (defined('PATH_TO_MYSQLDUMP'))
-            $pathToMysqlDump = PATH_TO_MYSQLDUMP;
-        else
-            $pathToMysqlDump = IsWindowsOS() ? SERVER_ROOT . "/server/mysql/bin/mysqldump" : "/usr/bin/mysqldump";
-
-        $cmd = $pathToMysqlDump . " -h " . DB_HOST . " --user=\"" . DB_USER . "\" --password=\"" . DB_PASSWORD . "\" --no-create-db --add-drop-table " . DB_NAME . ">" . $filename;
-        exec($cmd);
+        return SQLMakeDBDump($filename);
     }
 
 

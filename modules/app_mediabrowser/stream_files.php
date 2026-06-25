@@ -3,42 +3,42 @@
 if (is_file($play)) {
     $mime_type = get_mime_type($play);
     header("Content-type: $mime_type");
-    if (isset($_SERVER['HTTP_RANGE']))  {
+    if (isset($_SERVER['HTTP_RANGE'])) {
         rangeDownload($play);
-    }
-    else {
-        header("Content-Length: ".filesize($play));
+    } else {
+        header("Content-Length: " . filesize($play));
         readfile($play);
     }
 } elseif (is_dir($play)) {
-    $files=scandir($play);
-    $res_files=array();
-    foreach($files as $file) {
-        if ($file=='.' || $file=='..') continue;
-        $fullname = $play.'/'.$file;
-        $res_files[]=array('FULL'=>$fullname,'SHORT'=>$file);
+    $files = scandir($play);
+    $res_files = array();
+    foreach ($files as $file) {
+        if ($file == '.' || $file == '..') continue;
+        $fullname = $play . '/' . $file;
+        $res_files[] = array('FULL' => $fullname, 'SHORT' => $file);
     }
-    usort($res_files, function($a,$b) {
+    usort($res_files, function ($a, $b) {
         return strcmp($a["SHORT"], $b["SHORT"]);
     });
     header("Content-Type: audio/mpegurl");
     header("Content-Disposition: attachment; filename=media.m3u");
-    foreach($res_files as $rec) {
-	    //$file_ext = 'm3u';
-	    $file_ext = 'html';
-        echo 'http://'.$_SERVER['HTTP_HOST']."/module/app_mediabrowser.$file_ext?play=".urlsafe_b64encode($rec['FULL'])."\r\n";
+    foreach ($res_files as $rec) {
+        //$file_ext = 'm3u';
+        $file_ext = 'html';
+        echo 'http://' . $_SERVER['HTTP_HOST'] . "/module/app_mediabrowser.$file_ext?play=" . urlsafe_b64encode($rec['FULL']) . "\r\n";
     }
     exit;
 }
 
-function rangeDownload($file) {
+function rangeDownload($file)
+{
 
     $fp = @fopen($file, 'rb');
 
-    $size   = filesize($file); // File size
+    $size = filesize($file); // File size
     $length = $size;           // Content length
-    $start  = 0;               // Start byte
-    $end    = $size - 1;       // End byte
+    $start = 0;               // Start byte
+    $end = $size - 1;       // End byte
     // Now that we've gotten so far without errors we send the accept range header
     /* At the moment we only support single ranges.
      * Multiple ranges requires some more work to ensure it works correctly
@@ -58,7 +58,7 @@ function rangeDownload($file) {
     if (isset($_SERVER['HTTP_RANGE'])) {
 
         $c_start = $start;
-        $c_end   = $end;
+        $c_end = $end;
         // Extract the range string
         list(, $range) = explode('=', $_SERVER['HTTP_RANGE'], 2);
         // Make sure the client hasn't sent us a multibyte range
@@ -79,12 +79,11 @@ function rangeDownload($file) {
 
             // The n-number of the last bytes is requested
             $c_start = $size - substr($range, 1);
-        }
-        else {
+        } else {
 
-            $range  = explode('-', $range);
+            $range = explode('-', $range);
             $c_start = $range[0];
-            $c_end   = (isset($range[1]) && is_numeric($range[1])) ? $range[1] : $size;
+            $c_end = (isset($range[1]) && is_numeric($range[1])) ? $range[1] : $size;
         }
         /* Check the range and make sure it's treated according to the specs.
          * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
@@ -99,8 +98,8 @@ function rangeDownload($file) {
             // (?) Echo some info to the client?
             exit;
         }
-        $start  = $c_start;
-        $end    = $c_end;
+        $start = $c_start;
+        $end = $c_end;
         $length = $end - $start + 1; // Calculate new content length
         fseek($fp, $start);
         header('HTTP/1.1 206 Partial Content');
@@ -111,7 +110,7 @@ function rangeDownload($file) {
 
     // Start buffered download
     $buffer = 1024 * 8;
-    while(!feof($fp) && ($p = ftell($fp)) <= $end) {
+    while (!feof($fp) && ($p = ftell($fp)) <= $end) {
 
         if ($p + $buffer > $end) {
 

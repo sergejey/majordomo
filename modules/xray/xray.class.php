@@ -490,12 +490,33 @@ class xray extends module
         }
 
         if ($this->view_mode == '') {
+
             if (defined('SETTINGS_SYSTEM_DEBMES_PATH') && SETTINGS_SYSTEM_DEBMES_PATH != '') {
                 $path = SETTINGS_SYSTEM_DEBMES_PATH;
             } elseif (defined('LOG_DIRECTORY') && LOG_DIRECTORY != '') {
                 $path = LOG_DIRECTORY;
             } else {
                 $path = ROOT . 'cms/debmes';
+            }
+            $path_real = realpath($path);
+
+            $download_file = (string)gr('download_file');
+            if ($download_file != '' && $path_real !== false) {
+                $download_file = str_replace('\\', '/', $download_file);
+                $download_file = ltrim($download_file, '/');
+                if (strpos($download_file, "\0") === false) {
+                    $requested_file = realpath($path_real . '/' . $download_file);
+                    if ($requested_file !== false) {
+                        $base_path = rtrim(str_replace('\\', '/', $path_real), '/') . '/';
+                        $requested_path = str_replace('\\', '/', $requested_file);
+                        if (strpos($requested_path, $base_path) === 0 && is_file($requested_file)) {
+                            header('Content-type: text/plain');
+                            header('Content-Disposition: attachment; filename="' . basename($requested_file) . '"');
+                            readfile($requested_file);
+                            exit;
+                        }
+                    }
+                }
             }
 
             getDirTree($path, $files);
@@ -505,6 +526,14 @@ class xray extends module
             $total = count($files);
             for ($i = 0; $i < $total; $i++) {
                 $files[$i]['TITLE'] = str_replace($path . '/', '', $files[$i]['FILENAME']);
+                $files[$i]['BASENAME'] = basename($files[$i]['FILENAME']);
+                $files[$i]['PASSED'] = getPassedText($files[$i]['TM']);
+                $files[$i]['SIZE'] = filesize($files[$i]['FILENAME']);
+                if ($files[$i]['SIZE'] > 1024 * 1024) {
+                    $files[$i]['SIZE'] = round($files[$i]['SIZE'] / 1024 / 1024, 2) . ' MB';
+                } else {
+                    $files[$i]['SIZE'] = round($files[$i]['SIZE'] / 1024, 2) . ' KB';
+                }
             }
             $out['FILES'] = $files;
             $selected = gr('files');
@@ -512,12 +541,21 @@ class xray extends module
                 $selected = array(date('Y-m-d') . '/debug.log');
             }
             $total_selected_files = 0;
+            $out['TODAY_FILES'] = array();
             foreach ($out['FILES'] as &$item) {
                 if (in_array($item['TITLE'], $selected)) {
                     $total_selected_files++;
                     $item['SELECTED'] = 1;
                 }
+                if (date('Y-m-d', $item['TM']) == date('Y-m-d')) {
+                    $out['TODAY_FILES'][]=$item;
+                }
             }
+
+            usort($out['TODAY_FILES'], function ($a, $b) {
+                return strcmp($a['BASENAME'], $b['BASENAME']);
+            });
+
         }
 
         if ($ajax) {

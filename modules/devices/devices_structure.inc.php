@@ -8,7 +8,7 @@ $this->device_types = array(
             'temperature' => array('DESCRIPTION' => 'Temperature'),
             'humidity' => array('DESCRIPTION' => 'Humidity'),
             'SomebodyHere' => array('DESCRIPTION' => 'Somebody in the room'),
-            'IdleDelay' => array('DESCRIPTION' => LANG_DEVICES_MOTION_TIMEOUT, '_CONFIG_TYPE' => 'text', '_CONFIG_HELP' => 'SdRoomIdleDelay'),
+            'IdleDelay' => array('DESCRIPTION' => LANG_DEVICES_MOTION_TIMEOUT, '_CONFIG_TYPE' => 'duration', '_CONFIG_HELP' => 'SdRoomIdleDelay'),
             'turnedOffAutomatically' => array('DESCRIPTION' => 'List of devices turned off automatically'),
             'turnOffLightsOnIdle' => array('DESCRIPTION' => LANG_DEVICES_TURNOFF_LIGHTS_ON_IDLE, '_CONFIG_TYPE' => 'yesno', '_CONFIG_HELP' => 'SdRoomIdleTurnoffLights'),
         ),
@@ -71,6 +71,7 @@ $this->device_types = array(
                     ',gates=' . LANG_DEVICES_LOADTYPE_GATES .
                     ',power=' . LANG_DEVICES_LOADTYPE_POWER),
             'icon' => array('DESCRIPTION' => LANG_IMAGE, '_CONFIG_TYPE' => 'style_image', '_CONFIG_HELP' => 'SdIcon'),
+            'isConfirmationRequired' => array('DESCRIPTION' => LANG_DEVICES_CONFIRMATION_REQUIRED, '_CONFIG_TYPE' => 'yesno', '_CONFIG_HELP' => 'isConfirmationRequired'),
         ),
         'METHODS' => array(
             'turnOn' => array('DESCRIPTION' => LANG_DEVICES_TURN_ON, '_CONFIG_SHOW' => 1),
@@ -144,7 +145,7 @@ $this->device_types = array(
         'PROPERTIES' => array(
             'relay_status' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_RELAY_STATUS, 'ONCHANGE' => 'relay_statusUpdated', 'KEEP_HISTORY' => 365, 'DATA_KEY' => 1),
             'value' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_CURRENT_TEMP, 'ONCHANGE' => 'valueUpdated', 'KEEP_HISTORY' => 365, 'DATA_KEY' => 1),
-            'currentTargetValue' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP, 'ONCHANGE' => 'valueUpdated', 'DATA_KEY' => 1, '_CONFIG_DEFAULT' => 22),
+            'currentTargetValue' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_CURRENT_TARGET_TEMP, 'ONCHANGE' => 'currentTargetValueUpdated', 'DATA_KEY' => 1, '_CONFIG_DEFAULT' => 22),
             'normalTargetValue' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_NORMAL_TEMP, '_CONFIG_TYPE' => 'text', 'ONCHANGE' => 'modeTargetValueUpdated', '_CONFIG_HELP' => 'SdThermostat', '_CONFIG_DEFAULT' => 22),
             'ecoTargetValue' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_ECO_TEMP, '_CONFIG_TYPE' => 'text', 'ONCHANGE' => 'modeTargetValueUpdated', '_CONFIG_HELP' => 'SdThermostat', '_CONFIG_DEFAULT' => 18),
             'threshold' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_THRESHOLD, '_CONFIG_TYPE' => 'text', 'ONCHANGE' => 'valueUpdated', '_CONFIG_HELP' => 'SdThermostat'),
@@ -158,6 +159,7 @@ $this->device_types = array(
         'METHODS' => array(
             'setTargetTemperature' => array('DESCRIPTION' => LANG_DEVICES_THERMOSTAT_SET_TARGET_TEMPERATURE, '_CONFIG_SHOW' => 1, '_CONFIG_REQ_VALUE' => 1),
             'modeTargetValueUpdated' => array('DESCRIPTION' => 'modeTargetValueUpdated'),
+            'currentTargetValueUpdated' => array('DESCRIPTION' => 'currentTargetValueUpdated'),
             'valueUpdated' => array('DESCRIPTION' => 'Value Updated'),
             'relay_statusUpdated' => array('DESCRIPTION' => 'Relay Status Updated'),
             'statusUpdated' => array('DESCRIPTION' => 'Status Updated'),
@@ -267,7 +269,7 @@ $this->device_types = array(
             'isPresenceSensor' => array('DESCRIPTION' => LANG_DEVICES_MOTION_PRESENCE, '_CONFIG_TYPE' => 'yesno', '_CONFIG_HELP' => 'SdMotionPrecence'),
             'ignoreNobodysHome' => array('DESCRIPTION' => LANG_DEVICES_MOTION_IGNORE, '_CONFIG_TYPE' => 'yesno', '_CONFIG_HELP' => 'SdIgnoreNobodysHome'),
             'resetNobodysHome' => array('DESCRIPTION' => LANG_DEVICES_MOTION_RESET, '_CONFIG_TYPE' => 'yesno', '_CONFIG_HELP' => 'SdResetNobodysHome'),
-            'timeout' => array('DESCRIPTION' => LANG_DEVICES_MOTION_TIMEOUT, '_CONFIG_TYPE' => 'num', '_CONFIG_HELP' => 'SdMotionTimeout'),
+            'timeout' => array('DESCRIPTION' => LANG_DEVICES_MOTION_TIMEOUT, '_CONFIG_TYPE' => 'duration', '_CONFIG_HELP' => 'SdMotionTimeout'),
             'blocked' => array('DESCRIPTION' => 'Is blocked'),
         ),
         'METHODS' => array(
@@ -350,6 +352,7 @@ $this->device_types = array(
             'notify_msg_reminder' => array('DESCRIPTION' => LANG_DEVICES_MSG_REMINDER, '_CONFIG_TYPE' => 'text'),
             'level' => array('DESCRIPTION' => 'Current level', 'ONCHANGE' => 'levelUpdated'),
             'levelSaved' => array('DESCRIPTION' => 'Latest level saved'),
+            'isConfirmationRequired' => array('DESCRIPTION' => LANG_DEVICES_CONFIRMATION_REQUIRED, '_CONFIG_TYPE' => 'yesno', '_CONFIG_HELP' => 'isConfirmationRequired'),
         ),
         'METHODS' => array(
             'statusUpdated' => array('DESCRIPTION' => 'Status updated event'),

@@ -764,8 +764,8 @@ class patterns extends module
 
             $rec['LOG'] = date('Y-m-d H:i:s') . ' Pattern matched' . "\n" . $rec['LOG'];
 
-            if (strlen($rec['LOG']) > 65000) {
-                $rec['LOG'] = substr($rec['LOG'], 0, 65000);
+            while(substr_count($rec['LOG'], "\n") > 30){ //очищаем самые давние события, если их более 30
+                $rec['LOG'] = substr($rec['LOG'], 0, strrpos(trim($rec['LOG']), "\n"));
             }
             $rec['EXECUTED'] = time();
             SQLUpdate('patterns', $rec);
