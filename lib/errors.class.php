@@ -113,7 +113,9 @@ function majordomoGetErrorType($error_level = 0) {
         E_DEPRECATED => 'E_DEPRECATED',
         E_USER_DEPRECATED => 'E_USER_DEPRECATED',
     ];
-	if(phpversion() < 8) $error_names[E_STRICT] = 'E_STRICT';
+    if (PHP_VERSION_ID < 80000) {
+        $error_names[E_STRICT] = 'E_STRICT';
+    }
     if (isset($error_names[$error_level])) {
         return $error_names[$error_level];
     } else {
@@ -212,7 +214,6 @@ function majordomoErrorHandler($errno, $errmsg, $filename, $linenum)
 
     $errorCode = $errno;
     $errorType = majordomoGetErrorType($errorCode);
-    majordomoRememberCycleCrash("PHP $errorType: $errmsg in " . basename($filename) . ':' . (int)$linenum);
     $message = "PHP error level $errorCode $errorType in $filename (line $linenum):\n" . $errmsg . "\n";
 
     $message .= majordomoGetErrorDetails();
@@ -221,6 +222,7 @@ function majordomoErrorHandler($errno, $errmsg, $filename, $linenum)
             majordomoSaveError($message, 'php_warnings');
         }
     } else {
+        majordomoRememberCycleCrash("PHP $errorType: $errmsg in " . basename($filename) . ':' . (int)$linenum);
         majordomoSaveError($message, 'php_errors');
     }
 }
