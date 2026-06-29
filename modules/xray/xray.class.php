@@ -587,7 +587,7 @@ class xray extends module
                         $responce['LIST'][$i]['SOURCE'] = $res[$i]['SOURCE'];
                     }
 
-                    $responce['LIST'] = array_reverse($responce['LIST']);
+                    $responce['LIST'] = array_reverse((array)$responce['LIST']);
 
                     echo json_encode($responce);
                 }
@@ -757,7 +757,7 @@ class xray extends module
                         $responce['LIST'][$i]['SOURCE'] = $res[$i]['EXECUTED_SRC'];
                     }
 
-                    $responce['LIST'] = array_reverse($responce['LIST']);
+                    $responce['LIST'] = array_reverse((array)$responce['LIST']);
 
                     echo json_encode($responce);
                 }
@@ -790,7 +790,7 @@ class xray extends module
                         }
                     }
 
-                    $responce['LIST'] = array_reverse($responce['LIST']);
+                    $responce['LIST'] = array_reverse((array)$responce['LIST']);
 
                     echo json_encode($responce);
 
@@ -858,7 +858,7 @@ class xray extends module
                         }
                     }
 
-                    $responce['LIST'] = array_reverse($responce['LIST']);
+                    $responce['LIST'] = array_reverse((array)$responce['LIST']);
 
                     if ($this->mode == 'chart') {
                         $chart = array(array(
@@ -900,7 +900,7 @@ class xray extends module
                         $responce['LIST'][$i]['STOP_LINK'] = $url;
                     }
 
-                    $responce['LIST'] = array_reverse($responce['LIST']);
+                    $responce['LIST'] = array_reverse((array)$responce['LIST']);
 
                     echo json_encode($responce);
 
@@ -943,7 +943,7 @@ class xray extends module
                         $responce['LIST'][$i]['UPDATED'] = htmlspecialchars($res[$i]['UPDATED']);
                     }
 
-                    $responce['LIST'] = array_reverse($responce['LIST']);
+                    $responce['LIST'] = array_reverse((array)$responce['LIST']);
 
                     echo json_encode($responce);
                 }
@@ -968,7 +968,7 @@ class xray extends module
                     }
 
                     if (isset($responce['LIST']) && is_array($responce['LIST'])) {
-                        $responce['LIST'] = array_reverse($responce['LIST']);
+                        $responce['LIST'] = array_reverse((array)$responce['LIST']);
                     }
 
                     echo json_encode($responce);
@@ -1006,12 +1006,12 @@ class xray extends module
                             $i++;
                         }
 
-                        $responce['LIST'] = array_reverse($responce['LIST']);
+                        $responce['LIST'] = array_reverse((array)$responce['LIST']);
                         $responce['TOTAL'] = $i;
 
 
                         if ($this->mode == 'chart') {
-                            $arrayDB = array_slice(array_reverse($responce['LIST']), 0, 7);
+                            $arrayDB = array_slice(array_reverse((array)$responce['LIST']), 0, 7);
                             echo json_encode($arrayDB);
                         } else if ($this->mode == 'showdbload') {
                             if (isset($GLOBALS['db']->dbh->stat)) {
