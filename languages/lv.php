@@ -639,7 +639,7 @@ $dictionary=array(
 'UPDATE_ALL_EXTENSIONS'=>'Atjaunot visus uzstādītos papildinājumus',
 'SAVE_CHANGES'=>'Saglabāt izmaiņas',
 'ADD_PANE'=>'Pievienot rūtiņu',
-'HCB'=>'<a href="http://majordomo.smartliving.ru/Hints/',
+'HCB'=>'<a href="https://ru.majordomohome.com/Hints/',
 'HCE'=>'?skin=hint" class="wiki_hint fancybox.iframe"><i class="glyphicon glyphicon-info-sign"></i></a>',
 'DATA_KEY'=>'Galvenie dati',
 'DATA_TYPE'=>'Datu tips',

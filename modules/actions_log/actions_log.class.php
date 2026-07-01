@@ -3,7 +3,7 @@
  * actions_log
  * @package project
  * @author Wizard <sergejey@gmail.com>
- * @copyright http://majordomo.smartliving.ru/ (c)
+ * @copyright https://ru.majordomohome.com/ (c)
  * @version 0.1 (wizard, 15:02:10 [Feb 16, 2018])
  */
 //

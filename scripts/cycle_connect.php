@@ -16,7 +16,7 @@ include_once("./load_settings.php");
 include_once(DIR_MODULES . 'connect/connect.class.php');
 include_once(ROOT . "3rdparty/phpmqtt/phpMQTT.php");
 
-const CONNECT_HOST = 'connect.smartliving.ru';
+const CONNECT_HOST = 'connect.majordomohome.com';
 const MAX_RUN_TIME = 2 * 60 * 60;
 const MQTT_CONNECT_RETRY_DELAY = 15;
 const POLLING_FALLBACK_RETRY_SECONDS = 5 * 60;

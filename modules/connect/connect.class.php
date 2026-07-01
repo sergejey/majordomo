@@ -159,7 +159,7 @@ class connect extends module
             $fields['image'] = $cfile;
         }
         //DebMes("sending data: " . json_encode($fields), 'connect_msg');
-        $url = 'https://connect.smartliving.ru/sync_device_data.php';
+        $url = 'https://connect.majordomohome.com/sync_device_data.php';
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         if ($this->config['CONNECT_INSECURE']) {
@@ -215,7 +215,7 @@ class connect extends module
                 'backupfile' => $cfile,
                 'force_data' => '1'
             );
-            $url = 'https://connect.smartliving.ru/upload/';
+            $url = 'https://connect.majordomohome.com/upload/';
             $ch = curl_init();
 
             DebMes("Cloudbackup file $dest_file to $url", 'cloudbackup');
@@ -413,7 +413,7 @@ class connect extends module
 
     function getConnectStatus()
     {
-        $url = 'https://connect.smartliving.ru/market/?op=connect_status';
+        $url = 'https://connect.majordomohome.com/market/?op=connect_status';
         if ($this->config['CONNECT_SYNC']) {
             $url .= "&sync=1";
         }
@@ -446,7 +446,7 @@ class connect extends module
     function getMQTTQueue()
     {
         $queue = array();
-        $url = 'https://connect.smartliving.ru/sync_mqtt_queue.php';
+        $url = 'https://connect.majordomohome.com/sync_mqtt_queue.php';
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         if ($this->config['CONNECT_INSECURE']) {
@@ -551,7 +551,7 @@ class connect extends module
     function sendReverseURL($data, $result)
     {
         // POST TO SERVER
-        $url = 'https://connect.smartliving.ru/reverse_proxy.php';
+        $url = 'https://connect.majordomohome.com/reverse_proxy.php';
         $header = array('Content-Type: multipart/form-data');
         $url_requested = $data['url'];
         $fields = array('url' => $url_requested);
@@ -620,7 +620,7 @@ class connect extends module
     function sendAllDevices()
     {
 // POST TO SERVER
-        $url = 'https://connect.smartliving.ru/sync_device_data.php';
+        $url = 'https://connect.majordomohome.com/sync_device_data.php';
         $fields = array();
         $devices = SQLSelect("SELECT devices.ID, devices.PARENT_ID, devices.TITLE, devices.ALT_TITLES, devices.FAVORITE, devices.TYPE, devices.SUBTYPE, devices.LINKED_OBJECT, locations.TITLE AS ROOM_TITLE FROM devices LEFT JOIN locations ON devices.LOCATION_ID=locations.ID WHERE devices.SYSTEM_DEVICE=0 AND devices.ARCHIVED=0");
         $total_devices = count($devices);
@@ -690,7 +690,7 @@ class connect extends module
     function sendDeviceProperty($property, $value)
     {
         // POST TO SERVER
-        $url = 'https://connect.smartliving.ru/sync_device_data.php';
+        $url = 'https://connect.majordomohome.com/sync_device_data.php';
         $fields = array();
         list($object_name, $property_name) = explode('.', $property);
         $device_rec = SQLSelectOne("SELECT ID, TITLE, TYPE, SUBTYPE, SYSTEM_DEVICE, ARCHIVED, FAVORITE FROM devices WHERE LINKED_OBJECT='" . DBSafe($object_name) . "' AND SYSTEM_DEVICE=0 AND ARCHIVED=0");
@@ -742,7 +742,7 @@ class connect extends module
     function sendMenuItems($items)
     {
         // POST TO SERVER
-        $url = 'https://connect.smartliving.ru/upload/';
+        $url = 'https://connect.majordomohome.com/upload/';
         $fields = array('force_data' => 1, 'menu_items' => 1, 'items' => urlencode(serialize($items)));
 
         //url-ify the data for the POST
@@ -800,7 +800,7 @@ class connect extends module
         }
 
         // POST TO SERVER
-        $url = 'https://connect.smartliving.ru/upload/';
+        $url = 'https://connect.majordomohome.com/upload/';
 
         $datafile_name = ROOT . 'cms/cached/connect_data.txt';
         SaveFile($datafile_name, serialize($data));
@@ -894,7 +894,7 @@ class connect extends module
 
 
         // POST TO SERVER
-        $url = 'https://connect.smartliving.ru/upload/';
+        $url = 'https://connect.majordomohome.com/upload/';
         $fields = array('merge' => 1, 'data' => urlencode(serialize($data)), 'force_data' => $force_data);
 
         //url-ify the data for the POST
@@ -1018,7 +1018,7 @@ class connect extends module
         }
 
         // POST TO SERVER
-        $url = 'https://connect.smartliving.ru/upload/';
+        $url = 'https://connect.majordomohome.com/upload/';
         $datafile_name = ROOT . 'cms/cached/connect_data.txt';
         SaveFile($datafile_name, serialize($data));
 

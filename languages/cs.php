@@ -9,7 +9,7 @@
 
 $dictionary=array(
 'WIKI_URL'=>'https://majordomohome.com/',
-'KB_URL'=>'https://kb.smartliving.ru/',
+'KB_URL'=>'https://kb.majordomohome.com/',
 'DEFAULT_COMPUTER_NAME'=>'Alisa',
 'WELCOME_GREETING'=>'Vítejte!',
 'WELCOME_TEXT'=>'Děkujeme, že využíváte otevřenou platformu domácí automatizace.',

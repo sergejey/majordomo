@@ -212,7 +212,7 @@ if (isset($_POST['send'])) {
 
     }
 
-    $url = 'https://connect.smartliving.ru/market/';
+    $url = 'https://connect.majordomohome.com/market/';
     $fields = array(
         'op' => 'diagnostic',
         'data' => $data,

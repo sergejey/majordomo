@@ -271,7 +271,7 @@ class market extends module
                         $bgColor = '';
                     }
 
-                    if (substr($data[$i]['LINK'], 0, 39) == 'https://connect.smartliving.ru/profile/') {
+                    if (substr($data[$i]['LINK'], 0, 39) == 'https://connect.majordomohome.com/profile/') {
                         $postType = '<i>Блог</i> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i>';
                     } else {
                         $postType = '<i>Новость</i> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i>';
@@ -446,12 +446,12 @@ class market extends module
                     }
                 }
                 if ($rec['MODULE_NAME'] == $name) {
-                    $this->url = 'https://connect.smartliving.ru/market/?op=download&name=' . urlencode($rec['MODULE_NAME']) . "&serial=" . urlencode(gg('Serial'));
+                    $this->url = 'https://connect.majordomohome.com/market/?op=download&name=' . urlencode($rec['MODULE_NAME']) . "&serial=" . urlencode(gg('Serial'));
                     $this->version = $rec['LATEST_VERSION'];
                 }
 
                 if (!$rec['REPOSITORY_URL']) {
-                    $rec['REPOSITORY_URL'] = 'https://connect.smartliving.ru/market/?op=download&name=' . urlencode($rec['MODULE_NAME']) . "&serial=" . urlencode(gg('Serial'));
+                    $rec['REPOSITORY_URL'] = 'https://connect.majordomohome.com/market/?op=download&name=' . urlencode($rec['MODULE_NAME']) . "&serial=" . urlencode(gg('Serial'));
                 }
 
                 if ((isset($rec['EXISTS']) && !isset($rec['IGNORE_UPDATE'])) || isset($missing[$rec['MODULE_NAME']])) {
@@ -513,7 +513,7 @@ class market extends module
         } else {
             $locale = '';
         }
-        $data_url = 'https://connect.smartliving.ru/market/?lang=' . SETTINGS_SITE_LANGUAGE . "&serial=" . urlencode($serial) . "&locale=" . urlencode($locale) . "&os=" . urlencode($os) . "&" . $details;
+        $data_url = 'https://connect.majordomohome.com/market/?lang=' . SETTINGS_SITE_LANGUAGE . "&serial=" . urlencode($serial) . "&locale=" . urlencode($locale) . "&os=" . urlencode($os) . "&" . $details;
 
         $username = '';
         $password = '';

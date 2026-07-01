@@ -10,7 +10,7 @@
 $dictionary=array(
 'SETTINGS_SITE_LANGUAGE_CODE' => 'pl-PL',
 'WIKI_URL'=>'https://majordomohome.com/',
-'KB_URL'=>'https://kb.smartliving.ru/',
+'KB_URL'=>'https://kb.majordomohome.com/',
 'DEFAULT_COMPUTER_NAME'=>'Alicja',
 'WELCOME_GREETING'=>'Witamy!',
 'WELCOME_TEXT'=>'Dziękujemy, że korzystasz z MajorDoMo - otwartej platformy automatyki domowej.  <br/><br/>Dowiedz się więcej i dołącz do społeczności: <a href="<#LANG_WIKI_URL#>" target=_blank>Strona internetowa</a> | <a href="<#LANG_WIKI_URL#>forum/" target=_blank>Forum</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Strona Facebook</a> <br/>&nbsp;<br/>&nbsp;<br/><small>P.S. Możesz zmienić lub usunąć tą stronę przez<a href="/admin.php?pd=&md=panel&inst=&action=layouts">Panel sterowania</a></small>',

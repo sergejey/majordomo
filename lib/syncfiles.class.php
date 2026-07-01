@@ -312,9 +312,6 @@ function walk_dir($dir, $callback, $move = 0)
             return;
     }
 
-    //if (!preg_match('/mail.ru Blogs/is', $dir)) {
-    // return;
-    //}
     echo "processing $dir\n";
 
     if (!is_dir2($dir))

@@ -10,7 +10,7 @@
 $dictionary=array(
 'SETTINGS_SITE_LANGUAGE_CODE'=>'et_EE',
 'WIKI_URL'=>'https://majordomohome.com/',
-'KB_URL'=>'https://kb.smartliving.ru/',
+'KB_URL'=>'https://kb.majordomohome.com/',
 'DEFAULT_COMPUTER_NAME'=>'Alisa',
 'WELCOME_GREETING'=>'Tere tulemast',
 'WELCOME_TEXT'=>'Tänud, et otsustasid MajorDoMo avatud lähtekoodiga Targa Kodu serveri kasuks. liituge foorumiga ja saage teada rohkemat.  <a href="<#LANG_WIKI_URL#>" target=_blank>Веб-сайт</a> | <a href="<#LANG_WIKI_URL#>forum/" target=_blank>Форум</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook страница</a> <br/>&nbsp;<br/>&nbsp;<br/><small> P.S. Avalehte saab muuta :  <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Juhtpaneel</a></small>',
@@ -703,7 +703,7 @@ $dictionary=array(
 'MARKET_CONNECT_NOTE'=>'Veenduge, et olete teenuse <a href="/panel/connect.html">CONNECT</a> jaoks määranud õige kasutajanime/parooli.',
 'SAVE_CHANGES'=>'Muudatuste salvestamine',
 'ADD_PANE'=>'Paneeli lisamine',
-'HCB'=>'<a href="https://majordomo.smartliving.ru/Hints/',
+'HCB'=>'<a href="https://ru.majordomohome.com/Hints/',
 'HCE'=>'?skin=hint" class="wiki_hint fancybox.iframe"><i class="glyphicon glyphicon-info-sign"></i></a>',
 'DATA_KEY'=>'Põhiandmed',
 'DATA_TYPE'=>'Andmete tüüp',

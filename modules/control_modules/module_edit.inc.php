@@ -155,7 +155,7 @@ if (is_array($config)) {
 }
 
 
-$url = "https://connect.smartliving.ru/market/?op=list&search=" . urlencode($rec['TITLE']);
+$url = "https://connect.majordomohome.com/market/?op=list&search=" . urlencode($rec['TITLE']);
 $marketInfo = file_get_contents($url);
 $marketInfo = json_decode($marketInfo, TRUE);
 if (isset($marketInfo["PLUGINS"][0])) {

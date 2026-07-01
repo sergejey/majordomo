@@ -8,9 +8,9 @@ MajorDoMo (Major Domestic Module) is an open-source DIY smarthome automation pla
 Web-sites
 =========
 
-English: [majordomohome.com](http://majordomohome.com/?utm_source=github&utm_medium=link&utm_campaign=main_page) + [forum](https://majordomo.smartliving.ru/forum/?utm_source=github&utm_medium=link&utm_campaign=forum)
+English: [majordomohome.com](http://majordomohome.com/?utm_source=github&utm_medium=link&utm_campaign=main_page)
 
-Russian: [majordomo.smartliving.ru](https://majordomo.smartliving.ru/?utm_source=github&utm_medium=link&utm_campaign=main_page) + [forum](https://majordomo.smartliving.ru/forum/viewforum.php?f=12&utm_source=github&utm_medium=link&utm_campaign=forum)
+Russian: [ru.majordomohome.com](https://ru.majordomohome.com/?utm_source=github&utm_medium=link&utm_campaign=main_page) + [forum](https://forum.majordomohome.com/viewforum.php?f=12&utm_source=github&utm_medium=link&utm_campaign=forum)
 
 Our mission
 =========

@@ -48,7 +48,7 @@ Define('PATH_TO_MYSQLDUMP', "mysqldump");   // Команда/путь к mysqld
 Define('DEBUG_MODE', 1);                           // Режим отладки (1 — включен) | Debug mode (1 = enabled)
 Define('UPDATES_REPOSITORY_NAME', 'smarthome');   // Канал/ветка обновлений | Update channel/branch
 Define('PROJECT_TITLE', 'MajordomoSL');           // Название проекта/системы | Project/system title
-Define('PROJECT_BUGTRACK', "bugtrack@smartliving.ru"); // Контакт для ошибок (если задействовано) | Bug report contact (if used)
+Define('PROJECT_BUGTRACK', "bugtrack@majordomohome.com"); // Контакт для ошибок (если задействовано) | Bug report contact (if used)
 Define('PROJECT_DOMAIN', isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : php_uname("n")); // Домен/имя узла | Domain/host name
 date_default_timezone_set('UTC');                 // Часовой пояс PHP по умолчанию | Default PHP timezone
 

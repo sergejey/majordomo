@@ -330,7 +330,7 @@ class patterns extends module
             $data['phrase'] = $phrase;
 
             // POST TO SERVER
-            $url = 'https://connect.smartliving.ru/patterns/';
+            $url = 'https://connect.majordomohome.com/patterns/';
             $fields = array(
                 'data' => urlencode(serialize($data))
             );
@@ -416,7 +416,7 @@ class patterns extends module
             $data['context_id'] = $ext_context_id;
 
             // POST TO SERVER
-            $url = 'https://connect.smartliving.ru/patterns/';
+            $url = 'https://connect.majordomohome.com/patterns/';
             $fields = array(
                 'data' => urlencode(serialize($data))
             );

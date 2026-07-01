@@ -9,7 +9,7 @@
 
 $dictionary=array(
 'WIKI_URL'=>'http://majordomohome.com/',
-'KB_URL'=>'https://kb.smartliving.ru/',
+'KB_URL'=>'https://kb.majordomohome.com/',
 'DEFAULT_COMPUTER_NAME'=>'Alice',
 'WELCOME_GREETING'=>'¡Bienvenido!',
 'WELCOME_TEXT'=>'Gracias por utilizar MajorDoMo -- una plataforma de automatización del hogar de código abierto. <br/><br/> Lea más sobre esto y únase a nuestra comunidad: <a href="<#LANG_WIKI_URL#>" target=_blank>Web-site</a> | <a href="<#LANG_WIKI_URL#>forum/" target=_blank>Forum</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Página de Facebook</a> <br/>&nbsp;<br/>&nbsp;<br/><small>P.S. Ud. puede personalizar o eliminar esta página utilizando<a href="/admin.php?pd=&md=panel&inst=&action=layouts">Panel de control</a></small>',
@@ -671,7 +671,7 @@ $dictionary=array(
 'UPDATE_ALL_EXTENSIONS'=>'Actualizar todas las extensiones instaladas',
 'SAVE_CHANGES'=>'Guardar cambios',
 'ADD_PANE'=>'Añadir panel',
-'HCB'=>'<a href="https://majordomo.smartliving.ru/Hints/',
+'HCB'=>'<a href="https://ru.majordomohome.com/Hints/',
 'HCE'=>'?skin=hint" class="wiki_hint fancybox.iframe"><i class="glyphicon glyphicon-info-sign"></i></a>',
 'DATA_KEY'=>'Datos clave',
 'DATA_TYPE'=>'Tipo de datos',
