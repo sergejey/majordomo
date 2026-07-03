@@ -1161,6 +1161,13 @@ class objects extends module
         return $result;
     }
 
+    function getKeepHistory()
+    {
+        if (!$this->object_title) return false;
+        $value = SQLSelectOne("SELECT * FROM properties WHERE OBJECT_ID='" . (int)$this->id . "'");
+        return isset($value['KEEP_HISTORY']) ? $value['KEEP_HISTORY'] : '';
+    }
+    
     /**
      * Install
      *
