@@ -358,6 +358,8 @@ class objects extends module
             }
             $this->description = $rec['DESCRIPTION'];
             $this->location_id = $rec['LOCATION_ID'];
+            $this->keep_history = $rec['KEEP_HISTORY'];
+            $this->system_name = $rec['SYSTEM'];
             if (preg_match('/^sdevice(\d+)/', $rec['SYSTEM'], $m)) {
                 $this->device_id = $m[1];
             }
