@@ -586,7 +586,7 @@ function getKeyData($object_id)
 
 function returnTypedValue($value)
 {
-    if (is_numeric($value) && preg_match('/^[\-\d\.]+$/', $value)) {
+    if (is_numeric($value) && preg_match('/^-?[0-9]+(.[0-9]+)?$/', $value)) {
         if (strpos($value, '.') !== false) {
             return floatval($value);
         } elseif (!preg_match('/^0/', $value)) {
