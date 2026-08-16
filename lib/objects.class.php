@@ -587,9 +587,9 @@ function getKeyData($object_id)
 function returnTypedValue($value)
 {
     if (is_numeric($value) && preg_match('/^-?[0-9]+(\.[0-9]+)?$/', $value)) {
-        if (strpos($value, '.') !== false) {
+        if (strpos($value, '.') !== false && filter_var($value, FILTER_VALIDATE_FLOAT)) {
             return floatval($value);
-        } elseif (!preg_match('/^0/', $value)) {
+        } elseif (!preg_match('/^0/', $value) && filter_var($value, FILTER_VALIDATE_INT)) {
             return (int)$value;
         }
     }
@@ -1276,19 +1276,21 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
         }
     }
 
-
     startMeasure('callAPI ' . $api_url);
     if (!is_array($params)) {
         $params = array();
     }
     $params['no_session'] = 1;
 
-
     $url = preg_replace('/^\/api\//', BASE_URL . '/api.php/', $api_url);
     $url = preg_replace('/([^:])\/\//', '\1/', $url);
 
     $method = strtoupper($method);
-    $api_ch = curl_init();
+
+    global $api_ch;
+    if (!isset($api_ch)) {
+        $api_ch = curl_init();
+    }
     curl_setopt($api_ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
     curl_setopt($api_ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($api_ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
@@ -1316,9 +1318,7 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
     if (curl_errno($api_ch)) {
         $errorInfo = curl_error($api_ch);
         $info = curl_getinfo($api_ch);
-        //DebMes("Call to $url finished with error: \n" . $errorInfo . "\n" . json_encode($info), 'callAPI_errors');
     }
-
     endMeasure('callAPI ' . $api_url);
 
     if ($is_child) {
@@ -1329,20 +1329,14 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
     if ($result != '') {
         $data = json_decode($result, true);
         if (is_array($data) && isset($data['apiHandleResult'])) {
-            curl_close($api_ch);
             return $data['apiHandleResult'];
         } elseif (is_array($data)) {
-            curl_close($api_ch);
             return $data;
         } else {
-            curl_close($api_ch);
             return $result;
         }
     }
-
-    curl_close($api_ch);
     return true;
-
 }
 
 function injectObjectMethodCode($method_name, $key, $code)
