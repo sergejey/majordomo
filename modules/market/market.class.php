@@ -264,7 +264,7 @@ class market extends module
             if (is_array($data)) {
                 $total = count($data);
                 echo '<ul class="list-group">';
-                for ($i = 0; $i < 7; $i++) {
+                for ($i = 0; $i < $total && $i < 7; $i++) {
                     if ($i % 2 == 0) {
                         $bgColor = 'strip';
                     } else {

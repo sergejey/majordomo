@@ -1118,8 +1118,8 @@ function urlsafe_b64encode($string)
 
 function urlsafe_b64decode($string)
 {
-    $data = urldecode($data);
-    $data = str_replace(array('-', '_'), array('+', '/'), $string);
+    $data = urldecode($string);
+    $data = str_replace(array('-', '_'), array('+', '/'), $data);
     $mod4 = strlen($data) % 4;
     if ($mod4) {
         $data .= substr('====', $mod4);

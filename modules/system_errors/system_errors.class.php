@@ -149,10 +149,10 @@ class system_errors extends module
             $rec['NAME']='ERRORS_KEEP_HISTORY';
             $rec['VALUE']=$keep_history;
             SQLInsertUpdate('settings',$rec);
-            $this->redirect("?ok_msg=" . urlencode(LANG_DATA_SAVED));
             if ($keep_history>0) {
                 SQLExec("DELETE FROM system_errors_data WHERE ADDED<'".date('Y-m-d H:i:s',time()-$keep_history*24*60*60)."'");
             }
+            $this->redirect("?ok_msg=" . urlencode(LANG_DATA_SAVED));
         }
 
         $res = SQLSelectOne("SELECT max(ACTIVE) IS_ERROR FROM system_errors");

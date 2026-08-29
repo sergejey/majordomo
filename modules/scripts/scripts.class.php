@@ -135,7 +135,7 @@ class scripts extends module
     function runScript($id, $params = '')
     {
 
-        verbose_log("Script [" . $id . "] (" . is_array($params) ? json_encode($params) : '' . ")");
+        verbose_log("Script [" . $id . "] (" . (is_array($params) ? json_encode($params) : '') . ")");
 
         $rec = SQLSelectOne("SELECT * FROM scripts WHERE ID='" . (int)$id . "' OR TITLE = '" . DBSafe($id) . "'");
         if (isset($rec['ID'])) {
@@ -301,6 +301,7 @@ class scripts extends module
                 $scripts = $data['SCRIPTS'];
                 $total = count($scripts);
                 for ($i = 0; $i < $total; $i++) {
+                    $category_rec = array('ID' => 0);
                     $script_rec = SQLSelectOne("SELECT * FROM scripts WHERE TITLE LIKE '" . DBSafe($scripts[$i]['TITLE']) . "'");
                     if (!$script_rec['ID']) {
                         $script_rec = array('TITLE' => $scripts[$i]['TITLE']);

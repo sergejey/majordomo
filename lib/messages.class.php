@@ -12,11 +12,6 @@ function sayReplySafe($ph, $level = 0, $replyto = '')
         $data[session_name()] = session_id();
     }
     $url = BASE_URL . '/objects/?' . http_build_query($data);
-    if (is_array($params)) {
-        foreach ($params as $k => $v) {
-            $url .= '&' . $k . '=' . urlencode($v);
-        }
-    }
     $result = getURLBackground($url, 0);
     return $result;
 }
@@ -74,11 +69,6 @@ function sayToSafe($ph, $level = 0, $destination = '')
         $data[session_name()] = session_id();
     }
     $url = BASE_URL . '/objects/?' . http_build_query($data);
-    if (is_array($params)) {
-        foreach ($params as $k => $v) {
-            $url .= '&' . $k . '=' . urlencode($v);
-        }
-    }
     $result = getURLBackground($url, 0);
     return $result;
 }
@@ -121,11 +111,6 @@ function saySafe($ph, $level = 0, $member_id = 0, $source = '')
         $data[session_name()] = session_id();
     }
     $url = BASE_URL . '/objects/?' . http_build_query($data);
-    if (is_array($params)) {
-        foreach ($params as $k => $v) {
-            $url .= '&' . $k . '=' . urlencode($v);
-        }
-    }
     $result = getURLBackground($url, 0);
     return $result;
 }

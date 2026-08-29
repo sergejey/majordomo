@@ -277,7 +277,9 @@ class patterns extends module
             $total = count($patterns);
             $res = 0;
             for ($i = 0; $i < $total; $i++) {
-                $res = $this->checkPattern($patterns[$i]['ID'], $from_user_id, $details);
+                if ($this->checkPattern($patterns[$i]['ID'], $from_user_id, $details)) {
+                    $res = 1;
+                }
             }
             if (!$res && $from_user_id) {
                 $res = $this->checkExtPatterns(0);

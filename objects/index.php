@@ -14,7 +14,7 @@ $script_started_time = ((float)$usec + (float)$sec);
 Define('ALLOW_RUNNING_WITH_ERRORS', 1);
 
 //Define('MASTER_HOST', 'homenetserver.jbk'); // uncomment to use master host
-if (defined('MASTER_URL') && MASTER_URL != '') {
+if (defined('MASTER_HOST') && MASTER_HOST != '') {
     // redirecting request master URL
     if ($argv[1] != '') {
         $url = 'http://' . MASTER_HOST . '/objects/?source=remote&op=m';
@@ -97,7 +97,7 @@ if (!$request && $commandLine) {
 }
 
 //echo "object: $object op: $op m: $m status: $status ";exit;
-if (!isset($commandLine)) {
+if (!$commandLine) {
     ignore_user_abort(1);
     header('Content-Type: text/html; charset=utf-8');
 }

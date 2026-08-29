@@ -592,11 +592,11 @@ if (!isset($request[0])) {
     } elseif (preg_match('/(\d+)week/', $request[2], $m)) {
         $time_period = $m[1] * 7 * 24 * 60 * 60;
     } elseif ($request[2] == 'month') {
-        $time_period = 30 * 7 * 24 * 60 * 60;
+        $time_period = 30 * 24 * 60 * 60;
     } elseif (preg_match('/(\d+)month/', $request[2], $m)) {
         $time_period = $m[1] * 30 * 24 * 60 * 60;
     } elseif ($request[2] == 'year') {
-        $time_period = 365 * 7 * 24 * 60 * 60;
+        $time_period = 365 * 24 * 60 * 60;
     } elseif (preg_match('/(\d+)year/', $request[2], $m)) {
         $time_period = $m[1] * 365 * 24 * 60 * 60;
     }

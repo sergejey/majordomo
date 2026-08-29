@@ -150,7 +150,7 @@ class jTemplate
         }
 
         // DYN LINKS
-        if (isset($this->ajax) && $this->ajax && (is_integer(strpos($res, 'dnlnk') || is_integer(strpos($res, 'dnfrm'))))) {
+        if (isset($this->ajax) && $this->ajax && (is_integer(strpos($res, 'dnlnk')) || is_integer(strpos($res, 'dnfrm')))) {
             $this->parseDynLinks($res);
         }
 

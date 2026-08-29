@@ -99,7 +99,7 @@ if (isset($url) && $url != '') {
             @ini_set('zlib.output_compression', 0);
             @ini_set('implicit_flush', 1);
 
-            for ($i = 0; $i < ob_get_level(); $i++) ob_end_flush();
+            while (ob_get_level() > 0) ob_end_flush();
             ob_implicit_flush(1);
             while (true) {
                 print "Content-type: image/jpeg\n\n";
@@ -167,7 +167,7 @@ if (isset($url) && $url != '') {
                 }
                 @ini_set('zlib.output_compression', 0);
                 @ini_set('implicit_flush', 1);
-                for ($i = 0; $i < ob_get_level(); $i++) ob_end_flush();
+                while (ob_get_level() > 0) ob_end_flush();
                 ob_implicit_flush(1);
                 ob_end_flush();
                 $counter = 0;

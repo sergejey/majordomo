@@ -342,7 +342,11 @@ class app_mediabrowser extends module
                 $out['HISTORY'][] = $tmp_rec;
                 //echo $tmp_rec['PATH']."<br>";
             }
-            $out['CURRENT_DIR_TITLE'] = ($out['HISTORY'][$total - 3]['TITLE'] . '/' . $out['HISTORY'][$total - 2]['TITLE']);
+            if ($total > 2) {
+                $out['CURRENT_DIR_TITLE'] = ($out['HISTORY'][$total - 3]['TITLE'] . '/' . $out['HISTORY'][$total - 2]['TITLE']);
+            } else {
+                $out['CURRENT_DIR_TITLE'] = $out['HISTORY'][0]['TITLE'];
+            }
         }
 
 

@@ -187,7 +187,7 @@ class objects extends module
         }
 
         $pvalues = SQLSelect("SELECT * FROM pvalues WHERE OBJECT_ID='" . $id . "'");
-        $total = count($properties);
+        $total = count($pvalues);
         for ($i = 0; $i < $total; $i++) {
             $p_id = $pvalues[$i]['ID'];
             if ($seen_pvalues[$p_id]) {

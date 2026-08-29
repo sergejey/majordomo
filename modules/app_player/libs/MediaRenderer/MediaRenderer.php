@@ -149,7 +149,7 @@ class MediaRenderer
             }
             fclose($fp);
         }
-        if ($content_type = 'application/octet-stream') {
+        if ($content_type == 'application/octet-stream') {
             $content_type = 'audio/mpeg';
         }
         //DebMes('ct ' . $content_type);
