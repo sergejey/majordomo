@@ -24,6 +24,7 @@ if (getGlobal('NobodyHomeMode.active')) {
     callMethod('NobodyHomeMode.deactivate', array('sensor' => $params['sensor'], 'room' => $ot));
 }
 
+/*
 if ($this->getProperty('turnOffLightsOnIdle') &&
     $this->getProperty('turnedOffAutomatically') &&
     gg('DarknessMode.active')) {
@@ -36,4 +37,4 @@ if ($this->getProperty('turnOffLightsOnIdle') &&
         }
     }
 }
-
+*/
