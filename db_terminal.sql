@@ -2245,7 +2245,8 @@ ALTER TABLE `performance_log`
 --
 ALTER TABLE `phistory`
   ADD PRIMARY KEY (`ID`),
-  ADD KEY `VALUE_ID` (`VALUE_ID`);
+  ADD KEY `VALUE_ID` (`VALUE_ID`),
+  ADD KEY `phistory_VALUE_ID_ADDED_IDX` (`VALUE_ID`,`ADDED` DESC) USING BTREE;
 
 --
 -- Индексы таблицы `phistory_queue`
