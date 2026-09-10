@@ -41,7 +41,7 @@ class custom_error
      */
     public function __construct($description, $stop = 0)
     {
-        $script = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+        $script = 'http://' . ($_SERVER['SERVER_NAME'] ?? '') . ($_SERVER['REQUEST_URI'] ?? '');
 
         if (!mb_detect_encoding($description, 'UTF-8', true)) {
             $description = iconv('windows-1251', 'UTF-8', $description);
