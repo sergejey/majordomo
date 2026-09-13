@@ -772,7 +772,7 @@ function removeEmptySubFolders($path)
     }
 
     if (is_dir($path)) {
-        $empty &= rmdir($path);
+        $empty &= @rmdir($path);
     }
 
     return $empty;
