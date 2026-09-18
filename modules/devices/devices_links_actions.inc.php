@@ -118,6 +118,24 @@ for ($i = 0; $i < $total; $i++) {
             //do nothing
             $action_string = '';
         }
+
+        if (isset($settings['action_delay']) && trim($settings['action_delay']) != '') {
+            $action_delay = (int)processTitle($settings['action_delay']);
+            if ($action_delay > 0) {
+                if ($action_string != '') {
+                    if (timeOutExists($timer_name)) {
+                        // countdown is already running for this link, keep it running
+                        $action_string = '';
+                    } else {
+                        // start the countdown instead of the immediate action
+                        $action_string = 'setTimeout(\'' . $timer_name . '\',\'' . $action_string . '\',' . $action_delay . ');';
+                    }
+                } elseif (timeOutExists($timer_name)) {
+                    // the action is not required any more, cancel the countdown
+                    clearTimeOut($timer_name);
+                }
+            }
+        }
     } elseif ($link_type == 'sensor_pass') {
         $action_string = 'sg("' . $object . '.value' . '","' . $value . '");';
     } elseif ($link_type == 'open_sensor_pass') {
