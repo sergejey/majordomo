@@ -78,7 +78,10 @@
         }
     }
     //acCheckCurrentValues%.object_id%();
-    var acCheckInterval = setInterval(acCheckCurrentValues%.object_id%,1000);
+    if (window['acCheckInterval%.object_id%']) {
+        clearInterval(window['acCheckInterval%.object_id%']);
+    }
+    window['acCheckInterval%.object_id%'] = setInterval(acCheckCurrentValues%.object_id%,1000);
 
 
 </script>
