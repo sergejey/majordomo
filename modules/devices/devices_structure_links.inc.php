@@ -141,7 +141,12 @@ $this->device_links=array(
                         array('TITLE'=>LANG_DEVICES_LINK_TYPE_OPEN,'VALUE'=>'open'),
                         array('TITLE'=>LANG_DEVICES_LINK_TYPE_CLOSE,'VALUE'=>'close'),
                     )
-                )
+                ),
+                array(
+                    'PARAM_NAME'=>'action_delay',
+                    'PARAM_TITLE'=>LANG_DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY,
+                    'PARAM_TYPE'=>'duration'
+                    )
             )
         ),
         array (
