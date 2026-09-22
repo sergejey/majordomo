@@ -21,8 +21,10 @@ if (!$isPresence) {
     if ($motion_timeout) {
         setTimeout($ot . '_motion_timer', 'setGlobal("' . $ot . '.status", 0);', $motion_timeout);
     }
-} else {
+} elseif ($this->getProperty('status')) {
     setTimeOut($ot . '_presence_motion_detected', "callMethod('" . $ot . ".motionDetected');", 60);
+} else {
+    return;
 }
 
 $nobodysHome = getGlobal('NobodyHomeMode.active');
