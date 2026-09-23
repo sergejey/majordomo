@@ -16,7 +16,7 @@ if ($this->owner->print == 1) {
 
 if (isset($rec['LINKED_OBJECT']) && $rec['LINKED_OBJECT'] != '') {
     $object_rec = SQLSelectOne("SELECT ID FROM objects WHERE TITLE='" . $rec['LINKED_OBJECT'] . "'");
-    if ($object_rec['ID']) {
+    if (!empty($object_rec['ID'])) {
         $properties = SQLSelect("SELECT pvalues.*, properties.TITLE as PROPERTY, properties.KEEP_HISTORY FROM pvalues LEFT JOIN properties ON properties.ID=pvalues.PROPERTY_ID WHERE pvalues.OBJECT_ID=" . $object_rec['ID'] . " AND (pvalues.LINKED_MODULES!='' OR properties.KEEP_HISTORY>0) ORDER BY UPDATED DESC");
         $total = count($properties);
         if ($total > 0) {
@@ -68,7 +68,13 @@ if ($this->tab == 'logic') {
 
     $method_name = gr('method');
 
-    $object = getObject($rec['LINKED_OBJECT']);
+    $object = !empty($rec['LINKED_OBJECT']) ? getObject($rec['LINKED_OBJECT']) : false;
+    $logic_object_missing = !is_object($object);
+    if ($logic_object_missing) {
+        $out['ERR'] = 1;
+        $out['ERR_MSG'] = 'Linked object is missing. Restore the device object before editing its logic.';
+        $out['METHODS'] = array();
+    } else {
 
     $methods = $object->getParentMethods($object->class_id, '', 1);
     $total = count($methods);
@@ -171,6 +177,8 @@ if ($this->tab == 'logic') {
     } else {
         $out['METHOD_ID'] = $method_rec['ID'];
     }
+
+    } // A linked object is required for reading or saving methods.
 
 }
 
@@ -601,7 +609,7 @@ foreach ($this->device_types as $k => $v) {
 }
 
 
-if (isset($rec['LINKED_OBJECT']) && $rec['LINKED_OBJECT'] != '') {
+if (empty($logic_object_missing) && isset($rec['LINKED_OBJECT']) && $rec['LINKED_OBJECT'] != '') {
     $processed = $this->processDevice($rec['ID']);
     $out['HTML'] = $processed['HTML'];
 }

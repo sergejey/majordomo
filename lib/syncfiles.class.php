@@ -766,16 +766,33 @@ function copyTree($source, $destination, $over = 0, $patterns = 0)
 
 function removeEmptySubFolders($path)
 {
+    // Do not traverse symbolic links, including paths with a trailing separator.
+    $path = rtrim($path, "/\\");
+    if ($path === '' || is_link($path) || !is_dir($path)) {
+        return false;
+    }
+
+    // Include hidden entries: glob("*") overlooks files such as .htaccess.
+    $entries = @scandir($path);
+    if ($entries === false) {
+        return false;
+    }
+
     $empty = true;
-    foreach (glob($path . DIRECTORY_SEPARATOR . "*") as $file) {
-        $empty &= is_dir($file) && removeEmptySubFolders($file);
+    foreach ($entries as $entry) {
+        if ($entry === '.' || $entry === '..') {
+            continue;
+        }
+        $child = $path . DIRECTORY_SEPARATOR . $entry;
+        if (is_link($child) || !is_dir($child)) {
+            $empty = false;
+        } elseif (!removeEmptySubFolders($child)) {
+            $empty = false;
+        }
     }
 
-    if (is_dir($path)) {
-        $empty &= rmdir($path);
-    }
-
-    return $empty;
+    // A concurrent writer or a permission failure can still prevent removal.
+    return $empty && @rmdir($path);
 }
 
 function getDirTree($dir, &$results = array())
