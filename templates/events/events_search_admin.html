@@ -9,6 +9,14 @@ Code example:
 registerEvent('path/to/event'[,array('param1'=>'value1')]);
 API example:
 /api/events/path/to/event?param1=value1
+
+Set an event:
+POST /api/events/set
+{"event_name":"path/to/event","details":{"param1":"value1"}}
+
+Get an event:
+GET /api/events/get?event_name=path/to/event
+GET /api/events/get?event_name=DoorClosed&property=status
 </pre>
 
  </div>
@@ -124,5 +132,3 @@ API example:
 </p>
 [#endif RESULT#]
 #-->
-
-

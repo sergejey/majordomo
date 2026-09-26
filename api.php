@@ -486,6 +486,23 @@ if (!isset($request[0])) {
             $result['result'] = true;
         }
     }
+} elseif (strtolower($request[0]) == 'events' && count($request) == 2 && in_array(strtolower($request[1]), array('get', 'set'))) {
+    $module_file = DIR_MODULES . 'events/events.class.php';
+    if (file_exists($module_file)) {
+        include_once($module_file);
+        $module = new events;
+        if (method_exists($module, 'api')) {
+            $params = $_REQUEST;
+            $r = $request;
+            array_shift($r);
+            $params['request'] = $r;
+            $result = array_merge($result, $module->api($params));
+        } else {
+            $result['error'] = "Not supported";
+        }
+    } else {
+        $result['error'] = "Not found module";
+    }
 } elseif (strtolower($request[0]) == 'events' && isset($request[1])) {
     array_shift($request);
     foreach ($request as &$request_item) {
@@ -684,7 +701,14 @@ if (!isset($request[0])) {
         }
     }
 
-} else {
+} elseif ($request[0] == 'swagger') {
+    header('Content-Type: application/json; charset=utf-8');
+    include_once(__DIR__ . '/swagger_def.php');
+    echo json_encode($swagger, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    exit;
+
+}
+else {
     $result['error'] = 'Incorrect usage';
 }
 
