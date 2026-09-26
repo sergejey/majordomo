@@ -465,9 +465,76 @@ $swagger = [
         "responses" => ["200" => ["description" => "OK"]]
       ]
     ],
+    "/events/get" => [
+      "get" => [
+        "summary" => "Получить системное событие",
+        "parameters" => [[
+          "name" => "event_name",
+          "in" => "query",
+          "required" => true,
+          "schema" => ["type" => "string"],
+          "description" => "Имя события"
+        ], [
+          "name" => "property",
+          "in" => "query",
+          "required" => false,
+          "schema" => ["type" => "string"],
+          "description" => "Имя параметра события или свойства объекта, указанного в details"
+        ]],
+        "responses" => [
+          "200" => [
+            "description" => "Событие найдено",
+            "content" => ["application/json" => ["schema" => [
+              "type" => "object",
+              "properties" => [
+                "event_id" => ["type" => "integer"],
+                "event_name" => ["type" => "string"],
+                "details" => ["type" => "string"],
+                "created_at" => ["type" => "string"],
+                "property" => ["type" => "string"],
+                "value" => [],
+                "property_updated_at" => ["type" => "string"],
+                "result" => ["type" => "boolean"]
+              ]
+            ]]]
+          ],
+          "400" => ["description" => "Имя не указано или событие не найдено"]
+        ]
+      ]
+    ],
+    "/events/set" => [
+      "post" => [
+        "summary" => "Создать или обновить системное событие",
+        "requestBody" => [
+          "required" => true,
+          "content" => ["application/json" => ["schema" => [
+            "type" => "object",
+            "properties" => [
+              "event_name" => ["type" => "string"],
+              "details" => ["description" => "Данные события"]
+            ],
+            "required" => ["event_name"]
+          ]]]
+        ],
+        "responses" => [
+          "200" => [
+            "description" => "Событие сохранено",
+            "content" => ["application/json" => ["schema" => [
+              "type" => "object",
+              "properties" => [
+                "event_id" => ["type" => "integer"],
+                "event_name" => ["type" => "string"],
+                "result" => ["type" => "boolean"]
+              ]
+            ]]]
+          ],
+          "400" => ["description" => "Некорректное тело запроса"]
+        ]
+      ]
+    ],
     "/events/{event}" => [
       "get" => [
-        "summary" => "Сгенерировать событие",
+        "summary" => "Сгенерировать событие (legacy, для совместимости)",
         "parameters" => [
           [
             "name" => "event",

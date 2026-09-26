@@ -486,6 +486,83 @@ if (!isset($request[0])) {
             $result['result'] = true;
         }
     }
+} elseif (strtolower($request[0]) == 'events' && count($request) == 2 && strtolower($request[1]) == 'get') {
+    if ($method != 'GET') {
+        $result['error'] = 'GET method required';
+    } elseif (!isset($_GET['event_name']) || !is_string($_GET['event_name']) || trim($_GET['event_name']) == '') {
+        $result['error'] = 'Event name required';
+    } else {
+        $event_name = trim($_GET['event_name']);
+        $event = SQLSelectOne("SELECT ID, EVENT_NAME, DETAILS, ADDED FROM events WHERE EVENT_TYPE='system' AND EVENT_NAME='" . DBSafe($event_name) . "' ORDER BY ADDED DESC, ID DESC LIMIT 1");
+        if (empty($event['ID'])) {
+            $result['error'] = 'Event not found';
+        } else {
+            $result['event_id'] = $event['ID'];
+            $result['event_name'] = $event['EVENT_NAME'];
+            $result['details'] = $event['DETAILS'];
+            $result['created_at'] = $event['ADDED'];
+
+            if (isset($_GET['property'])) {
+                if (!is_string($_GET['property']) || trim($_GET['property']) == '') {
+                    $result['error'] = 'Property name must be a non-empty string';
+                } else {
+                    $property = trim($_GET['property']);
+                    $event_param = SQLSelectOne("SELECT TITLE, VALUE, UPDATED FROM events_params WHERE EVENT_ID=" . (int)$event['ID'] . " AND TITLE='" . DBSafe($property) . "' ORDER BY ID DESC LIMIT 1");
+                    $property_found = false;
+
+                    if (isset($event_param['TITLE'])) {
+                        $result['property'] = $event_param['TITLE'];
+                        $result['value'] = $event_param['VALUE'];
+                        $result['property_updated_at'] = $event_param['UPDATED'];
+                        $property_found = true;
+                    } else {
+                        $details = is_string($event['DETAILS']) ? json_decode($event['DETAILS'], true) : null;
+                        if (is_array($details) && json_last_error() == JSON_ERROR_NONE && array_key_exists($property, $details)) {
+                            $result['property'] = $property;
+                            $result['value'] = $details[$property];
+                            $property_found = true;
+                        } elseif (is_string($event['DETAILS']) && $event['DETAILS'] != '') {
+                            $object = getObject($event['DETAILS']);
+                            if (is_object($object)) {
+                                $property_id = $object->getPropertyByName($property, $object->class_id, $object->id);
+                                if ($property_id) {
+                                    $result['property'] = $property;
+                                    $result['value'] = $object->getProperty($property);
+                                    $result['property_updated_at'] = $object->getProperty($property . '__updated');
+                                    $property_found = true;
+                                }
+                            }
+                        }
+                    }
+
+                    if ($property_found) {
+                        $result['result'] = true;
+                    } else {
+                        $result['error'] = 'Property not found for event';
+                    }
+                }
+            } else {
+                $result['result'] = true;
+            }
+        }
+    }
+} elseif (strtolower($request[0]) == 'events' && count($request) == 2 && strtolower($request[1]) == 'set') {
+    if ($method != 'POST') {
+        $result['error'] = 'POST method required';
+    } elseif (!is_array($input) || !isset($input['event_name']) || !is_string($input['event_name']) || trim($input['event_name']) == '') {
+        $result['error'] = 'Event name required in JSON body';
+    } else {
+        $event_name = trim($input['event_name']);
+        $details = isset($input['details']) ? $input['details'] : '';
+        $event_id = registerEvent($event_name, $details);
+        if (!$event_id) {
+            $result['error'] = 'Failed to set event';
+        } else {
+            $result['event_id'] = $event_id;
+            $result['event_name'] = $event_name;
+            $result['result'] = true;
+        }
+    }
 } elseif (strtolower($request[0]) == 'events' && isset($request[1])) {
     array_shift($request);
     foreach ($request as &$request_item) {
