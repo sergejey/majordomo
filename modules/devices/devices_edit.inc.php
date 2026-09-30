@@ -465,7 +465,7 @@ if ($this->mode == 'update' && $this->tab == '') {
         }
     }
 
-    global $add_object;
+    $add_object = gr("add_object");
     $out['ADD_OBJECT'] = $add_object;
     if ($add_object) {
         $rec['LINKED_OBJECT'] = '';
@@ -515,7 +515,7 @@ if ($this->mode == 'update' && $this->tab == '') {
 
         $class_2b_changed = 1;
         $tmp_class_id = $object_rec['CLASS_ID'];
-        while (isset($tmp_class_id)) {
+        while (!empty($tmp_class_id)) {
             if ($tmp_class_id == $class_id) {
                 $class_2b_changed = 0;
                 break;
