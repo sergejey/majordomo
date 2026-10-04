@@ -185,7 +185,7 @@ class market extends module
             $this->getLatest($out, $this->url, $name, $this->version);
         }
 
-        if ($this->mode == 'upload') {
+        if ($this->mode == 'upload' && gr('restore') != '') {
             $this->upload($out);
         }
 
@@ -967,13 +967,13 @@ class market extends module
 
             if (IsWindowsOS()) {
                 // for windows only
-                exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
-                $result = exec(DOC_ROOT . '/tar xvf ../' . str_replace('.tgz', '.tar', $file), $output, $res);
+                exec(DOC_ROOT . '/gunzip ' . escapeshellarg('../' . $file), $output, $res);
+                $result = exec(DOC_ROOT . '/tar xvf ' . escapeshellarg('../' . str_replace('.tgz', '.tar', $file)), $output, $res);
                 if (is_file('../' . str_replace('.tgz', '.tar', $file))) {
                     unlink('../' . str_replace('.tgz', '.tar', $file));
                 }
             } else {
-                $cmd = 'tar xzvf ../' . $file;
+                $cmd = 'tar xzvf ' . escapeshellarg('../' . $file);
                 $result = exec($cmd, $output, $res);
             }
 
