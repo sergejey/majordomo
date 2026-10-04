@@ -118,8 +118,8 @@ if (file_exists(ROOT . 'scripts/cycle_db_save.php')) {
         echo "Backup file not found or invalid: " . $db_filename . PHP_EOL;
         DebMes("Backup file not found or invalid: " . $db_filename, 'boot');
     }
-
-
+} else {
+    DebMes("No cycle_db_save.php script found, skipping database restore.", 'boot');
 }
 
 //если есть "поломанные" таблицы, попытаться их "вылечить"
