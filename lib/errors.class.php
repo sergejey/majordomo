@@ -100,7 +100,8 @@ FF;
 
 }
 
-function majordomoGetErrorType($error_level = 0) {
+function majordomoGetErrorType($error_level = 0)
+{
     $error_names = [
         E_ERROR => 'E_ERROR',
         E_WARNING => 'E_WARNING',

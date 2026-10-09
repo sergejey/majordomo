@@ -766,13 +766,12 @@ function copyTree($source, $destination, $over = 0, $patterns = 0)
 
 function removeEmptySubFolders($path)
 {
-    // Do not traverse symbolic links, including paths with a trailing separator.
+
     $path = rtrim($path, "/\\");
     if ($path === '' || is_link($path) || !is_dir($path)) {
         return false;
     }
 
-    // Include hidden entries: glob("*") overlooks files such as .htaccess.
     $entries = @scandir($path);
     if ($entries === false) {
         return false;
@@ -790,8 +789,6 @@ function removeEmptySubFolders($path)
             $empty = false;
         }
     }
-
-    // A concurrent writer or a permission failure can still prevent removal.
     return $empty && @rmdir($path);
 }
 
@@ -889,7 +886,7 @@ function getMediaDurationSeconds($file)
             define("PATH_TO_FFMPEG", 'ffmpeg');
         }
     }
-    $dur = shell_exec(PATH_TO_FFMPEG . " -i " . $file . " 2>&1");
+    $dur = shell_exec(escapeshellarg(PATH_TO_FFMPEG) . " -i " . escapeshellarg($file) . " 2>&1");
     if (preg_match("/: Invalid /", $dur)) {
         return false;
     }
@@ -912,7 +909,7 @@ function get_media_info($file)
             define("PATH_TO_FFMPEG", 'ffmpeg');
         }
     }
-    $data = shell_exec(PATH_TO_FFMPEG . " -i " . $file . " 2>&1");
+    $data = shell_exec(escapeshellarg(PATH_TO_FFMPEG) . " -i " . escapeshellarg($file) . " 2>&1");
 
     if (preg_match("/: Invalid /", $data)) {
         return false;

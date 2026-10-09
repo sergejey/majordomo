@@ -245,6 +245,18 @@ if (!isset($request[0])) {
         if (isset($sub_devices[0])) {
             $device['subDevices'] = $sub_devices;
         }
+        $device['settings'] = array();
+        $properties = $devices_module->getAllProperties($device['type']);
+        foreach($properties as $k => $v) {
+            $p_rec= $v;
+            $p_rec['TITLE'] = $k;
+            if (isset($device[$k])) {
+                $p_rec['VALUE'] = $device[$k];
+            }
+            $device['settings'][] = $p_rec;
+        }
+
+
         $result['device'] = $device;
     }
 
@@ -268,6 +280,11 @@ if (!isset($request[0])) {
         include_once(DIR_MODULES . 'devices/devices.class.php');
         $devices_module = new devices();
         $type_details = $devices_module->getTypeDetails($device['TYPE']);
+
+        $property = gr('property');
+        if ($property!='') {
+            sg($device['LINKED_OBJECT'] . '.' . $property, gr('value'));
+        }
 
         $new_title = gr('title');
         if ($new_title) {
