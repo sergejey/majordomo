@@ -146,7 +146,7 @@ $this->device_links=array(
                     'PARAM_NAME'=>'action_delay',
                     'PARAM_TITLE'=>LANG_DEVICES_LINK_SWITCH_IT_PARAM_ACTION_DELAY,
                     'PARAM_TYPE'=>'duration'
-                    )
+                )
             )
         ),
         array (
