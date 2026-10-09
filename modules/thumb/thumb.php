@@ -35,6 +35,12 @@ if (isset($url) && $url != '') {
     if (!$img) {
         $filename = 'thumb_' . md5($tmp_url);
         $img = _I_CACHE_PATH . $filename;
+    } else {
+        $base = basename($img);
+        if ($base !== $img || !preg_match('/^[A-Za-z0-9._-]+$/', $base)) {
+            $base = 'thumb_' . md5($base);
+        }
+        $img = _I_CACHE_PATH . $base;
     }
     if ($tmp_url == 'usb') {
         $url = "";
@@ -121,7 +127,7 @@ if (isset($url) && $url != '') {
 
         }
         $dc = 1;
-    } else {
+    } elseif (preg_match('#^https?://#i', $url)) {
 
         function mjpeg_grab_frame($url)
         {

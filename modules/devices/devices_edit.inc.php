@@ -16,7 +16,7 @@ if ($this->owner->print == 1) {
 
 if (isset($rec['LINKED_OBJECT']) && $rec['LINKED_OBJECT'] != '') {
     $object_rec = SQLSelectOne("SELECT ID FROM objects WHERE TITLE='" . $rec['LINKED_OBJECT'] . "'");
-    if ($object_rec['ID']) {
+    if (isset($object_rec['ID'])) {
         $properties = SQLSelect("SELECT pvalues.*, properties.TITLE as PROPERTY, properties.KEEP_HISTORY FROM pvalues LEFT JOIN properties ON properties.ID=pvalues.PROPERTY_ID WHERE pvalues.OBJECT_ID=" . $object_rec['ID'] . " AND (pvalues.LINKED_MODULES!='' OR properties.KEEP_HISTORY>0) ORDER BY UPDATED DESC");
         $total = count($properties);
         if ($total > 0) {
@@ -68,8 +68,13 @@ if ($this->tab == 'logic') {
 
     $method_name = gr('method');
 
-    $object = getObject($rec['LINKED_OBJECT']);
-
+    $object = !empty($rec['LINKED_OBJECT']) ? getObject($rec['LINKED_OBJECT']) : false;
+    if (!is_object($object)) {
+        $out['ERR'] = 1;
+        $out['ERR_MSG'] = 'Linked object is missing. Restore the device object before editing its logic.';
+        $out['METHODS'] = array();
+        return false;
+    }
     $methods = $object->getParentMethods($object->class_id, '', 1);
     $total = count($methods);
     for ($i = 0; $i < $total; $i++) {
@@ -87,7 +92,6 @@ if ($this->tab == 'logic') {
                 }
             }
         }
-
     }
 
     if (!$method_name) {
@@ -465,7 +469,7 @@ if ($this->mode == 'update' && $this->tab == '') {
         }
     }
 
-    $add_object = gr("add_object");
+    global $add_object;
     $out['ADD_OBJECT'] = $add_object;
     if ($add_object) {
         $rec['LINKED_OBJECT'] = '';
@@ -515,7 +519,7 @@ if ($this->mode == 'update' && $this->tab == '') {
 
         $class_2b_changed = 1;
         $tmp_class_id = $object_rec['CLASS_ID'];
-        while (!empty($tmp_class_id)) {
+        while (isset($tmp_class_id)) {
             if ($tmp_class_id == $class_id) {
                 $class_2b_changed = 0;
                 break;

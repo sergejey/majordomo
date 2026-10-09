@@ -41,7 +41,11 @@ class custom_error
      */
     public function __construct($description, $stop = 0)
     {
-        $script = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+        if (isset($_SERVER['REQUEST_URI'])) {
+            $script = 'http://' . ($_SERVER['SERVER_NAME'] ?? 'localhost') . $_SERVER['REQUEST_URI'];
+        } else {
+            $script = $_SERVER['SCRIPT_FILENAME'] ?? ($_SERVER['argv'][0] ?? 'CLI');
+        }
 
         if (!mb_detect_encoding($description, 'UTF-8', true)) {
             $description = iconv('windows-1251', 'UTF-8', $description);
@@ -96,7 +100,8 @@ FF;
 
 }
 
-function majordomoGetErrorType($error_level = 0) {
+function majordomoGetErrorType($error_level = 0)
+{
     $error_names = [
         E_ERROR => 'E_ERROR',
         E_WARNING => 'E_WARNING',

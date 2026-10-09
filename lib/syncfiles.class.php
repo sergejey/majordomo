@@ -766,16 +766,30 @@ function copyTree($source, $destination, $over = 0, $patterns = 0)
 
 function removeEmptySubFolders($path)
 {
+
+    $path = rtrim($path, "/\\");
+    if ($path === '' || is_link($path) || !is_dir($path)) {
+        return false;
+    }
+
+    $entries = @scandir($path);
+    if ($entries === false) {
+        return false;
+    }
+
     $empty = true;
-    foreach (glob($path . DIRECTORY_SEPARATOR . "*") as $file) {
-        $empty &= is_dir($file) && removeEmptySubFolders($file);
+    foreach ($entries as $entry) {
+        if ($entry === '.' || $entry === '..') {
+            continue;
+        }
+        $child = $path . DIRECTORY_SEPARATOR . $entry;
+        if (is_link($child) || !is_dir($child)) {
+            $empty = false;
+        } elseif (!removeEmptySubFolders($child)) {
+            $empty = false;
+        }
     }
-
-    if (is_dir($path)) {
-        $empty &= rmdir($path);
-    }
-
-    return $empty;
+    return $empty && @rmdir($path);
 }
 
 function getDirTree($dir, &$results = array())
@@ -872,7 +886,7 @@ function getMediaDurationSeconds($file)
             define("PATH_TO_FFMPEG", 'ffmpeg');
         }
     }
-    $dur = shell_exec(PATH_TO_FFMPEG . " -i " . $file . " 2>&1");
+    $dur = shell_exec(escapeshellarg(PATH_TO_FFMPEG) . " -i " . escapeshellarg($file) . " 2>&1");
     if (preg_match("/: Invalid /", $dur)) {
         return false;
     }
@@ -895,7 +909,7 @@ function get_media_info($file)
             define("PATH_TO_FFMPEG", 'ffmpeg');
         }
     }
-    $data = shell_exec(PATH_TO_FFMPEG . " -i " . $file . " 2>&1");
+    $data = shell_exec(escapeshellarg(PATH_TO_FFMPEG) . " -i " . escapeshellarg($file) . " 2>&1");
 
     if (preg_match("/: Invalid /", $data)) {
         return false;
