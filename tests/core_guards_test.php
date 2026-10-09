@@ -10,7 +10,6 @@ function check($ok, $name) {
 }
 $source = file_get_contents(dirname(__DIR__).'/lib/errors.class.php');
 $start = strpos($source, 'class custom_error');
-$end = strpos($source, '\nfunction majordomoGetErrorType');
 // The actual class is tested without registering production shutdown handlers.
 $end = strpos($source, 'function majordomoGetErrorType');
 check($start !== false && $end !== false, 'error class located');
@@ -48,8 +47,9 @@ class EditorHarness {
     public $tab='logic', $mode='';
     function run($logic,$linked) {
         $rec=array('LINKED_OBJECT'=>$linked); $out=array();
-        eval($logic);
-        $out['COMMON_OUTPUT_REACHED']=true;
+        // eval() returns null only when the branch does not execute a return statement,
+        // so the rest of devices_edit.inc.php (outHash, tabs, locations) still runs.
+        $out['COMMON_OUTPUT_REACHED']=(eval($logic)===null);
         return $out;
     }
 }
