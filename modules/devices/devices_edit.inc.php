@@ -69,113 +69,115 @@ if ($this->tab == 'logic') {
     $method_name = gr('method');
 
     $object = !empty($rec['LINKED_OBJECT']) ? getObject($rec['LINKED_OBJECT']) : false;
-    if (!is_object($object)) {
+    // Keep rendering the device page: a missing object only disables the logic editor.
+    $logic_object_missing = !is_object($object);
+    if ($logic_object_missing) {
         $out['ERR'] = 1;
         $out['ERR_MSG'] = 'Linked object is missing. Restore the device object before editing its logic.';
         $out['METHODS'] = array();
-        return false;
-    }
-    $methods = $object->getParentMethods($object->class_id, '', 1);
-    $total = count($methods);
-    for ($i = 0; $i < $total; $i++) {
-        if ($methods[$i]['DESCRIPTION'] != '') {
-            $methods[$i]['DESCRIPTION'] = $methods[$i]['TITLE'] . ' - ' . $methods[$i]['DESCRIPTION'];
-        } else {
-            $methods[$i]['DESCRIPTION'] = $methods[$i]['TITLE'];
-        }
-        if (isset($object_rec['ID'])) {
-            $object_method = SQLSelectOne("SELECT * FROM methods WHERE TITLE='" . $methods[$i]['TITLE'] . "' AND OBJECT_ID=" . $object_rec['ID'] . " ORDER BY TITLE");
-            if (isset($object_method['ID'])) {
-                $methods[$i]['DESCRIPTION'] .= ' (*)';
-                if (!$method_name) {
-                    $method_name = $object_method['TITLE'];
+    } else {
+        $methods = $object->getParentMethods($object->class_id, '', 1);
+        $total = count($methods);
+        for ($i = 0; $i < $total; $i++) {
+            if ($methods[$i]['DESCRIPTION'] != '') {
+                $methods[$i]['DESCRIPTION'] = $methods[$i]['TITLE'] . ' - ' . $methods[$i]['DESCRIPTION'];
+            } else {
+                $methods[$i]['DESCRIPTION'] = $methods[$i]['TITLE'];
+            }
+            if (isset($object_rec['ID'])) {
+                $object_method = SQLSelectOne("SELECT * FROM methods WHERE TITLE='" . $methods[$i]['TITLE'] . "' AND OBJECT_ID=" . $object_rec['ID'] . " ORDER BY TITLE");
+                if (isset($object_method['ID'])) {
+                    $methods[$i]['DESCRIPTION'] .= ' (*)';
+                    if (!$method_name) {
+                        $method_name = $object_method['TITLE'];
+                    }
                 }
             }
         }
-    }
 
-    if (!$method_name) {
-        $method_name = 'logicAction';
-    }
+        if (!$method_name) {
+            $method_name = 'logicAction';
+        }
 
-    $out['METHOD'] = $method_name;
-    $out['METHODS'] = $methods;
+        $out['METHOD'] = $method_name;
+        $out['METHODS'] = $methods;
 
-    $method_id = $object->getMethodByName($method_name, $object->class_id, $object->id);
+        $method_id = $object->getMethodByName($method_name, $object->class_id, $object->id);
 
-    $method_rec = SQLSelectOne("SELECT * FROM methods WHERE ID=" . (int)$method_id);
-
-    if ($method_rec['OBJECT_ID'] != $object->id) {
-        $method_rec['CODE'] = '';
-    }
-
-    if (defined('SETTINGS_CODEEDITOR_TURNONSETTINGS')) {
-        $out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = SETTINGS_CODEEDITOR_TURNONSETTINGS;
-        $out['SETTINGS_CODEEDITOR_UPTOLINE'] = SETTINGS_CODEEDITOR_UPTOLINE;
-        $out['SETTINGS_CODEEDITOR_SHOWERROR'] = SETTINGS_CODEEDITOR_SHOWERROR;
-    }
-
-    if ($this->mode == 'update') {
+        $method_rec = SQLSelectOne("SELECT * FROM methods WHERE ID=" . (int)$method_id);
 
         if ($method_rec['OBJECT_ID'] != $object->id) {
-            $method_rec = array();
-            $method_rec['OBJECT_ID'] = $object->id;
-            $method_rec['TITLE'] = $method_name;
-            $method_rec['CALL_PARENT'] = 1;
-            $method_rec['ID'] = SQLInsert('methods', $method_rec);
+            $method_rec['CODE'] = '';
         }
 
-        $code = gr('code');
+        if (defined('SETTINGS_CODEEDITOR_TURNONSETTINGS')) {
+            $out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = SETTINGS_CODEEDITOR_TURNONSETTINGS;
+            $out['SETTINGS_CODEEDITOR_UPTOLINE'] = SETTINGS_CODEEDITOR_UPTOLINE;
+            $out['SETTINGS_CODEEDITOR_SHOWERROR'] = SETTINGS_CODEEDITOR_SHOWERROR;
+        }
 
-        $old_code = $method_rec['CODE'];
-        $method_rec['CODE'] = $code;
+        if ($this->mode == 'update') {
 
-        $ok = 1;
-        if ($method_rec['CODE'] != '') {
-            $errors = php_syntax_error($method_rec['CODE']);
+            if ($method_rec['OBJECT_ID'] != $object->id) {
+                $method_rec = array();
+                $method_rec['OBJECT_ID'] = $object->id;
+                $method_rec['TITLE'] = $method_name;
+                $method_rec['CALL_PARENT'] = 1;
+                $method_rec['ID'] = SQLInsert('methods', $method_rec);
+            }
 
-            if ($errors) {
-                $out['ERR_LINE'] = preg_replace('/[^0-9]/', '', substr(stristr($errors, 'php on line '), 0, 18)) - 2;
-                $out['ERR_CODE'] = 1;
-                $errorRaw = htmlspecialchars(strip_tags(nl2br($errors)));
-                $errorStr = explode('Parse error: ', $errorRaw);
-                if (isset($errorStr[1])) {
-                    $errorStr = explode('Errors parsing', $errorStr[1]);
-                    $errorStr = explode(' in ', $errorStr[0]);
-                    $out['ERRORS'] = isset($errorStr[0]) ? $errorStr[0] : $errorRaw;
-                    $out['ERR_FULL'] = trim((isset($errorStr[0]) ? $errorStr[0] : '') . ' ' . (isset($errorStr[1]) ? $errorStr[1] : ''));
-                } else {
-                    $out['ERRORS'] = $errorRaw;
-                    $out['ERR_FULL'] = $errorRaw;
+            $code = gr('code');
+
+            $old_code = $method_rec['CODE'];
+            $method_rec['CODE'] = $code;
+
+            $ok = 1;
+            if ($method_rec['CODE'] != '') {
+                $errors = php_syntax_error($method_rec['CODE']);
+
+                if ($errors) {
+                    $out['ERR_LINE'] = preg_replace('/[^0-9]/', '', substr(stristr($errors, 'php on line '), 0, 18)) - 2;
+                    $out['ERR_CODE'] = 1;
+                    $errorRaw = htmlspecialchars(strip_tags(nl2br($errors)));
+                    $errorStr = explode('Parse error: ', $errorRaw);
+                    if (isset($errorStr[1])) {
+                        $errorStr = explode('Errors parsing', $errorStr[1]);
+                        $errorStr = explode(' in ', $errorStr[0]);
+                        $out['ERRORS'] = isset($errorStr[0]) ? $errorStr[0] : $errorRaw;
+                        $out['ERR_FULL'] = trim((isset($errorStr[0]) ? $errorStr[0] : '') . ' ' . (isset($errorStr[1]) ? $errorStr[1] : ''));
+                    } else {
+                        $out['ERRORS'] = $errorRaw;
+                        $out['ERR_FULL'] = $errorRaw;
+                    }
+                    $out['ERR_OLD_CODE'] = $old_code;
+                    $ok = 0;
                 }
-                $out['ERR_OLD_CODE'] = $old_code;
-                $ok = 0;
+            } else {
+                if ($method_rec['ID']) {
+                    SQLExec("DELETE FROM methods WHERE ID=" . $method_rec['ID']);
+                }
+                $this->redirect("?id=" . $rec['ID'] . "&view_mode=" . $this->view_mode . "&tab=" . $this->tab . "&method=" . urlencode($method_rec['TITLE']));
             }
-        } else {
-            if ($method_rec['ID']) {
-                SQLExec("DELETE FROM methods WHERE ID=" . $method_rec['ID']);
+            if ($ok) {
+                SQLUpdate('methods', $method_rec);
+                $out['OK'] = 1;
+            } else {
+                $out['ERR'] = 1;
             }
-            $this->redirect("?id=" . $rec['ID'] . "&view_mode=" . $this->view_mode . "&tab=" . $this->tab . "&method=" . urlencode($method_rec['TITLE']));
         }
-        if ($ok) {
-            SQLUpdate('methods', $method_rec);
-            $out['OK'] = 1;
+        if (isset($method_rec['CODE'])) {
+            $out['CODE'] = htmlspecialchars($method_rec['CODE']);
+        }
+        $out['OBJECT_ID'] = $method_rec['OBJECT_ID'];
+
+        $parent_method_id = $object->getMethodByName($method_name, $object->class_id, 0);
+        if ($parent_method_id) {
+            $out['METHOD_ID'] = $parent_method_id;
         } else {
-            $out['ERR'] = 1;
+            $out['METHOD_ID'] = $method_rec['ID'];
         }
-    }
-    if (isset($method_rec['CODE'])) {
-        $out['CODE'] = htmlspecialchars($method_rec['CODE']);
-    }
-    $out['OBJECT_ID'] = $method_rec['OBJECT_ID'];
 
-    $parent_method_id = $object->getMethodByName($method_name, $object->class_id, 0);
-    if ($parent_method_id) {
-        $out['METHOD_ID'] = $parent_method_id;
-    } else {
-        $out['METHOD_ID'] = $method_rec['ID'];
     }
-
 }
 
 if ($this->tab == 'settings') {
@@ -605,7 +607,7 @@ foreach ($this->device_types as $k => $v) {
 }
 
 
-if (isset($rec['LINKED_OBJECT']) && $rec['LINKED_OBJECT'] != '') {
+if (empty($logic_object_missing) && isset($rec['LINKED_OBJECT']) && $rec['LINKED_OBJECT'] != '') {
     $processed = $this->processDevice($rec['ID']);
     $out['HTML'] = $processed['HTML'];
 }
