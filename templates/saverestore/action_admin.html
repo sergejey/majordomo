@@ -17,7 +17,8 @@
 				<a style="border-color: #ffffff;" data-toggle="modal" onclick="$('#myModal').modal('show');" data-target="#myModal" class="btn btn-default btn-md" role="button"><#LANG_NEWSAVERESTORE_NONE_UPDATE_BTN#></a>
 			</p>
 		</div>
-		[#else#]
+		[#else NO_NEED_TO_UPDATE#]
+		[#if UPDATES#]
 		<div class="jumbotron" style="margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;    background-image: radial-gradient(circle farthest-corner at 100px 50px, #fae29e, #d53972);">
 			<h2><#LANG_NEWSAVERESTORE_UPDATE_HEADER#></h2>
 			<p style="font-size: 11pt;"><#LANG_NEWSAVERESTORE_UPDATE_TEXT#></p>
@@ -26,7 +27,16 @@
 				<a style="border-color: #ffffff;" class="btn btn-success btn-md" data-toggle="modal" onclick="$('#myModal').modal('show');" data-target="#myModal" role="button"><#LANG_NEWSAVERESTORE_UPDATE_BTN#></a>
 			</p>
 		</div>
+		[#else#]
+		<div class="jumbotron" style="margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background-image: radial-gradient(circle farthest-corner at 100px 50px, #e0e0e0, #8a8a8a);">
+			<h2>GitHub: <span style="text-transform: lowercase;"><#LANG_NEWDASH_DISCONNECTED#></span></h2>
+			<p class="text-right">
+				<a class="link" href="[#UPDATE_URL#]" style="text-decoration: none;color: white;font-size: 10pt;margin-right: 20px;" role="button"><#LANG_NEWSAVERESTORE_DOWNLOAD_GIT_ARHIVE#></a>
+				<a style="border-color: #ffffff;" data-toggle="modal" onclick="$('#myModal').modal('show');" data-target="#myModal" class="btn btn-default btn-md" role="button"><#LANG_NEWSAVERESTORE_NONE_UPDATE_BTN#></a>
+			</p>
+		</div>
 		[#endif#]
+		[#endif NO_NEED_TO_UPDATE#]
 		
 		[#if MODE="getlatest_iframe"#]
 			<script>
