@@ -255,19 +255,13 @@
 						<ol class="breadcrumb" id="breadcrumb_update" style="">
 							[#if ACTION!=""#]
 							<li>
-								<!---
-								<div class="btn-group-xs">
-									<button style="vertical-align: super;" type="button" onclick="window.open('https://connect.majordomohome.com/addons.html?redirect=<#ACTION#>', '_blank');" class="btn btn-default"><#LANG_MODULE_MARKET#></button>
-									<button style="vertical-align: super;" type="button" onclick="window.open('<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help', '_blank');" class="btn btn-default"><#LANG_KNOWLEDGE_BASE#></button>
-								</div>
-								--->
 								<a href="javascript://" id="linkConsoleDebug" style="text-decoration: none;margin-right: 15px;color: #d74b4b;"><i class="glyphicon glyphicon-screenshot"></i> Debug</a>
 								<a href="<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a>
 								<a href="https://connect.majordomohome.com/addons/name/<#ACTION#>.html?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help" target="_blank"><i class="glyphicon glyphicon-info-sign"></i> <#LANG_MODULE_SUPPORT#> [#NAV_MODULE_NAME#]</a>
 							</li>
 							[#else#]
 							<li>
-								<span id="loadUpdate"><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></span>
+								<span id="loadUpdate"></span>
 								<a id="errors-saved" style="display:none;text-decoration: none;" href="?action=system_errors"></a>
 								<a id="updates-check-market" style="display:none" href="?action=market#panel_updates" style="text-decoration: none;"><span class="label label-success" id="updates-check-market-text"><#LANG_MODULES_UPDATES_AVAILABLE#></span></a>
 								<a id="updates-check-system" style="display:none" href="?action=saverestore" style="text-decoration: none;"><span class="label label-warning"><#LANG_SYSTEM_UPDATES_AVAILABLE#></span></a>
