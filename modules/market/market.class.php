@@ -185,7 +185,7 @@ class market extends module
             $this->getLatest($out, $this->url, $name, $this->version);
         }
 
-        if ($this->mode == 'upload') {
+        if ($this->mode == 'upload' && gr('restore') != '') {
             $this->upload($out);
         }
 
@@ -398,8 +398,27 @@ class market extends module
         }
 
         if ($params) {
-            $result = $this->marketRequest($params);
+            $result = $this->marketRequest($params, 3600);
             $data = json_decode($result);
+        }
+
+        // Последняя попытка связаться с маркетом не удалась — показать предупреждение в списке
+        if (is_file(ROOT . 'cms/cached/market_offline.flag')) {
+            $out['MARKET_OFFLINE'] = 1;
+        }
+
+        // Маркет недоступен — вкладка custom строится из локальной таблицы plugins
+        if ($category_id == 'custom' && (!isset($data->PLUGINS) || !is_array($data->PLUGINS) || !count($data->PLUGINS))) {
+            $data = new stdClass();
+            $data->PLUGINS = array();
+            $local_plugins = SQLSelect("SELECT * FROM plugins ORDER BY MODULE_NAME");
+            foreach ($local_plugins as $lp) {
+                if ($lp['MODULE_NAME'] == 'control_modules' || $lp['MODULE_NAME'] == 'control_access') continue;
+                unset($lp['ID']); // локальный ID не совпадает с ID в каталоге маркета (иконки)
+                if ($lp['TITLE'] == '') $lp['TITLE'] = $lp['MODULE_NAME'];
+                $lp['LATEST_VERSION'] = $lp['CURRENT_VERSION']; // без маркета версия обновления неизвестна
+                $data->PLUGINS[] = (object)$lp;
+            }
         }
 
         if (!isset($data->PLUGINS) || !is_array($data->PLUGINS)) {
@@ -515,6 +534,28 @@ class market extends module
         }
         $data_url = 'https://connect.majordomohome.com/market/?lang=' . SETTINGS_SITE_LANGUAGE . "&serial=" . urlencode($serial) . "&locale=" . urlencode($locale) . "&os=" . urlencode($os) . "&" . $details;
 
+        // Последний известный ответ из кэша getURL() (имя файла — как в getURL())
+        $stale = '';
+        $stale_mtime = 0;
+        $cache_file = '';
+        if ($cache_timeout > 0) {
+            $filename_part = preg_replace('/\W/is', '_', str_replace('http://', '', $data_url));
+            if (strlen($filename_part) > 200) {
+                $filename_part = substr($filename_part, 0, 200) . md5($filename_part);
+            }
+            $cache_file = ROOT . 'cms/cached/urls/' . $filename_part . '.html';
+            if (is_file($cache_file)) {
+                $stale = (string)LoadFile($cache_file);
+                $stale_mtime = filemtime($cache_file);
+            }
+        }
+
+        // Маркет недавно не ответил — 5 минут не ждём сеть повторно
+        $offline_flag = ROOT . 'cms/cached/market_offline.flag';
+        if (is_file($offline_flag) && (time() - filemtime($offline_flag)) < 300) {
+            return ($stale !== '') ? $stale : false;
+        }
+
         $username = '';
         $password = '';
         @include_once(DIR_MODULES . 'connect/connect.class.php');
@@ -528,7 +569,22 @@ class market extends module
                 $password = $connect_password;
             }
         }
-        return getURL($data_url, $cache_timeout, $username, $password);
+        //return getURL($data_url, $cache_timeout, $username, $password);
+        $result = getURL($data_url, $cache_timeout, $username, $password, false,
+            array(CURLOPT_CONNECTTIMEOUT => 5, CURLOPT_TIMEOUT => 10));
+        if ($result === false) {
+            @touch($offline_flag);
+            if ($stale !== '') {
+                // getURL() затёр кэш пустым ответом — восстанавливаем прежний,
+                // сохраняя старое время, чтобы после восстановления сети был повторный запрос
+                SaveFile($cache_file, $stale);
+                @touch($cache_file, $stale_mtime);
+                return $stale;
+            }
+        } elseif (is_file($offline_flag)) {
+            @unlink($offline_flag);
+        }
+        return $result;
     }
 
 
@@ -593,10 +649,10 @@ class market extends module
                     }
 
                     if (IsWindowsOS()) {
-                        exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
-                        $result = exec(DOC_ROOT . '/tar xvf ../' . str_replace('.tgz', '.tar', $file), $output, $res);
+                        exec(DOC_ROOT . '/gunzip ' . escapeshellarg('../' . $file), $output, $res);
+                        $result = exec(DOC_ROOT . '/tar xvf ' . escapeshellarg('../' . str_replace('.tgz', '.tar', $file)), $output, $res);
                     } else {
-                        $cmd = 'tar xzvf ../' . $file;
+                        $cmd = 'tar xzvf ../' . escapeshellarg($file);
                         $result = exec($cmd, $output, $res);
                     }
 
@@ -967,13 +1023,13 @@ class market extends module
 
             if (IsWindowsOS()) {
                 // for windows only
-                exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
-                $result = exec(DOC_ROOT . '/tar xvf ../' . str_replace('.tgz', '.tar', $file), $output, $res);
+                exec(DOC_ROOT . '/gunzip ' . escapeshellarg('../' . $file), $output, $res);
+                $result = exec(DOC_ROOT . '/tar xvf ' . escapeshellarg('../' . str_replace('.tgz', '.tar', $file)), $output, $res);
                 if (is_file('../' . str_replace('.tgz', '.tar', $file))) {
                     unlink('../' . str_replace('.tgz', '.tar', $file));
                 }
             } else {
-                $cmd = 'tar xzvf ../' . $file;
+                $cmd = 'tar xzvf ../' . escapeshellarg($file);
                 $result = exec($cmd, $output, $res);
             }
 
