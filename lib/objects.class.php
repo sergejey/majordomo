@@ -1302,7 +1302,7 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
         // fire-and-forget mode: give local API enough time to accept request,
         // but still return control quickly and avoid blocking the caller
         curl_setopt($api_ch, CURLOPT_CONNECTTIMEOUT_MS, 300);
-        curl_setopt($api_ch, CURLOPT_TIMEOUT_MS, 800);
+        curl_setopt($api_ch, CURLOPT_TIMEOUT_MS, 1);
     }
     if ($method == 'GET') {
         $url .= '?' . http_build_query($params);
