@@ -179,7 +179,7 @@ for ($i = 0; $i < $total; $i++) {
             if ($success === false) {
                 registerError('linked_device', sprintf('Error in linked device code "%s". Code: %s', $link_type, $code));
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             registerError('linked_device', sprintf('Error in script "%s": ' . $e->getMessage(), $link_type));
         }
     }
