@@ -703,10 +703,7 @@ class connect extends module
         if ($device_rec['TITLE']) {
             $fields['device_data'] = json_encode($device_rec);
         }
-        foreach ($fields as $k => $v) {
-            $fields_string .= $k . '=' . $v . '&';
-        }
-        rtrim($fields_string, '&');
+        $fields_string = http_build_query($fields);
         //DebMes("Posting $property = $value to $url",'device_sync');
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
