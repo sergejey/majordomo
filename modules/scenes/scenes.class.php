@@ -710,7 +710,7 @@ class scenes extends module
                             DebMes("Error scene item code: " . $code);
                             registerError('scenes', "Error scene item code: " . $code);
                         }
-                    } catch (Exception $e) {
+                    } catch (Throwable $e) {
                         DebMes('Error: exception ' . get_class($e) . ', ' . $e->getMessage() . '.');
                         registerError('scenes', get_class($e) . ', ' . $e->getMessage());
                     }
@@ -1158,7 +1158,7 @@ class scenes extends module
                     DebMes("Error in scene code: " . $code);
                     registerError('scenes', "Error in scene code: " . $code);
                 }
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 DebMes('Error: exception ' . get_class($e) . ', ' . $e->getMessage() . '.');
                 registerError('scenes', get_class($e) . ', ' . $e->getMessage());
             }
