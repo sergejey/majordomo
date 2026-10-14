@@ -400,7 +400,7 @@ class commands extends module
                                 DebMes("Error menu item code: " . $code);
                                 registerError('menu_item', "Error menu item code: " . $code);
                             }
-                        } catch (Exception $e) {
+                        } catch (Throwable $e) {
                             DebMes('Error: exception ' . get_class($e) . ', ' . $e->getMessage() . '.');
                             registerError('menu_item', get_class($e) . ', ' . $e->getMessage());
                         }
