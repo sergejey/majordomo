@@ -1300,9 +1300,11 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
 
     if (!$is_child && !$wait_response) {
         // fire-and-forget mode: give local API enough time to accept request,
-        // but still return control quickly and avoid blocking the caller
+        // but still return control quickly and avoid blocking the caller.
+        // 50 ms is enough to deliver the request to the local API even under load.
+        // api.php ignores client abort, so the method finishes on its own.
         curl_setopt($api_ch, CURLOPT_CONNECTTIMEOUT_MS, 300);
-        curl_setopt($api_ch, CURLOPT_TIMEOUT_MS, 800);
+        curl_setopt($api_ch, CURLOPT_TIMEOUT_MS, 50);
     }
     if ($method == 'GET') {
         $url .= '?' . http_build_query($params);
@@ -1320,6 +1322,12 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
         $info = curl_getinfo($api_ch);
     }
     endMeasure('callAPI ' . $api_url);
+
+    // fire-and-forget: request did not leave the client (connect/send timed out or refused) -
+    // log it instead of losing it silently
+    if (!$is_child && !$wait_response && isset($info['request_size']) && $info['request_size'] == 0) {
+        DebMes('callAPI not sent (' . $errorInfo . '): ' . $api_url, 'callapi');
+    }
 
     if ($is_child) {
         curl_close($api_ch);
