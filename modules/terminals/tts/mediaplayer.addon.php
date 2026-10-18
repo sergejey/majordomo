@@ -52,7 +52,7 @@ class mediaplayer extends tts_addon
         $all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'" . 'allsay-target-' . $this->terminal['TITLE'] . '-number-' . "%' ORDER BY `TITLE` ASC");
         $first_fields = reset($all_messages);
         $runtime = (strtotime($first_fields['RUNTIME']));
-        $prev_message = '';
+        $prev_message = array();
         foreach ($all_messages as $message) {
             $expire = (strtotime($message['EXPIRE'])) - (strtotime($message['RUNTIME']));
             $rec['ID'] = $message['ID'];
@@ -61,7 +61,7 @@ class mediaplayer extends tts_addon
             $rec['RUNTIME'] = date('Y-m-d H:i:s', $runtime);
             $rec['EXPIRE'] = date('Y-m-d H:i:s', $runtime + $expire);
             // proverka i udaleniye odinakovih soobsheniy
-            if ($prev_message['TITLE'] == $message['TITLE']) {
+            if (isset($prev_message['TITLE']) && $prev_message['TITLE'] == $message['TITLE']) {
                 SQLExec("DELETE FROM jobs WHERE ID='" . $rec['ID'] . "'");
             } else {
                 SQLUpdate('jobs', $rec);
