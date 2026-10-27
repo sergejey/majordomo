@@ -521,11 +521,14 @@ class xray extends module
 
             getDirTree($path, $files);
             usort($files, function ($a, $b) {
-                return $b['TM'] > $a['TM'];
+                return $b['TM'] <=> $a['TM'];
             });
             $total = count($files);
+            // getDirTree() returns realpath() names with native separators ("\\" on Windows),
+            // so compare against the normalized realpath of the log directory
+            $base_title_path = rtrim(str_replace('\\', '/', $path_real !== false ? $path_real : $path), '/') . '/';
             for ($i = 0; $i < $total; $i++) {
-                $files[$i]['TITLE'] = str_replace($path . '/', '', $files[$i]['FILENAME']);
+                $files[$i]['TITLE'] = str_replace($base_title_path, '', str_replace('\\', '/', $files[$i]['FILENAME']));
                 $files[$i]['BASENAME'] = basename($files[$i]['FILENAME']);
                 $files[$i]['PASSED'] = getPassedText($files[$i]['TM']);
                 $files[$i]['SIZE'] = filesize($files[$i]['FILENAME']);
