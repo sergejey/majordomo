@@ -1,0 +1,38 @@
+# MajorDoMo: systemd-юнит для запуска циклов (cycle.php)
+#
+# Зачем: MajorDoMo должен стартовать после базы данных и MQTT-брокера.
+# Иначе при загрузке системы cycle.php и циклы модулей запускаются раньше
+# MariaDB/MySQL и Mosquitto, падают на подключении и перезапускаются.
+#
+# Новая установка:
+#   sudo cp majordomo.service.sample /etc/systemd/system/majordomo.service
+#   (если MajorDoMo установлен не в /var/www/html, поправьте WorkingDirectory и ExecStart)
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now majordomo
+#
+# Уже работающая установка с init-скриптом /etc/init.d/majordomo:
+# достаточно добавить порядок запуска, сам скрипт можно не менять:
+#   sudo mkdir -p /etc/systemd/system/majordomo.service.d
+#   printf '[Unit]\nAfter=mariadb.service mysql.service mosquitto.service\nWants=mariadb.service mosquitto.service\n' | sudo tee /etc/systemd/system/majordomo.service.d/order.conf
+#   sudo systemctl daemon-reload
+#
+# Wants= на отсутствующую службу не вызывает ошибку, поэтому юнит подходит
+# и для установок без Mosquitto или с MySQL вместо MariaDB.
+
+[Unit]
+Description=MajorDoMo cycles
+After=network-online.target mariadb.service mysql.service mosquitto.service
+Wants=network-online.target mariadb.service mosquitto.service
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/html
+ExecStart=/usr/bin/php /var/www/html/cycle.php
+# Останавливает cycle.php и все циклы, не затрагивая другие процессы PHP
+KillMode=control-group
+TimeoutStopSec=30
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
