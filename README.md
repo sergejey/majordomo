@@ -13,7 +13,7 @@
   <a href="https://www.php.net/"><img src="https://img.shields.io/badge/PHP-7.4%20--%208.x-777bb4.svg?logo=php&logoColor=white" alt="PHP 7.4 - 8.x"/></a>
   <a href="https://mariadb.org/"><img src="https://img.shields.io/badge/Database-MySQL%20%7C%20MariaDB-003545.svg?logo=mariadb&logoColor=white" alt="MySQL / MariaDB"/></a>
   <a href="https://github.com/sergejey/majordomo"><img src="https://img.shields.io/badge/Platform-Linux%20%7C%20Windows%20%7C%20Raspberry%20Pi-orange.svg" alt="Platforms"/></a>
-  <a href="https://t.me/MajorDoMoRu"><img src="https://img.shields.io/badge/Telegram-Chat%20Community-2CA5E0.svg?logo=telegram&logoColor=white" alt="Telegram Chat"/></a>
+  <a href="https://forum.majordomohome.com/"><img src="https://img.shields.io/badge/Community-Forum-0088cc.svg" alt="Community Forum"/></a>
 </p>
 
 ---
@@ -316,12 +316,9 @@ MajorDoMo features an integrated Addon Marketplace:
 
 Join the supportive, global MajorDoMo community to share projects, get help, and discover integrations:
 
-- 🌐 **Official Website (Global)**: [majordomohome.com](https://majordomohome.com/?utm_source=github&utm_medium=link&utm_campaign=main_page)
-- 🌐 **Official Website (Russian)**: [ru.majordomohome.com](https://ru.majordomohome.com/?utm_source=github&utm_medium=link&utm_campaign=main_page)
+- 🌐 **Official Website**: [majordomohome.com](https://majordomohome.com/?utm_source=github&utm_medium=link&utm_campaign=main_page)
 - 💬 **Community Forums**: [MajorDoMo Community Forum](https://forum.majordomohome.com/?utm_source=github&utm_medium=link&utm_campaign=forum)
-- 📱 **Telegram Chat**: [@MajorDoMoRu](https://t.me/MajorDoMoRu) | **Off-Topic / Chat**: [@MajorDoMoRuKurilka](https://t.me/MajorDoMoRuKurilka)
 - ☁️ **MajorDoMo Connect Cloud**: [connect.majordomohome.com](https://connect.majordomohome.com/)
-- 📖 **Documentation & Wiki**: [MajorDoMo Knowledge Base](https://mdminfo.ru/wiki/MajorDoMo)
 
 ---
 
