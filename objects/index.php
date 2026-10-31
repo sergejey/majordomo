@@ -165,7 +165,7 @@ if ($object != '') {
                 DebMes("Error in scheduled job code: " . $code);
                 registerError('scheduled_jobs', "Error in scheduled job code: " . $code);
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             DebMes('Error: exception ' . get_class($e) . ', ' . $e->getMessage() . '.');
             registerError('scheduled_jobs', get_class($e) . ', ' . $e->getMessage());
         }

@@ -174,7 +174,7 @@ class scripts extends module
                         registerError('script', sprintf('Error in script "%s". Code: %s', $rec['TITLE'], $code));
                     }
                     return $success;
-                } catch (Exception $e) {
+                } catch (Throwable $e) {
                     //getLogger($this)->error(sprintf('Error in script "%s"', $rec['TITLE']), $e);
                     registerError('script', sprintf('Error in script "%s": ' . $e->getMessage(), $rec['TITLE']));
                 }

@@ -503,7 +503,7 @@ class patterns extends module
                     DebMes("Error in pattern code: " . $code, 'patterns');
                     registerError('patterns', "Error in pattern code: " . $code);
                 }
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 DebMes('Error: exception ' . get_class($e) . ', ' . $e->getMessage() . '.', 'patterns');
                 registerError('patterns', get_class($e) . ', ' . $e->getMessage());
             }
@@ -527,7 +527,7 @@ class patterns extends module
                     DebMes("Error in pattern exit code: " . $code, 'patterns');
                     registerError('patterns', "Error in pattern exit code: " . $code);
                 }
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 DebMes('Error: exception ' . get_class($e) . ', ' . $e->getMessage() . '.', 'patterns');
                 registerError('patterns', get_class($e) . ', ' . $e->getMessage());
             }

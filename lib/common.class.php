@@ -677,6 +677,7 @@ function postURL($url, $query = array(), $cache = 0, $username = '', $password =
             if ($background) {
                 curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
                 curl_setopt($ch, CURLOPT_TIMEOUT_MS, 300);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:'));
             }
 
             if ($username != '' || $password != '') {
