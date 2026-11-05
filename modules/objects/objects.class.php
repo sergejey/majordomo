@@ -762,7 +762,7 @@ class objects extends module
                 return '';
             }
 
-            $value = SQLSelectOne("SELECT UPDATED FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $source_property) . "'");
+            $value = SQLSelectOne("SELECT UPDATED FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $source_property) . "' ORDER BY UPDATED DESC LIMIT 1");
             if (!isset($value['UPDATED'])) {
                 $id = $this->getPropertyByName($source_property, $this->class_id, $this->id);
                 if ($id) {
@@ -791,7 +791,7 @@ class objects extends module
             }
         }
 
-        $value = SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $property) . "'");
+        $value = SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $property) . "' ORDER BY UPDATED DESC LIMIT 1");
         if (isset($value['VALUE'])) {
             startMeasure('getPropertyCached2');
             endMeasure('getPropertyCached2', 1);
