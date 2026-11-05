@@ -2,6 +2,11 @@
 
 include_once("./config.php");
 
+// callAPI() in fire-and-forget mode disconnects before the response is ready.
+// Without this, Apache mod_php and nginx (fastcgi_ignore_client_abort off)
+// terminate the method/script at its first output after the client has gone.
+ignore_user_abort(1);
+
 if (isset($argv[0]) && $argv[0] != '') {
     set_time_limit(60);
     ignore_user_abort(1);
