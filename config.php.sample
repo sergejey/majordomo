@@ -73,6 +73,11 @@ if (isset($_ENV["S2G_BASE_URL"]) && $_ENV["S2G_BASE_URL"]) {
 //Define('EXT_ACCESS_USERNAME', 'user');       // Логин для внешнего доступа | External access login
 //Define('EXT_ACCESS_PASSWORD', 'password');   // Пароль для внешнего доступа | External access password
 //Define('USE_PROXY', '127.0.0.1:8888');       // Прокси-сервер для исходящих HTTP-запросов | Proxy server for outgoing HTTP requests
+// Тип прокси задаётся схемой (без схемы = HTTP) | Proxy type is set by URL scheme (no scheme = HTTP):
+//Define('USE_PROXY', 'socks5h://127.0.0.1:1080'); // SOCKS5, DNS через прокси | SOCKS5, DNS resolved by proxy
+//Define('USE_PROXY', 'socks5://127.0.0.1:1080');  // SOCKS5, DNS локально | SOCKS5, local DNS
+//Define('USE_PROXY', 'socks4a://127.0.0.1:1080'); // SOCKS4a
+//Define('USE_PROXY', 'https://proxy.example:443');  // HTTPS-прокси (TLS до прокси) | HTTPS proxy (TLS to proxy)
 //Define('USE_PROXY_AUTH', 'user:password');   // Авторизация для прокси | Proxy authentication
 //Define('ONEWIRE_SERVER', 'tcp://localhost:8234'); // Сервер OWFS (1-wire), если используется | OWFS (1-wire) server, if used
 
