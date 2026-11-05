@@ -850,7 +850,7 @@ class market extends module
         curl_setopt($ch, CURLOPT_TIMEOUT, 600);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
         curl_setopt($ch, CURLOPT_FILE, $f);
-        
+
         if (defined('USE_PROXY') && USE_PROXY != '') {
             curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
             if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
