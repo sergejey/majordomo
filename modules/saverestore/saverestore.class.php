@@ -570,7 +570,7 @@ class saverestore extends module
             }
         }
         $incoming = curl_exec($ch);
-
+        $curl_error = curl_error($ch);
         curl_close($ch);
         @fclose($f);
 
@@ -608,7 +608,7 @@ class saverestore extends module
             }
 
         } else {
-
+            DebMes("Download failed: " . $url . ($curl_error != '' ? ' (' . $curl_error . ')' : ''), 'restore');
             if ($iframe) {
                 echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> ' . LANG_UPDATEBACKUP_ERROR_DOWNLOAD . '</div>', 'red');
                 exit;
