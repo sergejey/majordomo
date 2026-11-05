@@ -87,7 +87,15 @@ while (!$connected) {
 echo "CONNECTED TO DB" . PHP_EOL;
 
 //restoring database backup (if exists)
-if (file_exists(ROOT . 'scripts/cycle_db_save.php')) {
+// Восстанавливаем базу из дампа только один раз за загрузку системы: при перезапуске
+// службы MajorDoMo в рамках той же загрузки база в памяти уже актуальнее дампа.
+$boot_id = trim((string)@file_get_contents('/proc/sys/kernel/random/boot_id'));
+$restore_marker = sys_get_temp_dir() . '/majordomo_db_restored';
+$restored_this_boot = ($boot_id != '' && trim((string)@file_get_contents($restore_marker)) === $boot_id);
+if (file_exists(ROOT . 'scripts/cycle_db_save.php') && $restored_this_boot) {
+    echo "Database already restored after this boot, skipping restore." . PHP_EOL;
+    DebMes("Database already restored after this boot, skipping restore.", 'boot');
+} elseif (file_exists(ROOT . 'scripts/cycle_db_save.php')) {
 
     if (file_exists($db_filename) && filesize($db_filename) > 0) {
         echo "Running: mysql main db restore from file: " . $db_filename . PHP_EOL;
@@ -100,6 +108,9 @@ if (file_exists(ROOT . 'scripts/cycle_db_save.php')) {
         exec($mysql_path . $mysqlParam, $output);
         echo "Output: " . implode("\n", $output) . PHP_EOL;
         DebMes("Main DB restore output: " . implode("\n", $output), 'boot');
+        if ($boot_id != '') {
+            @file_put_contents($restore_marker, $boot_id);
+        }
 
         if (file_exists($db_history_filename) && filesize($db_history_filename) > 0) {
             echo "Running: mysql history db restore from file: " . $db_history_filename . PHP_EOL;
