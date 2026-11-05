@@ -86,7 +86,7 @@
 						<div>
 							[#if MYVERSION == 1#]<span class="label label-success" id="mysystemversion"><#LANG_MARKET_CATEGORY_INSTALLED#></span> [#endif#]
 							<a href="[#LINK#]" target="_blank">[#TITLE#]</a>
-							<div>↳ <span class="label label-default">[#DESC_UPDATE#]</span>
+							<div>↳ <span class="label label-default" style="white-space:normal;-webkit-box-decoration-break:clone;box-decoration-break:clone">[#DESC_UPDATE#]</span>
 								[#if MYVERSION!="1"#]<a class="btn btn-default btn-xs" data-toggle="modal" onclick="$('#update_link').val('[#LINK#]');$('#update_link_text').show();$('#update_link_text').html('Version: [#LINK#]');$('#myModal').modal('show');" data-target="#myModal" role="button"><#LANG_RESTORE#></a>[#endif#]
 							</div>
 							
