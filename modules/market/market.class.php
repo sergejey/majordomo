@@ -660,7 +660,7 @@ class market extends module
                     $rec['CURRENT_VERSION'] = $version . '';
                     $rec['IS_INSTALLED'] = 1;
                     $rec['LATEST_UPDATE'] = date('Y-m-d H:i:s');
-                    if ($rec['ID']) {
+                    if (!empty($rec['ID'])) {
                         SQLUpdate('plugins', $rec);
                     } else {
                         SQLInsert('plugins', $rec);
@@ -1010,6 +1010,9 @@ class market extends module
             if ($x == 1 && $latest_dir) {
                 $folder = '/' . $latest_dir;
             }
+            if (!is_dir(ROOT . 'cms/saverestore/temp' . $folder)) {
+                $folder = IsWindowsOS() ? '/.' : '/';
+            }
             @unlink(ROOT . 'cms/saverestore/temp' . $folder . '/config.php');
             @unlink(ROOT . 'cms/saverestore/temp' . $folder . '/README.md');
             chdir('../../../');
@@ -1048,7 +1051,7 @@ class market extends module
             $rec['CURRENT_VERSION'] = $version . '';
             $rec['IS_INSTALLED'] = 1;
             $rec['LATEST_UPDATE'] = date('Y-m-d H:i:s');
-            if ($rec['ID']) {
+            if (!empty($rec['ID'])) {
                 SQLUpdate('plugins', $rec);
             } else {
                 SQLInsert('plugins', $rec);
