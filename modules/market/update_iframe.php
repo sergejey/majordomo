@@ -41,6 +41,7 @@ if ($mode2 == 'uploaded' && $name != '') {
         $folder = str_replace('.tgz', '', $name);
         $restore = $name;
         $version = 'Unknown version';
+        $name = strtolower(str_replace(array('.tgz', '.tar.gz', '.tar'), '', $name));
         $res = $mkt->upload($out, 1);
         if ($res) {
             $mkt->removeTree(ROOT . 'cms/saverestore/temp');
