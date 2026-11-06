@@ -1010,6 +1010,9 @@ class market extends module
             if ($x == 1 && $latest_dir) {
                 $folder = '/' . $latest_dir;
             }
+            if (!is_dir(ROOT . 'cms/saverestore/temp' . $folder)) {
+                $folder = IsWindowsOS() ? '/.' : '/';
+            }
             @unlink(ROOT . 'cms/saverestore/temp' . $folder . '/config.php');
             @unlink(ROOT . 'cms/saverestore/temp' . $folder . '/README.md');
             chdir('../../../');
