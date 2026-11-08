@@ -554,9 +554,9 @@ if (SETTINGS_THEME == 'light' || $_GET['bg'] == 'light') {
         "StartR" => 240,
         "StartG" => 240,
         "StartB" => 240,
-        "EndR" => 160,
-        "EndG" => 160,
-        "EndB" => 160,
+        "EndR" => 250,
+        "EndG" => 250,
+        "EndB" => 250,
         "Alpha" => 100);
 } else {
     $Settings = array(
