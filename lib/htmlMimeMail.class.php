@@ -337,7 +337,7 @@ class htmlMimeMail
    {
       $extensions = array();
       // Build the list of image extensions
-      while (list($key,) = each($this->image_types)) {
+      foreach (array_keys($this->image_types) as $key) {
          $extensions[] = $key;
       }
 
@@ -518,7 +518,7 @@ class htmlMimeMail
    function buildMessage($params = array())
    {
       if (!empty($params)) {
-         while (list($key, $value) = each($params)) {
+         foreach ($params as $key => $value) {
             $this->build_params[$key] = $value;
          }
       }
@@ -1115,7 +1115,7 @@ class Mail_mimePart {
       $escape = '=';
       $output = '';
 
-      while(list(, $line) = each($lines))
+      foreach ($lines as $line)
       {
          $linlen  = strlen($line);
          $newline = '';
