@@ -412,6 +412,7 @@ function playSound($filename, $exclusive = 0, $priority = 0)
 
     if (!$ignoreSound) {
         if (file_exists($filename)) {
+            setGlobal('lastPlayTime', time());
             if (IsWindowsOS())
                 safe_exec(DOC_ROOT . '/rc/madplay.exe ' . $filename, $exclusive, $priority);
             else {
@@ -539,7 +540,10 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
             startMeasure('curl_prepare');
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
+            // Referer = origin of the target URL; some devices/sites reject requests without it
+            curl_setopt($ch, CURLOPT_REFERER, preg_replace("|(https?://[^/]+).*$|i", "$1", $url));
+            // pass the browser's User-Agent when called from web, otherwise a modern one (old Firefox/32 UA is blocked by some services)
+            curl_setopt($ch, CURLOPT_USERAGENT, !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20100101 Firefox/140.0');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
             curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
@@ -551,7 +555,8 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
             }
 
             if ($username != '' || $password != '') {
-                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+                // Basic or Digest (IP cameras, e.g. Dahua/Hikvision, require Digest); curl picks what the server offers
+                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC | CURLAUTH_DIGEST);
                 curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
             }
 
@@ -667,7 +672,8 @@ function postURL($url, $query = array(), $cache = 0, $username = '', $password =
             @curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
-            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0');
+            curl_setopt($ch, CURLOPT_REFERER, preg_replace("|(https?://[^/]+).*$|i", "$1", $url));
+            curl_setopt($ch, CURLOPT_USERAGENT, !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20100101 Firefox/140.0');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
             curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
@@ -681,7 +687,7 @@ function postURL($url, $query = array(), $cache = 0, $username = '', $password =
             }
 
             if ($username != '' || $password != '') {
-                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC | CURLAUTH_DIGEST);
                 curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
             }
 
