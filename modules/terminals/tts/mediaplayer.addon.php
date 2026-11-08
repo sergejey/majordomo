@@ -44,7 +44,7 @@ class mediaplayer extends tts_addon
         }
 
         // dobavlyaem soobshenie v konec potom otsortituem
-        $time_shift = 2 + (int)getMediaDurationSeconds($cached_file); // необходимая задержка для перезапуска проигрівателя на факте 2 секундЫ
+        $time_shift = 3 + (int)getMediaDurationSeconds($cached_file); // необходимая задержка для перезапуска проигрывателя: на практике 2 секунд не хватает, конец фразы обрезается
         //DebMes("Add new message".$last_mesage,'terminals');
         addScheduledJob('allsay-target-' . $this->terminal['TITLE'] . '-number-' . $number_message, "playMedia('" . $cached_file_url . "', '" . $this->terminal['TITLE'] . "');", time() + 1, $time_shift);
 
