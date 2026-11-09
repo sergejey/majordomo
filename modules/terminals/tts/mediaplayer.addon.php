@@ -37,16 +37,26 @@ class mediaplayer extends tts_addon
         $chek_restore = SQLSelectOne("SELECT * FROM jobs WHERE TITLE LIKE'" . 'allsay-target-' . $this->terminal['TITLE'] . '-number-' . "99999999998'");
         if (!$chek_restore) {
             $played = getPlayerStatus($this->terminal['NAME']);
-            if (($played['state'] == 'playing') and (stristr($played['file'], 'cms\cached\voice') === FALSE)) {
+            // restore only real content, not an interrupted TTS message (file is a URL: /cms/cached/voice/...)
+            if (is_array($played) && ($played['state'] == 'playing') && !preg_match('#cms.cached.voice#i', $played['file'])) {
                 addScheduledJob('allsay-target-' . $this->terminal['TITLE'] . '-number-99999999998', "playMedia('" . $played['file'] . "', '" . $this->terminal['TITLE'] . "',1);", time() + 100, 4);
                 addScheduledJob('allsay-target-' . $this->terminal['TITLE'] . '-number-99999999999', "seekPlayerPosition('" . $this->terminal['TITLE'] . "'," . $played['time'] . ");", time() + 110, 4);
             }
         }
 
         // dobavlyaem soobshenie v konec potom otsortituem
-        $time_shift = 3 + (int)getMediaDurationSeconds($cached_file); // необходимая задержка для перезапуска проигрывателя: на практике 2 секунд не хватает, конец фразы обрезается
+        $time_shift = 2 + (int)getMediaDurationSeconds($cached_file); // необходимая задержка для перезапуска проигрывателя на факте 2 секунды
         //DebMes("Add new message".$last_mesage,'terminals');
-        addScheduledJob('allsay-target-' . $this->terminal['TITLE'] . '-number-' . $number_message, "playMedia('" . $cached_file_url . "', '" . $this->terminal['TITLE'] . "');", time() + 1, $time_shift);
+        // The slot is counted from the job start, but the player starts sounding later (HTTP fetch + buffering),
+        // so the next message could cut the end of the previous one: wait (max ~4.5 s) while the player
+        // is still playing a TTS file, then start this message.
+        $command = 'for ($i = 0; $i < 15; $i++) {'
+            . ' $st = getPlayerStatus(\'' . $this->terminal['NAME'] . '\');'
+            . ' if (!is_array($st) || $st[\'state\'] != \'playing\' || !preg_match(\'#cms.cached.voice#i\', $st[\'file\'])) break;'
+            . ' usleep(300000);'
+            . ' }'
+            . " playMedia('" . $cached_file_url . "', '" . $this->terminal['TITLE'] . "');";
+        addScheduledJob('allsay-target-' . $this->terminal['TITLE'] . '-number-' . $number_message, $command, time() + 1, $time_shift);
 
         // vibiraem vse soobsheniya dla terminala s sortirovkoy po nazvaniyu
         $all_messages = SQLSelect("SELECT * FROM jobs WHERE TITLE LIKE'" . 'allsay-target-' . $this->terminal['TITLE'] . '-number-' . "%' ORDER BY `TITLE` ASC");

@@ -890,14 +890,15 @@ function getMediaDurationSeconds($file)
     if (preg_match("/: Invalid /", $dur)) {
         return false;
     }
-    preg_match("/Duration: (.{2}):(.{2}):(.{2})/", $dur, $duration);
+    // e.g. "Duration: 00:00:02.98" - keep the fraction and round up, otherwise up to ~1 s is lost
+    preg_match("/Duration: (\d{2}):(\d{2}):(\d{2}(?:\.\d+)?)/", $dur, $duration);
     if (!isset($duration[1])) {
         return false;
     }
-    $hours = $duration[1];
-    $minutes = $duration[2];
-    $seconds = $duration[3];
-    return $seconds + ($minutes * 60) + ($hours * 60 * 60);
+    $hours = (int)$duration[1];
+    $minutes = (int)$duration[2];
+    $seconds = (float)$duration[3];
+    return (int)ceil($seconds + ($minutes * 60) + ($hours * 60 * 60));
 }
 
 function get_media_info($file)
