@@ -412,6 +412,8 @@ function playSound($filename, $exclusive = 0, $priority = 0)
 
     if (!$ignoreSound) {
         if (file_exists($filename)) {
+            // time of the last local playback: lets scenarios avoid overlapping sounds
+            setGlobal('lastPlayTime', time());
             if (IsWindowsOS())
                 safe_exec(DOC_ROOT . '/rc/madplay.exe ' . $filename, $exclusive, $priority);
             else {
