@@ -139,7 +139,8 @@ $ctl = new control_modules();
 
   var doc=window.opener.document;  
   var elem2=doc.getElementById('xml_code');  
-  var xmlText=elem2.value;
+  // HTML <a ...> / </a> inside text blocks (e.g. Telegram messages with links) breaks XML parsing of the workspace
+  var xmlText=elem2.value.replace(/<(\/?a)(?=[\s>])/g, "&lt;$1");
   if (xmlText) {
     var xmlDom = null;
     try {
