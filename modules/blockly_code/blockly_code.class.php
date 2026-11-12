@@ -347,7 +347,7 @@ class blockly_code extends module
         if ($this->system_name) {
             $code_history = SQLSelect("SELECT * FROM blockly_code_history WHERE SYSTEM_NAME LIKE '" . DBSafe($this->system_name) . "' ORDER BY ADDED DESC");
             if (isset($code_history[0])) {
-			    // history XML goes into a hidden <span> and is read back with .text() - escape it as well
+                // history XML goes into a hidden <span> and is read back with .text() - escape it as well
                 foreach ($code_history as &$history_rec) {
                     $history_rec['XML'] = htmlspecialchars((string)$history_rec['XML'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
                 }
