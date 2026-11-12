@@ -551,7 +551,8 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
             }
 
             if ($username != '' || $password != '') {
-                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+                // Basic or Digest (IP cameras, e.g. Dahua/Hikvision, require Digest); curl picks what the server offers
+                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC | CURLAUTH_DIGEST);
                 curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
             }
 
@@ -681,7 +682,8 @@ function postURL($url, $query = array(), $cache = 0, $username = '', $password =
             }
 
             if ($username != '' || $password != '') {
-                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+                // Basic or Digest (IP cameras, e.g. Dahua/Hikvision, require Digest); curl picks what the server offers
+                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC | CURLAUTH_DIGEST);
                 curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
             }
 
