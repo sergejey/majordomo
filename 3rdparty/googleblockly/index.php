@@ -140,7 +140,14 @@ $ctl = new control_modules();
   var doc=window.opener.document;  
   var elem2=doc.getElementById('xml_code');  
   // HTML <a ...> / </a> inside text blocks (e.g. Telegram messages with links) breaks XML parsing of the workspace
-  var xmlText=elem2.value.replace(/<(\/?a)(?=[\s>])/g, "&lt;$1");
+  // repair XML saved unescaped by older versions: bare "&" (not an entity) and any HTML tag inside
+  // <field>/<title>/<comment>/<data> - in Blockly XML these contain only text; valid XML is not changed
+  var xmlText=elem2.value
+    .replace(/&(?![a-zA-Z][a-zA-Z0-9]*;|#[0-9]+;|#x[0-9a-fA-F]+;)/g, "&amp;")
+    .replace(/(<(field|title|comment|data)\b(?:[^>]*[^\/>])?>)([\s\S]*?)(<\/\2>)/g, function (m, open, tag, text, close) {
+      return open + text.replace(/</g, "&lt;") + close;
+    })
+    .replace(/<(\/?a)(?=[\s>])/g, "&lt;$1");
   if (xmlText) {
     var xmlDom = null;
     try {
