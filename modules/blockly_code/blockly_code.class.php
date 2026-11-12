@@ -318,7 +318,9 @@ class blockly_code extends module
 
         if (isset($rec['XML'])) {
             $rec['XML'] = preg_replace('/id="\?/', 'id="Q', $rec['XML']);
-            $out['XML'] = $rec['XML'];
+            // <textarea> decodes entities: escape, otherwise &lt; / &amp; in text blocks break the XML
+            // and the decoded XML is written back to DB on the next form save
+            $out['XML'] = htmlspecialchars($rec['XML'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         }
 
         $out['CODE_TYPE'] = isset($rec['CODE_TYPE']) ? (int)$rec['CODE_TYPE'] : 0;
@@ -345,6 +347,11 @@ class blockly_code extends module
         if ($this->system_name) {
             $code_history = SQLSelect("SELECT * FROM blockly_code_history WHERE SYSTEM_NAME LIKE '" . DBSafe($this->system_name) . "' ORDER BY ADDED DESC");
             if (isset($code_history[0])) {
+			    // history XML goes into a hidden <span> and is read back with .text() - escape it as well
+                foreach ($code_history as &$history_rec) {
+                    $history_rec['XML'] = htmlspecialchars((string)$history_rec['XML'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                }
+                unset($history_rec);
                 $out['HISTORY_AVAILABLE'] = 1;
                 $out['CODE_HISTORY'] = $code_history;
             }
