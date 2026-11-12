@@ -20,7 +20,8 @@ if ($color == '000000') {
     $this->callMethodSafe('turnOff');
 } else {
     if (!$this->getProperty('status')) {
-        $this->callMethod('turnOn');
+        // only mark as on: turnOn() first sets colorSaved/ffffff, which sends an extra (wrong) color to the device before the requested one
+        $this->setProperty('status', 1);
     }
     $this->setProperty('color', $color);
     $this->setProperty('colorSaved', $color);
