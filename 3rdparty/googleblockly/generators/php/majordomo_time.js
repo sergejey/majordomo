@@ -81,6 +81,50 @@ Blockly.PHP['majordomo_settimeout'] = function(block) {
   var delay = Blockly.PHP.valueToCode(block, 'DELAY',Blockly.PHP.ORDER_NONE) || '60';
   var branch = Blockly.PHP.statementToCode(block, 'DO');
   //branch=branch.replace(new RegExp('\n', 'g'), '');
-  var code = '$timerCode=<<<EOT\n'+branch+'\nEOT;\nsetTimeOut('+timer+', $timerCode, (int)('+delay+'));\n';
+
+  // Код таймера выполняется позже, отдельным заданием (job) через eval(): там нет $this
+  // и локальных переменных метода. Раньше код вставлялся в heredoc без кавычек (<<<EOT),
+  // поэтому PHP подставлял переменные в момент СОЗДАНИЯ таймера: без кавычек
+  // (строки превращались в константы, '300000' в число .300000…), пустыми для
+  // переменных цикла (foreach (... as ) — ParseError), а $this->setProperty(...)
+  // превращался в ('...') и задание не выполнялось.
+  // Теперь код вставляется как nowdoc (<<<'EOT') — ровно так, как его показывает Blockly.
+
+  // Свой маркер для вложенных таймеров, чтобы внутренний EOT не закрывал внешний.
+  var depth = 0;
+  for (var p = block.getSurroundParent(); p; p = p.getSurroundParent()) {
+    if (p.type == 'majordomo_settimeout') depth++;
+  }
+  var marker = depth ? 'EOT_' + depth : 'EOT';
+
+  var prelude = '';
+
+  // Блоки «текущий объект» ($this->...) внутри таймера: объект берётся по имени,
+  // которое запоминается в момент создания таймера.
+  if (/\$this->/.test(branch)) {
+    branch = branch.replace(/\$this->/g, '$timerObject->');
+    prelude += '\'$timerObject = getObject(\' . var_export(isset($timerObject) ? $timerObject->object_title : ' +
+      '(isset($this->object_title) ? $this->object_title : \'\'), true) . ");\\n" . ';
+  }
+
+  // Переменные Blockly, используемые внутри таймера, сохраняют значение на момент
+  // создания таймера (как и задумывалось раньше), но теперь корректно экранированы.
+  var doBlock = block.getInputTargetBlock('DO');
+  if (doBlock) {
+    var seen = {};
+    var descendants = doBlock.getDescendants();
+    for (var i = 0; i < descendants.length; i++) {
+      var vars = descendants[i].getVars ? descendants[i].getVars() : [];
+      for (var j = 0; j < vars.length; j++) {
+        var name = Blockly.PHP.variableDB_.getName(vars[j], Blockly.Variables.NAME_TYPE);
+        if (seen[name]) continue;
+        seen[name] = true;
+        prelude += '\'' + name + ' = \' . var_export(isset(' + name + ') ? ' + name + ' : null, true) . ";\\n" . ';
+      }
+    }
+  }
+
+  var code = '$timerCode=' + prelude + '<<<\'' + marker + '\'\n' + branch + '\n' + marker + ';\n' +
+    'setTimeOut(' + timer + ', $timerCode, (int)(' + delay + '));\n';
   return code;
 };
