@@ -55,7 +55,7 @@ $this->device_types = array(
         'PARENT_CLASS' => 'SDevices',
         'DESCRIPTION' => 'Controllable device',
         'PROPERTIES' => array(
-            'groupEco' => array('DESCRIPTION' => LANG_DEVICES_GROUP_ECO, '_CONFIG_TYPE' => 'yesno', '_CONFIG_RESTRICTIONS' => 1, '_CONFIG_HELP' => 'SdGroupEco'),
+            'groupEco' => array('DESCRIPTION' => LANG_DEVICES_GROUP_ECO, '_CONFIG_TYPE' => 'yesno', '_CONFIG_RESTRICTIONS' => 1, '_CONFIG_HELP' => 'SdGroupEco', '_CONFIG_DEVICE_SETTINGS' => 1),
             'groupEcoOn' => array('DESCRIPTION' => LANG_DEVICES_GROUP_ECO_ON, '_CONFIG_TYPE' => 'yesno', '_CONFIG_RESTRICTIONS' => 1, '_CONFIG_HELP' => 'SdGroupEcoOn'),
             'groupSunrise' => array('DESCRIPTION' => LANG_DEVICES_GROUP_SUNRISE, '_CONFIG_TYPE' => 'yesno', '_CONFIG_RESTRICTIONS' => 1, '_CONFIG_HELP' => 'SdGroupSunrise'),
             'groupSunset' => array('DESCRIPTION' => LANG_DEVICES_GROUP_SUNSET, '_CONFIG_TYPE' => 'yesno', '_CONFIG_RESTRICTIONS' => 1, '_CONFIG_HELP' => 'SdGroupSunset'),
@@ -203,7 +203,7 @@ $this->device_types = array(
             'fanSpeedUpdated' => array('DESCRIPTION' => 'Fan Speed updated'),
             'thermostatUpdated' => array('DESCRIPTION' => 'Thermostat updated'),
             'tempUp' => array('DESCRIPTION' => 'Increase target temperature'),
-            'tempDown' => array('DESCRIPTION' => 'Descrease target temperature'),
+            'tempDown' => array('DESCRIPTION' => 'Decrease target temperature'),
         )
     ),
     'dimmer' => array(

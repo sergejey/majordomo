@@ -87,34 +87,50 @@ while (!$connected) {
 echo "CONNECTED TO DB" . PHP_EOL;
 
 //restoring database backup (if exists)
-if (file_exists($db_filename) && filesize($db_filename) > 0) {
-    echo "Running: mysql main db restore from file: " . $db_filename . PHP_EOL;
-    DebMes("Running: mysql main db restore from file: " . $db_filename, 'boot');
-    $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
-    $mysqlParam = " -h " . DB_HOST;
-    $mysqlParam .= " -u " . DB_USER;
-    if (DB_PASSWORD != '') $mysqlParam .= " --password=\"" . DB_PASSWORD . "\"";
-    $mysqlParam .= " " . DB_NAME . " <" . $db_filename;
-    exec($mysql_path . $mysqlParam, $output);
-    echo "Output: " . implode("\n", $output) . PHP_EOL;
-    DebMes("Main DB restore output: " . implode("\n", $output), 'boot');
+// Восстанавливаем базу из дампа только один раз за загрузку системы: при перезапуске
+// службы MajorDoMo в рамках той же загрузки база в памяти уже актуальнее дампа.
+$boot_id = trim((string)@file_get_contents('/proc/sys/kernel/random/boot_id'));
+$restore_marker = sys_get_temp_dir() . '/majordomo_db_restored';
+$restored_this_boot = ($boot_id != '' && trim((string)@file_get_contents($restore_marker)) === $boot_id);
+if (file_exists(ROOT . 'scripts/cycle_db_save.php') && $restored_this_boot) {
+    echo "Database already restored after this boot, skipping restore." . PHP_EOL;
+    DebMes("Database already restored after this boot, skipping restore.", 'boot');
+} elseif (file_exists(ROOT . 'scripts/cycle_db_save.php')) {
 
-    if (file_exists($db_history_filename) && filesize($db_history_filename) > 0) {
-        echo "Running: mysql history db restore from file: " . $db_history_filename . PHP_EOL;
-        DebMes("Running: mysql history db restore from file: " . $db_history_filename, 'boot');
+    if (file_exists($db_filename) && filesize($db_filename) > 0) {
+        echo "Running: mysql main db restore from file: " . $db_filename . PHP_EOL;
+        DebMes("Running: mysql main db restore from file: " . $db_filename, 'boot');
         $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
         $mysqlParam = " -h " . DB_HOST;
         $mysqlParam .= " -u " . DB_USER;
         if (DB_PASSWORD != '') $mysqlParam .= " --password=\"" . DB_PASSWORD . "\"";
-        $mysqlParam .= " " . DB_NAME . " <" . $db_history_filename;
-        exec($mysql_path . $mysqlParam);
+        $mysqlParam .= " " . DB_NAME . " <" . $db_filename;
+        exec($mysql_path . $mysqlParam, $output);
+        echo "Output: " . implode("\n", $output) . PHP_EOL;
+        DebMes("Main DB restore output: " . implode("\n", $output), 'boot');
+        if ($boot_id != '') {
+            @file_put_contents($restore_marker, $boot_id);
+        }
+
+        if (file_exists($db_history_filename) && filesize($db_history_filename) > 0) {
+            echo "Running: mysql history db restore from file: " . $db_history_filename . PHP_EOL;
+            DebMes("Running: mysql history db restore from file: " . $db_history_filename, 'boot');
+            $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
+            $mysqlParam = " -h " . DB_HOST;
+            $mysqlParam .= " -u " . DB_USER;
+            if (DB_PASSWORD != '') $mysqlParam .= " --password=\"" . DB_PASSWORD . "\"";
+            $mysqlParam .= " " . DB_NAME . " <" . $db_history_filename;
+            exec($mysql_path . $mysqlParam);
+        } else {
+            echo "History backup file not found or invalid: " . $db_history_filename . PHP_EOL;
+            DebMes("History backup file not found or invalid: " . $db_history_filename, 'boot');
+        }
     } else {
-        echo "History backup file not found or invalid: " . $db_history_filename . PHP_EOL;
-        DebMes("History backup file not found or invalid: " . $db_history_filename, 'boot');
+        echo "Backup file not found or invalid: " . $db_filename . PHP_EOL;
+        DebMes("Backup file not found or invalid: " . $db_filename, 'boot');
     }
 } else {
-    echo "Backup file not found or invalid: " . $db_filename . PHP_EOL;
-    DebMes("Backup file not found or invalid: " . $db_filename, 'boot');
+    DebMes("No cycle_db_save.php script found, skipping database restore.", 'boot');
 }
 
 //если есть "поломанные" таблицы, попытаться их "вылечить"

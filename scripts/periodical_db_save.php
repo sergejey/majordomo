@@ -58,11 +58,11 @@ while (1) {
         }
     }
     if ((time() - $last_backup_history) > $timeout_history || isRebootRequired()) {
+        $last_backup_history = time();
         debmes('DB Backup started (history)', 'db_backup');
         echo "Running history db save...";
         if (file_exists($filename_history)) rename($filename_history, $filename_history . '.prev');
         if (SQLMakeTableDump($filename_history, 'phistory')) {
-            $last_backup_history = time();
             echo "OK\n";
             debmes('History db save OK', 'db_backup');
         } else {

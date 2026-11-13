@@ -19,9 +19,6 @@ $ctl = new control_modules();
 	for ($i = 0; $i < $total; $i++) {
 		$path=DIR_MODULES.$modules[$i]['NAME'].'/widgets.inc.php';
 		if (file_exists($path)) {
-			//$code=LoadFile($path);
-			//$code=preg_replace('/<script.+?>/is','',$code);
-			//$code=preg_replace('/<\/script>/is','',$code);
 			include_once($path);
 		}
 	}

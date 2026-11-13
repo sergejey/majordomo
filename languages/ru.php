@@ -12,8 +12,8 @@ $dictionary = array(
 
     /* general */
     'SETTINGS_SITE_LANGUAGE_CODE' => 'ru_RU',
-    'WIKI_URL' => 'https://mjdm.ru/',
-    'KB_URL'=>'https://kb.smartliving.ru/',
+    'WIKI_URL' => 'https://ru.majordomohome.com/',
+    'KB_URL'=>'https://kb.majordomohome.com/',
     'DEFAULT_COMPUTER_NAME' => 'Алиса',
     'WELCOME_GREETING' => 'Добро пожаловать!',
     'WELCOME_TEXT' => 'Спасибо, что пользуйтесь MajorDoMo -- открытой платформой домашней автоматизации. <br/><br/>Узнайте больше и присоединяйтесь к сообществу: <a href="<#LANG_WIKI_URL#>" target=_blank>Веб-сайт</a> | <a href="<#LANG_WIKI_URL#>forum/" target=_blank>Форум</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook страница</a> <br/>&nbsp;<br/>&nbsp;<br/><small>P.S. Вы можете изменить или удалить эту страницу через <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Панель управления</a></small>',
@@ -1500,7 +1500,7 @@ $dictionary = array(
     'PLAN_COMPONENTS' => 'Компоненты',
     
     'CONNECT_LOGIN_FAILED' => 'Не удалось подключиться к сервису CONNECT. Пожалуйста, проверьте указанные имя пользователя и пароль',
-    'CONNECT_ABOUT' => 'Cервис CONNECT позволяет Вам с помощью Облачной Синхронизации организовать простой доступ к домашней системе через сеть Интернет, а так же обеспечить работу других облачных сервисов (резервная копия, работа голосовых помощников и т.п.). Подробная информация о сервисе доступна <a href="https://connect.smartliving.ru/services/s2.html">по ссылке</a>',
+    'CONNECT_ABOUT' => 'Cервис CONNECT позволяет Вам с помощью Облачной Синхронизации организовать простой доступ к домашней системе через сеть Интернет, а так же обеспечить работу других облачных сервисов (резервная копия, работа голосовых помощников и т.п.). Подробная информация о сервисе доступна <a href="https://connect.majordomohome.com/services/s2.html">по ссылке</a>',
     'CONNECT_REGISTER' => 'Регистрация на сервисе CONNECT',
     'CONNECT_PUBLISH_DATA' => 'Опубликовать данные',
     'CONNECT_CLOUD_BACKUP' => 'Облачная резервная копия',
@@ -1603,7 +1603,7 @@ $dictionary = array(
 	'NEWDASH_CONNECT_ADS_TEXT' => 'MajorDomo - это OpenSource проект. Он разрабатывается, поддерживается и распростроняется абсолютно бесплатно. Подключая пакет услуг Connect-Pack вы помогаете разработчику, а так же получаете дополнительные функции для работы с MajorDomo. <b>Всем новым пользователям 14 дней бесплатно!</b>',
 	'NEWDASH_CONNECT_ADS_DONATE' => 'Помочь разово',
 	'NEWDASH_CONNECT_ADS_DONATE_BTN' => 'Хочу помочь разово',
-	'NEWDASH_CONNECT_ADS_DONATE_TEXT' => "Классно, что вы хотите помочь MajorDomo! Вы можете сделать разовый перевод разработчику системы. Для этого, перейдите <a href=&quot;https://connect.smartliving.ru/members/finance.html&quot; target=&quot;_blank&quot;><b>по ссылке</b></a> и пополните баланс в системе Connect. Далее просто переведите деньги со своего баланса в <a href=&quot;https://connect.smartliving.ru/tasks/1.html?support=1&quot; target=&quot;_blank&quot;><b>эту задачу</b></a> нажав кнопку &quot;Поддержать разработку&quot;.",
+	'NEWDASH_CONNECT_ADS_DONATE_TEXT' => "Классно, что вы хотите помочь MajorDomo! Вы можете сделать разовый перевод разработчику системы. Для этого, перейдите <a href=&quot;https://connect.majordomohome.com/members/finance.html&quot; target=&quot;_blank&quot;><b>по ссылке</b></a> и пополните баланс в системе Connect. Далее просто переведите деньги со своего баланса в <a href=&quot;https://connect.majordomohome.com/tasks/1.html?support=1&quot; target=&quot;_blank&quot;><b>эту задачу</b></a> нажав кнопку &quot;Поддержать разработку&quot;.",
 	'NEWDASH_CLASS' => 'Класс',
 	'NEWDASH_NEWS' => 'Новости и блоги MajorDomo',
 	'NEWDASH_NEWS_MORE' => 'еще записи',

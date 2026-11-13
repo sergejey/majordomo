@@ -69,7 +69,7 @@ $(document).ready(function() {
      $.ajax({
          url: ROOTHTML+'getlatestnote.html',
      }).done(function(data) {
-         if (data != latestMessage) {
+         if (data != latestMessageApp) {
              latestMessageApp = data;
              let dataJSON = JSON.parse(latestMessageApp);
              if (dataJSON.DATA!='' && latestMessageTimerApp!=0) {

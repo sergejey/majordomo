@@ -185,7 +185,7 @@ class market extends module
             $this->getLatest($out, $this->url, $name, $this->version);
         }
 
-        if ($this->mode == 'upload') {
+        if ($this->mode == 'upload' && gr('restore') != '') {
             $this->upload($out);
         }
 
@@ -264,14 +264,14 @@ class market extends module
             if (is_array($data)) {
                 $total = count($data);
                 echo '<ul class="list-group">';
-                for ($i = 0; $i < 7; $i++) {
+                for ($i = 0; $i < $total && $i < 7; $i++) {
                     if ($i % 2 == 0) {
                         $bgColor = 'strip';
                     } else {
                         $bgColor = '';
                     }
 
-                    if (substr($data[$i]['LINK'], 0, 39) == 'https://connect.smartliving.ru/profile/') {
+                    if (substr($data[$i]['LINK'], 0, 39) == 'https://connect.majordomohome.com/profile/') {
                         $postType = '<i>Блог</i> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i>';
                     } else {
                         $postType = '<i>Новость</i> <i class="glyphicon glyphicon-arrow-right" style="color: darkgray;font-size: 10pt;"></i>';
@@ -446,12 +446,12 @@ class market extends module
                     }
                 }
                 if ($rec['MODULE_NAME'] == $name) {
-                    $this->url = 'https://connect.smartliving.ru/market/?op=download&name=' . urlencode($rec['MODULE_NAME']) . "&serial=" . urlencode(gg('Serial'));
+                    $this->url = 'https://connect.majordomohome.com/market/?op=download&name=' . urlencode($rec['MODULE_NAME']) . "&serial=" . urlencode(gg('Serial'));
                     $this->version = $rec['LATEST_VERSION'];
                 }
 
                 if (!$rec['REPOSITORY_URL']) {
-                    $rec['REPOSITORY_URL'] = 'https://connect.smartliving.ru/market/?op=download&name=' . urlencode($rec['MODULE_NAME']) . "&serial=" . urlencode(gg('Serial'));
+                    $rec['REPOSITORY_URL'] = 'https://connect.majordomohome.com/market/?op=download&name=' . urlencode($rec['MODULE_NAME']) . "&serial=" . urlencode(gg('Serial'));
                 }
 
                 if ((isset($rec['EXISTS']) && !isset($rec['IGNORE_UPDATE'])) || isset($missing[$rec['MODULE_NAME']])) {
@@ -513,7 +513,7 @@ class market extends module
         } else {
             $locale = '';
         }
-        $data_url = 'https://connect.smartliving.ru/market/?lang=' . SETTINGS_SITE_LANGUAGE . "&serial=" . urlencode($serial) . "&locale=" . urlencode($locale) . "&os=" . urlencode($os) . "&" . $details;
+        $data_url = 'https://connect.majordomohome.com/market/?lang=' . SETTINGS_SITE_LANGUAGE . "&serial=" . urlencode($serial) . "&locale=" . urlencode($locale) . "&os=" . urlencode($os) . "&" . $details;
 
         $username = '';
         $password = '';
@@ -593,10 +593,10 @@ class market extends module
                     }
 
                     if (IsWindowsOS()) {
-                        exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
-                        $result = exec(DOC_ROOT . '/tar xvf ../' . str_replace('.tgz', '.tar', $file), $output, $res);
+                        exec(DOC_ROOT . '/gunzip ' . escapeshellarg('../' . $file), $output, $res);
+                        $result = exec(DOC_ROOT . '/tar xvf ' . escapeshellarg('../' . str_replace('.tgz', '.tar', $file)), $output, $res);
                     } else {
-                        $cmd = 'tar xzvf ../' . $file;
+                        $cmd = 'tar xzvf ' . escapeshellarg('../' . $file);
                         $result = exec($cmd, $output, $res);
                     }
 
@@ -660,7 +660,7 @@ class market extends module
                     $rec['CURRENT_VERSION'] = $version . '';
                     $rec['IS_INSTALLED'] = 1;
                     $rec['LATEST_UPDATE'] = date('Y-m-d H:i:s');
-                    if ($rec['ID']) {
+                    if (!empty($rec['ID'])) {
                         SQLUpdate('plugins', $rec);
                     } else {
                         SQLInsert('plugins', $rec);
@@ -851,6 +851,13 @@ class market extends module
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
         curl_setopt($ch, CURLOPT_FILE, $f);
 
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
+
         if (preg_match('/\?op=download/', $url)) {
             DebMes("Setting CONNECT authorization credentials", 'market');
             @include_once(DIR_MODULES . 'connect/connect.class.php');
@@ -967,13 +974,13 @@ class market extends module
 
             if (IsWindowsOS()) {
                 // for windows only
-                exec(DOC_ROOT . '/gunzip ../' . $file, $output, $res);
-                $result = exec(DOC_ROOT . '/tar xvf ../' . str_replace('.tgz', '.tar', $file), $output, $res);
+                exec(DOC_ROOT . '/gunzip ' . escapeshellarg('../' . $file), $output, $res);
+                $result = exec(DOC_ROOT . '/tar xvf ' . escapeshellarg('../' . str_replace('.tgz', '.tar', $file)), $output, $res);
                 if (is_file('../' . str_replace('.tgz', '.tar', $file))) {
                     unlink('../' . str_replace('.tgz', '.tar', $file));
                 }
             } else {
-                $cmd = 'tar xzvf ../' . $file;
+                $cmd = 'tar xzvf ' . escapeshellarg('../' . $file);
                 $result = exec($cmd, $output, $res);
             }
 
@@ -1002,6 +1009,9 @@ class market extends module
 
             if ($x == 1 && $latest_dir) {
                 $folder = '/' . $latest_dir;
+            }
+            if (!is_dir(ROOT . 'cms/saverestore/temp' . $folder)) {
+                $folder = IsWindowsOS() ? '/.' : '/';
             }
             @unlink(ROOT . 'cms/saverestore/temp' . $folder . '/config.php');
             @unlink(ROOT . 'cms/saverestore/temp' . $folder . '/README.md');
@@ -1041,7 +1051,7 @@ class market extends module
             $rec['CURRENT_VERSION'] = $version . '';
             $rec['IS_INSTALLED'] = 1;
             $rec['LATEST_UPDATE'] = date('Y-m-d H:i:s');
-            if ($rec['ID']) {
+            if (!empty($rec['ID'])) {
                 SQLUpdate('plugins', $rec);
             } else {
                 SQLInsert('plugins', $rec);

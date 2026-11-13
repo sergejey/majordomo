@@ -2,6 +2,11 @@
 
 include_once("./config.php");
 
+// callAPI() in fire-and-forget mode disconnects before the response is ready.
+// Without this, Apache mod_php and nginx (fastcgi_ignore_client_abort off)
+// terminate the method/script at its first output after the client has gone.
+ignore_user_abort(1);
+
 if (isset($argv[0]) && $argv[0] != '') {
     set_time_limit(60);
     ignore_user_abort(1);
@@ -245,6 +250,18 @@ if (!isset($request[0])) {
         if (isset($sub_devices[0])) {
             $device['subDevices'] = $sub_devices;
         }
+        $device['settings'] = array();
+        $properties = $devices_module->getAllProperties($device['type']);
+        foreach($properties as $k => $v) {
+            $p_rec= $v;
+            $p_rec['TITLE'] = $k;
+            if (isset($device[$k])) {
+                $p_rec['VALUE'] = $device[$k];
+            }
+            $device['settings'][] = $p_rec;
+        }
+
+
         $result['device'] = $device;
     }
 
@@ -268,6 +285,11 @@ if (!isset($request[0])) {
         include_once(DIR_MODULES . 'devices/devices.class.php');
         $devices_module = new devices();
         $type_details = $devices_module->getTypeDetails($device['TYPE']);
+
+        $property = gr('property');
+        if ($property!='') {
+            sg($device['LINKED_OBJECT'] . '.' . $property, gr('value'));
+        }
 
         $new_title = gr('title');
         if ($new_title) {
@@ -592,11 +614,11 @@ if (!isset($request[0])) {
     } elseif (preg_match('/(\d+)week/', $request[2], $m)) {
         $time_period = $m[1] * 7 * 24 * 60 * 60;
     } elseif ($request[2] == 'month') {
-        $time_period = 30 * 7 * 24 * 60 * 60;
+        $time_period = 30 * 24 * 60 * 60;
     } elseif (preg_match('/(\d+)month/', $request[2], $m)) {
         $time_period = $m[1] * 30 * 24 * 60 * 60;
     } elseif ($request[2] == 'year') {
-        $time_period = 365 * 7 * 24 * 60 * 60;
+        $time_period = 365 * 24 * 60 * 60;
     } elseif (preg_match('/(\d+)year/', $request[2], $m)) {
         $time_period = $m[1] * 365 * 24 * 60 * 60;
     }

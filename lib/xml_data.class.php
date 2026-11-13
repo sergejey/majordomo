@@ -160,7 +160,7 @@ class xml_data
 
             if (isset($this->ndx["$prev" . "$k"]))
             {
-               if ($ndx["$prev" . "$k"] == 0)
+               if ($this->ndx["$prev" . "$k"] == 0)
                {
                   $vv = $xml["$k"];
 

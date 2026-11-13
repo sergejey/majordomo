@@ -60,7 +60,7 @@ if ($this->action != 'admin') {
         //$qry.=" AND PARENT_ID='".$this->parent_item."'";
         $parent_rec = SQLSelectOne("SELECT * FROM commands WHERE ID='" . (int)$this->parent_item . "'");
         $parent_rec['TITLE'] = processTitle($parent_rec['TITLE'], $this);
-        if ($paret_rec['SUB_PRELOAD']) {
+        if ($parent_rec['SUB_PRELOAD']) {
             $parent_rec['ID'] = $parent_rec['PARENT_ID'];
         }
 

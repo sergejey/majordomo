@@ -277,7 +277,9 @@ class patterns extends module
             $total = count($patterns);
             $res = 0;
             for ($i = 0; $i < $total; $i++) {
-                $res = $this->checkPattern($patterns[$i]['ID'], $from_user_id, $details);
+                if ($this->checkPattern($patterns[$i]['ID'], $from_user_id, $details)) {
+                    $res = 1;
+                }
             }
             if (!$res && $from_user_id) {
                 $res = $this->checkExtPatterns(0);
@@ -330,7 +332,7 @@ class patterns extends module
             $data['phrase'] = $phrase;
 
             // POST TO SERVER
-            $url = 'https://connect.smartliving.ru/patterns/';
+            $url = 'https://connect.majordomohome.com/patterns/';
             $fields = array(
                 'data' => urlencode(serialize($data))
             );
@@ -416,7 +418,7 @@ class patterns extends module
             $data['context_id'] = $ext_context_id;
 
             // POST TO SERVER
-            $url = 'https://connect.smartliving.ru/patterns/';
+            $url = 'https://connect.majordomohome.com/patterns/';
             $fields = array(
                 'data' => urlencode(serialize($data))
             );
@@ -501,7 +503,7 @@ class patterns extends module
                     DebMes("Error in pattern code: " . $code, 'patterns');
                     registerError('patterns', "Error in pattern code: " . $code);
                 }
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 DebMes('Error: exception ' . get_class($e) . ', ' . $e->getMessage() . '.', 'patterns');
                 registerError('patterns', get_class($e) . ', ' . $e->getMessage());
             }
@@ -525,7 +527,7 @@ class patterns extends module
                     DebMes("Error in pattern exit code: " . $code, 'patterns');
                     registerError('patterns', "Error in pattern exit code: " . $code);
                 }
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 DebMes('Error: exception ' . get_class($e) . ', ' . $e->getMessage() . '.', 'patterns');
                 registerError('patterns', get_class($e) . ', ' . $e->getMessage());
             }

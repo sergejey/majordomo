@@ -58,13 +58,13 @@
     }
 
     function applyDbBadgeState($el, value, warnThreshold, dangerThreshold) {
-        $el.removeClass('label-success label-warning label-danger').css('cursor', 'help');
+        $el.removeClass('alert-success alert-warning alert-danger').css('cursor', 'help');
         if (value <= warnThreshold) {
-            $el.addClass('label-success');
+            $el.addClass('alert-success');
         } else if (value < dangerThreshold) {
-            $el.addClass('label-warning');
+            $el.addClass('alert-warning');
         } else {
-            $el.addClass('label-danger');
+            $el.addClass('alert-danger');
         }
     }
 
@@ -756,6 +756,20 @@
     }
 
     function checkUpdatesAvailable() {
+
+        var urlCheckUpdatesSystem = '<#ROOTHTML#>ajax/system_errors.html?op=check';
+        $.ajax({
+            url: urlCheckUpdatesSystem
+        }).done(function(data) {
+            if (data >= '1') {
+                $('#errors-saved').prepend('<span class="label label-danger"><#LANG_ERRORS_SAVED#>: '+data+'</span>');
+                $('#errors-saved').show();
+                $('#breadcrumb_update').attr('style', 'border-radius: 0px 4px 4px 0px;[#if ACTION==""#]background-image: radial-gradient(circle farthest-corner at 0px 10px, #f5f5f5, #4792d1);[#endif#]');
+            }
+            $('#loadUpdate').hide()
+        });
+        return;
+
         var urlCheckUpdates = '<#ROOTHTML#>ajax/saverestore.html?op=check_updates';
         $.ajax({
             url: urlCheckUpdates
@@ -790,17 +804,7 @@
             $('#loadUpdate').hide()
         });
 
-        var urlCheckUpdatesSystem = '<#ROOTHTML#>ajax/system_errors.html?op=check';
-        $.ajax({
-            url: urlCheckUpdatesSystem
-        }).done(function(data) {
-            if (data >= '1') {
-                $('#errors-saved').prepend('<span class="label label-danger"><#LANG_ERRORS_SAVED#>: '+data+'</span>');
-                $('#errors-saved').show();
-                $('#breadcrumb_update').attr('style', 'border-radius: 0px 4px 4px 0px;[#if ACTION==""#]background-image: radial-gradient(circle farthest-corner at 0px 10px, #f5f5f5, #4792d1);[#endif#]');
-            }
-            $('#loadUpdate').hide()
-        });
+
 
     }
     [#endif#]

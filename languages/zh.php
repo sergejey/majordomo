@@ -10,7 +10,7 @@
 $dictionary=array(
 'SETTINGS_SITE_LANGUAGE_CODE' => 'zh-HK',
 'WIKI_URL'=>'http://majordomohome.com/',
-'KB_URL'=>'https://kb.smartliving.ru/',
+'KB_URL'=>'https://kb.majordomohome.com/',
 'DEFAULT_COMPUTER_NAME'=>'爱丽丝',
 'WELCOME_GREETING'=>'欢迎！',
 'WELCOME_TEXT'=>'感谢您使用管家--一个开放源码的家庭自动化平台。 <<解更多关于它加入我们的社区： <a href="<#LANG_WIKI_URL#>"目标=_blank>网站</|<a href="<#LANG_WIKI_URL#>论坛/"目标=_blank>论坛</|<a href="https://www.facebook.com/SmartLivingRu"目标=_blank>Facebook网页</><<<<小>P.S.你可以定制或删除这一页使用<a href="/管理。php?pd=&md＝小组和inst=&action=布">的控制面板</></小>',
@@ -674,7 +674,7 @@ $dictionary=array(
 'UPDATE_ALL_EXTENSIONS'=>'更新所有的扩展安装',
 'SAVE_CHANGES'=>'保存变化',
 'ADD_PANE'=>'添加窗',
-'HCB'=>'<a href="https://majordomo.smartliving.ru/Hints/',
+'HCB'=>'<a href="https://ru.majordomohome.com/Hints/',
 'HCE'=>'?皮肤=暗示"class="wiki_hint fancybox的。框架"><我class="glyphicon glyphicon-info-标志"></i></>',
 'DATA_KEY'=>'关键数据',
 'DATA_TYPE'=>'数据类型',

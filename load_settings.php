@@ -28,7 +28,9 @@ for ($i = 0; $i < $total; $i++) {
     if ($settings[$i]['NAME'] == 'SITE_TIMEZONE' && !in_array($settings[$i]['VALUE'], DateTimeZone::listIdentifiers())) {
         continue;
     }
-    Define('SETTINGS_' . $settings[$i]['NAME'], $settings[$i]['VALUE']);
+    if (!defined('SETTINGS_' . $settings[$i]['NAME'])) {
+        Define('SETTINGS_' . $settings[$i]['NAME'], $settings[$i]['VALUE']);
+    }
 }
 
 
@@ -67,7 +69,7 @@ date_default_timezone_set(SETTINGS_SITE_TIMEZONE);
 
 function timezone_offset_string($offset)
 {
-    return sprintf("%s%02d:%02d", ($offset >= 0) ? '+' : '-', abs($offset / 3600), abs($offset % 3600));
+    return sprintf("%s%02d:%02d", ($offset >= 0) ? '+' : '-', abs(intdiv($offset, 3600)), abs(intdiv($offset % 3600, 60)));
 }
 
 $offset = timezone_offset_get(new DateTimeZone(SETTINGS_SITE_TIMEZONE), new DateTime());

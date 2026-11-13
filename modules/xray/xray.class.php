@@ -521,11 +521,14 @@ class xray extends module
 
             getDirTree($path, $files);
             usort($files, function ($a, $b) {
-                return $b['TM'] > $a['TM'];
+                return $b['TM'] <=> $a['TM'];
             });
             $total = count($files);
+            // getDirTree() returns realpath() names with native separators ("\\" on Windows),
+            // so compare against the normalized realpath of the log directory
+            $base_title_path = rtrim(str_replace('\\', '/', $path_real !== false ? $path_real : $path), '/') . '/';
             for ($i = 0; $i < $total; $i++) {
-                $files[$i]['TITLE'] = str_replace($path . '/', '', $files[$i]['FILENAME']);
+                $files[$i]['TITLE'] = str_replace($base_title_path, '', str_replace('\\', '/', $files[$i]['FILENAME']));
                 $files[$i]['BASENAME'] = basename($files[$i]['FILENAME']);
                 $files[$i]['PASSED'] = getPassedText($files[$i]['TM']);
                 $files[$i]['SIZE'] = filesize($files[$i]['FILENAME']);
@@ -587,7 +590,7 @@ class xray extends module
                         $responce['LIST'][$i]['SOURCE'] = $res[$i]['SOURCE'];
                     }
 
-                    $responce['LIST'] = array_reverse($responce['LIST']);
+                    $responce['LIST'] = array_reverse((array)$responce['LIST']);
 
                     echo json_encode($responce);
                 }
@@ -757,7 +760,7 @@ class xray extends module
                         $responce['LIST'][$i]['SOURCE'] = $res[$i]['EXECUTED_SRC'];
                     }
 
-                    $responce['LIST'] = array_reverse($responce['LIST']);
+                    $responce['LIST'] = array_reverse((array)$responce['LIST']);
 
                     echo json_encode($responce);
                 }
@@ -790,7 +793,7 @@ class xray extends module
                         }
                     }
 
-                    $responce['LIST'] = array_reverse($responce['LIST']);
+                    $responce['LIST'] = array_reverse((array)$responce['LIST']);
 
                     echo json_encode($responce);
 
@@ -858,7 +861,7 @@ class xray extends module
                         }
                     }
 
-                    $responce['LIST'] = array_reverse($responce['LIST']);
+                    $responce['LIST'] = array_reverse((array)$responce['LIST']);
 
                     if ($this->mode == 'chart') {
                         $chart = array(array(
@@ -900,7 +903,7 @@ class xray extends module
                         $responce['LIST'][$i]['STOP_LINK'] = $url;
                     }
 
-                    $responce['LIST'] = array_reverse($responce['LIST']);
+                    $responce['LIST'] = array_reverse((array)$responce['LIST']);
 
                     echo json_encode($responce);
 
@@ -943,7 +946,7 @@ class xray extends module
                         $responce['LIST'][$i]['UPDATED'] = htmlspecialchars($res[$i]['UPDATED']);
                     }
 
-                    $responce['LIST'] = array_reverse($responce['LIST']);
+                    $responce['LIST'] = array_reverse((array)$responce['LIST']);
 
                     echo json_encode($responce);
                 }
@@ -968,7 +971,7 @@ class xray extends module
                     }
 
                     if (isset($responce['LIST']) && is_array($responce['LIST'])) {
-                        $responce['LIST'] = array_reverse($responce['LIST']);
+                        $responce['LIST'] = array_reverse((array)$responce['LIST']);
                     }
 
                     echo json_encode($responce);
@@ -1006,12 +1009,12 @@ class xray extends module
                             $i++;
                         }
 
-                        $responce['LIST'] = array_reverse($responce['LIST']);
+                        $responce['LIST'] = array_reverse((array)$responce['LIST']);
                         $responce['TOTAL'] = $i;
 
 
                         if ($this->mode == 'chart') {
-                            $arrayDB = array_slice(array_reverse($responce['LIST']), 0, 7);
+                            $arrayDB = array_slice(array_reverse((array)$responce['LIST']), 0, 7);
                             echo json_encode($arrayDB);
                         } else if ($this->mode == 'showdbload') {
                             if (isset($GLOBALS['db']->dbh->stat)) {

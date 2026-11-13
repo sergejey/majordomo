@@ -35,6 +35,12 @@ if (isset($url) && $url != '') {
     if (!$img) {
         $filename = 'thumb_' . md5($tmp_url);
         $img = _I_CACHE_PATH . $filename;
+    } else {
+        $base = basename($img);
+        if ($base !== $img || !preg_match('/^[A-Za-z0-9._-]+$/', $base)) {
+            $base = 'thumb_' . md5($base);
+        }
+        $img = _I_CACHE_PATH . $base;
     }
     if ($tmp_url == 'usb') {
         $url = "";
@@ -99,7 +105,7 @@ if (isset($url) && $url != '') {
             @ini_set('zlib.output_compression', 0);
             @ini_set('implicit_flush', 1);
 
-            for ($i = 0; $i < ob_get_level(); $i++) ob_end_flush();
+            while (ob_get_level() > 0) ob_end_flush();
             ob_implicit_flush(1);
             while (true) {
                 print "Content-type: image/jpeg\n\n";
@@ -121,7 +127,7 @@ if (isset($url) && $url != '') {
 
         }
         $dc = 1;
-    } else {
+    } elseif (preg_match('#^https?://#i', $url)) {
 
         function mjpeg_grab_frame($url)
         {
@@ -167,7 +173,7 @@ if (isset($url) && $url != '') {
                 }
                 @ini_set('zlib.output_compression', 0);
                 @ini_set('implicit_flush', 1);
-                for ($i = 0; $i < ob_get_level(); $i++) ob_end_flush();
+                while (ob_get_level() > 0) ob_end_flush();
                 ob_implicit_flush(1);
                 ob_end_flush();
                 $counter = 0;

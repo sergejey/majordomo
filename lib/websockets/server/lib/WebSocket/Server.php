@@ -83,7 +83,7 @@ class Server extends Socket
                         $write           = null;
                         $except          = null;
 
-                        $num_changed = @stream_select($changed_sockets, $write, $except, 0, 5000);
+                        $num_changed = @stream_select($changed_sockets, $write, $except, 0, 500000);
                         if ($num_changed === false) {
                                 $this->log('[warn] stream_select() failed, cleaning sockets');
                                 foreach ($this->clients as $key => $client) {

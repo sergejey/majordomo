@@ -187,7 +187,7 @@ class objects extends module
         }
 
         $pvalues = SQLSelect("SELECT * FROM pvalues WHERE OBJECT_ID='" . $id . "'");
-        $total = count($properties);
+        $total = count($pvalues);
         for ($i = 0; $i < $total; $i++) {
             $p_id = $pvalues[$i]['ID'];
             if ($seen_pvalues[$p_id]) {
@@ -681,7 +681,7 @@ class objects extends module
                             //getLogger($this)->error(sprintf('Error in "%s.%s" method.', $this->object_title, $name));
                             registerError('method', sprintf('Exception in "%s.%s" method.', $this->object_title, $name));
                         }
-                    } catch (Exception $e) {
+                    } catch (Throwable $e) {
                         //getLogger($this)->error(sprintf('Exception in "%s.%s" method', $this->object_title, $name), $e);
                         registerError('method', sprintf('Exception in "%s.%s" method ' . $e->getMessage(), $this->object_title, $name));
                     }
@@ -762,7 +762,7 @@ class objects extends module
                 return '';
             }
 
-            $value = SQLSelectOne("SELECT UPDATED FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $source_property) . "'");
+            $value = SQLSelectOne("SELECT UPDATED FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $source_property) . "' ORDER BY UPDATED DESC LIMIT 1");
             if (!isset($value['UPDATED'])) {
                 $id = $this->getPropertyByName($source_property, $this->class_id, $this->id);
                 if ($id) {
@@ -791,7 +791,7 @@ class objects extends module
             }
         }
 
-        $value = SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $property) . "'");
+        $value = SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $property) . "' ORDER BY UPDATED DESC LIMIT 1");
         if (isset($value['VALUE'])) {
             startMeasure('getPropertyCached2');
             endMeasure('getPropertyCached2', 1);

@@ -148,12 +148,13 @@ class saverestore extends module
         }
 
 
+        $max_size = 0;
         $post_max_size = $this->parse_size(ini_get('post_max_size'));
         if ($post_max_size > 0) {
             $max_size = $post_max_size;
         }
         $upload_max = $this->parse_size(ini_get('upload_max_filesize'));
-        if ($upload_max > 0 && $upload_max < $max_size) {
+        if ($upload_max > 0 && ($max_size == 0 || $upload_max < $max_size)) {
             $max_size = $upload_max;
         }
         $out['MAX_SIZE'] = round($max_size / 1024 / 1024, 2) . ' Mb';
@@ -562,12 +563,18 @@ class saverestore extends module
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_FILE, $f);
+        if (defined('USE_PROXY') && USE_PROXY != '') {
+            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+            }
+        }
         $incoming = curl_exec($ch);
-
+        $curl_error = curl_error($ch);
         curl_close($ch);
         @fclose($f);
 
-        if (file_exists($filename)) {
+        if (file_exists($filename) && filesize($filename) > 0) {
 
             if ($iframe) {
                 echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> ' . LANG_UPDATEBACKUP_DONE . '</div>');
@@ -601,7 +608,7 @@ class saverestore extends module
             }
 
         } else {
-
+            DebMes("Download failed: " . $url . ($curl_error != '' ? ' (' . $curl_error . ')' : ''), 'restore');
             if ($iframe) {
                 echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> ' . LANG_UPDATEBACKUP_ERROR_DOWNLOAD . '</div>', 'red');
                 exit;

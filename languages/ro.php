@@ -639,7 +639,7 @@ $dictionary=array(
 'UPDATE_ALL_EXTENSIONS'=>'Actualizați toate add-on-urile instalate',
 'SAVE_CHANGES'=>'Salvați modificările',
 'ADD_PANE'=>'Adăugați panoul',
-'HCB'=>'<a href="http://majordomo.smartliving.ru/Indicii/',
+'HCB'=>'<a href="https://ru.majordomohome.com/Indicii/',
 'HCE'=>'?skin=indiciu" class="wiki_hint fancybox.iframe"><i class="glyphicon glyphicon-info-sign"></i></a>',
 'DATA_KEY'=>'Datele cheie',
 'DATA_TYPE'=>'Tip de date',

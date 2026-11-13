@@ -638,7 +638,7 @@ $dictionary=array(
 'UPDATE_ALL_EXTENSIONS'=>'Обнови всички инсталирани допълнения',
 'SAVE_CHANGES'=>'Съхрани имененията',
 'ADD_PANE'=>'Добави панел',
-'HCB'=>'<a href="http://majordomo.smartliving.ru/Hints/',
+'HCB'=>'<a href="https://ru.majordomohome.com/Hints/',
 'HCE'=>'?skin=hint" class="wiki_hint fancybox.iframe"><i class="glyphicon glyphicon-info-sign"></i></a>',
 'DATA_KEY'=>'Ключови данни',
 'DATA_TYPE'=>'Тип на данните',

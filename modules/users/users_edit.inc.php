@@ -39,11 +39,17 @@ if ($this->mode == 'update') {
     global $avatar;
     global $avatar_name;
     if ($avatar != '') {
-        if ($rec['AVATAR'] != '') {
-            @unlink(ROOT . 'cms/avatars/' . $rec['AVATAR']);
+        $lst = GetImageSize($avatar);
+        $image_format = $lst[2];
+        if ($image_format > 0) {
+            $image_width = $lst[0];
+            $image_height = $lst[1];
+            if ($rec['AVATAR'] != '') {
+                @unlink(ROOT . 'cms/avatars/' . $rec['AVATAR']);
+            }
+            $rec['AVATAR'] = $rec['ID'] . '_' . $avatar_name;
+            copy($avatar, ROOT . 'cms/avatars/' . $rec['AVATAR']);
         }
-        $rec['AVATAR'] = $rec['ID'] . '_' . $avatar_name;
-        copy($avatar, ROOT . 'cms/avatars/' . $rec['AVATAR']);
     }
 
     //UPDATING RECORD

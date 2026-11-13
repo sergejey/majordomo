@@ -340,7 +340,7 @@ class MajordomoApplication extends Application
 
         if (IsSet($data['NAME'])) {
             $received_properties[] = $data['NAME'];
-            $received_values[] = $data['VALUE'];
+            $received_values[$data['NAME']] = $data['VALUE'];
         } elseif (is_array($data[0]) && isset($data[0]['NAME'])) {
             $total = count($data);
             for ($i = 0; $i < $total; $i++) {

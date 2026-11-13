@@ -110,6 +110,23 @@ class chromecast extends app_player_addon
         return $this->success;
     }
     
+    // Resume: continue the current media session after pause (play() without load())
+    function resume()
+    {
+        $this->reset_properties();
+        try {
+            $cc = new GChromecast($this->terminal['HOST'], $this->terminal['PLAYER_PORT']);
+            $cc->requestId = time();
+            $cc->play();
+            $this->success = TRUE;
+            $this->message = 'OK';
+        } catch (Exception $e) {
+            $this->success = FALSE;
+            $this->message = $e->getMessage();
+        }
+        return $this->success;
+    }
+
 	// Say
     function say_message($message, $terminal) //SETTINGS_SITE_LANGUAGE_CODE=код языка
     {

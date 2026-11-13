@@ -12,7 +12,7 @@ $dictionary = array(
 
     /* general */
     'WIKI_URL' => 'https://majordomohome.com/',
-    'KB_URL'=>'https://kb.smartliving.ru/',
+    'KB_URL'=>'https://kb.majordomohome.com/',
     'DEFAULT_COMPUTER_NAME' => 'Αλίκη',
     'WELCOME_GREETING' => 'Καλωσόρισμα!',
     'WELCOME_TEXT' => 'Σας ευχαριστούμε που χρησιμοποιήσατε το MajorDoMo, μια ανοιχτή πλατφόρμα για οικιακό αυτοματισμό. <br/><br/>Μάθετε περισσότερα και συμμετέχετε στην κοινότητα:<a href="<#LANG_WIKI_URL#>" target=_blank>Ιστοσελίδα</a> | <a href="<#LANG_WIKI_URL#>forum/" target=_blank>Φόρουμ</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Σελίδα Facebook</a> <br/>&nbsp;<br/>&nbsp;<br/><small>P.S. Μπορείτε να αλλάξετε ή να διαγράψετε αυτή τη σελίδα <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Πίνακας ελέγχου</a></small>',

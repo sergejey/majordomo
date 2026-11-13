@@ -3,7 +3,7 @@
  * Plans
  * @package project
  * @author Wizard <sergejey@gmail.com>
- * @copyright http://majordomo.smartliving.ru/ (c)
+ * @copyright https://ru.majordomohome.com/ (c)
  * @version 0.1 (wizard, 21:02:32 [Feb 24, 2019])
  */
 //

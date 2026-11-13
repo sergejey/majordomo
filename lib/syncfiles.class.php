@@ -312,9 +312,6 @@ function walk_dir($dir, $callback, $move = 0)
             return;
     }
 
-    //if (!preg_match('/mail.ru Blogs/is', $dir)) {
-    // return;
-    //}
     echo "processing $dir\n";
 
     if (!is_dir2($dir))
@@ -769,16 +766,30 @@ function copyTree($source, $destination, $over = 0, $patterns = 0)
 
 function removeEmptySubFolders($path)
 {
+
+    $path = rtrim($path, "/\\");
+    if ($path === '' || is_link($path) || !is_dir($path)) {
+        return false;
+    }
+
+    $entries = @scandir($path);
+    if ($entries === false) {
+        return false;
+    }
+
     $empty = true;
-    foreach (glob($path . DIRECTORY_SEPARATOR . "*") as $file) {
-        $empty &= is_dir($file) && removeEmptySubFolders($file);
+    foreach ($entries as $entry) {
+        if ($entry === '.' || $entry === '..') {
+            continue;
+        }
+        $child = $path . DIRECTORY_SEPARATOR . $entry;
+        if (is_link($child) || !is_dir($child)) {
+            $empty = false;
+        } elseif (!removeEmptySubFolders($child)) {
+            $empty = false;
+        }
     }
-
-    if (is_dir($path)) {
-        $empty &= rmdir($path);
-    }
-
-    return $empty;
+    return $empty && @rmdir($path);
 }
 
 function getDirTree($dir, &$results = array())
@@ -875,18 +886,19 @@ function getMediaDurationSeconds($file)
             define("PATH_TO_FFMPEG", 'ffmpeg');
         }
     }
-    $dur = shell_exec(PATH_TO_FFMPEG . " -i " . $file . " 2>&1");
+    $dur = shell_exec(escapeshellarg(PATH_TO_FFMPEG) . " -i " . escapeshellarg($file) . " 2>&1");
     if (preg_match("/: Invalid /", $dur)) {
         return false;
     }
-    preg_match("/Duration: (.{2}):(.{2}):(.{2})/", $dur, $duration);
+    // e.g. "Duration: 00:00:02.98" - keep the fraction and round up, otherwise up to ~1 s is lost
+    preg_match("/Duration: (\d{2}):(\d{2}):(\d{2}(?:\.\d+)?)/", $dur, $duration);
     if (!isset($duration[1])) {
         return false;
     }
-    $hours = $duration[1];
-    $minutes = $duration[2];
-    $seconds = $duration[3];
-    return $seconds + ($minutes * 60) + ($hours * 60 * 60);
+    $hours = (int)$duration[1];
+    $minutes = (int)$duration[2];
+    $seconds = (float)$duration[3];
+    return (int)ceil($seconds + ($minutes * 60) + ($hours * 60 * 60));
 }
 
 function get_media_info($file)
@@ -898,7 +910,7 @@ function get_media_info($file)
             define("PATH_TO_FFMPEG", 'ffmpeg');
         }
     }
-    $data = shell_exec(PATH_TO_FFMPEG . " -i " . $file . " 2>&1");
+    $data = shell_exec(escapeshellarg(PATH_TO_FFMPEG) . " -i " . escapeshellarg($file) . " 2>&1");
 
     if (preg_match("/: Invalid /", $data)) {
         return false;

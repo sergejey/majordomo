@@ -13,7 +13,7 @@ $dictionary = array(
     /* general */
     'SETTINGS_SITE_LANGUAGE_CODE'=>'en_GB',
     'WIKI_URL' => 'http://majordomohome.com/',
-    'KB_URL' => 'https://kb.smartliving.ru/',
+    'KB_URL' => 'https://kb.majordomohome.com/',
     'DEFAULT_COMPUTER_NAME' => 'Alice',
     'WELCOME_GREETING' => 'Welcome!',
     'WELCOME_TEXT' => 'Thank you for using MajorDoMo -- an open-source home automation platform. <br/><br/>Read more about it and join our community: <a href="<#LANG_WIKI_URL#>" target=_blank>Web-site</a> | <a href="<#LANG_WIKI_URL#>forum/" target=_blank>Forum</a> | <a href="https://www.facebook.com/SmartLivingRu" target=_blank>Facebook page</a> <br/>&nbsp;<br/>&nbsp;<br/><small>P.S. You can customize or delete this page using <a href="/admin.php?pd=&md=panel&inst=&action=layouts">Control Panel</a></small>',
@@ -1111,7 +1111,7 @@ $dictionary = array(
     'SAVE_CHANGES' => 'Save changes',
     'ADD_PANE' => 'Add Pane',
 
-    'HCB' => ' <a href="https://majordomo.smartliving.ru/Hints/',
+    'HCB' => ' <a href="https://ru.majordomohome.com/Hints/',
     'HCE' => '?skin=hint" class="wiki_hint fancybox.iframe"><i class="glyphicon glyphicon-info-sign"></i></a>',
 
     'DATA_KEY' => 'Key data',
@@ -1498,7 +1498,7 @@ $dictionary = array(
     'PLAN_COMPONENTS' => 'Components',
 
     'CONNECT_LOGIN_FAILED' => 'Could not login into CONNECT service. Please check username/password.',
-    'CONNECT_ABOUT' => 'CONNECT service allows you to organize easy access to your smarthome system by Internet. Also it provides tools for other cloud-based services like Cloud Backup, voice assistants, etc. More details available <a href="https://connect.smartliving.ru/services/s2.html">by the link</a>',
+    'CONNECT_ABOUT' => 'CONNECT service allows you to organize easy access to your smarthome system by Internet. Also it provides tools for other cloud-based services like Cloud Backup, voice assistants, etc. More details available <a href="https://connect.majordomohome.com/services/s2.html">by the link</a>',
     'CONNECT_REGISTER' => 'Register at CONNECT',
     'CONNECT_PUBLISH_DATA' => 'Publish Data',
     'CONNECT_CLOUD_BACKUP' => 'Cloud Backup',
@@ -1601,7 +1601,7 @@ $dictionary = array(
 	'NEWDASH_CONNECT_ADS_TEXT' => 'MajorDomo is an OpenSource project. It is developed, maintained, and distributed completely free of charge. By connecting the Connect-Pack service package, you help the developer, and also get additional functions for working with MajorDomo. <b> Free 14 days for all new users! </b> ',
 	'NEWDASH_CONNECT_ADS_DONATE' => 'Donate one time',
 	'NEWDASH_CONNECT_ADS_DONATE_BTN' => 'I want to help one time',
-	'NEWDASH_CONNECT_ADS_DONATE_TEXT' => "Great that you want to help MajorDomo! You can make a one-time translation to the system developer. To do this, go to <a href=&quot;https://connect.smartliving.ru/members/finance.html&quot; target=&quot;_blank&quot;><b>follow the link</b></a> and top up your balance in the Connect system. Then just transfer money from your balance to <a href=&quot;https://connect.smartliving.ru/tasks/1.html?support=1&quot; target=&quot;_blank&quot;><b>this task</b></a> by clicking the &quot;Donate&quot; button.",
+	'NEWDASH_CONNECT_ADS_DONATE_TEXT' => "Great that you want to help MajorDomo! You can make a one-time translation to the system developer. To do this, go to <a href=&quot;https://connect.majordomohome.com/members/finance.html&quot; target=&quot;_blank&quot;><b>follow the link</b></a> and top up your balance in the Connect system. Then just transfer money from your balance to <a href=&quot;https://connect.majordomohome.com/tasks/1.html?support=1&quot; target=&quot;_blank&quot;><b>this task</b></a> by clicking the &quot;Donate&quot; button.",
 	'NEWDASH_CLASS' => 'Class',
 	'NEWDASH_NEWS' => 'MajorDomo News and Blogs',
 	'NEWDASH_NEWS_MORE' => 'more entries',

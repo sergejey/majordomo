@@ -154,7 +154,7 @@ if (!isset($run_from_start) || $run_from_start == 0) {
     }
 } else {
     // RUN ON START ONLY
-    if (time() >= getGlobal('ThisComputer.started_time')) {
+    if (time() < getGlobal('ThisComputer.started_time')) {
         DebMes("Incorrect date on start, fixing.", 'maintenance');
         SQLExec("DELETE FROM events WHERE ADDED > NOW()");
         SQLExec("DELETE FROM phistory WHERE ADDED > NOW()");
@@ -177,7 +177,8 @@ for ($i = 0; $i < $total; $i++) {
         continue;
     }
     echo 'Checking table [' . $table . '] ...';
-    if ($result = SQLExec("CHECK TABLE " . $table . ";")) {
+    $result = SQLSelectOne("CHECK TABLE " . $table . ";");
+    if (isset($result['Msg_text']) && $result['Msg_text'] == 'OK') {
         echo "OK\n";
     } else {
         echo " broken ... repair ...";

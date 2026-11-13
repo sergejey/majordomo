@@ -239,6 +239,11 @@ class phpMQTT
 
         $string = $this->read(4);
 
+        if (strlen($string) < 4) {
+            $this->_errorMessage('Connection failed! (incomplete CONNACK: ' . strlen($string) . ' of 4 bytes)');
+            return false;
+        }
+
         if (ord($string[0]) >> 4 === 2 && $string[3] === chr(0)) {
             $this->_debugMessage('Connected to Broker');
         } else {
@@ -341,10 +346,6 @@ class phpMQTT
         fwrite($this->socket, $head, strlen($head));
 
         $this->_fwrite($buffer);
-        $string = $this->read(2);
-
-        $bytes = ord(substr($string, 1, 1));
-        $this->read($bytes);
     }
 
     /**
@@ -375,8 +376,10 @@ class phpMQTT
      */
     public function close()
     {
-        $this->disconnect();
-        stream_socket_shutdown($this->socket, STREAM_SHUT_WR);
+        if (is_resource($this->socket)) {
+            $this->disconnect();
+            stream_socket_shutdown($this->socket, STREAM_SHUT_WR);
+        }
     }
 
     /**
@@ -452,6 +455,10 @@ class phpMQTT
      */
     public function message($msg)
     {
+        if (strlen($msg) < 2) {
+            $this->_debugMessage('PUBLISH message too short (' . strlen($msg) . ' bytes)');
+            return false;
+        }
         $tlen = (ord($msg[0]) << 8) + ord($msg[1]);
         $topic = substr($msg, 2, $tlen);
         $msg = substr($msg, ($tlen + 2));
@@ -511,7 +518,9 @@ class phpMQTT
     {
         if (feof($this->socket)) {
             $this->_debugMessage('eof receive going to reconnect for good measure');
-            fclose($this->socket);
+            if (is_resource($this->socket)) {
+                fclose($this->socket);
+            }
             $this->connect_auto(false);
             if (count($this->topics)) {
                 $this->subscribe($this->topics);
@@ -537,8 +546,24 @@ class phpMQTT
             $multiplier = 1;
             $value = 0;
             do {
-                $digit = ord($this->read(1));
+                $byteRead = $this->read(1);
+                if ((string)$byteRead === '') {
+                    $this->_debugMessage('connection lost while reading remaining length, reconnecting');
+                    if (is_resource($this->socket)) {
+                        fclose($this->socket);
+                    }
+                    $this->connect_auto(false);
+                    if (count($this->topics)) {
+                        $this->subscribe($this->topics);
+                    }
+                    return true;
+                }
+                $digit = ord($byteRead);
                 $value += ($digit & 127) * $multiplier;
+                if ($multiplier > 128 * 128 * 128) {
+                    $this->_errorMessage('Malformed Remaining Length');
+                    return false;
+                }
                 $multiplier *= 128;
             } while (($digit & 128) !== 0);
 
@@ -565,7 +590,9 @@ class phpMQTT
 
         if ($this->timesinceping < (time() - ($this->keepalive * 2))) {
             $this->_debugMessage('not seen a packet in a while, disconnecting/reconnecting');
-            fclose($this->socket);
+            if (is_resource($this->socket)) {
+                fclose($this->socket);
+            }
             $this->connect_auto(false);
             if (count($this->topics)) {
                 $this->subscribe($this->topics);
@@ -588,8 +615,16 @@ class phpMQTT
         $multiplier = 1;
         $value = 0;
         do {
+            if (!isset($msg[$i])) {
+                $this->_errorMessage('getmsglength: unexpected end of data');
+                return $value;
+            }
             $digit = ord($msg[$i]);
             $value += ($digit & 127) * $multiplier;
+            if ($multiplier > 128 * 128 * 128) {
+                $this->_errorMessage('Malformed Remaining Length');
+                return $value;
+            }
             $multiplier *= 128;
             $i++;
         } while (($digit & 128) !== 0);
@@ -669,6 +704,6 @@ class phpMQTT
      */
     protected function _errorMessage(string $message)
     {
-        error_log('Error:' . $message);
+        error_log('Error: ' . $message);
     }
 }

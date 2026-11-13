@@ -95,7 +95,7 @@ if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)\|(\d+)%/isu', $result, $m))
    for ($i = 0; $i < $total; $i++)
    {
       $var      = $m[1][$i] . '.' . $m[2][$i];
-      $interval = (int)$m[2][$i] * 1000;
+      $interval = (int)$m[3][$i] * 1000;
 
       if (!$interval)
          $interval = 10000;
