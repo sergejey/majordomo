@@ -292,7 +292,7 @@ Blockly.Blocks['majordomo_device_<?php echo $blocks[$i]['ID'];?>_currentStatus']
     this.setOutput(true);
     this.setPreviousStatement(false);
     this.setNextStatement(false);
-    this.setTooltip('<?php echo $blocks[$i]['TITLE'].'.'.LANG_DEVICES__IS_ON;?>');
+    this.setTooltip('<?php echo $blocks[$i]['TITLE'].'.'.LANG_DEVICES_IS_ON;?>');
   }
 };
 <?php
