@@ -48,6 +48,20 @@ for ($i = 0; $i < $total; $i++) {
 $out['SECTIONS'] = $sections;
 
 include_once DIR_MODULES . 'settings/settings_structure.inc.php';
+
+$structure_titles = array();
+$structure_notes = array();
+foreach ($settings_structure as $settings_group => $settings_items) {
+    foreach ($settings_items as $settings_name => $settings_cfg) {
+        if (isset($settings_cfg['title'])) {
+            $structure_titles[$settings_name] = $settings_cfg['title'];
+        }
+        if (isset($settings_cfg['notes'])) {
+            $structure_notes[$settings_name] = $settings_cfg['notes'];
+        }
+    }
+}
+
 if ($this->filter_name == '') {
     $options = $settings_structure['default'];
 } elseif (isset($settings_structure[$this->filter_name])) {
@@ -150,6 +164,14 @@ $res = SQLSelect($sql);
 if ($res[0]['ID']) {
     $total = count($res);
     for ($i = 0; $i < $total; $i++) {
+
+        // use language structure titles/notes (if defined) instead of stored values
+        if (isset($structure_titles[$res[$i]['NAME']])) {
+            $res[$i]['TITLE'] = $structure_titles[$res[$i]['NAME']];
+        }
+        if (isset($structure_notes[$res[$i]['NAME']])) {
+            $res[$i]['NOTES'] = $structure_notes[$res[$i]['NAME']];
+        }
 
         // some action for every record if required
         if ($this->mode == 'update') {
