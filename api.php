@@ -29,6 +29,9 @@ if (isset($argv[0]) && $argv[0] != '') {
     }
 }
 
+include_once("./lib/loader.php");
+$startedTime = getmicrotime();
+
 $method = $_SERVER['REQUEST_METHOD'];
 $url = $_SERVER['REQUEST_URI'];
 $rootHTML = preg_replace('/\//', '\/', ROOTHTML);
