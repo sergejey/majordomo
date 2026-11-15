@@ -23,7 +23,7 @@
 
  function [#CODE_FIELD#]_useCode(history_id) {
 	 var history_code = $('#history_'+history_id).html();
-	 var history_code_xml = $('#history_'+history_id+'_xml').html();
+	 var history_code_xml = $('#history_'+history_id+'_xml').text();
 	 var code_type = $('.[#CODE_FIELD#]_code_type:checked').val();
 
 	 $('#[#CODE_FIELD#]').val(history_code);
