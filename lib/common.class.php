@@ -543,8 +543,9 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
             curl_setopt($ch, CURLOPT_URL, $url);
             // Referer = origin of the target URL; some devices/sites reject requests without it
             curl_setopt($ch, CURLOPT_REFERER, preg_replace("|(https?://[^/]+).*$|i", "$1", $url));
-            // pass the browser's User-Agent when called from web, otherwise a modern one (old Firefox/32 UA is blocked by some services)
-            curl_setopt($ch, CURLOPT_USERAGENT, !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20100101 Firefox/140.0');
+            // fixed modern User-Agent (old Firefox/32 UA is blocked by some services); the browser's UA is not passed:
+            // the result must not depend on whether getURL() was called from web or from a cycle
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20100101 Firefox/140.0');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
             curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
@@ -555,10 +556,20 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
                 curl_setopt($ch, CURLOPT_TIMEOUT_MS, 50);
             }
 
+            $auth_digest = false;
             if ($username != '' || $password != '') {
-                // Basic or Digest (IP cameras, e.g. Dahua/Hikvision, require Digest); curl picks what the server offers
-                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC | CURLAUTH_DIGEST);
+                // Basic is sent right away, as before (CURLAUTH_BASIC | CURLAUTH_DIGEST would send the first request
+                // without credentials). Digest (IP cameras, e.g. Dahua/Hikvision) - one retry below if the server asks for it
+                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
                 curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
+                if (!$background) {
+                    curl_setopt($ch, CURLOPT_HEADERFUNCTION, function ($ch, $header) use (&$auth_digest) {
+                        if (stripos($header, 'WWW-Authenticate:') === 0 && stripos($header, 'Digest') !== false) {
+                            $auth_digest = true;
+                        }
+                        return strlen($header);
+                    });
+                }
             }
 
             $url_parsed = parse_url($url);
@@ -606,6 +617,12 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
                 }
             }
             $result = curl_exec($ch);
+            // Basic rejected and the server offers Digest: repeat once with Digest (unless the caller set its own auth)
+            if ($auth_digest && curl_getinfo($ch, CURLINFO_HTTP_CODE) == 401
+                && !(is_array($curl_options) && isset($curl_options[CURLOPT_HTTPAUTH]))) {
+                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
+                $result = curl_exec($ch);
+            }
 
             endMeasure('curl_exec');
 
@@ -674,7 +691,7 @@ function postURL($url, $query = array(), $cache = 0, $username = '', $password =
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
             curl_setopt($ch, CURLOPT_REFERER, preg_replace("|(https?://[^/]+).*$|i", "$1", $url));
-            curl_setopt($ch, CURLOPT_USERAGENT, !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20100101 Firefox/140.0');
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20100101 Firefox/140.0');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
             curl_setopt($ch, CURLOPT_MAXREDIRS, 2);
@@ -687,10 +704,20 @@ function postURL($url, $query = array(), $cache = 0, $username = '', $password =
                 curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:'));
             }
 
+            $auth_digest = false;
             if ($username != '' || $password != '') {
-                // Basic or Digest (IP cameras, e.g. Dahua/Hikvision, require Digest); curl picks what the server offers
-                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC | CURLAUTH_DIGEST);
+                // Basic is sent right away, as before (CURLAUTH_BASIC | CURLAUTH_DIGEST would send the first request
+                // without credentials). Digest (IP cameras, e.g. Dahua/Hikvision) - one retry below if the server asks for it
+                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
                 curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
+                if (!$background) {
+                    curl_setopt($ch, CURLOPT_HEADERFUNCTION, function ($ch, $header) use (&$auth_digest) {
+                        if (stripos($header, 'WWW-Authenticate:') === 0 && stripos($header, 'Digest') !== false) {
+                            $auth_digest = true;
+                        }
+                        return strlen($header);
+                    });
+                }
             }
 
             $url_parsed = parse_url($url);
@@ -730,6 +757,11 @@ function postURL($url, $query = array(), $cache = 0, $username = '', $password =
             endMeasure('curl_prepare');
             startMeasure('curl_exec');
             $result = curl_exec($ch);
+            // Basic rejected and the server offers Digest: repeat once with Digest
+            if ($auth_digest && curl_getinfo($ch, CURLINFO_HTTP_CODE) == 401) {
+                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
+                $result = curl_exec($ch);
+            }
             endMeasure('curl_exec');
 
 
