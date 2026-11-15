@@ -59,9 +59,9 @@
     [#module name="linkedobject" object_field="linked_object"#]
 
 <div class="form-group ">
-  <label class="col-lg-4 control-label"><#LANG_LOCATION#> терминала: <#LANG_HCB#>location<#LANG_HCE#></label>
+  <label class="col-lg-4 control-label"><#LANG_TERMINAL_LOCATION#>: <#LANG_HCB#>location<#LANG_HCE#></label>
   <div class="col-lg-4"><select name="location" class="form-control">
-   <option value="">Выберите местоположение терминала
+   <option value=""><#LANG_SELECT_TERMINAL_LOCATION#>
     [#begin LOCATIONS#]<option value="[#TITLE#]"[#if TITLE="<#LOCATION_TITLE#>"#] selected[#endif#]>[#TITLE#]
    [#end LOCATIONS#]
   </select></div>
@@ -252,7 +252,7 @@
 	</div>
 
 	<div id='device_control_address' style="display:none" class="form-group ">
-		<label class="col-lg-4 control-label" for="inputTitle">Control address:</label>
+		<label class="col-lg-4 control-label" for="inputTitle"><#LANG_TERMINAL_CONTROL_ADDRESS#></label>
 		<div class="col-lg-5"><input type="text"  class="form-control"  name="player_control_address" value="[#PLAYER_CONTROL_ADDRESS#]"></div>
 	</div>
         

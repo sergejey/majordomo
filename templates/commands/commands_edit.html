@@ -47,7 +47,7 @@
 
 [#else ID#]
 <div class="form-group ">
-        <label class="control-label">ID:<#LANG_HCB#>id<#LANG_HCE#></label>
+        <label class="control-label"><#LANG_ID#>:<#LANG_HCB#>id<#LANG_HCE#></label>
 
 <div class="form-inline">
         <div class="col-lg-5">
@@ -55,8 +55,8 @@
         </div>
         <div class="col-lg-1">
 [#if TYPE="button"#]
-Action URL:
-<a href="<#ROOTHTML#>menu.html?ajax=1&op=value_changed&new_value=1&item_id=[#ID#]" target=_blank>Run</a>
+<#LANG_ACTION_URL#>:
+<a href="<#ROOTHTML#>menu.html?ajax=1&op=value_changed&new_value=1&item_id=[#ID#]" target=_blank><#LANG_RUN_CMD#></a>
 [#else#]
 <a href="<#ROOTHTML#>menu.html?parent=<#ID#>" target=_blank>#</a>
 [#endif#]
@@ -72,7 +72,7 @@ Action URL:
 <div class="form-inline">
         <div class="col-lg-5">
                 <select name="parent_id" class="form-control">
-                <option value="0">ROOT
+                <option value="0"><#LANG_ROOT#>
                 [#begin PARENTS#]
                 <option value="[#ID#]"[#if ID="<#PARENT_ID#>"#] selected[#endif#]>[#TITLE#]
                 [#end PARENTS#]
@@ -111,7 +111,7 @@ Action URL:
         <label class="control-label"><#LANG_TYPE#>:<#LANG_HCB#>menu_item_type<#LANG_HCE#></label>
         <div class="col-lg-5">
                 <select name="type" class="form-control">
-                        <option value="">select
+                        <option value=""><#LANG_SELECT#>
                         <option value="label"[#if TYPE="label"#] selected[#endif#]><#LANG_LABEL#>
                         <option value="object"[#if TYPE="object"#] selected[#endif#]><#LANG_OBJECT#>
                         <option value="window"[#if TYPE="window"#] selected[#endif#]><#LANG_NEW_WINDOW#>
@@ -120,8 +120,8 @@ Action URL:
                         <option value="command"[#if TYPE="command"#] selected[#endif#]><#LANG_JS_COMMAND#>
                         <option value="button"[#if TYPE="button"#] selected[#endif#]><#LANG_BUTTON#>
                         <option value="switch"[#if TYPE="switch"#] selected[#endif#]><#LANG_ON_OFF_SWITCH#>
-                        <option value="selectbox"[#if TYPE="selectbox"#] selected[#endif#]><#LANG_SELECT_BOX#> (select)
-                        <option value="radiobox"[#if TYPE="radiobox"#] selected[#endif#]><#LANG_SELECT_BOX#> (radio)
+                        <option value="selectbox"[#if TYPE="selectbox"#] selected[#endif#]><#LANG_SELECT_BOX#> <#LANG_SELECT_BOX_HINT#>
+                        <option value="radiobox"[#if TYPE="radiobox"#] selected[#endif#]><#LANG_SELECT_BOX#> <#LANG_RADIO_BOX_HINT#>
                         <option value="sliderbox"[#if TYPE="sliderbox"#] selected[#endif#]><#LANG_SLIDER_BOX#>
                         <option value="plusminus"[#if TYPE="plusminus"#] selected[#endif#]><#LANG_PLUS_MINUS_BOX#>
                         <option value="timebox"[#if TYPE="timebox"#] selected[#endif#]><#LANG_TIME_PICKER#>

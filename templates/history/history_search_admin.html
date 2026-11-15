@@ -9,9 +9,9 @@
 [#if OBJECTS#]
 <form action="?" method="get">
 	<p align="center">
-	Filter by Object:
+	<#LANG_FILTER_BY_OBJECT#>
 	<select name="object_id" onChange="this.form.submit();">
-		 <option value="">all
+		 <option value=""><#LANG_ALL#>
 		 	[#begin OBJECTS#]
 		 	<option value="[#ID#]"[#if ID="<#OBJECT_ID#>"#] selected[#endif#]>[#TITLE#]
 		 	[#end OBJECTS#]
@@ -46,7 +46,7 @@
 <table border=0 cellpadding=5 cellspacing=1 bgcolor="#000000" align=center>
 <tr>
  <td align=center bgcolor="#AAAAAA">
- <b>Date/Time</b>
+ <b><#LANG_DATE_TIME#></b>
  </td>
 [#if !IS_SET_OBJECT_ID#]
  <td align=center bgcolor="#AAAAAA">
@@ -55,7 +55,7 @@
 [#endif IS_SET_OBJECT_ID#]
 [#if !IS_SET_METHOD_ID#]
  <td align=center bgcolor="#AAAAAA">
- <b>Method</b>
+ <b><#LANG_METHOD#></b>
  </td>
 [#endif IS_SET_METHOD_ID#]
 
@@ -102,7 +102,7 @@
     <b><a href="?view_mode=edit_history&id=[#ID#]"><#LANG_DETAILS#></a></b>
    </td>
    <td bgcolor="[#if NEW_COLOR#]#CCCCCC[#else#]#FFFFFF[#endif#]" align=center>
-    <a href="?view_mode=delete_history&id=[#ID#]" onClick="return confirm('Delete record?')"><#LANG_DELETE#></a>
+    <a href="?view_mode=delete_history&id=[#ID#]" onClick="return confirm('<#LANG_CONFIRM_DELETE_RECORD#>')"><#LANG_DELETE#></a>
    </td>
   [#endif ACTION#]
   </table>
@@ -130,7 +130,7 @@
 <!-- / paging -->
 [#else RESULT#]
 <p align=center>
-<font color="red">No data</font>
+<font color="red"><#LANG_NO_DATA#></font>
 </p>
 [#endif RESULT#]
 <!-- / results -->
