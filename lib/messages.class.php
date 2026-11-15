@@ -131,7 +131,7 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
     //DebMes("SAY (level: $level; member: $member; source: $source): ".$ph,'say');
 
     $image = '';
-    if (preg_match('/image:([\w\d\_\/\-\.]+)/is', $ph, $m)) {
+    if (preg_match('/image:([\w\d\:\\\_\/\-\.]+)/is', $ph, $m)) {
         if (file_exists($m[1])) {
             $image = $m[1];
         }
