@@ -60,7 +60,7 @@ $(function() {
                         <tr>
                                 <th><#LANG_TITLE#></th>
                                 <th><#LANG_PRIORITY#></th>
-                                <th>Filter</th>
+                                <th><#LANG_FILTER#></th>
                         </tr>
                         </thead>
                         [#begin OPTIONS#]
@@ -80,13 +80,13 @@ $(function() {
 
 
                 [#if TYPE="onoff"#]
-                <label class="radio"><input type="radio" name="value_[#ID#]" value="1"[#if VALUE="1"#] checked[#endif#]>On</label>
-                <label class="radio"><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]>Off</label>
+                <label class="radio"><input type="radio" name="value_[#ID#]" value="1"[#if VALUE="1"#] checked[#endif#]><#LANG_ON#></label>
+                <label class="radio"><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]><#LANG_OFF#></label>
                 [#endif TYPE#]
 
                 [#if TYPE="yesno"#]
-                <label class="radio"><input type="radio" name="value_[#ID#]" value="1"[#if VALUE="1"#] checked[#endif#]>Yes</label>
-                <label class="radio"><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]>No</label>
+                <label class="radio"><input type="radio" name="value_[#ID#]" value="1"[#if VALUE="1"#] checked[#endif#]><#LANG_YES#></label>
+                <label class="radio"><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]><#LANG_NO#></label>
                 [#endif TYPE#]
 
                 [#if TYPE="select"#]
@@ -97,8 +97,8 @@ $(function() {
 
 
                 [#if TYPE="enable"#]
-                <label class="radio"><input type="radio" name="value_[#ID#]" value="1"[#if VALUE="1"#] checked[#endif#]>Enable</label>
-                <label class="radio"><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]>Disable</label>
+                <label class="radio"><input type="radio" name="value_[#ID#]" value="1"[#if VALUE="1"#] checked[#endif#]><#LANG_ENABLE#></label>
+                <label class="radio"><input type="radio" name="value_[#ID#]" value="0"[#if VALUE!="1"#] checked[#endif#]><#LANG_DISABLE#></label>
                 [#endif TYPE#]
                 <p class="help-block">
                 [#if TYPE=="text" || TYPE=="path"#]
@@ -107,24 +107,24 @@ $(function() {
                 [#endif#]
                 [#endif TYPE#]
                 [#if TYPE="onoff"#]
-                <#LANG_DEFAULT_VALUE#>: [#if DEFAULTVALUE="1"#]On[#else#]Off[#endif#]
+                <#LANG_DEFAULT_VALUE#>: [#if DEFAULTVALUE="1"#]<#LANG_ON#>[#else#]<#LANG_OFF#>[#endif#]
                 [#endif TYPE#]
                 [#if TYPE="yesno"#]
                 [#if DEFAULTVALUE!=""#]
-                <#LANG_DEFAULT_VALUE#>: [#if DEFAULTVALUE="1"#]Yes[#else#]No[#endif#]
+                <#LANG_DEFAULT_VALUE#>: [#if DEFAULTVALUE="1"#]<#LANG_YES#>[#else#]<#LANG_NO#>[#endif#]
                 [#endif#]
                 [#endif TYPE#]
                 [#if TYPE="enable"#]
                 [#if DEFAULTVALUE!=""#]
-                <#LANG_DEFAULT_VALUE#>: [#if DEFAULTVALUE="1"#]Enable[#else#]Disable[#endif#]
+                <#LANG_DEFAULT_VALUE#>: [#if DEFAULTVALUE="1"#]<#LANG_ENABLE#>[#else#]<#LANG_DISABLE#>[#endif#]
                 [#endif#]
                 [#endif TYPE#]
                 </p>
                 [#if URL_TITLE!=""#]<p class="help-block"><a href="[#URL#]" target=_blank>[#URL_TITLE#]</a></p>[#endif#]
                 [#if NOTES!=""#]
-                <p class="help-block edit-notes" data-id="[#ID#]"><acronym title="Click to edit">[#NOTES#]</acronym></p>
+                <p class="help-block edit-notes" data-id="[#ID#]"><acronym title="<#LANG_CLICK_TO_EDIT#>">[#NOTES#]</acronym></p>
                 <div id="notes_[#ID#]" style="display:none;" >
-                <p><i>Edit configuration help tip</i></p>
+                <p><i><#LANG_EDIT_CONFIGURATION_HELP_TIP#></i></p>
                 <textarea name="notes_[#ID#]" cols=45 rows=3 id="edit_notes_area_[#ID#]">[#NOTES#]</textarea>
                 </div>
                 [#endif#]

@@ -747,7 +747,7 @@ $dictionary = array(
     'EXAMPLE' => 'Пример',
 
 
-    'AUTHORIZATION_REQUIRED' => 'требуется авторизация',
+    'AUTHORIZATION_REQUIRED' => 'Требуется авторизация',
     'PASSWORD' => 'Пароль',
 
 
@@ -1730,6 +1730,44 @@ $dictionary = array(
 	'NEWMARKET_MODULE_DISCUSS' => 'Обсуждение',
 	'NEWMARKET_BUY_FOR' => 'Купить за',
 	
+    'AFTER_PLAYSOUND' => 'После воспроизведения звука (код)',
+    'APPLICATIONS' => 'Приложения',
+    'BACKGROUND_FIXED' => 'Фиксированный фон',
+    'BACKGROUND_NO_REPEAT' => 'Не повторять фон',
+    'BARCODE_READING' => 'Считывание штрих-кода (код)',
+    'BEFORE_PLAYSOUND' => 'Перед воспроизведением звука (код)',
+    'CLICK_TO_EDIT' => 'Нажмите для изменения',
+    'COMPUTER_NAME' => 'Называй меня',
+    'DB_HISTORY_SAVE_PERIOD' => 'Период сохранения базы данных (история), минут',
+    'DB_MAIN_SAVE_PERIOD' => 'Период сохранения базы данных (основные данные), минут',
+    'DEBMES_LOGS_PATH' => 'Путь к логам DebMes',
+    'DISABLE' => 'Выключить',
+    'DISABLE_LOGGING' => 'Отключить логирование (DebMes)',
+    'EDIT_CONFIGURATION_HELP_TIP' => 'Редактирование подсказки настройки',
+    'ENABLE' => 'Включить',
+    'FILTER' => 'Фильтр',
+    'HOME_NETWORK_NOTE' => 'например, 192.168.0.*',
+    'HOMEPAGE_LAYOUT' => 'Макет домашней страницы',
+    'MENU' => 'Меню',
+    'NOBODYHOME_TIMEOUT' => 'Тайм-аут активации режима «Никого нет дома» (минут)',
+    'OPTION_HOMEPAGES' => 'Домашние страницы',
+    'PATH_TO_BACKGROUND' => 'Путь к фоновому изображению',
+    'PATH_TO_CLICKSOUND' => 'Путь к файлу звука кликов',
+    'PATH_TO_STORE_BACKUP' => 'Путь для хранения резервных копий',
+    'PATH_TO_VIDEO_BACKGROUND' => 'Путь к фоновому видео',
+    'PLAYMEDIA' => 'Воспроизведение мультимедиа (код)',
+    'PROTOCOL' => 'Протокол',
+    'SET_0_TO_DISABLE' => 'Укажите 0 для отключения',
+    'SMTP_HOST' => 'SMTP хост',
+    'SMTP_PASSWORD' => 'SMTP пароль',
+    'SMTP_PORT' => 'SMTP порт',
+    'SMTP_SECURITY' => 'SMTP защита',
+    'SMTP_USERNAME' => 'SMTP имя пользователя',
+    'VERTICAL_NAVIGATION' => 'Вертикальная навигация',
+    'SETTINGS_SECTION_SYSTEM' => 'Система',
+    'SETTINGS_SECTION_CALENDAR' => 'Календарь',
+    'SETTINGS_SECTION_CODEEDITOR' => 'Редактор кода',
+    'SETTINGS_SECTION_MAIL' => 'Почта',
 );
 
 foreach ($dictionary as $k => $v) {

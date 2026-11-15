@@ -750,7 +750,7 @@ $dictionary = array(
     'EXAMPLE' => 'Example',
 
 
-    'AUTHORIZATION_REQUIRED' => 'authorization required',
+    'AUTHORIZATION_REQUIRED' => 'Authorization required',
     'PASSWORD' => 'Password',
 
 
@@ -1727,6 +1727,44 @@ $dictionary = array(
 	'NEWMARKET_MODULE_DISCUSS' => 'Discussion',
 	'NEWMARKET_BUY_FOR' => 'Buy at',
 
+    'AFTER_PLAYSOUND' => 'After PlaySound (code)',
+    'APPLICATIONS' => 'Applications',
+    'BACKGROUND_FIXED' => 'Background Fixed',
+    'BACKGROUND_NO_REPEAT' => 'Background No repeat',
+    'BARCODE_READING' => 'Bar-code reading (code)',
+    'BEFORE_PLAYSOUND' => 'Before PlaySound (code)',
+    'CLICK_TO_EDIT' => 'Click to edit',
+    'COMPUTER_NAME' => 'Computer\'s name',
+    'DB_HISTORY_SAVE_PERIOD' => 'Database save period (history data), minutes',
+    'DB_MAIN_SAVE_PERIOD' => 'Database save period (main data), minutes',
+    'DEBMES_LOGS_PATH' => 'Path to DebMes logs',
+    'DISABLE' => 'Disable',
+    'DISABLE_LOGGING' => 'Disable logging (DebMes)',
+    'EDIT_CONFIGURATION_HELP_TIP' => 'Edit configuration help tip',
+    'ENABLE' => 'Enable',
+    'FILTER' => 'Filter',
+    'HOME_NETWORK_NOTE' => 'e.g. 192.168.0.*',
+    'HOMEPAGE_LAYOUT' => 'Homepage Layout',
+    'MENU' => 'Menu',
+    'NOBODYHOME_TIMEOUT' => 'NobodyHome mode activation timeout (minutes)',
+    'OPTION_HOMEPAGES' => 'Home Pages',
+    'PATH_TO_BACKGROUND' => 'Path to background',
+    'PATH_TO_CLICKSOUND' => 'Path to click-sound file',
+    'PATH_TO_STORE_BACKUP' => 'Path to store backup',
+    'PATH_TO_VIDEO_BACKGROUND' => 'Path to video background',
+    'PLAYMEDIA' => 'Playmedia (code)',
+    'PROTOCOL' => 'Protocol',
+    'SET_0_TO_DISABLE' => 'Set 0 to disable',
+    'SMTP_HOST' => 'SMTP host',
+    'SMTP_PASSWORD' => 'SMTP password',
+    'SMTP_PORT' => 'SMTP port',
+    'SMTP_SECURITY' => 'SMTP security',
+    'SMTP_USERNAME' => 'SMTP username',
+    'VERTICAL_NAVIGATION' => 'Vertical navigation',
+    'SETTINGS_SECTION_SYSTEM' => 'System',
+    'SETTINGS_SECTION_CALENDAR' => 'Calendar',
+    'SETTINGS_SECTION_CODEEDITOR' => 'Code editor',
+    'SETTINGS_SECTION_MAIL' => 'Mail',
 );
 
 foreach ($dictionary as $k => $v) {

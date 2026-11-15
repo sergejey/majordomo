@@ -3,51 +3,51 @@
 $settings_structure = array(
     'default' => array(
         'GENERAL_ALICE_NAME' => array(
-            'title' => 'Computer\'s name',
+            'title' => LANG_COMPUTER_NAME,
         ),
         'GENERAL_START_LAYOUT' => array(
-            'title' => 'Homepage Layout',
+            'title' => LANG_HOMEPAGE_LAYOUT,
             'type' => 'select',
-            'data' => '=Default|homepages=Home Pages|menu=Menu|apps=Applications|cp=Control Panel'
+            'data' => '=' . LANG_DEFAULT . '|homepages=' . LANG_OPTION_HOMEPAGES . '|menu=' . LANG_MENU . '|apps=' . LANG_APPLICATIONS . '|cp=' . LANG_CONTROL_PANEL
         )
     ),
     'system' => array(
         'SYSTEM_DISABLE_DEBMES' => array(
-            'title' => 'Disable logging (DebMes)',
+            'title' => LANG_DISABLE_LOGGING,
             'type' => 'onoff',
             'DEFAULTVALUE' => '0'
         ),
         'SYSTEM_DEBMES_PATH' => array(
-            'title' => 'Path to DebMes logs',
+            'title' => LANG_DEBMES_LOGS_PATH,
         ),
         'SYSTEM_DB_MAIN_SAVE_PERIOD' => array(
-            'title' => 'Database save period (main data), minutes',
+            'title' => LANG_DB_MAIN_SAVE_PERIOD,
             'default' => '15'
         ),
         'SYSTEM_DB_HISTORY_SAVE_PERIOD' => array(
-            'title' => 'Database save period (history data), minutes',
+            'title' => LANG_DB_HISTORY_SAVE_PERIOD,
             'default' => '60'
         )
     ),
     'behavior' => array(
         'BEHAVIOR_NOBODYHOME_TIMEOUT' => array(
-            'title' => 'NobodyHome mode activation timeout (minutes)',
+            'title' => LANG_NOBODYHOME_TIMEOUT,
             'default' => '60',
-            'notes' => 'Set 0 to disable',
+            'notes' => LANG_SET_0_TO_DISABLE,
         )
     ),
     'hook' => array(
         'HOOK_BARCODE' => array(
-            'title' => 'Bar-code reading (code)',
+            'title' => LANG_BARCODE_READING,
         ),
         'HOOK_PLAYMEDIA' => array(
-            'title' => 'Playmedia (code)',
+            'title' => LANG_PLAYMEDIA,
         ),
         'HOOK_BEFORE_PLAYSOUND' => array(
-            'title' => 'Before PlaySound (code)',
+            'title' => LANG_BEFORE_PLAYSOUND,
         ),
         'HOOK_AFTER_PLAYSOUND' => array(
-            'title' => 'After PlaySound (code)'
+            'title' => LANG_AFTER_PLAYSOUND
         )
     ),
     'codeeditor' => array(
@@ -105,54 +105,54 @@ $settings_structure = array(
     ),
     'scenes' => array(
         'SCENES_VERTICAL_NAV' => array(
-            'title' => 'Vertical navigation'
+            'title' => LANG_VERTICAL_NAVIGATION
         ),
         'SCENES_BACKGROUND' => array(
-            'title' => 'Path to background',
+            'title' => LANG_PATH_TO_BACKGROUND,
             'type' => 'path'
         ),
         'SCENES_BACKGROUND_VIDEO' => array(
-            'title' => 'Path to video background',
+            'title' => LANG_PATH_TO_VIDEO_BACKGROUND,
             'type' => 'path'
         ),
         'SCENES_CLICKSOUND' => array(
-            'title' => 'Path to click-sound file',
+            'title' => LANG_PATH_TO_CLICKSOUND,
             'type' => 'path'
         ),
         'SCENES_BACKGROUND_FIXED' => array(
-            'title' => 'Backround Fixed',
+            'title' => LANG_BACKGROUND_FIXED,
             'type' => 'onoff',
             'default' => '0'
         ),
         'SCENES_BACKGROUND_NOREPEAT' => array(
-            'title' => 'Background No repeat',
+            'title' => LANG_BACKGROUND_NO_REPEAT,
             'type' => 'onoff',
             'default' => '0'
         )
     ),
     'backup' => array(
         'BACKUP_PATH' => array(
-            'title' => 'Path to store backup',
+            'title' => LANG_PATH_TO_STORE_BACKUP,
         )
     ),
     'mail' => array(
         'MAIL_TYPE' => array(
-            'title' => 'Protocol',
+            'title' => LANG_PROTOCOL,
             'priority' => '10',
             'type' => 'select',
             'data' => 'smtp=SMTP|sendmail=SendMail',
         ),
-        'MAIL_HOST' => array('title' => 'SMTP host', 'priority' => 9),
-        'MAIL_AUTH' => array('title' => 'Authorization required', 'type' => 'onoff', 'default' => 0, 'priority' => 8),
-        'MAIL_USER' => array('title' => 'SMTP username', 'priority' => 7),
-        'MAIL_PASSWORD' => array('title' => 'SMTP password', 'priority' => 6),
-        'MAIL_PORT' => array('title' => 'SMTP port', 'priority' => 5),
-        'MAIL_SECURE' => array('title' => 'SMTP security', 'type' => 'select', 'data' => '=None|ssl=SSL|tls=TLS', 'priority' => 4),
+        'MAIL_HOST' => array('title' => LANG_SMTP_HOST, 'priority' => 9),
+        'MAIL_AUTH' => array('title' => LANG_AUTHORIZATION_REQUIRED, 'type' => 'onoff', 'default' => 0, 'priority' => 8),
+        'MAIL_USER' => array('title' => LANG_SMTP_USERNAME, 'priority' => 7),
+        'MAIL_PASSWORD' => array('title' => LANG_SMTP_PASSWORD, 'priority' => 6),
+        'MAIL_PORT' => array('title' => LANG_SMTP_PORT, 'priority' => 5),
+        'MAIL_SECURE' => array('title' => LANG_SMTP_SECURITY, 'type' => 'select', 'data' => '=' . LANG_NONE . '|ssl=SSL|tls=TLS', 'priority' => 4),
     ),
     'remote' => array(
         'REMOTE_HOME_NETWORK' => array(
             'title' => LANG_GENERAL_HOME_NETWORK,
-            'notes' => 'e.g. 192.168.0.*',
+            'notes' => LANG_HOME_NETWORK_NOTE,
             'priority' => 10,
         ),
         'REMOTE_EXT_ACCESS_USERNAME' => array(
