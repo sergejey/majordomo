@@ -1715,10 +1715,8 @@ function checkOperationsQueue($topic)
         }
         return $result;
     }
-    // С колонкой ID (новая схема) очередь читается строго в порядке добавления и удаляются
-    // только прочитанные записи. Иначе команды, добавленные в одну секунду, могли выйти
-    // в другом порядке (EXPIRE с точностью до секунды), а команда, добавленная между
-    // SELECT и DELETE, удалялась непрочитанной. Старая схема без ID работает как раньше.
+    // Read in insertion order by ID, delete only fetched rows (EXPIRE has 1s precision).
+    // Falls back to the old behavior if the ID column is missing.
     static $queue_has_id = null;
     if ($queue_has_id === null) {
         $queue_has_id = isset(SQLSelectOne("SHOW COLUMNS FROM operations_queue LIKE 'ID'")['Field']);
