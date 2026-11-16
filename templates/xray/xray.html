@@ -95,14 +95,14 @@ $(document).ready(function() {
         [#if VIEW_MODE=""#]
 		<div class="col-md-4">
 			<div class="panel panel-default">
-				<div class="panel-heading" style="padding: 8px 12px;"><b>Файлы логов</b></div>
+				<div class="panel-heading" style="padding: 8px 12px;"><b><#LANG_XRAY_LOG_FILES#></b></div>
 				<div class="table-responsive">
 					<table class="table table-condensed table-hover" style="margin-bottom: 0;">
 						<thead>
 							<tr>
-								<th>Файл</th>
-								<th class="text-right" style="white-space: nowrap;">Размер</th>
-								<th class="text-right" style="white-space: nowrap;">Изменен</th>
+								<th><#LANG_XRAY_FILE#></th>
+								<th class="text-right" style="white-space: nowrap;"><#LANG_SIZE#></th>
+								<th class="text-right" style="white-space: nowrap;"><#LANG_XRAY_MODIFIED#></th>
 								<th class="text-center" style="width: 42px;"></th>
 							</tr>
 						</thead>
@@ -115,7 +115,7 @@ $(document).ready(function() {
 								<td class="text-right" style="white-space: nowrap;">[#SIZE#]</td>
 								<td class="text-right" style="white-space: nowrap;">[#PASSED#]</td>
 								<td class="text-center">
-									<a href="?download_file=[#TITLE#]" class="btn btn-default btn-xs" title="Скачать">
+									<a href="?download_file=[#TITLE#]" class="btn btn-default btn-xs" title="<#LANG_XRAY_DOWNLOAD#>">
 										<i class="glyphicon glyphicon-download"></i>
 									</a>
 								</td>
@@ -199,7 +199,7 @@ $(document).ready(function() {
 						i++;
 					}
 				} else if(dataJSON.MODE == 'performance') {
-					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table-condensed" style="width: 100%;"><tr><th style="width: 30%;">OPERATION</th><th style="width: 20%;">COUNTER</th><th style="width: 15%;">TIME</th><th>AV.TIME</th></tr><tbody id="propContent"></tbody></table></div>');
+					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table-condensed" style="width: 100%;"><tr><th style="width: 30%;"><#LANG_XRAY_OPERATION#></th><th style="width: 20%;"><#LANG_COUNTER#></th><th style="width: 15%;"><#LANG_TIME#></th><th><#LANG_XRAY_AV_TIME#></th></tr><tbody id="propContent"></tbody></table></div>');
 					let i = 0;
 					while (i < dataJSON.TOTAL) {
 						$("#propContent").prepend('<tr><td>'+dataJSON.LIST[i].OPERATION+'</td><td>'+dataJSON.LIST[i].COUNTER+'</td><td>'+dataJSON.LIST[i].TIME+'</td><td style="font-size: 8pt;">'+dataJSON.LIST[i].AVTIME+'</td></tr>');
@@ -213,24 +213,24 @@ $(document).ready(function() {
 						i++;
 					}
 				} else if(dataJSON.MODE == 'dead') {
-					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table-condensed" style="width: 100%;"><tr><th style="width: 20%;">TITLE</th><th style="width: 40%;">DESCRIPTION</th><th style="width: 15%;">UPDATED</th><th>LOCATION</th></tr><tbody id="propContent"></tbody></table></div>');
+					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table-condensed" style="width: 100%;"><tr><th style="width: 20%;"><#LANG_TITLE#></th><th style="width: 40%;"><#LANG_DESCRIPTION#></th><th style="width: 15%;"><#LANG_UPDATED#></th><th><#LANG_LOCATION#></th></tr><tbody id="propContent"></tbody></table></div>');
 					let i = 0;
 					while (i < dataJSON.TOTAL) {
 						$("#propContent").prepend('<tr><td>'+dataJSON.LIST[i].TITLE+'</td><td>'+dataJSON.LIST[i].DESCRIPTION+'</td><td>'+dataJSON.LIST[i].UPDATED+'</td><td>'+dataJSON.LIST[i].LOCATIONTITLE+'</td></tr>');
 						i++;
 					}
 				} else if(dataJSON.MODE == 'events') {
-					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table-condensed"><tr><th style="width: 20%;">EVENT</th><th style="width: 40%;">DETAILS</th><th style="width: 15%;">ADDED</th></tr><tbody id="propContent"></tbody></table></div>');
+					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table-condensed"><tr><th style="width: 20%;"><#LANG_EVENT#></th><th style="width: 40%;"><#LANG_DETAILS#></th><th style="width: 15%;"><#LANG_ADDED#></th></tr><tbody id="propContent"></tbody></table></div>');
 					let i = 0;
 					while (i < dataJSON.TOTAL) {
 						$("#propContent").prepend('<tr><td>'+dataJSON.LIST[i].EVENT+'</td><td>'+dataJSON.LIST[i].DETAILS+'</td><td>'+dataJSON.LIST[i].ADDED+'</td></tr>');
 						i++;
 					}
 				} else if(dataJSON.MODE == 'database') {
-					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table table-condensed"><tr><th style="width: 25%;">NAME</th><th style="width: 15%;">ENGINE</th><th style="width: 15%;">ROWS</th><th style="width: 15%;">UPDATE</th><th></th></tr><tbody id="propContent"></tbody></table></div>');
+					$('#xrayContent').html('<div class="table-responsive" style="word-break: break-all;"><table class="tableXray table table-condensed"><tr><th style="width: 25%;"><#LANG_NAME#></th><th style="width: 15%;"><#LANG_XRAY_ENGINE#></th><th style="width: 15%;"><#LANG_XRAY_ROWS#></th><th style="width: 15%;"><#LANG_UPDATED#></th><th></th></tr><tbody id="propContent"></tbody></table></div>');
 					let i = 0;
 					while (i < dataJSON.TOTAL) {
-						$("#propContent").prepend('<tr><td>'+dataJSON.LIST[i].NAME+'</td><td>'+dataJSON.LIST[i].ENGINE+'</td><td>'+dataJSON.LIST[i].ROWS+'</td><td>'+dataJSON.LIST[i].UPDATE_TIME+'</td><td class="text-right"><div class="btn-group btn-group-xs"><button type="button" onClick="location.href=\''+dataJSON.LIST[i].BTN_ANALYZE+'\'" class="btn btn-default">Analyze</button><button type="button" onClick="location.href=\''+dataJSON.LIST[i].BTN_OPTIMIZE+'\'" class="btn btn-default">Optimize</button><button type="button" onClick="location.href=\''+dataJSON.LIST[i].BTN_REPAIR+'\'" class="btn btn-default">Repair</button></div></td></tr>');
+						$("#propContent").prepend('<tr><td>'+dataJSON.LIST[i].NAME+'</td><td>'+dataJSON.LIST[i].ENGINE+'</td><td>'+dataJSON.LIST[i].ROWS+'</td><td>'+dataJSON.LIST[i].UPDATE_TIME+'</td><td class="text-right"><div class="btn-group btn-group-xs"><button type="button" onClick="location.href=\''+dataJSON.LIST[i].BTN_ANALYZE+'\'" class="btn btn-default"><#LANG_XRAY_ANALYZE#></button><button type="button" onClick="location.href=\''+dataJSON.LIST[i].BTN_OPTIMIZE+'\'" class="btn btn-default"><#LANG_XRAY_OPTIMIZE#></button><button type="button" onClick="location.href=\''+dataJSON.LIST[i].BTN_REPAIR+'\'" class="btn btn-default"><#LANG_XRAY_REPAIR#></button></div></td></tr>');
 						i++;
 					}
 				} else if(dataJSON.MODE == 'services') {
@@ -239,16 +239,16 @@ $(document).ready(function() {
 					while (i < dataJSON.TOTAL) {
 						if(dataJSON.LIST[i].ALIVE == 1) {
 							if(dataJSON.LIST[i].WAIT == 0) {
-								cycleUpdate = '<span class="label label-success">Работает '+dataJSON.LIST[i].UPDATE+'</span>';
+								cycleUpdate = '<span class="label label-success"><#LANG_XRAY_WORKING#> '+dataJSON.LIST[i].UPDATE+'</span>';
 							} else {
-								cycleUpdate = '<span class="label label-info">Не отвечает с '+dataJSON.LIST[i].UPDATE+'</span>';
+								cycleUpdate = '<span class="label label-info"><#LANG_XRAY_NO_RESPONSE_SINCE#> '+dataJSON.LIST[i].UPDATE+'</span>';
 							}
 							tr_style = '';
-							btn_group = '<div class="btn-group btn-group-xs"><button type="button" onClick="location.href=\''+dataJSON.LIST[i].CNT_RESTART+'\'" class="btn btn-info">Рестарт</button><button type="button" onClick="location.href=\''+dataJSON.LIST[i].CNT_STOP+'\'" class="btn btn-danger">Остановить</button></div>';
+							btn_group = '<div class="btn-group btn-group-xs"><button type="button" onClick="location.href=\''+dataJSON.LIST[i].CNT_RESTART+'\'" class="btn btn-info"><#LANG_XRAY_RESTART#></button><button type="button" onClick="location.href=\''+dataJSON.LIST[i].CNT_STOP+'\'" class="btn btn-danger"><#LANG_XRAY_STOP#></button></div>';
 						} else {
-							cycleUpdate = '<span class="label label-danger">Остановлен</span>';
+							cycleUpdate = '<span class="label label-danger"><#LANG_XRAY_STOPPED#></span>';
 							tr_style = 'background: linear-gradient(to right, lightcoral, white);';
-							btn_group = '<div class="btn-group btn-group-xs"><button type="button" onClick="location.href=\''+dataJSON.LIST[i].CNT_START+'\'" class="btn btn-success">Запуск</button></div>';
+							btn_group = '<div class="btn-group btn-group-xs"><button type="button" onClick="location.href=\''+dataJSON.LIST[i].CNT_START+'\'" class="btn btn-success"><#LANG_XRAY_START#></button></div>';
 						}
 						
 						$("#propContent").prepend('<tr style="'+tr_style+'"><td>'+dataJSON.LIST[i].TITLE+'</td><td style="vertical-align: middle;text-align: center;">'+cycleUpdate+'</td><td style="vertical-align: middle;text-align: right;">'+btn_group+'</td></tr>');
@@ -256,7 +256,7 @@ $(document).ready(function() {
 					}
 				} else if(dataJSON.MODE == 'logs') {
 					if(!dataJSON.CONTENT) {
-						$('#xrayContent').html('<img style="background: white;border-radius: 50px;padding: 5px;" src="<#ROOTHTML#>img/ajax-loader.gif"/> Console is empty... Wait new data...');
+						$('#xrayContent').html('<img style="background: white;border-radius: 50px;padding: 5px;" src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_XRAY_CONSOLE_EMPTY#>');
 					} else {
 						$('#xrayContent').html(dataJSON.CONTENT);
 					}
@@ -271,7 +271,7 @@ $(document).ready(function() {
 
 
 [#if ACTION="context"#]
-	<b>Related: <#LANG_HCB#>related<#LANG_HCE#></b>
+	<b><#LANG_XRAY_RELATED#>: <#LANG_HCB#>related<#LANG_HCE#></b>
 	<div id='contextBody'>...</div>
 	<script language="javascript">
 	 function findContext() {
@@ -293,14 +293,14 @@ $(document).ready(function() {
 [#if ACTION="service"#]
 <div class="row" style="border:1px dashed black;padding:5px;display: flex;align-items: center;">
  <div class="col-md-3">
-  Service: <b>[#CYCLE#]</b>
+  <#LANG_XRAY_SERVICE#>: <b>[#CYCLE#]</b>
  </div>
  <div class="col-md-6" id='status[#CYCLE#]Body'>
   ...
  </div>
  <div class="col-md-3 text-right">
-  <a href="#" class="btn btn-default btn-sm" onclick="return send[#CYCLE#]Command('restart');"><i class="glyphicon glyphicon-refresh"></i> Restart</a>
-  <a href="#" class="btn btn-default btn-sm" onclick="return send[#CYCLE#]Command('stop');"><i class="glyphicon glyphicon-stop"></i> Stop</a>
+  <a href="#" class="btn btn-default btn-sm" onclick="return send[#CYCLE#]Command('restart');"><i class="glyphicon glyphicon-refresh"></i> <#LANG_XRAY_RESTART#></a>
+  <a href="#" class="btn btn-default btn-sm" onclick="return send[#CYCLE#]Command('stop');"><i class="glyphicon glyphicon-stop"></i> <#LANG_XRAY_STOP#></a>
  </div>
 </div>
 

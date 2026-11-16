@@ -177,7 +177,7 @@ function makePanel(where) {
 	node.id = "panel-" + id;
 	node.className = "cm_panel " + where;
 	close = node.appendChild(document.createElement("a"));
-	close.setAttribute("title", "Remove me!");
+	close.setAttribute("title", "<#LANG_CODEEDITOR_REMOVE_ME#>");
 	close.setAttribute("class", "remove-panel");
 	close.textContent = "✖";
 	CodeMirror.on(close, "mousedown", function(e) {
@@ -185,7 +185,7 @@ function makePanel(where) {
 		panels[node.id].clear();
 	});
 	label = node.appendChild(document.createElement("span"));
-	label.innerHTML = "Tips: you can hit <a href='#' onClick='return switchFullscreen();'>F11</a> for a fullscreen mode; <a href='#' onclick='return CtrlSSave();'>Ctrl+S</a> to save code.";
+	label.innerHTML = "<#LANG_CODEEDITOR_TIPS#>";
 	return node;
 }
 function addPanel(where) {
@@ -523,9 +523,9 @@ function ajaxAutosave(action) {
 			if(action == 'checkcode') {
 				$('#autosave_check_code_div').show('slow');
 				if(responce.msg) {
-					alert('В коде есть ошибка: '+responce.msg);
+					alert('<#LANG_CODEEDITOR_ERROR_IN_CODE#>: '+responce.msg);
 				} else {
-					alert('Ошибок в коде нет!');
+					alert('<#LANG_CODEEDITOR_NO_ERRORS#>');
 				}
 			}
 			if(action == 'save') {
@@ -572,7 +572,7 @@ function modalRestoreCode() {
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Восстановить код</h4>
+				<h4 class="modal-title"><#LANG_CODEEDITOR_RESTORE_CODE#></h4>
 			</div>
 			<div class="modal-body" style="padding: 20px 20px 0px 20px;">
 				<div style="row">

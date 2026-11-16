@@ -2,7 +2,7 @@
 	<div class="col-md-12" style="margin-bottom: 15px;">
 		<div class="alert" style="background: radial-gradient(circle farthest-corner at 450px 10px, #38a276, #2c742d);color: white;text-align: center;border: 0px;">
 			<i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i>
-			Модуль необходим для добавления и управления расположением (комнатами) в интерфейсе. Вместе с расположением будет создан объект в классе Rooms.
+			<#LANG_LOCATIONS_INFO#>
 		</div>
 	</div>
 </div>
@@ -27,7 +27,7 @@
 								<a class="btn btn-default btn-xs" href="?view_mode=priority_up&id=[#ID#]"><i class="glyphicon glyphicon-arrow-up"></i></a>
 								<a class="btn btn-default btn-xs" href="?view_mode=priority_down&id=[#ID#]"><i class="glyphicon glyphicon-arrow-down"></i></a>
 								<a class="btn btn-default btn-xs" href="?view_mode=edit_locations&id=[#ID#]"><i class="glyphicon glyphicon-pencil"></i> <#LANG_EDIT#></a>
-								<a class="btn btn-danger btn-xs" href="?view_mode=delete_locations&id=[#ID#]" onClick="return confirm('Delete record?')"><i class="glyphicon glyphicon-remove"></i> <#LANG_DELETE#></a>
+								<a class="btn btn-danger btn-xs" href="?view_mode=delete_locations&id=[#ID#]" onClick="return confirm('<#LANG_CONFIRM_DELETE_RECORD#>')"><i class="glyphicon glyphicon-remove"></i> <#LANG_DELETE#></a>
 							</div>
 						[#endif ACTION#]
 					</span>
