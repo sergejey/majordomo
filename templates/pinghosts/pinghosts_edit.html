@@ -132,7 +132,7 @@ $(window).load(function() {
 					</label>
 					
 					<select name="script_id_online" id="online_script" class="form-control" [#if SCRIPT_ID_ONLINE="0"#]style="display:none;"[#endif#]>
-						<option value="0">Select...</option>
+						<option value="0"><#LANG_SELECT_FROM_LIST#></option>
 						[#begin SCRIPTS#]
 							<option value="[#ID#]"[#if ID="<#SCRIPT_ID_ONLINE#>"#] selected[#endif#]>[#TITLE#]</option>
 						[#end SCRIPTS#]
@@ -178,7 +178,7 @@ $(window).load(function() {
 					</label>
 					
 					<select name="script_id_offline" id="offline_script" class="form-control" [#if SCRIPT_ID_OFFLINE="0"#]style="display:none;"[#endif#]>
-						<option value="0">Select...</option>
+						<option value="0"><#LANG_SELECT_FROM_LIST#></option>
 						[#begin SCRIPTS#]
 							<option value="[#ID#]"[#if ID="<#SCRIPT_ID_OFFLINE#>"#] selected[#endif#]>[#TITLE#]</option>
 						[#end SCRIPTS#]
@@ -216,21 +216,21 @@ $(window).load(function() {
 				<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_ONLINE_CHECK_INTERVAL#>: </label>
 				<div class="col-lg-10 col-md-8">
 					<input type="number" name="online_interval" class="form-control [#if ERR_ONLINE_INTERVAL#]alert-danger[#endif#]"  value="[#ONLINE_INTERVAL#]" size="10">
-					<p style="color: gray;font-size: 1rem;"><#LANG_SECONDS#> (0 to use default)</p>
+					<p style="color: gray;font-size: 1rem;"><#LANG_SECONDS#> <#LANG_0_TO_USE_DEFAULT#></p>
 				</div>
 			</div>
 			<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
 				<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_OFFLINE_CHECK_INTERVAL#>: </label>
 				<div class="col-lg-10 col-md-8">
 					<input type="text" name="offline_interval" class="form-control [#if ERR_OFFLINE_INTERVAL#]alert-danger[#endif#]" value="[#OFFLINE_INTERVAL#]" size="10" class="span1">
-					<p style="color: gray;font-size: 1rem;"><#LANG_SECONDS#> (0 to use online interval)</p>
+					<p style="color: gray;font-size: 1rem;"><#LANG_SECONDS#> <#LANG_0_TO_USE_ONLINE_INTERVAL#></p>
 				</div>
 			</div>
 			<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
 				<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_COUNTER_REQUIRED#>: </label>
 				<div class="col-lg-10 col-md-8">
 					<input type="text" name="counter_required" class="form-control" value="[#COUNTER_REQUIRED#]" size="10" class="span1">
-					<p style="color: gray;font-size: 1rem;">Only for switching from Online to Offline. <#LANG_COUNTER_REQUIRED_COMMENT#> (the interval between these attempts will be 20 sec if the set value is greater)</p>
+					<p style="color: gray;font-size: 1rem;"><#LANG_ONLY_FOR_SWITCHING_OO#> <#LANG_COUNTER_REQUIRED_COMMENT#> <#LANG_INTERVAL_20_SEC#></p>
 				</div>
 			</div>
 			[#if LOG!=''#]

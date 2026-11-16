@@ -26,7 +26,7 @@
 						<div class="media-body">
 							<p class="media-heading" style="margin: 0px;">[#FILENAME#]</p>
 							<p style="margin: 0px;">[#CATEGORY#]</p>
-							<p style="margin: 0px;font-size: 1.2rem;color: gray;">[#if DAT!=""#][#DAT#][#else DAT#]not installed[#endif DAT#]</p>
+							<p style="margin: 0px;font-size: 1.2rem;color: gray;">[#if DAT!=""#][#DAT#][#else DAT#]<#LANG_NOT_INSTALLED#>[#endif DAT#]</p>
 						</div>
 					</div>
 				</div>
@@ -48,7 +48,7 @@
             <th><b>
                     <#LANG_CATEGORY#>
             </th>
-            <th><b>Installed</th>
+            <th><b><#LANG_INSTALLED#></th>
             <th>&nbsp;</th>
             <th>&nbsp;</th>
         </tr>
@@ -64,8 +64,8 @@
                 [#endif#]
 
         </td>
-        <td>[#if CATEGORY!=""#][#CATEGORY#][#else CATEGORY#]Unfiled[#endif CATEGORY#]</td>
-        <td>[#if DAT!=""#][#DAT#][#else DAT#]not installed[#endif DAT#]</td>
+        <td>[#if CATEGORY!=""#][#CATEGORY#][#else CATEGORY#]<#LANG_UNFILED#>[#endif CATEGORY#]</td>
+        <td>[#if DAT!=""#][#DAT#][#else DAT#]<#LANG_NOT_INSTALLED#>[#endif DAT#]</td>
         <td>
             <a href="?action=<#ACTION#>&mode=edit&name=[#FILENAME#]" class="btn btn-default">
                 <#LANG_EDIT#>

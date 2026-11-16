@@ -20,21 +20,21 @@ h3 {
 </style>
 <h1><#PROJECT_TITLE#></h1>
 <hr />
-<h3>Control Panel</h3>
+<h3><#LANG_CONTROL_PANEL#></h3>
 [#if ERRMESS#]
 <div class="alert alert-error">
 <a class="close" data-dismiss="alert" href="#">&times;</a>
-Enter correct username and/or password!
+<#LANG_LOGIN_ERROR#>
 </div>
 [#endif ERRMESS#]
 <form action="" method="post" id="frmEnter" name=frmEnter>
-<label>Username: </label>
+<label><#LANG_USERNAME#>: </label>
 <input type="text" name="login" class=form />
-<label>Password: </label>
+<label><#LANG_PASSWORD#>: </label>
 <input type="password" name="psw" class=form />
 <input type="hidden" name="mode" value="check" />
 <input type="hidden" name="action" value="enter" />
-<div><button type="submit" class="btn btn-large btn-success">Login</button></div>
+<div><button type="submit" class="btn btn-large btn-success"><#LANG_LOGIN#></button></div>
 </form>
 
 <script language="javascript">
@@ -88,7 +88,7 @@ document.frmEnter.login.focus();
 
   [#if !MASTER#]
 <p>
-This section allows you to set up subordinate users to the control panel and select what sections they have access to.
+<#LANG_CONTROL_ACCESS_INFO#>
 </p>
   [#endif#]
 
@@ -99,8 +99,8 @@ This section allows you to set up subordinate users to the control panel and sel
   [#if !MASTER#]
 
   <td valign=top width=30%>
-   Users:
-  <table width="100%" border="0" align="center">
+   <#LANG_MODULE_USERS#>:
+   <table width="100%" border="0" align="center">
    [#begin USERS#]
    [#if ID!="1"#]
    <tr>
@@ -110,7 +110,7 @@ This section allows you to set up subordinate users to the control panel and sel
    [#endif ID#]
    [#end USERS#]
    <tr>
-    <td colspan=2>[ <a href="?action=<#ACTION#>&mode=edit"><b>Add new user</a> ]</td>
+    <td colspan=2>[ <a href="?action=<#ACTION#>&mode=edit"><b><#LANG_ADD_NEW_USER#></a> ]</td>
    </tr>
   </table>
   </td>
@@ -127,28 +127,28 @@ This section allows you to set up subordinate users to the control panel and sel
   <table border="0" align="center" width=100%>
    <form action="?" method="get">
    [#if ERR_NAME#]
-   <tr><td colspan=2 class=error>Enter Name</td></tr>
+   <tr><td colspan=2 class=error><#LANG_ENTER_NAME#></td></tr>
    [#endif ERR_NAME#]
    <tr>
-    <td><b>Name:</td>
+    <td><b><#LANG_NAME#>:</td>
     <td><input type="text" name="name" value="[#NAME#]" class=form></td>
    </tr>
    [#if ERR_LOGIN#]
-   <tr><td colspan=2 class=error>Enter Username</td></tr>
+   <tr><td colspan=2 class=error><#LANG_ENTER_USERNAME#></td></tr>
    [#endif ERR_LOGIN#]
    <tr>
-    <td><b>Username:</td>
+    <td><b><#LANG_USERNAME#>:</td>
     <td><input type="text" name="login" value="[#LOGIN#]" class=form></td>
    </tr>
    [#if ERR_PASSWORD#]
-   <tr><td colspan=2 class=error>Enter password</td></tr>
+   <tr><td colspan=2 class=error><#LANG_ENTER_PASSWORD#></td></tr>
    [#endif ERR_PASSWORD#]
    <tr>
-    <td><b>Password:</td>
+    <td><b><#LANG_PASSWORD#>:</td>
     <td><input type="password" name="password" value="" class=form></td>
    </tr>
    <tr>
-    <td><b>E-mail:</td>
+    <td><b><#LANG_EMAIL#>:</td>
     <td><input type="text" name="email" value="[#EMAIL#]" class=form></td>
    </tr>
    <!--
@@ -164,8 +164,8 @@ This section allows you to set up subordinate users to the control panel and sel
 
    [#if ID!="1"#]
    <tr>
-    <td colspan=2>
-    Permissions:<br>
+     <td colspan=2>
+     <#LANG_PERMISSIONS#>:<br>
     <table width=100%>
     <tr>
     [#begin MODULES#]
@@ -180,7 +180,7 @@ This section allows you to set up subordinate users to the control panel and sel
    <tr>
     <td colspan=2 align=center>
     <input type="submit" name="submit" value="<#LANG_SUBMIT#>" class=form2>
-    <input type="reset" name="reset" value="Reset" class=form2>
+    <input type="reset" name="reset" value="<#LANG_RESET#>" class=form2>
     </td>
    </tr>
    <input type="hidden" name="id" value="[#ID#]">
