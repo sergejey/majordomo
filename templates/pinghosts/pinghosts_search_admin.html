@@ -2,9 +2,9 @@
     <div class="col-md-6 col-sm-6 col-xs-7" style="margin-bottom: 15px;">
 		<div class="visible-sm visible-xs" style="margin-top: 5px;"></div>
         <div class="btn-group">
-		  <button type="button" onclick="$('.status_1').show();$('.status_2').show();" class="btn btn-info">Any</button>
-		  <button type="button" onclick="$('.status_1').show();$('.status_2').hide();" class="btn btn-success">Online</button>
-		  <button type="button" onclick="$('.status_2').show();$('.status_1').hide();" class="btn btn-danger">Offline</button>
+		  <button type="button" onclick="$('.status_1').show();$('.status_2').show();" class="btn btn-info"><#LANG_ANY#></button>
+		  <button type="button" onclick="$('.status_1').show();$('.status_2').hide();" class="btn btn-success"><#LANG_ONLINE#></button>
+		  <button type="button" onclick="$('.status_2').show();$('.status_1').hide();" class="btn btn-danger"><#LANG_OFFLINE#></button>
 		</div>
     </div>
 	<div class="col-md-6 col-sm-6 col-xs-5 text-right" style="margin-bottom: 15px;">
@@ -44,7 +44,7 @@
 					<span id="statusUpdateTitle_[#ID#]">
 						<i style="margin: 0px;color: gray;font-size: 1.2rem;">[#HOSTNAME#]</i>
 					</span>
-					<i id="statusUpdate_[#ID#]" style="margin: 0px;color: gray;font-size: 1.2rem;display:none;">Last check: [#CHECK_LATEST#], next check: [#CHECK_NEXT#]</i>
+					<i id="statusUpdate_[#ID#]" style="margin: 0px;color: gray;font-size: 1.2rem;display:none;"><#LANG_LAST_CHECK#>: [#CHECK_LATEST#], <#LANG_NEXT_CHECK#>: [#CHECK_NEXT#]</i>
 					
 					
 					<span class="badge" id="btnAction" style="background: transparent;margin-top: -4px;">

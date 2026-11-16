@@ -14,9 +14,9 @@
         </div>
         <center>
             <div class="btn-group" style="margin-top: 15px;margin-bottom: 15px;">
-                <a class="btn btn-warning" href="?mode=<#MODE#>&mode2=install&name=[#NAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-refresh"></i> Re-install</a>
-                <a class="btn btn-danger" href="?mode=<#MODE#>&mode2=uninstall&name=[#NAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-trash"></i> Un-install</a>
-                <a class="btn btn-default" href="?mode=<#MODE#>&mode2=download&name=[#NAME#]"><i class="glyphicon glyphicon-download"></i> Pack</a>
+                <a class="btn btn-warning" href="?mode=<#MODE#>&mode2=install&name=[#NAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-refresh"></i> <#LANG_REINSTALL#></a>
+                <a class="btn btn-danger" href="?mode=<#MODE#>&mode2=uninstall&name=[#NAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-trash"></i> <#LANG_UNINSTALL#></a>
+                <a class="btn btn-default" href="?mode=<#MODE#>&mode2=download&name=[#NAME#]"><i class="glyphicon glyphicon-download"></i> <#LANG_MODULE_PACK#></a>
             </div>
         </center>
     </div>
@@ -26,7 +26,7 @@
             <div class="panel-body">
                 <p>[#MARKET_DESCRIPTION_RU#]</p>
                 [#if MARKET_ID == ''#]
-                <p>No information from Connect on this module.</p>
+                <p><#LANG_MODULE_NO_CONNECT_INFO#></p>
                 [#endif#]
 
             </div>
@@ -34,30 +34,30 @@
             <ul class="list-group">
                 <li class="list-group-item">
                     <span class="badge">[#MARKET_AUTHOR#]</span>
-                    Author
+                    <#LANG_AUTHOR#>
                 </li>
                 <li class="list-group-item">
                     <span class="badge">[#MARKET_LATEST_VERSION#]</span>
-                    Latest version
+                    <#LANG_LATEST_VERSION#>
                 </li>
                 <li class="list-group-item">
-                    <span class="badge" style="background: transparent;padding: 0;"><a href="[#MARKET_LATEST_VERSION_URL#]" class="btn btn-info btn-xs" target="_blank">Open</a></span>
-                    Latest version link
+                    <span class="badge" style="background: transparent;padding: 0;"><a href="[#MARKET_LATEST_VERSION_URL#]" class="btn btn-info btn-xs" target="_blank"><#LANG_OPEN#></a></span>
+                    <#LANG_LATEST_VERSION_LINK#>
                 </li>
                 <li class="list-group-item">
-                    <span class="badge" style="background: transparent;padding: 0;"><a href="[#MARKET_SUPPORT_URL#]" class="btn btn-info btn-xs" target="_blank">Open</a></span>
-                    Support
+                    <span class="badge" style="background: transparent;padding: 0;"><a href="[#MARKET_SUPPORT_URL#]" class="btn btn-info btn-xs" target="_blank"><#LANG_OPEN#></a></span>
+                    <#LANG_SUPPORT#>
                 </li>
                 <li class="list-group-item">
-                    <span class="badge">[#if MARKET_PRICE==""#]free[#else#][#MARKET_PRICE#][#endif#]</span>
-                    Price
+                    <span class="badge">[#if MARKET_PRICE==""#]<#LANG_FREE#>[#else#][#MARKET_PRICE#][#endif#]</span>
+                    <#LANG_PRICE#>
                 </li>
             </ul>
             [#endif#]
         </div>
         [#if MODULE_CONFIG#]
         <div class="panel panel-default">
-            <div class="panel-heading"><b>Module config</b></div>
+            <div class="panel-heading"><b><#LANG_MODULE_CONFIG#></b></div>
             <ul class="list-group">
                 [#begin MODULE_CONFIG#]
                 <li class="list-group-item">

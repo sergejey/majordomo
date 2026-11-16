@@ -559,7 +559,7 @@ $dictionary = array(
     'ADD_NEW_HOST' => 'Add new host',
     'ONLINE' => 'Online',
     'OFFLINE' => 'Offline',
-    'UNKNOWN' => 'Unknow',
+    'UNKNOWN' => 'Unknown',
 
 
     'DELETE_ALL_UNKNOWN_DEVICES' => 'Delete all unknown devices',
@@ -959,7 +959,7 @@ $dictionary = array(
     'IS_ADMIN' => 'system administrator',
 
     'COUNTER_REQUIRED' => 'Tries before switching status',
-    'COUNTER_REQUIRED_COMMENT' => '(0 to switch from the first success/fail)',
+    'COUNTER_REQUIRED_COMMENT' => '(0 to switch from the first attempt)',
 
     'ACCESS_CONTROL' => 'Access control',
 
@@ -1795,6 +1795,36 @@ $dictionary = array(
     'TERMINAL_LOCATION' => 'Terminal location',
     'SELECT_TERMINAL_LOCATION' => 'Select terminal location',
     'TERMINAL_MIN_LEVEL' => 'min level',
+    '0_TO_USE_DEFAULT' => '(set 0 to use default)',
+    '0_TO_USE_ONLINE_INTERVAL' => '(set 0 to use online interval)',
+    'ADD_NEW_USER' => 'Add new user',
+    'ANY' => 'Any',
+    'AUTHOR' => 'Author',
+    'CONTROL_ACCESS_INFO' => 'This section allows you to set up subordinate users to the control panel and select what sections they have access to.',
+    'ENTER_NAME' => 'Enter Name',
+    'ENTER_PASSWORD' => 'Enter password',
+    'ENTER_USERNAME' => 'Enter Username',
+    'FREE' => 'Free',
+    'INTERVAL_20_SEC' => 'The interval between attempts is 20 seconds if the set value is greater.',
+    'LATEST_VERSION' => 'Latest version',
+    'LATEST_VERSION_LINK' => 'Latest version link',
+    'LOGIN' => 'Login',
+    'LOGIN_ERROR' => 'Enter correct username and/or password!',
+    'MODULE_CONFIG' => 'Module config',
+    'MODULE_NO_CONNECT_INFO' => 'No information from Connect on this module.',
+    'MODULE_PACK' => 'Download module',
+    'ONLY_FOR_SWITCHING_OO' => 'Only for switching from Online to Offline.',
+    'PERMISSIONS' => 'Permissions',
+    'PRICE' => 'Price',
+    'REINSTALL' => 'Reinstall module',
+    'SUPPORT' => 'Support',
+    'UNINSTALL' => 'Uninstall module',
+    'NOT_INSTALLED' => 'Not installed',
+    'SELECT_FROM_LIST' => 'Select...',
+    'LAST_CHECK' => 'Last check',
+    'NEXT_CHECK' => 'Next check',
+    'INSTALLED' => 'Installed',
+    'UNFILED' => 'Unfiled',
 );
 
 foreach ($dictionary as $k => $v) {
