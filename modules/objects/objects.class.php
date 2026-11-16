@@ -1222,7 +1222,7 @@ class objects extends module
 
         SQLDropTable('operations_queue');
         $sqlQuery = "CREATE TABLE IF NOT EXISTS `operations_queue` 
-              (`ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+              (`ID` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                `TOPIC`   CHAR(255) NOT NULL,
                `DATANAME` VARCHAR(1024) NOT NULL,
                `DATAVALUE` VARCHAR(1024) NOT NULL,
