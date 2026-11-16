@@ -1715,6 +1715,25 @@ function checkOperationsQueue($topic)
         }
         return $result;
     }
+    // С колонкой ID (новая схема) очередь читается строго в порядке добавления и удаляются
+    // только прочитанные записи. Иначе команды, добавленные в одну секунду, могли выйти
+    // в другом порядке (EXPIRE с точностью до секунды), а команда, добавленная между
+    // SELECT и DELETE, удалялась непрочитанной. Старая схема без ID работает как раньше.
+    static $queue_has_id = null;
+    if ($queue_has_id === null) {
+        $queue_has_id = isset(SQLSelectOne("SHOW COLUMNS FROM operations_queue LIKE 'ID'")['Field']);
+    }
+    if ($queue_has_id) {
+        $data = SQLSelect("SELECT * FROM operations_queue WHERE TOPIC='" . DBSafe($topic) . "' ORDER BY ID");
+        if (isset($data[0]['TOPIC'])) {
+            $ids = array();
+            foreach ($data as $row) {
+                $ids[] = (int)$row['ID'];
+            }
+            SQLExec("DELETE FROM operations_queue WHERE ID IN (" . implode(',', $ids) . ")");
+        }
+        return $data;
+    }
     $data = SQLSelect("SELECT * FROM operations_queue WHERE TOPIC='" . DBSafe($topic) . "' ORDER BY EXPIRE");
     if (isset($data[0]['TOPIC'])) {
         SQLExec("DELETE FROM operations_queue WHERE TOPIC='" . DBSafe($topic) . "'");
