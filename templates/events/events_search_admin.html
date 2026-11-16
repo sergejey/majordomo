@@ -16,20 +16,20 @@ API example:
   <a href="#" id="settings_button" class="btn btn-default" onclick="$('#settings_form').show();$('#settings_button').hide();return false;"><#LANG_SECTION_SETTINGS#></a>
   <form action="?" method="post" class="form form-horizontal" id="settings_form" style="display:none">
    <div class="form-group">
-    <label for="clean_up" class="col-lg-5">Keep events for latest days (0 for all):</label>
+    <label for="clean_up" class="col-lg-5"><#LANG_KEEP_FOR_DAYS#></label>
     <div class="col-lg-4">
     <input id="clean_up" type="text" name="keep_history" value="<#SETTINGS_EVENTS_KEEP_HISTORY#>" placeholder="0" class="form-control">
     </div>
    </div>
    <div class="form-group">
-    <label class="col-lg-5">Forward events to MQTT:</label>
+    <label class="col-lg-5"><#LANG_FORWARD_TO_MQTT#></label>
     <div class="col-lg-4">
      <input type="radio" value="1" name="mqtt_forward"[#if "<#SETTINGS_EVENTS_MQTT_FORWARD#>"=="1"#] checked[#endif#]> <#LANG_YES#>
      <input type="radio" value="0" name="mqtt_forward"[#if "<#SETTINGS_EVENTS_MQTT_FORWARD#>"!="1"#] checked[#endif#]> <#LANG_NO#>
     </div>
    </div>
    <div class="form-group">
-    <label for="mqtt_root" class="col-lg-5">MQTT root path:</label>
+    <label for="mqtt_root" class="col-lg-5"><#LANG_MQTT_ROOT_PATH#>:</label>
     <div class="col-lg-4">
      <input id="mqtt_root" type="text" name="mqtt_root" value="<#SETTINGS_EVENTS_MQTT_ROOT#>" placeholder="/events/" class="form-control">
     </div>
@@ -64,7 +64,7 @@ API example:
 
 [#if ITEMS#]
 <p>
- <a href="?clear_notlinked=1" class="btn btn-default" onclick="return confirm('<#LANG_ARE_YOU_SURE#>');">Remove not linked events</a>
+ <a href="?clear_notlinked=1" class="btn btn-default" onclick="return confirm('<#LANG_ARE_YOU_SURE#>');"><#LANG_REMOVE_NOT_LINKED#></a>
 </p>
 
 
@@ -109,7 +109,7 @@ API example:
  <td>
   [#if "<#ACTION#>"=="admin"#]
     <b><a href="?view_mode=edit_events&id=[#ID#]" class="btn btn-default"><#LANG_EDIT#></a></b>
-    <a href="?view_mode=delete_events&id=[#ID#]" onClick="return confirm('Delete record?')" class="btn btn-default"><#LANG_DELETE#></a>
+    <a href="?view_mode=delete_events&id=[#ID#]" onClick="return confirm('<#LANG_CONFIRM_DELETE_RECORD#>')" class="btn btn-default"><#LANG_DELETE#></a>
   [#endif ACTION#]
  </td>
 </tr>

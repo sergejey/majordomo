@@ -40,8 +40,8 @@
  <th>
  <b><#LANG_TITLE#></b>
  </th>
- <th>
- <b>Latest activity</b>
+<th>
+ <b><#LANG_LATEST_ACTIVITY#></b>
  </th>
 <th></th>
 
@@ -61,15 +61,15 @@
   <b>
    [#TITLE#]
   </a></b>
-  [#if CANTTS="1"#](+notifications [#TTS_TYPE#][#if MIN_MSG_LEVEL!=""#], min level: [#MIN_MSG_LEVEL#][#endif#])[#endif#]
-  [#if CANPLAY="1"#](+media[#if PLAYER_TYPE!=""#]: [#PLAYER_TYPE#][#endif#])[#endif#]
+  [#if CANTTS="1"#](+<#LANG_NOTIFICATIONS#> [#TTS_TYPE#][#if MIN_MSG_LEVEL!=""#], <#LANG_TERMINAL_MIN_LEVEL#>: [#MIN_MSG_LEVEL#][#endif#])[#endif#]
+  [#if CANPLAY="1"#](+<#LANG_MEDIA#>[#if PLAYER_TYPE!=""#]: [#PLAYER_TYPE#][#endif#])[#endif#]
  </td>
  <td valign="top">[#LATEST_ACTIVITY#]
- [#if IS_ONLINE="1"#]
-  <font color="green">Online</font>
- [#else#]
-  <font color="red">Offline</font>
- [#endif#]
+[#if IS_ONLINE="1"#]
+   <font color="green"><#LANG_ONLINE#></font>
+  [#else#]
+   <font color="red"><#LANG_OFFLINE#></font>
+  [#endif#]
  </td>
  <td width="100">
  
@@ -78,7 +78,7 @@
     <a class="btn btn-default btn-sm" href="?view_mode=edit_terminals&id=[#ID#]" ><i class="glyphicon glyphicon-pencil"></i></a>
   
   
-    <a class="btn btn-default btn-sm" href="?view_mode=delete_terminals&id=[#ID#]" onClick="return confirm('Delete record?')"><i class="glyphicon glyphicon-remove"></i></a>
+    <a class="btn btn-default btn-sm" href="?view_mode=delete_terminals&id=[#ID#]" onClick="return confirm('<#LANG_CONFIRM_DELETE_RECORD#>')"><i class="glyphicon glyphicon-remove"></i></a>
   
   [#endif ACTION#]
   

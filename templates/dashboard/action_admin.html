@@ -2,10 +2,10 @@
  @version 0.2 (auto-set)
 #-->
 <p align="center">
-<big><#PROJECT_TITLE#> Management Dash Board</big>
+<big><#PROJECT_TITLE#> <#LANG_DASHBOARD_MANAGEMENT#></big>
 <br>
 [#if VIEW_MODE=""#]
-[ <a href="?view_mode=settings">Settings</a> ]
+[ <a href="?view_mode=settings"><#LANG_SECTION_SETTINGS#></a> ]
 [#endif#]
 </p>
 
@@ -19,23 +19,23 @@
 <table border="0">
 <form action="?" method="post">
  <tr>
-  <td valign="top" colspan="2"><label><input type="checkbox" name="cpanel_stats" value="1"[#if CPANEL_STATS="1"#] checked[#endif#]> Show cPanel statistics</label></td>
+  <td valign="top" colspan="2"><label><input type="checkbox" name="cpanel_stats" value="1"[#if CPANEL_STATS="1"#] checked[#endif#]> <#LANG_SHOW_CPANEL_STATS#></label></td>
  </tr>
  <tr>
-  <td valign="top" align="right">cPanel username:</td>
+  <td valign="top" align="right"><#LANG_CPANEL_USERNAME#>:</td>
   <td valign="top"><input type="text" name="cpanel_username" value="[#CPANEL_USERNAME#]" size="50"></td>
  </tr>
  <tr>
-  <td valign="top" align="right">cPanel password:</td>
+  <td valign="top" align="right"><#LANG_CPANEL_PASSWORD#>:</td>
   <td valign="top"><input type="text" name="cpanel_password" value="[#CPANEL_PASSWORD#]" size="50"></td>
  </tr>
  <tr>
-  <td valign="top" align="right">cPanel site domain:</td>
-  <td valign="top"><input type="text" name="cpanel_domain" value="[#CPANEL_DOMAIN#]" size="50"> (ex.: mydomain.com)</td>
+  <td valign="top" align="right"><#LANG_CPANEL_DOMAIN#>:</td>
+  <td valign="top"><input type="text" name="cpanel_domain" value="[#CPANEL_DOMAIN#]" size="50"> <#LANG_EX_MYDOMAIN#></td>
  </tr>
  <tr>
-  <td valign="top" align="right">cPanel URL:</td>
-  <td valign="top"><input type="text" name="cpanel_url" value="[#CPANEL_URL#][#if CPANEL_URL=""#]http://[#endif#]" size="50"> (ex.: http://mydmain.com/cpanel)</td>
+  <td valign="top" align="right"><#LANG_CPANEL_URL#>:</td>
+  <td valign="top"><input type="text" name="cpanel_url" value="[#CPANEL_URL#][#if CPANEL_URL=""#]http://[#endif#]" size="50"> <#LANG_EX_CPANEL_URL#></td>
  </tr>
  <tr>
   <td valign="top">&nbsp;</td>
@@ -65,9 +65,9 @@
   [#if CPANEL_STATS="1"#]
    <table width="100%" border="0" bgcolor="#666666" cellspacing="1" cellpadding="5">
     <tr>
-     <td valign="top" colspan="4" bgcolor="#EEEEEE" align="center"><b>Visits (cPanel)</b></td>
+     <td valign="top" colspan="4" bgcolor="#EEEEEE" align="center"><b><#LANG_VISITS_CPANEL#></b></td>
     </tr>
-    <tr><td class="td_sm">Day</td><td class="td_sm">Visits</td><td class="td_sm">Pages</td><td class="td_sm">Hits</td></tr>
+    <tr><td class="td_sm"><#LANG_DATE#></td><td class="td_sm"><#LANG_VISITS#></td><td class="td_sm"><#LANG_PAGES#></td><td class="td_sm"><#LANG_HITS#></td></tr>
     [#begin MONTH_STATS#]
     <tr><td class="td_sm">[#DAY#]</td><td class="td_sm">[#VISITS#]</td><td class="td_sm">[#PAGES#]</td><td class="td_sm">[#HITS#]</td></tr>
     [#end MONTH_STATS#]
