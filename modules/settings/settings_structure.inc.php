@@ -37,17 +37,89 @@ $settings_structure = array(
         )
     ),
     'hook' => array(
+        'HOOK_BEFORE_SAY' => array(
+            'title' => LANG_HOOK_BEFORE_SAY,
+            'notes' => LANG_HOOK_BEFORE_SAY_NOTE,
+        ),
+        'HOOK_AFTER_SAY' => array(
+            'title' => LANG_HOOK_AFTER_SAY,
+            'notes' => LANG_HOOK_AFTER_SAY_NOTE,
+        ),
+        'HOOK_EVENT_ASK' => array(
+            'title' => LANG_HOOK_EVENT_ASK,
+            'notes' => LANG_HOOK_EVENT_ASK_NOTE,
+            'type' => 'json',
+        ),
+        'HOOK_EVENT_COMMAND' => array(
+            'title' => LANG_HOOK_EVENT_COMMAND,
+            'notes' => LANG_HOOK_EVENT_COMMAND_NOTE,
+            'type' => 'json',
+        ),
+        'HOOK_EVENT_SAY' => array(
+            'title' => LANG_HOOK_EVENT_SAY,
+            'notes' => LANG_HOOK_EVENT_SAY_NOTE,
+            'type' => 'json',
+        ),
+        'HOOK_EVENT_SAYREPLY' => array(
+            'title' => LANG_HOOK_EVENT_SAYREPLY,
+            'notes' => LANG_HOOK_EVENT_SAYREPLY_NOTE,
+            'type' => 'json',
+        ),
+        'HOOK_EVENT_SAYTO' => array(
+            'title' => LANG_HOOK_EVENT_SAYTO,
+            'notes' => LANG_HOOK_EVENT_SAYTO_NOTE,
+            'type' => 'json',
+        ),
+        'HOOK_EVENT_SAY_CACHED_READY' => array(
+            'title' => LANG_HOOK_EVENT_SAY_CACHED_READY,
+            'notes' => LANG_HOOK_EVENT_SAY_CACHED_READY_NOTE,
+            'type' => 'json',
+        ),
+        'HOOK_EVENT_DEVICE_DELETED' => array(
+            'title' => LANG_HOOK_EVENT_DEVICE_DELETED,
+            'notes' => LANG_HOOK_EVENT_DEVICE_DELETED_NOTE,
+            'type' => 'json',
+        ),
+        'HOOK_EVENT_PANELBLOCKLEFT' => array(
+            'title' => LANG_HOOK_EVENT_PANELBLOCKLEFT,
+            'notes' => LANG_HOOK_EVENT_PANELBLOCKLEFT_NOTE,
+            'type' => 'json',
+        ),
+        'HOOK_EVENT_PANELBLOCKRIGHT' => array(
+            'title' => LANG_HOOK_EVENT_PANELBLOCKRIGHT,
+            'notes' => LANG_HOOK_EVENT_PANELBLOCKRIGHT_NOTE,
+            'type' => 'json',
+        ),
+        'HOOK_EVENT_HOURLY' => array(
+            'title' => LANG_HOOK_EVENT_HOURLY,
+            'notes' => LANG_HOOK_EVENT_HOURLY_NOTE,
+            'type' => 'json',
+        ),
+        'HOOK_EVENT_DAILY' => array(
+            'title' => LANG_HOOK_EVENT_DAILY,
+            'notes' => LANG_HOOK_EVENT_DAILY_NOTE,
+            'type' => 'json',
+        ),
+        'HOOK_EVENT_MINUTELY' => array(
+            'title' => LANG_HOOK_EVENT_MINUTELY,
+            'notes' => LANG_HOOK_EVENT_MINUTELY_NOTE,
+            'type' => 'json',
+        ),
         'HOOK_BARCODE' => array(
-            'title' => LANG_BARCODE_READING,
+            'title' => LANG_HOOK_BARCODE,
+            'notes' => LANG_HOOK_BARCODE_NOTE,
         ),
         'HOOK_PLAYMEDIA' => array(
-            'title' => LANG_PLAYMEDIA,
+            'title' => LANG_HOOK_PLAYMEDIA,
+            'notes' => LANG_HOOK_PLAYMEDIA_NOTE,
         ),
         'HOOK_BEFORE_PLAYSOUND' => array(
-            'title' => LANG_BEFORE_PLAYSOUND,
+            'title' => LANG_HOOK_BEFORE_PLAYSOUND,
+            'notes' => LANG_HOOK_BEFORE_PLAYSOUND_NOTE,
         ),
         'HOOK_AFTER_PLAYSOUND' => array(
-            'title' => LANG_AFTER_PLAYSOUND
+            'title' => LANG_HOOK_AFTER_PLAYSOUND,
+            'notes' => LANG_HOOK_AFTER_PLAYSOUND_NOTE,
         )
     ),
     'codeeditor' => array(
