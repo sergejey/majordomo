@@ -1202,13 +1202,12 @@ class objects extends module
             $cache_value_max_size = 255;
         }
 
-        SQLDropTable('cached_values');
         $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_values`
                (`KEYWORD`   CHAR(100) NOT NULL,
                 `DATAVALUE` VARCHAR($cache_value_max_size) NOT NULL,
                 PRIMARY KEY (`KEYWORD`)
                ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
-        SQLExec($sqlQuery);
+        SQLRecreateTable('cached_values', $sqlQuery);
         //SQLExec("ALTER TABLE `cached_values` CHANGE COLUMN `DATAVALUE` `DATAVALUE` VARCHAR($cache_value_max_size) NOT NULL DEFAULT ''");
 
         $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_ws`
@@ -1220,7 +1219,6 @@ class objects extends module
                ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
         SQLExec($sqlQuery);
 
-        SQLDropTable('operations_queue');
         $sqlQuery = "CREATE TABLE IF NOT EXISTS `operations_queue` 
               (`ID` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                `TOPIC`   CHAR(255) NOT NULL,
@@ -1229,7 +1227,7 @@ class objects extends module
                `EXPIRE` DATETIME NOT NULL,
                PRIMARY KEY (`ID`)
               ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
-        SQLExec($sqlQuery);
+        SQLRecreateTable('operations_queue', $sqlQuery);
 
 
         /*
