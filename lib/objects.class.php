@@ -1715,6 +1715,23 @@ function checkOperationsQueue($topic)
         }
         return $result;
     }
+    // Read in insertion order by ID, delete only fetched rows (EXPIRE has 1s precision).
+    // Falls back to the old behavior if the ID column is missing.
+    static $queue_has_id = null;
+    if ($queue_has_id === null) {
+        $queue_has_id = isset(SQLSelectOne("SHOW COLUMNS FROM operations_queue LIKE 'ID'")['Field']);
+    }
+    if ($queue_has_id) {
+        $data = SQLSelect("SELECT * FROM operations_queue WHERE TOPIC='" . DBSafe($topic) . "' ORDER BY ID");
+        if (isset($data[0]['TOPIC'])) {
+            $ids = array();
+            foreach ($data as $row) {
+                $ids[] = (int)$row['ID'];
+            }
+            SQLExec("DELETE FROM operations_queue WHERE ID IN (" . implode(',', $ids) . ")");
+        }
+        return $data;
+    }
     $data = SQLSelect("SELECT * FROM operations_queue WHERE TOPIC='" . DBSafe($topic) . "' ORDER BY EXPIRE");
     if (isset($data[0]['TOPIC'])) {
         SQLExec("DELETE FROM operations_queue WHERE TOPIC='" . DBSafe($topic) . "'");
