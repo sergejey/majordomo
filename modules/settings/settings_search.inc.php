@@ -189,7 +189,9 @@ if ($res[0]['ID']) {
             if (!isset(${'value_' . $res[$i]['ID']})) continue;
             $all_settings[$res[$i]['NAME']] = ${'value_' . $res[$i]['ID']};
             $res[$i]['VALUE'] = ${'value_' . $res[$i]['ID']};
-            $res[$i]['NOTES'] = htmlspecialchars(${'notes_' . $res[$i]['ID']});
+            if (!isset($structure_notes[$res[$i]['NAME']])) {
+                $res[$i]['NOTES'] = htmlspecialchars(${'notes_' . $res[$i]['ID']});
+            }
             SQLUpdate('settings', $res[$i]);
         }
         if ($this->mode == 'reset') {
