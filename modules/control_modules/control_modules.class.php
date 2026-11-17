@@ -134,7 +134,13 @@ class control_modules extends module
 
         $lstCnt = count($lst);
 
-        SQLExec("ALTER TABLE `project_modules` CHANGE `ID` `ID` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT");
+        // DDL on every reinstall deadlocks (MyISAM table lock vs metadata lock) with parallel reinstalls: run it only when needed
+        $idColumn = SQLSelectOne("SHOW COLUMNS FROM `project_modules` LIKE 'ID'");
+        if (!isset($idColumn['Type'], $idColumn['Extra'])
+            || !preg_match('/^int(\(\d+\))? unsigned$/i', $idColumn['Type'])
+            || stripos($idColumn['Extra'], 'auto_increment') === false) {
+            SQLExec("ALTER TABLE `project_modules` CHANGE `ID` `ID` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT");
+        }
 
         for ($i = 0; $i < $lstCnt; $i++) {
             if (file_exists(DIR_MODULES . $lst[$i]['FILENAME'] . "/" . $lst[$i]['FILENAME'] . ".class.php")) {
