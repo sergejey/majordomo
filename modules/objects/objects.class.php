@@ -1187,29 +1187,6 @@ class objects extends module
     }
 
     /**
-     * Recreate service table without a window where it does not exist
-     * (running cycles keep querying it while modules are being reinstalled)
-     *
-     * @access private
-     */
-    function recreateTableAtomic($table, $createQuery)
-    {
-        SQLExec($createQuery); // CREATE TABLE IF NOT EXISTS - for fresh installs
-        // modules may be reinstalled by several requests/cycles at once: only one of them swaps the table
-        $lockName = DBSafe('mjd_recreate_' . $table);
-        $lock = SQLSelectOne("SELECT GET_LOCK('" . $lockName . "', 0) AS L");
-        if (!isset($lock['L']) || (int)$lock['L'] !== 1) {
-            return; // table exists, another process is recreating it right now
-        }
-        SQLDropTable($table . '_new');
-        SQLDropTable($table . '_old');
-        SQLExec(str_replace('`' . $table . '`', '`' . $table . '_new`', $createQuery));
-        SQLExec("RENAME TABLE `" . $table . "` TO `" . $table . "_old`, `" . $table . "_new` TO `" . $table . "`");
-        SQLDropTable($table . '_old');
-        SQLSelectOne("SELECT RELEASE_LOCK('" . $lockName . "') AS L");
-    }
-
-    /**
      * dbInstall
      *
      * Database installation routine
@@ -1230,7 +1207,7 @@ class objects extends module
                 `DATAVALUE` VARCHAR($cache_value_max_size) NOT NULL,
                 PRIMARY KEY (`KEYWORD`)
                ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
-        $this->recreateTableAtomic('cached_values', $sqlQuery);
+        SQLRecreateTable('cached_values', $sqlQuery);
         //SQLExec("ALTER TABLE `cached_values` CHANGE COLUMN `DATAVALUE` `DATAVALUE` VARCHAR($cache_value_max_size) NOT NULL DEFAULT ''");
 
         $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_ws`
@@ -1248,7 +1225,7 @@ class objects extends module
                `DATAVALUE` VARCHAR(1024) NOT NULL,
                `EXPIRE` DATETIME NOT NULL
               ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
-        $this->recreateTableAtomic('operations_queue', $sqlQuery);
+        SQLRecreateTable('operations_queue', $sqlQuery);
 
 
         /*
