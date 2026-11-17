@@ -41,7 +41,7 @@ function buildCycleStopReason($cycleTitle, $closedThread, $exitCode = null, $ter
     if ($termSig !== null && (int)$termSig > 0) {
         $details .= "\nTerm signal: " . (int)$termSig . '.';
     }
-    if ($lastError != '') {
+    if ($lastError != '' && ($stopRequested || $restartRequested)) {
         $details .= "\n" . sprintf(LANG_CYCLE_STOP_DETAILS_LAST_ERROR, $lastError);
     }
     $details .= "\n" . sprintf(LANG_CYCLE_STOP_DETAILS_COMMAND, $closedThread);
@@ -573,6 +573,7 @@ while (false !== ($result = $threads->iteration())) {
             if (!isset($is_running[$title])) {
                 $cmd = './scripts/' . $title . '.php';
                 DebMes("Starting service " . $title . ' (' . $cmd . ')', 'boot');
+                saveCycleToCache($title . 'LastError', ''); // error of the previous run must not be reported as cause of the next crash
                 $pipe_id = $threads->newThread($cmd);
                 $is_running[$title] = $pipe_id;
                 $started_when[$title] = time();
@@ -636,6 +637,14 @@ while (false !== ($result = $threads->iteration())) {
                         $to_start[$cycle_title] = time() + 2;
                     }
                     $started_when[$cycle_title] = $to_start[$cycle_title];
+                } elseif ($cycle_title && !$stop_requested
+                    && ($last_error != '' || (int)$term_sig > 0 || ($exit_code !== null && (int)$exit_code !== 0 && (int)$exit_code !== -1))
+                    && !preg_match('/websockets/is', $closed_thread) && !preg_match('/connect/is', $closed_thread)) {
+                    // crashed during the first 30 seconds (not in auto-recovery list yet): not restarted, but must not be silent
+                    DebMes("Thread crashed before auto-recovery: " . $closed_thread, 'boot');
+                    $details = buildCycleStopReason($cycle_title, $closed_thread, $exit_code, $term_sig, false, false, $last_error);
+                    registerError('cycle_stop', $details);
+                    saveCycleToCache($cycle_title . 'LastError', '');
                 }
             }
         }
