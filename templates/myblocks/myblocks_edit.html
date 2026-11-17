@@ -2,14 +2,14 @@
 <!-- Table 'myblocks' edit -->
 <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 [#if OK#]
-<div class="alert alert-success">Data has been saved</div>
+<div class="alert alert-success"><#LANG_DATA_SAVED#></div>
 [#endif OK#]
 [#if ERR#]
-<div class="alert alert-error">Please fill out all required fields</div>
+<div class="alert alert-error"><#LANG_FILL_REQUIRED_FIELDS#></div>
 [#endif ERR#]
 <fieldset>
 [#if ID=""#]
-<legend>New Record</legend>
+<legend><#LANG_NEW_RECORD#></legend>
 [#endif ID#]
 <!-- TITLE (varchar) -->
 <div class="form-group">

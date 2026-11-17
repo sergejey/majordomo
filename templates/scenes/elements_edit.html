@@ -143,7 +143,7 @@
                         <option value="button"[#if ELEMENT_TYPE=="button"#] selected[#endif#]><#LANG_BUTTON#>
                         <option value="nav"[#if ELEMENT_TYPE=="nav"#] selected[#endif#]><#LANG_NAV_LINK#>
                         <option value="navgo"[#if ELEMENT_TYPE=="navgo"#] selected[#endif#]><#LANG_NAV_LINK_GO#>
-                        <option value="menuitem"[#if ELEMENT_TYPE=="menuitem"#] selected[#endif#]>Menu Control
+                        <option value="menuitem"[#if ELEMENT_TYPE=="menuitem"#] selected[#endif#]><#LANG_MENU_CONTROL#>
                         <option value="object"[#if ELEMENT_TYPE=="object"#] selected[#endif#]><#LANG_OBJECT#>
                     </select>
                     [#else ELEMENT_ID#]
@@ -159,7 +159,7 @@
                     [#if ELEMENT_TYPE=="button"#]<#LANG_BUTTON#>[#endif#]
                     [#if ELEMENT_TYPE=="nav"#]<#LANG_NAV_LINK#>[#endif#]
                     [#if ELEMENT_TYPE=="navgo"#]<#LANG_NAV_LINK_GO#>[#endif#]
-                    [#if ELEMENT_TYPE=="menuitem"#]Menu Control[#endif#]
+                    [#if ELEMENT_TYPE=="menuitem"#]<#LANG_MENU_CONTROL#>[#endif#]
                     [#if ELEMENT_TYPE=="object"#]<#LANG_OBJECT#>[#endif#]
                     <input type="hidden" name="type" value="[#ELEMENT_TYPE#]">
                     [#endif ELEMENT_ID#]
@@ -183,8 +183,8 @@
                     <label class="col-lg-4 control-label"><#LANG_CLASS_TEMPLATE#></label>
                     <div class="controls">
                         <select name="class_template" class="form-control">
-                            <option value="">Normal</option>
-                            <option value="mini"[#if "<#ELEMENT_CLASS_TEMPLATE#>"=="mini"#] selected[#endif#]>Mini</option>
+                            <option value=""><#LANG_NORMAL#></option>
+                            <option value="mini"[#if "<#ELEMENT_CLASS_TEMPLATE#>"=="mini"#] selected[#endif#]><#LANG_MINI#></option>
                         </select>
                     </div>
                 </div>

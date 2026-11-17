@@ -2,13 +2,13 @@
 <h3><#LANG_STATES#> <#LANG_HCB#>element_states<#LANG_HCE#></h3>
 <ul class="nav nav-tabs">
     [#begin STATES#]
-    <li[#if ID="<#STATE_ID#>"#] class="active"[#endif#]><a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&view_mode2=<#VIEW_MODE2#>&element_id=<#ELEMENT_ID#>&state_id=[#ID#]">[#if TITLE=""#]Default[#else#][#TITLE#][#endif#]</a></li>
+    <li[#if ID="<#STATE_ID#>"#] class="active"[#endif#]><a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&view_mode2=<#VIEW_MODE2#>&element_id=<#ELEMENT_ID#>&state_id=[#ID#]">[#if TITLE=""#]<#LANG_DEFAULT#>[#else#][#TITLE#][#endif#]</a></li>
     [#end STATES#]
 </ul>
 <p>&nbsp;</p>
 
 <div class="form-group">
-    <label class="col-lg-4 control-label">State <#LANG_TITLE#><#LANG_HCB#>title<#LANG_HCE#></label>
+    <label class="col-lg-4 control-label"><#LANG_STATE#> <#LANG_TITLE#><#LANG_HCB#>title<#LANG_HCE#></label>
     <div class="controls">
         <input class="form-control" type="text" name="state_title_new" value="[#STATE_TITLE#]">
     </div>
