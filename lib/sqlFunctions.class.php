@@ -222,6 +222,43 @@ if (!function_exists('SQLTableExists')) {
     }
 }
 
+/**
+ * Recreate table (drop data, apply new structure) without a moment when the table does not exist
+ *
+ * Running cycles/requests may query the table at any time, so instead of DROP + CREATE
+ * new table is created aside and swapped in by atomic RENAME TABLE.
+ * Parallel calls for the same table are serialized: only one of them does the swap.
+ *
+ * @param string $table Table name
+ * @param string $createQuery CREATE TABLE IF NOT EXISTS `table` (...) query, table name in backticks
+ * @return bool true if table was recreated, false if skipped (another process is recreating it)
+ */
+if (!function_exists('SQLRecreateTable')) {
+    function SQLRecreateTable($table, $createQuery)
+    {
+        $quoted = '`' . $table . '`';
+        if (strpos($createQuery, $quoted) === false || strlen($table) > 60) {
+            // name not quoted in the query, or no room for _new/_old suffix (64 chars max) - keep previous behaviour
+            SQLDropTable($table);
+            SQLExec($createQuery);
+            return true;
+        }
+        SQLExec($createQuery); // CREATE TABLE IF NOT EXISTS - for fresh installs
+        $lockName = DBSafe('mjd_recreate_' . (strlen($table) > 51 ? md5($table) : $table)); // lock name max 64 chars
+        $lock = SQLSelectOne("SELECT GET_LOCK('" . $lockName . "', 0) AS L");
+        if (!isset($lock['L']) || (int)$lock['L'] !== 1) {
+            return false; // table exists, another process is recreating it right now
+        }
+        SQLDropTable($table . '_new');
+        SQLDropTable($table . '_old');
+        SQLExec(str_replace($quoted, '`' . $table . '_new`', $createQuery));
+        SQLExec("RENAME TABLE " . $quoted . " TO `" . $table . "_old`, `" . $table . "_new` TO " . $quoted);
+        SQLDropTable($table . '_old');
+        SQLSelectOne("SELECT RELEASE_LOCK('" . $lockName . "') AS L");
+        return true;
+    }
+}
+
 function SQLMakeDBDump($dump_file, $ignore_tables = 0)
 {
     $dir = dirname($dump_file);
