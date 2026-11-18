@@ -83,7 +83,7 @@
 
  [#if PARENT_ID="0"#]
  <div class="form-group ">
-  <label class="col-lg-4 control-label"><#LANG_LOCATION#>: <#LANG_HCB#>location<#LANG_HCE#></label>
+  <label class="col-lg-4 control-label"><#LANG_LOCATION#>:&nbsp;<#LANG_HCB#>location<#LANG_HCE#></label>
   <div class="col-lg-4"><select name="location_id" class="form-control">
    <option value="">-
     [#begin LOCATIONS#]<option value="[#ID#]"[#if ID="<#LOCATION_ID#>"#] selected[#endif#]>[#TITLE#]
@@ -92,7 +92,7 @@
  </div>
 
  <div class="form-group ">
-  <label class="col-lg-4 control-label"><#LANG_FAVORITE_DEVICE#>: <#LANG_HCB#>favorite_device<#LANG_HCE#></label>
+  <label class="col-lg-4 control-label"><#LANG_FAVORITE_DEVICE#>:&nbsp;<#LANG_HCB#>favorite_device<#LANG_HCE#></label>
   <div class="col-lg-4">
    <input type="radio" name="favorite" value="1"[#if FAVORITE!="0"#] checked[#endif#]> <#LANG_YES#>
       <span id="favorite_priority">
@@ -109,7 +109,7 @@
  </div>
 
  <div class="form-group ">
-  <label class="col-lg-4 control-label"><#LANG_SYSTEM_DEVICE#>: <#LANG_HCB#>system_device<#LANG_HCE#></label>
+  <label class="col-lg-4 control-label"><#LANG_SYSTEM_DEVICE#>:&nbsp;<#LANG_HCB#>system_device<#LANG_HCE#></label>
   <div class="col-lg-4">
    <input type="radio" name="system_device" value="1"[#if SYSTEM_DEVICE!="0"#] checked[#endif#]> <#LANG_YES#>
    <input type="radio" name="system_device" value="0"[#if (SYSTEM_DEVICE=="0") || (SYSTEM_DEVICE=="")#] checked[#endif#]> <#LANG_NO#>
@@ -118,7 +118,7 @@
  </div>
 
  <div class="form-group ">
-  <label class="col-lg-4 control-label"><#LANG_ARCHIVED_DEVICE#>: <#LANG_HCB#>archived_device<#LANG_HCE#></label>
+  <label class="col-lg-4 control-label"><#LANG_ARCHIVED_DEVICE#>:&nbsp;<#LANG_HCB#>archived_device<#LANG_HCE#></label>
   <div class="col-lg-4">
    <input type="radio" name="archived" value="1"[#if ARCHIVED=="1"#] checked[#endif#]> <#LANG_YES#>
    <input type="radio" name="archived" value="0"[#if ARCHIVED!="1"#] checked[#endif#]> <#LANG_NO#>
@@ -128,7 +128,7 @@
  [#endif PARENT_ID#]
 
  <div class="form-group ">
-  <label class="col-lg-4 control-label"><#LANG_DEVICES_PARENT_DEVICE#>: <#LANG_HCB#>parent_device<#LANG_HCE#></label>
+  <label class="col-lg-4 control-label"><#LANG_DEVICES_PARENT_DEVICE#>:&nbsp;<#LANG_HCB#>parent_device<#LANG_HCE#></label>
   <div class="col-lg-4">
    <select name="parent_id" class="form-control">
     <option value="0"><#LANG_NO#></option>

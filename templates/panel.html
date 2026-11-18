@@ -12,8 +12,10 @@
 	[#if AUTHORIZED#]
 	[#inc panel_js_scripts.html#]
 	<style>
-	.modal-lg {
-		width: 80%;
+	@media (min-width: 768px) {
+		.modal-lg {
+			width: 80%;
+		}
 	}
 	</style>
 	[#if PRINT!="1"#]
@@ -66,6 +68,9 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
+			</button>
+			<button type="button" class="navbar-toggle" data-toggle="modal" data-target="#mdmGlobalSearchModal" data-backdrop="static" title="<#LANG_SEARCH#>">
+				<span class="icon-bar icon-bar-search"></span>
 			</button>
 			<a class="navbar-brand" style="margin-right: 20px;padding:0px" href="<#ROOTHTML#>admin.php"><img src="<#ROOTHTML#>img/logo-md.png" style="height: 54px;"></a>
 		</div>
@@ -145,6 +150,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
+					<button type="button" id="btnFilterHideSearch" class="btn btn-default" data-dismiss="modal"><#LANG_HIDE#></button>
 					<button type="button" id="btnFilterCloseSearch" class="btn btn-default" data-dismiss="modal"><#LANG_CLOSE#></button>
 				</div>
 			</div>
@@ -215,7 +221,7 @@
 		}
 	</style>
 	<div id="partLoadContent">
-		<div class="visible-xs">
+		<div class="hidden">
 			<div class="row" style="margin: 0 15px;">
 				<div class="col-xs-12" style="margin-bottom: 10px;">
 					<input type="text" class="form-control" data-toggle="modal" data-target="#mdmGlobalSearchModal" placeholder="<#LANG_SEARCH#>">
@@ -404,19 +410,22 @@ $(document).ready(function() {
 	
 	
 	if ($(window).scrollTop() > 200 && (document.documentElement.scrollHeight - window.innerHeight) >= 200) {
+		$("body").css('padding-top', $("nav").outerHeight(true) + 'px');
 		$("nav").addClass("navbar-fixed-top");
 		$("nav").attr('style', 'box-shadow: 0px 1px 10px rgb(0 0 0 / 25%);z-index: 999;border-radius: 4px;border-bottom: 2px solid #4792d1;');
 	}
 		
 	$(window).on("scroll", function(e) {
 		if ($(window).scrollTop() > 200 && (document.documentElement.scrollHeight - window.innerHeight) >= 200) {
+			if (!$("nav").hasClass("navbar-fixed-top")) $("body").css('padding-top', $("nav").outerHeight(true) + 'px');
 			$("nav").addClass("navbar-fixed-top");
-			$("body").css('padding-top', '54px');
 			$("nav").attr('style', 'box-shadow: 0px 1px 10px rgb(0 0 0 / 25%);z-index: 999;border-radius: 4px;border-bottom: 2px solid #4792d1;');
 		} else {
+			var navPadding = parseInt($("body").css('padding-top')) || 0;
 			$("nav").removeClass("navbar-fixed-top");
 			$("nav").removeAttr('style');
 			$("body").css('padding-top', '0px');
+			if (navPadding) window.scrollBy(0, $("nav").outerHeight(true) - navPadding);
 		}
 		
 		//if(window.pageYOffset < 500) {

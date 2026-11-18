@@ -1,3 +1,16 @@
+/* search button in the collapsed navbar: shape via mask, colour from the theme's .icon-bar */
+.navbar-toggle .icon-bar.icon-bar-search {
+	width: 22px;
+	height: 14px;
+	border-radius: 0;
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Ccircle cx='5.5' cy='5.5' r='4.5' fill='none' stroke='%23000' stroke-width='2'/%3E%3Cpath d='M8.8 8.8l4.2 4.2' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center / 14px 14px no-repeat;
+}
+
+/* the expanded navbar menu scrolls on its own - do not pass its scroll on to the page */
+.navbar-collapse.in {
+	overscroll-behavior: contain;
+}
+
 @media (max-width: 1230px) {
 	.navbar-header {
 			float: none;
@@ -275,4 +288,95 @@ textarea.ow-display-text {
 
 .html-duration-picker {
     text-align: left !important;
+}
+
+/* Inline float:left labels overlap fields below 992px */
+@media (max-width: 991px) {
+        .form-group > label[style*="float: left"] {
+                float: none !important;
+                max-width: none !important;
+                text-align: left !important;
+        }
+}
+
+label.radio,
+label.checkbox {
+        padding-left: 20px;
+}
+
+.wiki_hint .glyphicon {
+        display: inline;
+}
+
+#breadcrumb_update {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+}
+
+#breadcrumb_update > li {
+        display: inline;
+}
+
+@media (min-width: 992px) {
+        .row:has(> div > #breadcrumb_update) {
+                display: grid;
+                grid-template-columns: minmax(40%, 1fr) minmax(0, max-content);
+        }
+
+        .row:has(> div > #breadcrumb_update)::before,
+        .row:has(> div > #breadcrumb_update)::after,
+        .row:has(> div > #breadcrumb_update) > .clearfix {
+                display: none;
+        }
+
+        #console_debug,
+        #problemLinkToConnect {
+                grid-column: 1 / -1;
+        }
+
+        .row > div:has(> #hideMenuDiv),
+        .row > div:has(> #breadcrumb_update) {
+                width: auto;
+                float: none;
+                min-width: 0;
+                display: flex;
+                flex-direction: column;
+        }
+
+        #hideMenuDiv,
+        #breadcrumb_update {
+                flex: 1;
+        }
+}
+
+.form-horizontal .controls {
+        margin-right: 15px;
+}
+
+@media (max-width: 767px) {
+        .form-horizontal .control-label {
+                float: none;
+                width: auto;
+                text-align: left;
+                padding-left: 15px;
+        }
+
+        .form-horizontal .controls {
+                margin-left: 15px;
+        }
+
+        .form-horizontal .form-actions {
+                padding-left: 15px;
+        }
+}
+
+.form-inline .form-group {
+        margin-right: 6px;
+        margin-bottom: 6px;
+}
+
+.controls .cm_panel a {
+        display: inline;
+        padding: 0;
 }

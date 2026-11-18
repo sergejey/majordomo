@@ -6,7 +6,7 @@
 
 [#if VIEW_MODE="edit"#]
 <form action="?" method="post">
-<table border="0" align="center">
+<table border="0" align="center" class="table-condensed">
  <tr>
   <td valign="top"><b><#LANG_TITLE#>:</b></td>
   <td valign="top"><input type="text" name="title" value="[#TITLE#]" class="form-control"></td>
@@ -44,7 +44,7 @@
 <a href="?view_mode=clear_history" class="btn btn-default" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_CLEAR_HISTORY#></a>
 </p>
 <br><br>
-<table border="0" align="center">
+<table border="0" align="center" class="table-condensed">
  [#begin COLLECTIONS#]
  <tr>
   <td><big>[#TITLE#]</big></td>

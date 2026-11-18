@@ -1,5 +1,5 @@
 [#if ELEMENT_TYPE!="container" && ELEMENT_TYPE!="device"#]
-<h3><#LANG_STATES#> <#LANG_HCB#>element_states<#LANG_HCE#></h3>
+<h3><#LANG_STATES#>&nbsp;<#LANG_HCB#>element_states<#LANG_HCE#></h3>
 <ul class="nav nav-tabs">
     [#begin STATES#]
     <li[#if ID="<#STATE_ID#>"#] class="active"[#endif#]><a href="?id=<#ID#>&view_mode=<#VIEW_MODE#>&tab=<#TAB#>&view_mode2=<#VIEW_MODE2#>&element_id=<#ELEMENT_ID#>&state_id=[#ID#]">[#if TITLE=""#]<#LANG_DEFAULT#>[#else#][#TITLE#][#endif#]</a></li>
@@ -77,7 +77,7 @@
 
 
 <div class="form-group click_fields"[#if STATE_CODE=""#] style="display:none"[#endif#] id='run_code_field'>
-    <label class="col-lg-4 control-label"><#LANG_ONCHANGE_CODE#>: <#LANG_HCB#>code<#LANG_HCE#>[#ERRORS#]</label>
+    <label class="col-lg-4 control-label"><#LANG_ONCHANGE_CODE#>:&nbsp;<#LANG_HCB#>code<#LANG_HCE#>[#ERRORS#]</label>
     <div class="col-lg-5">
         <textarea name="code_new" rows="5" cols="50" class="form-control">[#STATE_CODE#]</textarea>
     </div>
@@ -239,7 +239,7 @@
     <div class="form-group">
         <label class="col-lg-4 control-label">&nbsp;</label>
         <div class="controls">
-            <label class="checkbox"><input  type="checkbox" name="switch_scene_new" value="1"[#if STATE_SWITCH_SCENE="1"#] checked[#endif#]> <#LANG_SWITCH_SCENE_WHEN_ACTIVATED#> <#LANG_HCB#>element_switchactivated<#LANG_HCE#></label>
+            <label class="checkbox"><input  type="checkbox" name="switch_scene_new" value="1"[#if STATE_SWITCH_SCENE="1"#] checked[#endif#]> <#LANG_SWITCH_SCENE_WHEN_ACTIVATED#>&nbsp;<#LANG_HCB#>element_switchactivated<#LANG_HCE#></label>
         </div>
     </div>
 </div>
