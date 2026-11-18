@@ -139,9 +139,9 @@
 						<li class="list-group-item">
 							<span style="float: right;">
 								<select name="update_auto_delay" style="border: 0px;">
-									<option value="14"[#if UPDATE_AUTO_DELAY="14"#] selected[#endif#]>14 ... OK</option>
-									<option value="7"[#if UPDATE_AUTO_DELAY="7"#] selected[#endif#]>7 ... pretty risky</option>
-									<option value="3"[#if UPDATE_AUTO_DELAY="3"#] selected[#endif#]>3 ... dangerous!</option>
+									<option value="14"[#if UPDATE_AUTO_DELAY="14"#] selected[#endif#]><#LANG_UPDATE_AUTO_DELAY_14_OK#></option>
+									<option value="7"[#if UPDATE_AUTO_DELAY="7"#] selected[#endif#]><#LANG_UPDATE_AUTO_DELAY_7_RISKY#></option>
+									<option value="3"[#if UPDATE_AUTO_DELAY="3"#] selected[#endif#]><#LANG_UPDATE_AUTO_DELAY_3_DANGEROUS#></option>
 								</select>
 							</span>
 							<#LANG_AUTO_UPDATE_DELAY#>
@@ -389,7 +389,7 @@
 									</a>
 								[#endif#]
 								[#if FILESIZE!=""#]
-									<a href="<#ROOTHTML#>cms/saverestore/[#FILENAME#]" class="btn btn-success">Download</a>
+									<a href="<#ROOTHTML#>cms/saverestore/[#FILENAME#]" class="btn btn-success"><#LANG_DOWNLOAD#></a>
 								[#endif#]
 								<a href="?mode=delete&file=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i></a>
 							</div>

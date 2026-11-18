@@ -31,10 +31,10 @@
 							[#if ADD_DESCRIPTION != ''#]<p style="color: gray;font-size: 1.2rem;margin: 0px;">↳ <span class="label label-default">[#ADD_DESCRIPTION#]</span></p>[#endif#]
 						</div>
 						<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="margin-top: 5px;">
-							<pre style="margin: 0px;[#if DESCRIPTION==""#]color: #cacaca;[#endif#]">[#if DESCRIPTION!=""#][#DESCRIPTION#][#else#]Description is empty[#endif#]</pre>
+							<pre style="margin: 0px;[#if DESCRIPTION==""#]color: #cacaca;[#endif#]">[#if DESCRIPTION!=""#][#DESCRIPTION#][#else#]<#LANG_DESCRIPTION_IS_EMPTY#>[#endif#]</pre>
 						</div>
 						<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12" style="margin-top: 5px;">
-							<pre style="margin: 0px;[#if LOCATION_ID==0#]color: #cacaca;[#endif#]">[#if LOCATION_ID == 0#]Room not selected[#else#][#LOCATION_TITLE#][#endif#]</pre> 
+							<pre style="margin: 0px;[#if LOCATION_ID==0#]color: #cacaca;[#endif#]">[#if LOCATION_ID == 0#]<#LANG_ROOM_NOT_SELECTED#>[#else#][#LOCATION_TITLE#][#endif#]</pre> 
 						</div>
 						<div class="col-lg-2 col-md-2 text-center" style="margin-top: 5px;">
 							<a href="?view_mode=edit_objects&id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-pencil"></i></a>

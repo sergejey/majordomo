@@ -4,28 +4,55 @@ $settings_structure = array(
     'default' => array(
         'GENERAL_ALICE_NAME' => array(
             'title' => LANG_COMPUTER_NAME,
+            'notes' => LANG_COMPUTER_NAME_NOTE,
         ),
         'GENERAL_START_LAYOUT' => array(
             'title' => LANG_HOMEPAGE_LAYOUT,
+            'notes' => LANG_HOMEPAGE_LAYOUT_NOTE,
             'type' => 'select',
             'data' => '=' . LANG_DEFAULT . '|homepages=' . LANG_OPTION_HOMEPAGES . '|menu=' . LANG_MENU . '|apps=' . LANG_APPLICATIONS . '|cp=' . LANG_CONTROL_PANEL
+        ),
+        'SITE_LANGUAGE' => array(
+            'title' => LANG_LANGUAGE,
+            'notes' => LANG_LANGUAGE_NOTE,
+        ),
+        'SITE_TIMEZONE' => array(
+            'title' => LANG_TIME_ZONE,
+            'notes' => LANG_TIME_ZONE_NOTE,
+        ),
+        'VOICE_LANGUAGE' => array(
+            'title' => LANG_VOICE_LANGUAGE,
+            'notes' => LANG_VOICE_LANGUAGE_NOTE,
+        ),
+        'THEME' => array(
+            'title' => LANG_COLOR_THEME,
+            'notes' => LANG_COLOR_THEME_NOTE,
+        ),
+        'SPEAK_SIGNAL' => array(
+            'title' => LANG_SPEAK_SIGNAL,
+            'notes' => LANG_SPEAK_SIGNAL_NOTE,
+            'type' => 'onoff',
         )
     ),
     'system' => array(
         'SYSTEM_DISABLE_DEBMES' => array(
             'title' => LANG_DISABLE_LOGGING,
+            'notes' => LANG_DISABLE_LOGGING_NOTE,
             'type' => 'onoff',
             'DEFAULTVALUE' => '0'
         ),
         'SYSTEM_DEBMES_PATH' => array(
             'title' => LANG_DEBMES_LOGS_PATH,
+            'notes' => LANG_DEBMES_LOGS_PATH_NOTE,
         ),
         'SYSTEM_DB_MAIN_SAVE_PERIOD' => array(
             'title' => LANG_DB_MAIN_SAVE_PERIOD,
+            'notes' => LANG_DB_MAIN_SAVE_PERIOD_NOTE,
             'default' => '15'
         ),
         'SYSTEM_DB_HISTORY_SAVE_PERIOD' => array(
             'title' => LANG_DB_HISTORY_SAVE_PERIOD,
+            'notes' => LANG_DB_HISTORY_SAVE_PERIOD_NOTE,
             'default' => '60'
         )
     ),
@@ -176,19 +203,30 @@ $settings_structure = array(
         )
     ),
     'scenes' => array(
+        'SCENES_WIDTH' => array(
+            'title' => LANG_SCENE_WIDTH,
+            'notes' => LANG_SCENE_WIDTH_NOTE,
+        ),
+        'SCENES_HEIGHT' => array(
+            'title' => LANG_SCENE_HEIGHT,
+            'notes' => LANG_SCENE_HEIGHT_NOTE,
+        ),
         'SCENES_VERTICAL_NAV' => array(
             'title' => LANG_VERTICAL_NAVIGATION
         ),
         'SCENES_BACKGROUND' => array(
             'title' => LANG_PATH_TO_BACKGROUND,
+            'notes' => LANG_SCENES_BACKGROUND_NOTE,
             'type' => 'path'
         ),
         'SCENES_BACKGROUND_VIDEO' => array(
             'title' => LANG_PATH_TO_VIDEO_BACKGROUND,
+            'notes' => LANG_SCENES_BACKGROUND_VIDEO_NOTE,
             'type' => 'path'
         ),
         'SCENES_CLICKSOUND' => array(
             'title' => LANG_PATH_TO_CLICKSOUND,
+            'notes' => LANG_SCENES_CLICKSOUND_NOTE,
             'type' => 'path'
         ),
         'SCENES_BACKGROUND_FIXED' => array(
@@ -202,9 +240,21 @@ $settings_structure = array(
             'default' => '0'
         )
     ),
+    'calendar' => array(
+        'APP_CALENDAR_SOONLIMIT' => array(
+            'title' => LANG_CALENDAR_SOONLIMIT,
+            'notes' => LANG_CALENDAR_SOONLIMIT_NOTE,
+        ),
+        'APP_CALENDAR_SHOWDONE' => array(
+            'title' => LANG_CALENDAR_SHOWDONE,
+            'notes' => LANG_CALENDAR_SHOWDONE_NOTE,
+            'type' => 'yesno',
+        )
+    ),
     'backup' => array(
         'BACKUP_PATH' => array(
             'title' => LANG_PATH_TO_STORE_BACKUP,
+            'notes' => LANG_BACKUP_PATH_NOTE,
         )
     ),
     'mail' => array(

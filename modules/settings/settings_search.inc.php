@@ -51,6 +51,7 @@ include_once DIR_MODULES . 'settings/settings_structure.inc.php';
 
 $structure_titles = array();
 $structure_notes = array();
+$structure_data = array();
 foreach ($settings_structure as $settings_group => $settings_items) {
     foreach ($settings_items as $settings_name => $settings_cfg) {
         if (isset($settings_cfg['title'])) {
@@ -58,6 +59,9 @@ foreach ($settings_structure as $settings_group => $settings_items) {
         }
         if (isset($settings_cfg['notes'])) {
             $structure_notes[$settings_name] = $settings_cfg['notes'];
+        }
+        if (isset($settings_cfg['data'])) {
+            $structure_data[$settings_name] = $settings_cfg['data'];
         }
     }
 }
@@ -165,14 +169,6 @@ if ($res[0]['ID']) {
     $total = count($res);
     for ($i = 0; $i < $total; $i++) {
 
-        // use language structure titles/notes (if defined) instead of stored values
-        if (isset($structure_titles[$res[$i]['NAME']])) {
-            $res[$i]['TITLE'] = $structure_titles[$res[$i]['NAME']];
-        }
-        if (isset($structure_notes[$res[$i]['NAME']])) {
-            $res[$i]['NOTES'] = $structure_notes[$res[$i]['NAME']];
-        }
-
         // some action for every record if required
         if ($this->mode == 'update') {
             ${'value_' . $res[$i]['ID']} = gr('value_' . $res[$i]['ID']);
@@ -193,12 +189,26 @@ if ($res[0]['ID']) {
             if (!isset(${'value_' . $res[$i]['ID']})) continue;
             $all_settings[$res[$i]['NAME']] = ${'value_' . $res[$i]['ID']};
             $res[$i]['VALUE'] = ${'value_' . $res[$i]['ID']};
-            $res[$i]['NOTES'] = htmlspecialchars(${'notes_' . $res[$i]['ID']});
+            if (!isset($structure_notes[$res[$i]['NAME']])) {
+                $res[$i]['NOTES'] = htmlspecialchars(${'notes_' . $res[$i]['ID']});
+            }
             SQLUpdate('settings', $res[$i]);
         }
         if ($this->mode == 'reset') {
             $res[$i]['VALUE'] = $res[$i]['DEFAULTVALUE'];
             SQLUpdate('settings', $res[$i]);
+        }
+
+        // use language structure titles/notes/data (if defined) instead of stored values
+        // (applied after update/reset so localized values are not written back to the database)
+        if (isset($structure_titles[$res[$i]['NAME']])) {
+            $res[$i]['TITLE'] = $structure_titles[$res[$i]['NAME']];
+        }
+        if (isset($structure_notes[$res[$i]['NAME']])) {
+            $res[$i]['NOTES'] = $structure_notes[$res[$i]['NAME']];
+        }
+        if (isset($structure_data[$res[$i]['NAME']])) {
+            $res[$i]['DATA'] = $structure_data[$res[$i]['NAME']];
         }
 
         if ($res[$i]['TYPE'] == 'select') {
