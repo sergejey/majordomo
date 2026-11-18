@@ -23,8 +23,12 @@ header('X-Accel-Buffering: no');
 echo "<html>";
 echo "<head>";
 echo '<link rel="stylesheet" href="/3rdparty/bootstrap/css/bootstrap.min.css" type="text/css"><script type="text/javascript" src="/3rdparty/bootstrap/js/bootstrap.min.js"></script>';
+$dark_theme = isset($_COOKIE['theme']) && $_COOKIE['theme'] == 'dark';
+if ($dark_theme) {
+    echo '<style>html{color-scheme:dark}font[color="green"]{color:#a8ffbe}font[color="red"]{color:#ff6b6b}</style>';
+}
 echo "</head>";
-echo '<body style="height: auto;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;">';
+echo '<body style="height: auto;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: ' . ($dark_theme ? '#0a0a0a' : '#000080') . ';color: ' . ($dark_theme ? '#3ccf64' : '#c0c0c0') . ';border-radius: 5px;">';
 
 $out = array();
 

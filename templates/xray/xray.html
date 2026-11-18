@@ -15,6 +15,12 @@ $(document).ready(function() {
 		margin-left: -15px;
 	}
 }
+@media (min-width: 768px) {
+	.xray-tabs-body {
+		margin-left: 15px;
+		margin-right: 15px;
+	}
+}
 </style>
 
 
@@ -36,7 +42,7 @@ $(document).ready(function() {
 			</ul>
 		</div>
 	</div>
-	<div style="border-left: 1px solid #ddd;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;">
+	<div class="xray-tabs-body" style="border-left: 1px solid #ddd;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;">
 	[#if VIEW_MODE!="services"#]
 	<form action="?" method="get" class="form-inline">
 		<div class="row xray-mobile-gutters" style="padding: 10px;">
@@ -84,7 +90,7 @@ $(document).ready(function() {
 	</form>
 	[#endif VIEW_MODE#]
 	<div class="row xray-mobile-gutters" style="margin-top: 10px;">
-		<div class="col-md-[#if VIEW_MODE=""#]8[#else#]12[#endif VIEW_MODE#]">
+		<div class="col-lg-[#if VIEW_MODE=""#]8[#else#]12[#endif VIEW_MODE#]">
 			<div style="padding:0 10px">
 				<div class="progress" style="height:3px">
 					<div class="progress-bar progress-bar-success" id="reloadProgress" role="progressbar" data-now="0" style=""></div>
@@ -93,7 +99,7 @@ $(document).ready(function() {
 			<div id="xrayContent" style="overflow-wrap: anywhere;padding: 10px;border-top: 1px solid #ddd;[#if VIEW_MODE=""#]font-family: Consolas, Verdana;background: #000080;color: #c0c0c0;border-radius: 5px;margin: 10px;[#endif#]"><center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center></div>
 		</div>
         [#if VIEW_MODE=""#]
-		<div class="col-md-4">
+		<div class="col-lg-4">
 			<div class="panel panel-default">
 				<div class="panel-heading" style="padding: 8px 12px;"><b><#LANG_XRAY_LOG_FILES#></b></div>
 				<div class="table-responsive">
@@ -109,7 +115,7 @@ $(document).ready(function() {
 						<tbody>
 						[#begin TODAY_FILES#]
 							<tr>
-								<td style="max-width: 1px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+								<td style="width: 100%;max-width: 0;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
 									<a href="?files[]=[#TITLE#]" title="[#TITLE#]">[#BASENAME#]</a>
 								</td>
 								<td class="text-right" style="white-space: nowrap;">[#SIZE#]</td>
@@ -271,7 +277,7 @@ $(document).ready(function() {
 
 
 [#if ACTION="context"#]
-	<b><#LANG_XRAY_RELATED#>: <#LANG_HCB#>related<#LANG_HCE#></b>
+	<b><#LANG_XRAY_RELATED#>:&nbsp;<#LANG_HCB#>related<#LANG_HCE#></b>
 	<div id='contextBody'>...</div>
 	<script language="javascript">
 	 function findContext() {

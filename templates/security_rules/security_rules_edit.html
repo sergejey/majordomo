@@ -3,12 +3,12 @@
 <div class="panel-heading"><#LANG_SECURITY_OBJECT_ID#>: [#OBJECT_TYPE#] #[#OBJECT_ID#]</div>
 <div class="panel-body">
 <!-- Table 'security_rules' edit -->
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form form-horizontal">
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form">
 [#if OK#]
 <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
 [#endif OK#]
 [#if ERR#]
-<div class="alert alert-error"><#LANG_FILLOUT_REQURED#></div>
+<div class="alert alert-danger"><#LANG_FILLOUT_REQURED#></div>
 [#endif ERR#]
 
 <input type="hidden" name="object_type" value="[#OBJECT_TYPE#]">
@@ -17,16 +17,16 @@
 
 [#if DISABLE_TERMINALS!="1"#]
 <div class="form-group">
- <label class="control-label"[#if ERR_TERMINALS#] style="color:red;font-weight:bold"[#endif#]>
+ <label[#if ERR_TERMINALS#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_SECURITY_TERMINALS#>:
  </label>
- <div class="controls">
- <label><input type="checkbox" name="terminals_limited" id='terminals_limited' value="1"[#if TERMINALS!=""#] checked[#endif#]> <#LANG_SET#></label>
+ <div>
+ <div class="checkbox"><label><input type="checkbox" name="terminals_limited" id='terminals_limited' value="1"[#if TERMINALS!=""#] checked[#endif#]> <#LANG_SET#></label></div>
  <div id='terminals_select'>
   [#begin TERMINALS_LIST#]
-  <label><input type="checkbox" name="terminals_list[]" value="[#ID#]"[#if SELECTED#] checked[#endif#]> [#TITLE#]</label>
+  <div class="checkbox"><label><input type="checkbox" name="terminals_list[]" value="[#ID#]"[#if SELECTED#] checked[#endif#]> [#TITLE#]</label></div>
   [#end TERMINALS_LIST#]
-  <label>( <input type="checkbox" name="terminals_except" value="1"[#if TERMINALS_EXCEPT="1"#] checked[#endif#]> <#LANG_ALLOW_EXCEPT_ABOVE#> )</label>
+  <div class="checkbox"><label><input type="checkbox" name="terminals_except" value="1"[#if TERMINALS_EXCEPT="1"#] checked[#endif#]> <#LANG_ALLOW_EXCEPT_ABOVE#></label></div>
  </div>
  </div>
  <script language="javascript">
@@ -42,15 +42,16 @@
 [#if DISABLE_USERS!="1"#]
 <!-- USERS (varchar) -->
 <div class="form-group">
- <label class="control-label"[#if ERR_USERS#] style="color:red;font-weight:bold"[#endif#]>
+ <label[#if ERR_USERS#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_SECURITY_USERS#>:
  </label>
- <div class="controls"><label><input type="checkbox" name="users_limited" id='users_limited' value="1"[#if USERS!=""#] checked[#endif#]> <#LANG_SET#></label>
+ <div>
+ <div class="checkbox"><label><input type="checkbox" name="users_limited" id='users_limited' value="1"[#if USERS!=""#] checked[#endif#]> <#LANG_SET#></label></div>
  <div id='users_select'>
   [#begin USERS_LIST#]
-  <div><input type="checkbox" name="users_list[]" value="[#ID#]"[#if SELECTED#] checked[#endif#]> [#NAME#]</div>
+  <div class="checkbox"><label><input type="checkbox" name="users_list[]" value="[#ID#]"[#if SELECTED#] checked[#endif#]> [#NAME#]</label></div>
   [#end USERS_LIST#]
-  <div>( <input type="checkbox" name="users_except" value="1"[#if USERS_EXCEPT="1"#] checked[#endif#]> <#LANG_ALLOW_EXCEPT_ABOVE#> )</div>
+  <div class="checkbox"><label><input type="checkbox" name="users_except" value="1"[#if USERS_EXCEPT="1"#] checked[#endif#]> <#LANG_ALLOW_EXCEPT_ABOVE#></label></div>
  </div>
  </div>
  <script language="javascript">
@@ -65,16 +66,16 @@
 
 <!-- TIMES (varchar) -->
 <div class="form-group">
- <label class="control-label"[#if ERR_TIMES#] style="color:red;font-weight:bold"[#endif#]>
+ <label[#if ERR_TIMES#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_SECURITY_TIMES#>:
  </label>
- <div class="controls"><label><input type="checkbox" name="times_limited" id='times_limited' value="1"[#if TIMES#] checked[#endif#]> <#LANG_SET#></label>
+ <div>
+ <div class="checkbox"><label><input type="checkbox" name="times_limited" id='times_limited' value="1"[#if TIMES#] checked[#endif#]> <#LANG_SET#></label></div>
  <div id='times_select'>
   [#begin TIMES_LIST#]
-  <nobr><input type="checkbox" name="times_list[]" value="[#TITLE#]"[#if SELECTED#] checked[#endif#]> [#TITLE#]</nobr>
-     &nbsp;&nbsp;
+  <label class="checkbox-inline"><input type="checkbox" name="times_list[]" value="[#TITLE#]"[#if SELECTED#] checked[#endif#]> [#TITLE#]</label>
   [#end TIMES_LIST#]
-  <div>( <input type="checkbox" name="times_except" value="1"[#if TIMES_EXCEPT="1"#] checked[#endif#]> <#LANG_ALLOW_EXCEPT_ABOVE#> )</div>
+  <div class="checkbox"><label><input type="checkbox" name="times_except" value="1"[#if TIMES_EXCEPT="1"#] checked[#endif#]> <#LANG_ALLOW_EXCEPT_ABOVE#></label></div>
  </div>
  </div>
  <script language="javascript">
@@ -89,13 +90,13 @@
 
 <!-- CONDITIO (varchar) -->
 <div class="form-group">
- <label class="control-label"[#if ERR_TIMES#] style="color:red;font-weight:bold"[#endif#]>
+ <label[#if ERR_TIMES#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_CONDITION#>:
  </label>
-    <div class="controls">
-     <label><input type="checkbox" name="condition_active" id='condition_active' value="1"[#if CONDITION_ACTIVE=="1"#] checked[#endif#]> <#LANG_SET#> (&amp;&amp;)</label>
+    <div>
+     <div class="checkbox"><label><input type="checkbox" name="condition_active" id='condition_active' value="1"[#if CONDITION_ACTIVE=="1"#] checked[#endif#]> <#LANG_SET#> (&amp;&amp;)</label></div>
     </div>
- <div id='condition_select' class="panel-body">
+ <div id='condition_select' class="table-responsive">
      <table class="table">
          <tr>
              <th>
@@ -126,7 +127,7 @@
          [#end CONDITIONS#]
          <tr>
              <td colspan="10">
-             <a href="#" onclick="$('.condition_row:hidden:first').show();return false;" class="btn btn-default btn-small"><i class="glyphicon glyphicon-plus"></i> &amp;&amp;</a>
+             <a href="#" onclick="$('.condition_row:hidden:first').show();return false;" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus"></i> &amp;&amp;</a>
              </td>
          </tr>
      </table>
@@ -146,14 +147,14 @@
 </div>
 
 
-<div class="form-actions">
+<div class="form-group">
  [#if ID!=""#]
  <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_SUBMIT#></button>
  [#else ID#]
  <button type="submit" name="subm" value="Add" class="btn btn-primary"><#LANG_ADD#></button>
  [#endif ID#]
 [#if NO_CANCEL!="1"#]
- <a href="?" class="btn"><#LANG_CANCEL#></a>
+ <a href="?" class="btn btn-default"><#LANG_CANCEL#></a>
 [#else#]
  <input type="hidden" name="no_cancel" value="1">
 [#endif SINGLE_REC#]

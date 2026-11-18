@@ -104,8 +104,7 @@
                                 
                 <div class="checkbox">
                         <label>
-                                <input type="checkbox" value="1" name="is_last" [#if IS_LAST="1"#] checked[#endif#]> <#LANG_LAST_RULE#>
-                                <#LANG_HCB#>pattern_last<#LANG_HCE#>
+                                <input type="checkbox" value="1" name="is_last" [#if IS_LAST="1"#] checked[#endif#]> <#LANG_LAST_RULE#>&nbsp;<#LANG_HCB#>pattern_last<#LANG_HCE#>
                         </label>
                 </div>
         </div>
@@ -165,8 +164,7 @@
                                 
                 <div class="checkbox">
                         <label>
-                                <input type="checkbox" value="1" name="usemorphy" [#if USEMORPHY="1"#] checked[#endif#]> <#LANG_USE_MORPHOLOGY#>
-                                <#LANG_HCB#>pattern_usemorphy<#LANG_HCE#>
+                                <input type="checkbox" value="1" name="usemorphy" [#if USEMORPHY="1"#] checked[#endif#]> <#LANG_USE_MORPHOLOGY#>&nbsp;<#LANG_HCB#>pattern_usemorphy<#LANG_HCE#>
                         </label>
                 </div>
         </div>
@@ -180,8 +178,7 @@
                                 
                 <div class="checkbox">
                         <label>
-                                <input type="checkbox" value="1" name="skipsystem" [#if SKIPSYSTEM="1"#] checked[#endif#]> <#LANG_SKIP_SYSTEM#>
-                                <#LANG_HCB#>pattern_skip_system<#LANG_HCE#>
+                                <input type="checkbox" value="1" name="skipsystem" [#if SKIPSYSTEM="1"#] checked[#endif#]> <#LANG_SKIP_SYSTEM#>&nbsp;<#LANG_HCB#>pattern_skip_system<#LANG_HCE#>
                         </label>
                 </div>
         </div>
@@ -194,8 +191,7 @@
                                 
                 <div class="checkbox">
                         <label>
-                                <input type="checkbox" value="1" name="onetime" [#if ONETIME="1"#] checked[#endif#]> <#LANG_ONETIME_PATTERN#>
-                                <#LANG_HCB#>pattern_onetime<#LANG_HCE#>
+                                <input type="checkbox" value="1" name="onetime" [#if ONETIME="1"#] checked[#endif#]> <#LANG_ONETIME_PATTERN#>&nbsp;<#LANG_HCB#>pattern_onetime<#LANG_HCE#>
                         </label>
                 </div>
         </div>
@@ -253,8 +249,7 @@
  </div>
 
  [#if PATTERN_TYPE="1"#]
-  <input type="checkbox" name="use_script_exit" value="1"[#if SCRIPT_EXIT!=""#] checked[#endif#] onClick='$("#script_exit_block").toggle();'> <#LANG_ADD_EXIT_CODE#>
-  <#LANG_HCB#>pattern_exit_code<#LANG_HCE#>
+  <input type="checkbox" name="use_script_exit" value="1"[#if SCRIPT_EXIT!=""#] checked[#endif#] onClick='$("#script_exit_block").toggle();'> <#LANG_ADD_EXIT_CODE#>&nbsp;<#LANG_HCB#>pattern_exit_code<#LANG_HCE#>
  [#endif#]
 
  </div>
@@ -301,8 +296,7 @@
                                 
                 <div class="checkbox">
                         <label>
-                                <input type="checkbox" name="is_context" value="1"[#if IS_CONTEXT="1"#] checked[#endif#] onClick='$("#context_details").toggle();'> <#LANG_IS_CONTEXT#>
-                                <#LANG_HCB#>pattern_is_context<#LANG_HCE#>
+                                <input type="checkbox" name="is_context" value="1"[#if IS_CONTEXT="1"#] checked[#endif#] onClick='$("#context_details").toggle();'> <#LANG_IS_CONTEXT#>&nbsp;<#LANG_HCB#>pattern_is_context<#LANG_HCE#>
                         </label>
                 </div>
         </div>
@@ -346,8 +340,7 @@
 
     <tr>
      <td valign="top">&nbsp;</td>
-     <td valign="top"><input type="checkbox" name="is_common_context" value="1"[#if IS_COMMON_CONTEXT="1"#] checked[#endif#]> <#LANG_GLOBAL_CONTEXT#>
-     <#LANG_HCB#>pattern_global_context<#LANG_HCE#>
+     <td valign="top"><input type="checkbox" name="is_common_context" value="1"[#if IS_COMMON_CONTEXT="1"#] checked[#endif#]> <#LANG_GLOBAL_CONTEXT#>&nbsp;<#LANG_HCB#>pattern_global_context<#LANG_HCE#>
      </td>
     </tr>
 

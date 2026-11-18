@@ -42,7 +42,7 @@
 [#if ONLYCODE != 1#]
 <div style="margin-top: 3px;" id="blockyTypeForCoding">
 	<#LANG_CODE_TYPE#>:
-	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="0"[#if CODE_TYPE="0"#] checked[#endif#]> <#LANG_CODE#> <#LANG_HCB#>codePhp<#LANG_HCE#>
+	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="0"[#if CODE_TYPE="0"#] checked[#endif#]> <#LANG_CODE#>&nbsp;<#LANG_HCB#>codePhp<#LANG_HCE#>
 	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="1"[#if CODE_TYPE="1"#] checked[#endif#]> Blockly<#LANG_HCB#>codeBlockly<#LANG_HCE#>
 	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="2"[#if CODE_TYPE="2"#] checked[#endif#]> <#LANG_DEVICES#><#LANG_HCB#>codeDevices<#LANG_HCE#>
 	[#if HISTORY_AVAILABLE#]
@@ -139,6 +139,11 @@ $(function() {
 	.remove-panel {
 		float: right;
 	}
+[#if TYPE!="php"#]
+	.CodeMirror {
+		height: auto !important;
+	}
+[#endif#]
 </style>
 
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/edit/matchbrackets.js"></script>
@@ -392,11 +397,11 @@ $(document).ready(function(){
 			
 			classList = $('.CodeMirror').attr("class").split(' ');
 			if(!actualLineNumber) {
-				if(totalLine < [#SETTINGS_CODEEDITOR_MIXLINE#] && classList.indexOf('CodeMirror-fullscreen') == '-1') {
+				if(totalLine < (Number('[#SETTINGS_CODEEDITOR_MIXLINE#]') || 1) && classList.indexOf('CodeMirror-fullscreen') == '-1') {
 					setHeight = Number('[#SETTINGS_CODEEDITOR_MIXLINE#]')*20;
 					$('.CodeMirror').attr('style', 'height: '+setHeight+'px;');
 				} else if(classList[4] != 'CodeMirror-fullscreen') {
-					if(totalLine >= [#SETTINGS_CODEEDITOR_SHOWLINE#]) {
+					if(totalLine >= (Number('[#SETTINGS_CODEEDITOR_SHOWLINE#]') || 99999)) {
 						setHeightMax = Number('[#SETTINGS_CODEEDITOR_SHOWLINE#]')*20;
 						$('.CodeMirror').attr('style', 'height: '+setHeightMax+'px;');
 					} else {

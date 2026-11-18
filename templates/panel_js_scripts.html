@@ -76,7 +76,35 @@
         }
         $(document).on('click', '#btnFilterCloseSearch', function() {
             $('#filter_modules').val('');
-            filterSearch();
+        });
+        // Bootstrap 3.0.0 shifts the page by a fixed 15px on .modal-open even without a scrollbar - use the real width;
+        // also close the expanded navbar menu. Bound on body to run before Bootstrap's document-level handler adds .modal-open.
+        $(document.body).on('show.bs.modal', '.modal', function() {
+            if ($(document.body).hasClass('modal-open')) return;
+            $('#responsive-menu.in').collapse('hide');
+            $('body, .navbar-fixed-top, .navbar-fixed-bottom').css('margin-right', (window.innerWidth - document.documentElement.clientWidth) + 'px');
+        }).on('hidden.bs.modal', '.modal', function() {
+            $('body, .navbar-fixed-top, .navbar-fixed-bottom').css('margin-right', '');
+        });
+        // reset the search window closed with an empty field ("Close" clears it, Esc and "Hide" keep the search)
+        $(document).on('hidden.bs.modal', '#mdmGlobalSearchModal', function() {
+            if ($('#filter_modules').val() === '') {
+                filterSearchSeq++;
+                clearTimeout(filterTimer);
+                $('#filter_add').hide().html('');
+                $('.searchNoty').show();
+            }
+        });
+        // close the expanded navbar menu once the page is scrolled 50px from where it was opened (navbar fixed)
+        var navMenuScrollBase = 0;
+        $(document).on('show.bs.collapse', '#responsive-menu', function() {
+            navMenuScrollBase = $(window).scrollTop();
+        });
+        $(window).on('scroll', function() {
+            if ($('#responsive-menu').hasClass('in') && $('nav').hasClass('navbar-fixed-top')
+                && Math.abs($(window).scrollTop() - navMenuScrollBase) > 50) {
+                $('#responsive-menu').collapse('hide');
+            }
         });
         $(document).on('click', '#btnConsoleToggleModule', function() {
             $('#currModuleName').toggle();
@@ -187,8 +215,10 @@
     }
 
     var filterTimer;
+    var filterSearchSeq = 0;
 
     function filterSearch() {
+        var seq = ++filterSearchSeq;
         $('#filter_add').show().html('<center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center>');
         $('.searchNoty').hide();
 
@@ -205,6 +235,7 @@
         $.ajax({
             url: urlFilter,
             success: function(data){
+                if (seq !== filterSearchSeq) return;
                 $('#filter_add').show();
 
                 if(data) {
@@ -216,6 +247,7 @@
 
             },
             error: function(data){
+                if (seq !== filterSearchSeq) return;
                 $('#filter_add').show();
                 $('#filter_add').html('<div style="min-width: 200px;padding: 10px;background: #ffafaf;border-radius: 10px;text-align: center;">Error sending request - filterSearch()</div>');
             },
