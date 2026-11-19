@@ -163,7 +163,7 @@
 			<div class="alert alert-warning text-center" id="warningAlertConsole" style="display: none;"><#LANG_NEWDASH_CONSOLE_ERROR_FAIL#></div>
 		</div>
 		
-		<form class="form-inline" role="form" action="?" method="post" onSubmit="return sendConsoleCommand();">
+		<form role="form" action="?" method="post" onSubmit="return sendConsoleCommand();">
 			<div class="col-xs-12 col-sm-12 col-md-12">
 				<div class="input-group">
 					<input type="text" name="command" value="" id="command" class="form-control" placeholder="<#LANG_NEWDASH_CONSOLE_PLACEHOLDER#>">
@@ -185,7 +185,7 @@
 			<input type="hidden" id="module_add" name="module_add" value="">
 		</form>
 		
-		<div class="col-xs-12 col-sm-12 col-md-12" style="padding-right: 0px;padding-left: 0px;padding: 10px;margin-top: 10px;">
+		<div class="col-xs-12 col-sm-12 col-md-12" style="margin-top: 20px;">
 			<div id="loaderConsole" style="display: none;" class="text-center"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></div>
 			<div id="console_output" style="height: 150px;min-height: 150px;overflow: auto;padding: 10px;font-family: Consolas, Verdana;background: rgb(0, 0, 128);color: rgb(192, 192, 192);border-radius: 5px;resize: vertical;">
 				<div style="color: gray;font-style: italic;"><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i>: <#LANG_NEWDASH_CONSOLE_WAIT_COMMAND#></div>
@@ -195,10 +195,10 @@
 			</div>
 		</div>
 		
-		<div class="col-xs-12 col-sm-12 col-md-4" id="methodsModule" style="display:none;padding: 10px;margin-top: 10px;height: 150px;min-height: 160px;overflow: auto;resize: vertical;">
+		<div class="col-xs-12 col-sm-12 col-md-4" id="methodsModule" style="display:none;margin-top: 20px;">
 			<div id="loaderConsoleModule" style="display: none;" class="text-center"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></div>
 			
-			<ul class="list-group" style="">
+			<ul class="list-group" style="height: 150px;margin-bottom: 0;overflow: auto;resize: vertical;">
 				
 			</ul>
 		</div>
