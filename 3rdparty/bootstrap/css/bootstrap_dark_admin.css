@@ -8690,6 +8690,10 @@ a.list-group-item-danger.active:focus {
 	color-scheme: dark;
 }
 
+html {
+	font-size: 62.5%;
+}
+
 .well {
 	background-color: #2b2b2b;
 	border: 1px solid #3a3a3a;
@@ -8891,6 +8895,27 @@ tr[style*="lightcoral"]>td:first-child {
 	border-left: 8px solid #4b79a8;
 }
 
+.badge[class*="alert-"] {
+	color: #fff;
+	border: 0;
+}
+
+.badge.alert-success {
+	background-color: #13785c;
+}
+
+.badge.alert-info {
+	background-color: #2a6a9c;
+}
+
+.badge.alert-warning {
+	background-color: #a8670e;
+}
+
+.badge.alert-danger {
+	background-color: #a03a2f;
+}
+
 .alert .alert-link,
 .alert a {
 	color: inherit;
@@ -9009,7 +9034,8 @@ code {
 }
 
 .jumbotron[style*="gradient"],
-.alert[style*="gradient"] {
+.alert[style*="gradient"],
+.list-group-item[style*="gradient"] {
 	color: #d4d4d4 !important;
 	background: #2b2b2b !important;
 	border: 1px solid #3a3a3a;
@@ -9044,6 +9070,31 @@ code {
 .jumbotron[style*="#d6ecff)"],
 .alert[style*="#d6ecff)"] {
 	border-left-color: #4792d1;
+}
+
+.list-group-item[style*="gradient"] a {
+	color: #d6d6d6 !important;
+}
+
+#breadcrumb_update[style*="gradient"] {
+	background-image: none !important;
+	box-shadow: inset 6px 0 0 #4792d1;
+}
+
+.fancybox-slide--html .fancybox-content {
+	color: #cfcfcf;
+	background-color: #2b2b2b;
+	border: 1px solid #3a3a3a;
+	border-radius: 4px;
+}
+
+#search_result img.media-object {
+	background-color: #a0a0a0;
+}
+
+#console {
+	background-color: #2b2b2b !important;
+	box-shadow: none !important;
 }
 
 .jumbotron[style*="#17b9ca)"],

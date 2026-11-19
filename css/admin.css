@@ -318,6 +318,39 @@ label.checkbox {
         display: inline;
 }
 
+/* Stack console above breadcrumbs, hide empty notifications bar */
+@media (max-width: 991px) {
+        #console_debug,
+        #problemLinkToConnect {
+                float: none;
+        }
+
+        .row > div:has(> #breadcrumb_update):not(:has(#linkConsoleDebug)):not(:has(#breadcrumb_update a[id]:not([style*="display:none"]):not([style*="display: none"]))) {
+                display: none;
+        }
+}
+
+/* Console form overflows narrow screens */
+@media (max-width: 767px) {
+        #console .input-group,
+        #console .input-group-btn {
+                display: block;
+                width: 100%;
+                white-space: normal;
+        }
+
+        #console .input-group .form-control {
+                float: none;
+                margin-bottom: 6px;
+                border-radius: 4px;
+        }
+
+        #console .input-group-btn > .btn {
+                margin: 0 6px 6px 0;
+                border-radius: 4px;
+        }
+}
+
 @media (min-width: 992px) {
         .row:has(> div > #breadcrumb_update) {
                 display: grid;
