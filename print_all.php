@@ -15,6 +15,12 @@ include_once("./load_settings.php");
 
 header('Content-Type: text/html; charset=utf-8');
 
+if (isset($_COOKIE['theme'])) {
+    $out['PANEL_THEME'] = $_COOKIE['theme'];
+} else {
+    $out['PANEL_THEME'] = 'light';
+}
+
 $sqlQuery = "SELECT COUNT(*) as TOTAL
                FROM commands
               WHERE 1";
