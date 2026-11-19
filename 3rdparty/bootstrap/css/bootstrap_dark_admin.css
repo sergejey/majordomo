@@ -9275,3 +9275,43 @@ body li.CodeMirror-hint-active {
 [style*="rgb(0, 0, 128)"] font[color="red"] {
 	color: #ff6b6b;
 }
+
+/* readability fixes for dark theme (2026-11-20) */
+select,
+select.form-control {
+	background-color: #464545 !important;
+	color: #f6f6f6 !important;
+	border-color: #5a5a5a !important;
+}
+select option {
+	background-color: #464545 !important;
+	color: #f6f6f6 !important;
+}
+.device-widget.offline {
+	background-color: #3a3a3a !important;
+}
+.device-widget.offline,
+.device-widget.offline .device-header,
+.device-widget.offline .device-details {
+	color: #d0d0d0 !important;
+}
+.status_text.status_disabled {
+	color: #a0a0a0 !important;
+}
+.breadcrumb > li,
+ul.breadcrumb > li.active {
+	color: #cfcfcf !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__placeholder,
+.select2-container--default .select2-selection--multiple .select2-selection__placeholder {
+	color: #b0b0b0 !important;
+}
+#linkConsoleDebug {
+	color: #ff8a80 !important;
+}
+#searchbtnhide a span {
+	color: #2b2b2b !important;
+}
+#tabs .ui-tabs-active a {
+	color: #2b2b2b !important;
+}
