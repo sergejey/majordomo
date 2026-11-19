@@ -26,7 +26,7 @@ class linkedobject extends module
     function __construct()
     {
         $this->name = "linkedobject";
-        $this->title = "LinkedObject";
+        $this->title = "<#LANG_LINKEDOBJECT#>";
         $this->module_category = "<#LANG_SECTION_SYSTEM#>";
         $this->checkInstalled();
     }

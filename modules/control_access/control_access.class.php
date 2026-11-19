@@ -14,7 +14,7 @@ class control_access extends module {
  function __construct() {
   // setting module name
   $this->name="control_access";
-  $this->title="Control Access";
+  $this->title="<#LANG_CONTROL_ACCESS#>";
   $this->module_category="<#LANG_SECTION_SYSTEM#>";
   $this->checkInstalled();
  }

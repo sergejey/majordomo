@@ -20,8 +20,8 @@ class dateselect extends module {
 */
 function __construct() {
   $this->name="dateselect";
-  $this->title="Date Selector";
-  $this->module_category="System";
+  $this->title="<#LANG_MODULE_DATESELECTOR#>";
+  $this->module_category="<#LANG_SECTION_SYSTEM#>";
   $this->checkInstalled();
 }
 /**

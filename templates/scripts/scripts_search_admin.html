@@ -86,13 +86,13 @@ function exportScriptsCount() {
 												<span style="border: 1px solid #4792d1;display: inline-block;padding: 0px 10px;font-size: 12px;line-height: 1.5;border-radius: 3px;">
 													<label style="font-weight: normal;">
 														<input type="checkbox" id="exportInput" onchange="exportScriptsCount();" name="ids[]" value="[#ID#]">
-														<span>Экспорт</span>
+														<span><#LANG_EXPORT#></span>
 													</label>
 												</span>
 												[#if "<#ACTION#>"=="admin"#]
 												<!-- <a href="?view_mode=edit_scripts&id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-pencil"></i></a> --->
-												<a href="?view_mode=run_script&id=[#ID#]" target="_blank" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-primary btn-sm" title="<#LANG_EXECUTE#>"><i class="glyphicon glyphicon-flash"></i> Выполнить</a>
-												<a href="?view_mode=delete_scripts&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-danger btn-sm" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i> Удалить</a>
+												<a href="?view_mode=run_script&id=[#ID#]" target="_blank" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-primary btn-sm" title="<#LANG_EXECUTE#>"><i class="glyphicon glyphicon-flash"></i> <#LANG_EXECUTE#></a>
+												<a href="?view_mode=delete_scripts&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-danger btn-sm" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i> <#LANG_DELETE#></a>
 												[#endif ACTION#]
 											</div>
 										</div>

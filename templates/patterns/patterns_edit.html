@@ -204,7 +204,7 @@
 </div>
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_TIME_LIMIT#>, <#LANG_SECONDS#>:<font color="red">*</font><#LANG_HCB#>pattern_timelimit<#LANG_HCE#><br>(set 0 to be used with the latest log record only)</label>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_TIME_LIMIT#>, <#LANG_SECONDS#>:<font color="red">*</font><#LANG_HCB#>pattern_timelimit<#LANG_HCE#><br><#LANG_PATTERN_LOG_LATEST#></label>
         <div class="col-lg-5"><input type="text"  class="form-control [#if ERR_TIME_LIMIT#]alert-danger[#endif#]"  name="time_limit" value="[#TIME_LIMIT#]"></div>
 </div>
 
@@ -278,7 +278,7 @@
 [#endif PATTERN_TYPE#]
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle">Set context when matched:<#LANG_HCB#>pattern_set_context<#LANG_HCE#></label>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_PATTERN_SET_CONTEXT#>:<#LANG_HCB#>pattern_set_context<#LANG_HCE#></label>
         <div class="col-lg-5">
                         <select name="matched_context_id" class="form-control">
                           <option value="0">
@@ -315,7 +315,7 @@
 
     <tr>
      <td align="right"><#LANG_TIMEOUT#>:<#LANG_HCB#>pattern_timeout<#LANG_HCE#></td>
-     <td valign="top"><input type="text" name="timeout" value="[#TIMEOUT#]"> (set 0 to use default)</td>
+     <td valign="top"><input type="text" name="timeout" value="[#TIMEOUT#]"> <#LANG_SET_0_TO_USE_DEFAULT#></td>
     </tr>
 
     <tr>
@@ -389,7 +389,7 @@
 [#if LOG!=""#]
 
 <div class="form-group ">
-        <label class="col-lg-4 control-label" for="inputTitle">LOG: </label>
+        <label class="col-lg-4 control-label" for="inputTitle"><#LANG_LOG#>: </label>
         <div class="col-lg-5">[#LOG#]</div>
 </div>
 [#endif#]

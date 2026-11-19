@@ -339,7 +339,7 @@ class market extends module
             array_unshift($out['CATEGORIES'], array('ID' => 'owned', 'TITLE' => LANG_MARKET_CATEGORY_OWNED));
             array_unshift($out['CATEGORIES'], array('ID' => 'updates', 'TITLE' => LANG_MARKET_CATEGORY_HAVE_UPDATES));
             array_unshift($out['CATEGORIES'], array('ID' => 'installed', 'TITLE' => LANG_MARKET_CATEGORY_INSTALLED));
-            $out['CATEGORIES'][] = array('ID' => 'custom', 'TITLE' => 'Custom');
+            $out['CATEGORIES'][] = array('ID' => 'custom', 'TITLE' => LANG_CUSTOM);
             return;
         }
 

@@ -14,7 +14,7 @@ class duration_input extends module
     function __construct()
     {
         $this->name = "duration_input";
-        $this->title = "DurationInput";
+        $this->title = "<#LANG_DURATION_INPUT#>";
         $this->module_category = "<#LANG_SECTION_SYSTEM#>";
         $this->checkInstalled();
     }

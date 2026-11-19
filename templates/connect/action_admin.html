@@ -1,6 +1,6 @@
 <ul class="nav nav-tabs">
  <li [#if TAB==""#]class="active"[#endif#]><a href="?"><#LANG_GENERAL#></a></li>
- <li [#if TAB=="calls"#]class="active"[#endif#]><a href="?tab=calls">Public Calls</a></li>
+ <li [#if TAB=="calls"#]class="active"[#endif#]><a href="?tab=calls"><#LANG_PUBLIC_CALLS#></a></li>
 </ul>
 
 [#if STATUS!=""#]
@@ -95,7 +95,7 @@
    [#if RESULT="OK"#]
   <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
   [#else RESULT#]
-  <div class="alert alert-error">Error[#if RESULT!=""#]: [#RESULT#][#endif#]</div>
+  <div class="alert alert-error"><#LANG_ERROR#>[#if RESULT!=""#]: [#RESULT#][#endif#]</div>
   [#endif RESULT#]
   </p>
 
@@ -112,7 +112,7 @@
      <div class="form-group">
 
         <input type="checkbox" name="send_classes" value="1"[#if SEND_CLASSES="1"#] checked[#endif#]>
-        Classes
+        <#LANG_CLASSES#>
 
      </div>
 
