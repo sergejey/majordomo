@@ -151,7 +151,7 @@
  [#endif ID#]
          <a href="?[#if PARENT_ID!="0"#]id=[#PARENT_ID#]&view_mode=<#VIEW_MODE#>[#endif#]" class="btn btn-default " onclick="if (window.self !== window.top) {parent.$.fancybox.close();return false;}"><#LANG_CANCEL#></a>
          [#if ID!=""#]
-         <a href="?view_mode=delete_devices&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i> <#LANG_DELETE#></a>
+         <a href="?view_mode=delete_devices&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i> <#LANG_DELETE#></a>
          [#endif ID#]
 
 [#if SELECT_EXISTING="1"#]

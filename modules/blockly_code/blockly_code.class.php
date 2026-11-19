@@ -28,7 +28,7 @@ class blockly_code extends module
     function __construct()
     {
         $this->name = "blockly_code";
-        $this->title = "Blockly code";
+        $this->title = "<#LANG_BLOCKLY_CODE#>";
         $this->module_category = "<#LANG_SECTION_SYSTEM#>";
         $this->checkInstalled();
     }

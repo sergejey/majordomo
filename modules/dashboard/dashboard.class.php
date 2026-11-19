@@ -22,7 +22,7 @@ class dashboard extends module
     function __construct()
     {
         $this->name = "dashboard";
-        $this->title = "Dashboard";
+        $this->title = "<#LANG_MODULE_DASHBOARD#>";
         $this->module_category = "CMS";
         $this->checkInstalled();
     }

@@ -68,6 +68,8 @@ class control_modules extends module
 
         $out["MODE"] = $mode;
 
+        $this->syncLocalizedTitles();
+
         $this->getModulesList();
         $lst = $this->modules;
         $lstCnt = count($lst);
@@ -110,6 +112,40 @@ class control_modules extends module
 
         $this->modules = $lst;
         return $lst;
+    }
+
+    /**
+     * Update module registry titles for modules which used to store a plain English title.
+     * Only known default values are replaced, custom titles are left untouched.
+     */
+    function syncLocalizedTitles()
+    {
+        $titles = array(
+            'blockly_code' => array('Blockly code', '<#LANG_BLOCKLY_CODE#>'),
+            'control_access' => array('Control Access', '<#LANG_CONTROL_ACCESS#>'),
+            'dashboard' => array('Dashboard', '<#LANG_MODULE_DASHBOARD#>'),
+            'dateselect' => array('Date Selector', '<#LANG_MODULE_DATESELECTOR#>'),
+            'duration_input' => array('DurationInput', '<#LANG_DURATION_INPUT#>'),
+            'linkedobject' => array('LinkedObject', '<#LANG_LINKEDOBJECT#>'),
+        );
+        foreach ($titles as $name => $pair) {
+            $rec = SQLSelectOne("SELECT * FROM project_modules WHERE NAME='" . DBSafe($name) . "'");
+            if (!isset($rec['ID'])) {
+                continue;
+            }
+            $changed = false;
+            if ($rec['TITLE'] === $pair[0]) {
+                $rec['TITLE'] = $pair[1];
+                $changed = true;
+            }
+            if ($name == 'dateselect' && $rec['CATEGORY'] === 'System') {
+                $rec['CATEGORY'] = '<#LANG_SECTION_SYSTEM#>';
+                $changed = true;
+            }
+            if ($changed) {
+                SQLUpdate('project_modules', $rec);
+            }
+        }
     }
 
     function install($parent_name = "")

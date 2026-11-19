@@ -31,7 +31,7 @@
     <div class="controls">
         <textarea  name="html_new" id="html_new" rows="5" cols="41" class="form-control">[#STATE_HTML#]</textarea>
         [#module name="blockly_code" code_field="html_new" action="" type="html"#]
-        <br>(CSS class: <i>type_<#ELEMENT_TYPE#> style_<#ELEMENT_CSS_STYLE#> state_[#STATE_TITLE#] element_<#ELEMENT_ID#></i>, CSS id: <i>state_[#STATE_ID#]</i>)
+        <br>(<#LANG_CSS_CLASS#>: <i>type_<#ELEMENT_TYPE#> style_<#ELEMENT_CSS_STYLE#> state_[#STATE_TITLE#] element_<#ELEMENT_ID#></i>, <#LANG_CSS_ID#>: <i>state_[#STATE_ID#]</i>)
     </div>
 </div>
 [#endif ELEMENT_TYPE#]
@@ -221,7 +221,7 @@
 </div>
 <div id="condition_advanced_block_new"[#if STATE_IS_DYNAMIC!="2"#] style="display:none"[#endif#]>
     <div class="form-group">
-        <label class="col-lg-4 control-label">Advanced condition<#LANG_HCB#>element_condition_advanced<#LANG_HCE#></label>
+        <label class="col-lg-4 control-label"><#LANG_ADVANCED_CONDITION#><#LANG_HCB#>element_condition_advanced<#LANG_HCE#></label>
         <div class="controls">
             <textarea class="form-control" name="condition_advanced_new" rows="5" cols="40">[#STATE_CONDITION_ADVANCED#]</textarea>
             <p class="help-block">

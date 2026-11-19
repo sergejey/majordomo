@@ -33,9 +33,9 @@
  <td width="1%" nowrap>
   <div>
   [#if "<#ACTION#>"=="admin"#]
-   <a href="?view_mode=edit_plans&id=[#ID#]&tab=preview" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-eye-open"></i></a>
-   <a href="?view_mode=edit_plans&id=[#ID#]" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
-    <a href="?view_mode=delete_plans&id=[#ID#]" onClick="return confirm('Are you sure? Please confirm.')" class="btn btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i></a>
+   <a href="?view_mode=edit_plans&id=[#ID#]&tab=preview" class="btn btn-default" title="<#LANG_VIEW#>"><i class="glyphicon glyphicon-eye-open"></i></a>
+   <a href="?view_mode=edit_plans&id=[#ID#]" class="btn btn-default" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-pencil"></i></a>
+    <a href="?view_mode=delete_plans&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i></a>
   [#endif ACTION#]
   </div>
  </td>

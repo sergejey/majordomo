@@ -2,7 +2,7 @@
 <div>
 <a href="?tab=<#TAB#>&view_mode=edit_calls&id=" class="btn btn-default"><#LANG_ADD#></a>
 [#if CALLS#]
-<a href="?tab=<#TAB#>&view_mode=sync" class="btn btn-default">Send to Connect</a>
+<a href="?tab=<#TAB#>&view_mode=sync" class="btn btn-default"><#LANG_SEND_TO_CONNECT#></a>
 [#endif CALLS#]
 </div>
 &nbsp;
@@ -16,13 +16,13 @@
   <td>[#LINKED_OBJECT#].[#LINKED_METHOD#]</td>
   <td>
   [#if PUBLIC_KEY!=""#]
-  Action URL (with confirmation): <a href="https://connect.majordomohome.com/public.php?key=[#PUBLIC_KEY#]&confirm=1" target=_blank>https://connect.majordomohome.com/public.php?key=[#PUBLIC_KEY#]&confirm=1</a><br/>
-  Action URL: <a href="https://connect.majordomohome.com/public.php?key=[#PUBLIC_KEY#]&" target=_blank>https://connect.majordomohome.com/public.php?key=[#PUBLIC_KEY#]&</a><br/>
-  Action Image URL: https://connect.majordomohome.com/public.php?key=[#PUBLIC_KEY#]&img=1&<br/>
-  Value text URL: https://connect.majordomohome.com/public.php?key=[#PUBLIC_KEY#]&text=1&<br/>
-  Value image URL: https://connect.majordomohome.com/public.php?key=[#PUBLIC_KEY#]&img=value&<br/>
+  <#LANG_ACTION_URL_CONFIRM#>: <a href="https://connect.majordomohome.com/public.php?key=[#PUBLIC_KEY#]&confirm=1" target=_blank>https://connect.majordomohome.com/public.php?key=[#PUBLIC_KEY#]&confirm=1</a><br/>
+  <#LANG_ACTION_URL#>: <a href="https://connect.majordomohome.com/public.php?key=[#PUBLIC_KEY#]&" target=_blank>https://connect.majordomohome.com/public.php?key=[#PUBLIC_KEY#]&</a><br/>
+  <#LANG_ACTION_IMAGE_URL#>: https://connect.majordomohome.com/public.php?key=[#PUBLIC_KEY#]&img=1&<br/>
+  <#LANG_VALUE_TEXT_URL#>: https://connect.majordomohome.com/public.php?key=[#PUBLIC_KEY#]&text=1&<br/>
+  <#LANG_VALUE_IMAGE_URL#>: https://connect.majordomohome.com/public.php?key=[#PUBLIC_KEY#]&img=value&<br/>
    &lt;img src="https://connect.majordomohome.com/public.php?key=[#PUBLIC_KEY#]&img=value&"&gt;
-  [#else#]n/a[#endif#]</td>
+  [#else#]<#LANG_NA#>[#endif#]</td>
   <td valign="top"><a href="?tab=<#TAB#>&view_mode=edit_calls&id=[#ID#]" class="btn btn-default"><#LANG_EDIT#></a>
   <a href="?tab=<#TAB#>&view_mode=delete_calls&id=[#ID#]" class="btn btn-default" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
   </td>
@@ -65,7 +65,7 @@
 
 <div class="form-group">
  <label class="control-label">
- Password protected:
+ <#LANG_PASSWORD_PROTECTED#>:
  </label>
  <div class="controls">
  <input type="radio" name="protected" value="1"[#if PROTECTED="1"#] checked[#endif PROTECTED#]> <#LANG_YES#>

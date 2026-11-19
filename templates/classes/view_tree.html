@@ -110,7 +110,7 @@
 									[#if METHODS#]
 										<div style="padding-left: 10px">
 										[#begin METHODS#]
-											<p style="color: gray;font-size: 1.2rem;margin: 0px;">↳ <span class="label label-primary" style="margin-bottom: 5px;">Методы: <a style="color: white;text-decoration: none;" href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#RESULT.ID#>})&md=objects&view_mode=edit_objects&id=<#OBJECTS.ID#>&tab=methods&overwrite=1&method_id=[#ID#]">[#TITLE#]</a></span></p>
+											<p style="color: gray;font-size: 1.2rem;margin: 0px;">↳ <span class="label label-primary" style="margin-bottom: 5px;"><#LANG_METHODS#>: <a style="color: white;text-decoration: none;" href="?(panel:{action=classes}classes:{view_mode=edit_classes,instance=adm,tab=objects,id=<#RESULT.ID#>})&md=objects&view_mode=edit_objects&id=<#OBJECTS.ID#>&tab=methods&overwrite=1&method_id=[#ID#]">[#TITLE#]</a></span></p>
 										[#end METHODS#]
 										</div>
 									[#endif METHODS#]
