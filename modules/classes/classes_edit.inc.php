@@ -84,6 +84,7 @@
     }
    }
   }
+  $rec['DESCRIPTION'] = getLocalizedDescription($rec['DESCRIPTION']);
   outHash($rec, $out);
 
 if ($out['TITLE']) {

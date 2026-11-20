@@ -182,6 +182,7 @@ if ($this->tab == 'properties') {
 	$methods = $cl->getParentMethods($rec['CLASS_ID'], '', 1);
     $total = count($methods);
     for ($i = 0; $i < $total; $i++) {
+        $methods[$i]['DESCRIPTION'] = getLocalizedDescription($methods[$i]['DESCRIPTION']);
         $my_meth = SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID='" . $rec['ID'] . "' AND TITLE LIKE '" . DBSafe($methods[$i]['TITLE']) . "'");
         $obj_name = SQLSelectOne("SELECT TITLE FROM `objects` WHERE ID = {$rec['ID']}");
         $methods[$i]['OBJECT_TITLE'] = $obj_name['TITLE'];
@@ -194,6 +195,7 @@ if ($this->tab == 'properties') {
     $total = count($props);
     //print_R($props);exit;
     for ($i = 0; $i < $total; $i++) {
+        $props[$i]['DESCRIPTION'] = getLocalizedDescription($props[$i]['DESCRIPTION']);
         if (!$props[$i]['KEEP_HISTORY'] && $rec['KEEP_HISTORY'] > 0) {
             $props[$i]['KEEP_HISTORY'] = $rec['KEEP_HISTORY'];
         }
@@ -351,6 +353,7 @@ if ($this->tab == 'methods') {
     $methods = $cl->getParentMethods($rec['CLASS_ID'], '', 1);
     $total = count($methods);
     for ($i = 0; $i < $total; $i++) {
+        $methods[$i]['DESCRIPTION'] = getLocalizedDescription($methods[$i]['DESCRIPTION']);
         $my_meth = SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID='" . $rec['ID'] . "' AND TITLE LIKE '" . DBSafe($methods[$i]['TITLE']) . "'");
         $obj_name = SQLSelectOne("SELECT TITLE FROM `objects` WHERE ID = {$rec['ID']}");
         $methods[$i]['OBJECT_TITLE'] = $obj_name['TITLE'];

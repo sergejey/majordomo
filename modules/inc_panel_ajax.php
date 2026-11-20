@@ -169,7 +169,7 @@ if ($op == 'filter') {
     $classes = SQLSelect("SELECT ID, TITLE, DESCRIPTION FROM classes WHERE TITLE LIKE '%" . DBSafe($title) . "%' OR DESCRIPTION LIKE '%" . DBSafe($title) . "%' ORDER BY TITLE");
     $total = count($classes);
     for ($i = 0; $i < $total; $i++) {
-        $res .= '<div class="searchHover"><span class="label label-default">' . LANG_CLASS . '</span> <a href="#" onClick="return setFilter(\'' . $classes[$i]['TITLE'] . '.\');">' . $classes[$i]['TITLE'] . (($classes[$i]['DESCRIPTION']) ? '<small style="color: gray;padding-left: 5px;"><i class="glyphicon glyphicon-arrow-right" style="font-size: .8rem;vertical-align: text-top;color: lightgray;"></i> ' . $classes[$i]['DESCRIPTION'] . '</small>' : '') . '</a></div>';
+        $res .= '<div class="searchHover"><span class="label label-default">' . LANG_CLASS . '</span> <a href="#" onClick="return setFilter(\'' . $classes[$i]['TITLE'] . '.\');">' . $classes[$i]['TITLE'] . ((getLocalizedDescription($classes[$i]['DESCRIPTION'])) ? '<small style="color: gray;padding-left: 5px;"><i class="glyphicon glyphicon-arrow-right" style="font-size: .8rem;vertical-align: text-top;color: lightgray;"></i> ' . getLocalizedDescription($classes[$i]['DESCRIPTION']) . '</small>' : '') . '</a></div>';
     }
     //objects
     $objects = SQLSelect("SELECT ID, TITLE, DESCRIPTION FROM objects WHERE (TITLE LIKE '%" . DBSafe($title) . "%' OR DESCRIPTION LIKE '%" . DBSafe($title) . "%') ORDER BY TITLE");
@@ -191,7 +191,7 @@ if ($op == 'filter') {
             $res .= '<a target="_blank" href="/panel/class/' . $properties[$i]['CLASS_ID'] . '/properties.html">' . $methods[$i]['OBJECT'];
             $res .= $properties[$i]['CLASS'];
         }
-        $res .= '.' . $properties[$i]['TITLE'] . (($properties[$i]['DESCRIPTION']) ? '<small style="color: gray;padding-left: 5px;"><i class="glyphicon glyphicon-arrow-right" style="font-size: .8rem;vertical-align: text-top;color: lightgray;"></i> ' . $properties[$i]['DESCRIPTION'] . '</small>' : '') . '</a></div>';
+        $res .= '.' . $properties[$i]['TITLE'] . ((getLocalizedDescription($properties[$i]['DESCRIPTION'])) ? '<small style="color: gray;padding-left: 5px;"><i class="glyphicon glyphicon-arrow-right" style="font-size: .8rem;vertical-align: text-top;color: lightgray;"></i> ' . getLocalizedDescription($properties[$i]['DESCRIPTION']) . '</small>' : '') . '</a></div>';
     }
 
     $methods = SQLSelect("SELECT methods.ID, methods.TITLE, methods.OBJECT_ID, methods.DESCRIPTION, objects.CLASS_ID AS OBJECT_CLASS_ID, methods.CLASS_ID, classes.TITLE AS CLASS, objects.TITLE AS OBJECT FROM methods LEFT JOIN classes ON methods.CLASS_ID=classes.ID LEFT JOIN objects ON methods.OBJECT_ID=objects.ID WHERE (methods.TITLE LIKE '%" . DBSafe($title) . "%' OR methods.CODE LIKE '%" . DBSafe($title) . "%' OR methods.DESCRIPTION LIKE '%" . DBSafe($title) . "%') ORDER BY methods.TITLE");
@@ -203,7 +203,7 @@ if ($op == 'filter') {
         } else {
             $res .= '<a target="_blank" href="/panel/class/' . $methods[$i]['CLASS_ID'] . '/methods/' . $methods[$i]['ID'] . '.html">' . $methods[$i]['CLASS'];
         }
-        $res .= '.' . $methods[$i]['TITLE'] . (($methods[$i]['DESCRIPTION']) ? '<small style="color: gray;padding-left: 5px;"><i class="glyphicon glyphicon-arrow-right" style="font-size: .8rem;vertical-align: text-top;color: lightgray;"></i> ' . $methods[$i]['DESCRIPTION'] . '</small>' : '') . '</a></div>';
+        $res .= '.' . $methods[$i]['TITLE'] . ((getLocalizedDescription($methods[$i]['DESCRIPTION'])) ? '<small style="color: gray;padding-left: 5px;"><i class="glyphicon glyphicon-arrow-right" style="font-size: .8rem;vertical-align: text-top;color: lightgray;"></i> ' . getLocalizedDescription($methods[$i]['DESCRIPTION']) . '</small>' : '') . '</a></div>';
     }
     //scripts
     $scripts = SQLSelect("SELECT ID, TITLE FROM scripts WHERE (TITLE LIKE '%" . DBSafe($title) . "%' OR CODE LIKE '%" . DBSafe($title) . "%') ORDER BY TITLE");

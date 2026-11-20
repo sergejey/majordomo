@@ -57,6 +57,7 @@ if ($res[0]['ID']) {
     $class_methods = array();
 
     for ($i = 0; $i < $total; $i++) {
+        $res[$i]['DESCRIPTION'] = getLocalizedDescription($res[$i]['DESCRIPTION']);
         // some action for every record if required
         $objects = SQLSelect("SELECT ID, TITLE, CLASS_ID, DESCRIPTION FROM objects WHERE CLASS_ID='" . $res[$i]['ID'] . "' ORDER BY objects.TITLE");
         if (isset($objects[0]['ID'])) {
