@@ -105,6 +105,7 @@
     }
    }
   }
+  $rec['DESCRIPTION'] = getLocalizedDescription($rec['DESCRIPTION']);
   outHash($rec, $out);
 
   global $overwrite;

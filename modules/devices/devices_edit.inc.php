@@ -78,6 +78,7 @@ if ($this->tab == 'logic') {
     $methods = $object->getParentMethods($object->class_id, '', 1);
     $total = count($methods);
     for ($i = 0; $i < $total; $i++) {
+        $methods[$i]['DESCRIPTION'] = getLocalizedDescription($methods[$i]['DESCRIPTION']);
         if ($methods[$i]['DESCRIPTION'] != '') {
             $methods[$i]['DESCRIPTION'] = $methods[$i]['TITLE'] . ' - ' . $methods[$i]['DESCRIPTION'];
         } else {

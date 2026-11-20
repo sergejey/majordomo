@@ -60,6 +60,7 @@
    colorizeArray($res);
    $total=count($res);
    for($i=0;$i<$total;$i++) {
+    $res[$i]['DESCRIPTION'] = getLocalizedDescription($res[$i]['DESCRIPTION']);
     // some action for every record if required
    }
    $out['RESULT']=$res;

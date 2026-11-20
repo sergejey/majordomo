@@ -749,7 +749,7 @@ class xray extends module
 
                         $responce['LIST'][$i]['METHOD'] = $res[$i]['OBJECT'] . '.' . $res[$i]['TITLE'];
                         if ($res[$i]['DESCRIPTION']) {
-                            $responce['LIST'][$i]['DESC'] = $res[$i]['DESCRIPTION'];
+                            $responce['LIST'][$i]['DESC'] = getLocalizedDescription($res[$i]['DESCRIPTION']);
                         } else {
                             $responce['LIST'][$i]['DESC'] = '';
                         }
@@ -782,7 +782,7 @@ class xray extends module
                             $responce['LIST'][$i]['ID'] = $res[$i]['ID'];
                             $responce['LIST'][$i]['SCRIPT'] = $res[$i]['TITLE'];
                             if ($res[$i]['DESCRIPTION']) {
-                                $responce['LIST'][$i]['DESC'] = $res[$i]['DESCRIPTION'];
+                                $responce['LIST'][$i]['DESC'] = getLocalizedDescription($res[$i]['DESCRIPTION']);
                             } else {
                                 $responce['LIST'][$i]['DESC'] = '';
                             }
@@ -924,7 +924,7 @@ class xray extends module
                             $v = $pValues[$iv]['VALUE'];
 
                             if ($v == '0') {
-                                $found[] = array("TITLE" => $pValues[$iv]['TITLE'], 'UPDATED' => $pValues[$iv]['UPDATED'], 'DESCRIPTION' => $pValues[$iv]['DESCRIPTION'], 'LOCATIONTITLE' => $pValues[$iv]['LOCATIONTITLE']);
+                                $found[] = array("TITLE" => $pValues[$iv]['TITLE'], 'UPDATED' => $pValues[$iv]['UPDATED'], 'DESCRIPTION' => getLocalizedDescription($pValues[$iv]['DESCRIPTION']), 'LOCATIONTITLE' => $pValues[$iv]['LOCATIONTITLE']);
                             }
 
                         }
@@ -940,7 +940,7 @@ class xray extends module
 
                     for ($i = 0; $i < $total; $i++) {
                         $responce['LIST'][$i]['TITLE'] = $res[$i]['TITLE'];
-                        $responce['LIST'][$i]['DESCRIPTION'] = htmlspecialchars($res[$i]['DESCRIPTION']);
+                        $responce['LIST'][$i]['DESCRIPTION'] = htmlspecialchars(getLocalizedDescription($res[$i]['DESCRIPTION']));
 
                         $responce['LIST'][$i]['LOCATIONTITLE'] = htmlspecialchars($res[$i]['LOCATIONTITLE']);
                         $responce['LIST'][$i]['UPDATED'] = htmlspecialchars($res[$i]['UPDATED']);

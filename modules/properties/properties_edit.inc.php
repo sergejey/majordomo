@@ -128,6 +128,7 @@
    }
   }
 
+  $rec['DESCRIPTION'] = getLocalizedDescription($rec['DESCRIPTION']);
   outHash($rec, $out);
 
   if ($this->class_id) {

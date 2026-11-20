@@ -71,7 +71,7 @@ if (isset($points[0]['ID'])) {
         }
         foreach ($out['SHOW_METHODS'] as $method) {
             if ($method['NAME'] == $point_item['LINKED_METHOD']) {
-                $point_item['LINKED_METHOD'] = $method['DESCRIPTION'];
+                $point_item['LINKED_METHOD'] = getLocalizedDescription($method['DESCRIPTION']);
                 break;
             }
         }

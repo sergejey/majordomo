@@ -4,6 +4,45 @@
  */
 
 /**
+ * Localize a stored device property/method description.
+ * Descriptions are stored once, so the helper maps known localized values
+ * back to their LANG key and returns the value for the current language.
+ *
+ * @param mixed $text Stored description
+ * @return string
+ */
+function getLocalizedDescription($text)
+{
+    static $map = null;
+    if ($map === null) {
+        $map = array();
+        foreach (array('default', 'ru') as $lang) {
+            $file = ROOT . 'languages/' . $lang . '.php';
+            if (!file_exists($file)) {
+                continue;
+            }
+            $dictionary = array();
+            include $file;
+            foreach ($dictionary as $key => $value) {
+                if (strpos($key, 'DEVICES_DESC_') !== 0) {
+                    continue;
+                }
+                $value = trim((string)$value);
+                if ($value !== '' && !isset($map[$value])) {
+                    $map[$value] = $key;
+                }
+            }
+        }
+    }
+    $text = trim((string)$text);
+    if ($text === '' || !isset($map[$text])) {
+        return $text;
+    }
+    $constant = 'LANG_' . $map[$text];
+    return defined($constant) ? constant($constant) : $text;
+}
+
+/**
  * Summary of addClass
  * @param mixed $class_name Class name
  * @param mixed $parent_class Parent class (default '')
