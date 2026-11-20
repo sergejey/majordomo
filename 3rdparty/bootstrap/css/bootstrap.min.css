@@ -7258,3 +7258,48 @@ td.visible-print {
 	background-color: #e5e5e5;
 	border-bottom: 1px solid #fff
 }
+
+/* light theme contrast fixes (2026-11-20) */
+a { color: #2a6a9f; }
+a:hover, a:focus { color: #1f527c; }
+#main-content .nav-tabs > li > a { color: #2a6a9f !important; }
+#main-content .nav-tabs > li.active > a { color: #555 !important; }
+.btn-primary { background-color: #2f6f9f !important; border-color: #2a648f !important; }
+.btn-success { background-color: #2e7d32 !important; border-color: #286b2b !important; }
+.btn-info { background-color: #2a6a9c !important; border-color: #245d89 !important; }
+.btn-warning { background-color: #a85f00 !important; border-color: #8f5100 !important; }
+.btn-danger { background-color: #b52b27 !important; border-color: #9e2522 !important; }
+.label-primary { background-color: #2f6f9f; }
+.label-success { background-color: #2e7d32; }
+.label-info { background-color: #2a6a9c; }
+.label-warning { background-color: #a85f00; }
+.label-danger { background-color: #b52b27; }
+.nav-list > .active > a,
+.nav-list > .active > a:hover,
+.nav-list > .active > a:focus { background-color: #2f6f9f !important; }
+#searchbtnhide a span { color: #2b2b2b !important; }
+.text-primary { color: #2a6a9f; }
+
+/* additional light theme contrast fixes (2026-11-20) */
+.label-default { background-color: #666666; }
+.badge { background-color: #666666; }
+.panel-primary > .panel-heading { background-color: #2f6f9f; border-color: #2f6f9f; }
+.panel-success > .panel-heading { background-color: #2e7d32; border-color: #2e7d32; }
+.panel-info > .panel-heading { background-color: #2a6a9c; border-color: #2a6a9c; }
+.panel-warning > .panel-heading { background-color: #a85f00; border-color: #a85f00; }
+.panel-danger > .panel-heading { background-color: #b52b27; border-color: #b52b27; }
+.alert-success { color: #3c763d; background-color: #dff0d8; border-color: #d6e9c6; }
+.alert-info { color: #31708f; background-color: #d9edf7; border-color: #bce8f1; }
+.alert-warning { color: #8a6d3b; background-color: #fcf8e3; border-color: #faebcc; }
+.alert-danger { color: #a94442; background-color: #f2dede; border-color: #ebccd1; }
+span[style*="color: lightgray"] { color: #767676 !important; }
+
+.panel-primary > .panel-heading,
+.panel-success > .panel-heading,
+.panel-info > .panel-heading,
+.panel-warning > .panel-heading,
+.panel-danger > .panel-heading { color: #ffffff !important; }
+
+#tabs .ui-tabs-nav li a { color: #2a6a9f !important; }
+#tabs .ui-tabs-active a { color: #2b2b2b !important; }
+#tabs .ui-tabs-nav li.ui-tabs-active a { color: #2b2b2b !important; }

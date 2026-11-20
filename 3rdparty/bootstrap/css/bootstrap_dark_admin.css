@@ -9315,3 +9315,42 @@ ul.breadcrumb > li.active {
 #tabs .ui-tabs-active a {
 	color: #2b2b2b !important;
 }
+
+/* additional dark theme contrast fixes (2026-11-20) */
+.nav-list > .active > a,
+.nav-list > .active > a:hover,
+.nav-list > .active > a:focus {
+	background-color: #2f6f9f !important;
+}
+#main-content p[style*="color: gray"] {
+	color: #a0a0a0 !important;
+}
+#console {
+	background: #303030 !important;
+	color: #e0e0e0 !important;
+}
+#console input[type="text"],
+#console select {
+	background: #464545 !important;
+	color: #f6f6f6 !important;
+}
+#console .btn-success { background: #2e7d32 !important; }
+#console .btn-info { background: #2a6a9c !important; }
+#console .btn-warning { background: #a85f00 !important; }
+
+/* legacy tables and status colors in dark theme (2026-11-20) */
+table[bgcolor="#000000"],
+table[bgcolor="#666666"] { background-color: #222222 !important; }
+td[bgcolor="#AAAAAA"], th[bgcolor="#AAAAAA"],
+td[bgcolor="#CCCCCC"], th[bgcolor="#CCCCCC"],
+td[bgcolor="#FFFFFF"], th[bgcolor="#FFFFFF"],
+td[bgcolor="#EEEEEE"], th[bgcolor="#EEEEEE"],
+td[bgcolor="#666666"], th[bgcolor="#666666"] {
+	background-color: #303030 !important;
+	color: #d4d4d4 !important;
+}
+#main-content font[color="green"] { color: #5cd65c !important; }
+#main-content font[color="red"] { color: #ff8a80 !important; }
+#main-content span[id^="statusUpdateTitle_"] i { color: #a0a0a0 !important; }
+
+#main-content .alert[style*="#398439"] { color: #7ee787 !important; border-color: #2e7d32 !important; }
