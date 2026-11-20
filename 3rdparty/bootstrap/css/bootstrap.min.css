@@ -7303,3 +7303,15 @@ span[style*="color: lightgray"] { color: #767676 !important; }
 #tabs .ui-tabs-nav li a { color: #2a6a9f !important; }
 #tabs .ui-tabs-active a { color: #2b2b2b !important; }
 #tabs .ui-tabs-nav li.ui-tabs-active a { color: #2b2b2b !important; }
+
+/* остатки контраста в светлой теме (2026-11-21) */
+.navbar-default .navbar-nav > li > a,
+.navbar-default .navbar-brand { color: #666666; }
+#hideMenuDiv > li[style*="color: gray"],
+#hideMenuDiv > li > span[style*="color: gray"],
+#breadcrumb_update > li[style*="color: gray"] { color: #6a6a6a !important; }
+#main-content p[style*="color: gray"],
+#main-content li[style*="color: gray"] { color: #6a6a6a !important; }
+#linkConsoleDebug { color: #b03030 !important; }
+#main-content span[id^="statusUpdateTitle_"] i { color: #6a6a6a !important; }
+a, .text-primary { color: #26648f; }
