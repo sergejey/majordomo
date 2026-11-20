@@ -28,6 +28,7 @@ class devices extends module
         $this->checkInstalled();
 
         $this->setDictionary();
+        $this->syncLegacyDescriptions();
 
     }
 
@@ -91,6 +92,155 @@ class devices extends module
     {
         include(dirname(__FILE__) . '/devices_structure.inc.php');
         include(dirname(__FILE__) . '/devices_structure_links.inc.php');
+    }
+
+    /**
+     * One-time localization of descriptions which were hardcoded in English
+     * in devices_structure.inc.php. Only exact legacy defaults are replaced,
+     * user-edited descriptions are left untouched.
+     */
+    function syncLegacyDescriptions()
+    {
+        $marker = ROOT . 'cms/modules_installed/devices_descriptions_v1';
+        if (file_exists($marker)) {
+            return;
+        }
+        if (!is_array($this->device_types)) {
+            return;
+        }
+        if (!defined('LANG_DEVICES_DESC_ALIVE')) {
+            return;
+        }
+
+        $legacy = array(
+            'Active HTML' => 'DEVICES_DESC_ACTIVE_HTML',
+            'Alive' => 'DEVICES_DESC_ALIVE',
+            'Alive update' => 'DEVICES_DESC_ALIVE_UPDATE',
+            'Battery level updated' => 'DEVICES_DESC_BATTERY_LEVEL_UPDATED',
+            'Brightness level (work)' => 'DEVICES_DESC_BRIGHTNESS_LEVEL_WORK',
+            'Channel number' => 'DEVICES_DESC_CHANNEL_NUMBER',
+            'Check if any windows/doors are open' => 'DEVICES_DESC_CHECK_WINDOWS_DOORS_OPEN',
+            'Close' => 'DEVICES_DESC_CLOSE',
+            'Color Set' => 'DEVICES_DESC_COLOR_SET',
+            'Color Updated' => 'DEVICES_DESC_COLOR_UPDATED',
+            'Config updated' => 'DEVICES_DESC_CONFIG_UPDATED',
+            'Controllable device' => 'DEVICES_DESC_CONTROLLABLE_DEVICE',
+            'Conversion coefficient (work-to-data)' => 'DEVICES_DESC_CONVERSION_COEFFICIENT_WORK_TO_DATA',
+            'Current Sensor Value' => 'DEVICES_DESC_CURRENT_SENSOR_VALUE',
+            'Current brightness' => 'DEVICES_DESC_CURRENT_BRIGHTNESS',
+            'Current brightness level' => 'DEVICES_DESC_CURRENT_BRIGHTNESS_LEVEL',
+            'Current color' => 'DEVICES_DESC_CURRENT_COLOR',
+            'Current level' => 'DEVICES_DESC_CURRENT_LEVEL',
+            'Data Value' => 'DEVICES_DESC_DATA_VALUE',
+            'Data Value updated event' => 'DEVICES_DESC_DATA_VALUE_UPDATED_EVENT',
+            'Day Value' => 'DEVICES_DESC_DAY_VALUE',
+            'Decrease target temperature' => 'DEVICES_DESC_DECREASE_TARGET_TEMPERATURE',
+            'Descrease target temperature' => 'DEVICES_DESC_DECREASE_TARGET_TEMPERATURE',
+            'Direction of changes' => 'DEVICES_DESC_DIRECTION_OF_CHANGES',
+            'Disabled' => 'DEVICES_DESC_DISABLED',
+            'Enable' => 'DEVICES_DESC_ENABLE',
+            'Fan Speed' => 'DEVICES_DESC_FAN_SPEED',
+            'Fan Speed updated' => 'DEVICES_DESC_FAN_SPEED_UPDATED',
+            'FanSpeedModes HTML' => 'DEVICES_DESC_FAN_SPEED_MODES_HTML',
+            'General Devices Class' => 'DEVICES_DESC_GENERAL_DEVICES_CLASS',
+            'Group state' => 'DEVICES_DESC_GROUP_STATE',
+            'Group system name' => 'DEVICES_DESC_GROUP_SYSTEM_NAME',
+            'Hour Value' => 'DEVICES_DESC_HOUR_VALUE',
+            'Humidity' => 'DEVICES_DESC_HUMIDITY',
+            'Increase target temperature' => 'DEVICES_DESC_INCREASE_TARGET_TEMPERATURE',
+            'Is blocked' => 'DEVICES_DESC_IS_BLOCKED',
+            'Latest level saved' => 'DEVICES_DESC_LATEST_LEVEL_SAVED',
+            'Level Updated' => 'DEVICES_DESC_LEVEL_UPDATED',
+            'Level Work Updated' => 'DEVICES_DESC_LEVEL_WORK_UPDATED',
+            'Level move down' => 'DEVICES_DESC_LEVEL_MOVE_DOWN',
+            'Level move up' => 'DEVICES_DESC_LEVEL_MOVE_UP',
+            'LinkedRoom' => 'DEVICES_DESC_LINKED_ROOM',
+            'List of devices turned off automatically' => 'DEVICES_DESC_DEVICES_TURNED_OFF_AUTOMATICALLY',
+            'Load Status Changed' => 'DEVICES_DESC_LOAD_STATUS_CHANGED',
+            'Logic Action' => 'DEVICES_DESC_LOGIC_ACTION',
+            'Meter pulse detection' => 'DEVICES_DESC_METER_PULSE_DETECTION',
+            'Month Value' => 'DEVICES_DESC_MONTH_VALUE',
+            'Motion Detected' => 'DEVICES_DESC_MOTION_DETECTED',
+            'Open' => 'DEVICES_DESC_OPEN',
+            'Pause' => 'DEVICES_DESC_PAUSE',
+            'Preview HTML' => 'DEVICES_DESC_PREVIEW_HTML',
+            'Price' => 'DEVICES_DESC_PRICE',
+            'Pulse amount (optional)' => 'DEVICES_DESC_PULSE_AMOUNT_OPTIONAL',
+            'Refreshes daily/monthly stats' => 'DEVICES_DESC_REFRESHES_DAILY_MONTHLY_STATS',
+            'Relay Status Updated' => 'DEVICES_DESC_RELAY_STATUS_UPDATED',
+            'Restore state' => 'DEVICES_DESC_RESTORE_STATE',
+            'Rooms Activity' => 'DEVICES_DESC_ROOMS_ACTIVITY',
+            'Rooms Idle' => 'DEVICES_DESC_ROOMS_IDLE',
+            'Rooms/Locations' => 'DEVICES_DESC_ROOMS_LOCATIONS',
+            'Save state' => 'DEVICES_DESC_SAVE_STATE',
+            'Saved color' => 'DEVICES_DESC_SAVED_COLOR',
+            'Sensor alert' => 'DEVICES_DESC_SENSOR_ALERT',
+            'Set channel' => 'DEVICES_DESC_SET_CHANNEL',
+            'Set fan speed mode' => 'DEVICES_DESC_SET_FAN_SPEED_MODE',
+            'Set open level' => 'DEVICES_DESC_SET_OPEN_LEVEL',
+            'Set source' => 'DEVICES_DESC_SET_SOURCE',
+            'Set target temperature' => 'DEVICES_DESC_SET_TARGET_TEMPERATURE',
+            'Set thermostat mode' => 'DEVICES_DESC_SET_THERMOSTAT_MODE',
+            'Set volume' => 'DEVICES_DESC_SET_VOLUME',
+            'Snapshot Preview URL' => 'DEVICES_DESC_SNAPSHOT_PREVIEW_URL',
+            'Somebody in the room' => 'DEVICES_DESC_SOMEBODY_IN_THE_ROOM',
+            'Source number' => 'DEVICES_DESC_SOURCE_NUMBER',
+            'Status Updated' => 'DEVICES_DESC_STATUS_UPDATED',
+            'Status updated event' => 'DEVICES_DESC_STATUS_UPDATED_EVENT',
+            'Stop level move' => 'DEVICES_DESC_STOP_LEVEL_MOVE',
+            'Switch' => 'DEVICES_DESC_SWITCH',
+            'Switch Enable' => 'DEVICES_DESC_SWITCH_ENABLE',
+            'Take snapshot' => 'DEVICES_DESC_TAKE_SNAPSHOT',
+            'Takes image series' => 'DEVICES_DESC_TAKES_IMAGE_SERIES',
+            'Temperature' => 'DEVICES_DESC_TEMPERATURE',
+            'Thermostat' => 'DEVICES_DESC_THERMOSTAT',
+            'Thermostat updated' => 'DEVICES_DESC_THERMOSTAT_UPDATED',
+            'ThermostatModes HTML' => 'DEVICES_DESC_THERMOSTAT_MODES_HTML',
+            'Update activity status' => 'DEVICES_DESC_UPDATE_ACTIVITY_STATUS',
+            'Update preview code' => 'DEVICES_DESC_UPDATE_PREVIEW_CODE',
+            'Updated Timestamp' => 'DEVICES_DESC_UPDATED_TIMESTAMP',
+            'Value Updated' => 'DEVICES_DESC_VALUE_UPDATED',
+            'Volume' => 'DEVICES_DESC_VOLUME',
+            'Work Value' => 'DEVICES_DESC_WORK_VALUE',
+            'Work Value updated event' => 'DEVICES_DESC_WORK_VALUE_UPDATED_EVENT',
+            'currentTargetValueUpdated' => 'DEVICES_DESC_CURRENT_TARGET_VALUE_UPDATED',
+            'modeTargetValueUpdated' => 'DEVICES_DESC_TARGET_MODE_UPDATED',
+        );
+
+        $class_titles = array();
+        foreach ($this->device_types as $type) {
+            if (!empty($type['CLASS'])) {
+                $class_titles[$type['CLASS']] = 1;
+            }
+            if (!empty($type['PARENT_CLASS'])) {
+                $class_titles[$type['PARENT_CLASS']] = 1;
+            }
+        }
+        $class_ids = array();
+        foreach (array_keys($class_titles) as $title) {
+            $rec = SQLSelectOne("SELECT ID FROM classes WHERE TITLE='" . DBSafe($title) . "'");
+            if (!empty($rec['ID'])) {
+                $class_ids[] = (int)$rec['ID'];
+            }
+        }
+        if (!$class_ids) {
+            return;
+        }
+        $ids = implode(',', $class_ids);
+        $titles = array();
+        foreach (array_keys($class_titles) as $title) {
+            $titles[] = "'" . DBSafe($title) . "'";
+        }
+        $titles_sql = implode(',', $titles);
+
+        foreach ($legacy as $old => $key) {
+            $value = defined('LANG_' . $key) ? constant('LANG_' . $key) : $old;
+            SQLExec("UPDATE properties SET DESCRIPTION='" . DBSafe($value) . "' WHERE OBJECT_ID=0 AND CLASS_ID IN (" . $ids . ") AND DESCRIPTION='" . DBSafe($old) . "'");
+            SQLExec("UPDATE methods SET DESCRIPTION='" . DBSafe($value) . "' WHERE OBJECT_ID=0 AND CLASS_ID IN (" . $ids . ") AND DESCRIPTION='" . DBSafe($old) . "'");
+            SQLExec("UPDATE classes SET DESCRIPTION='" . DBSafe($value) . "' WHERE TITLE IN (" . $titles_sql . ") AND DESCRIPTION='" . DBSafe($old) . "'");
+        }
+
+        SaveFile($marker, date('Y-m-d H:i:s'));
     }
 
     /**
