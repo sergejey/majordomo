@@ -119,6 +119,16 @@ $(function() {
 		padding: 3px 7px;
 		font-size: 0.85em;
 	}
+	@media (max-width: 767px) {
+		/* на телефоне код крупнее, а подсказки про F11 и Ctrl+S бесполезны */
+		.CodeMirror {
+			font-size: 16px;
+			line-height: 1.45;
+		}
+		.cm_panel {
+			display: none;
+		}
+	}
 	.cm_panel.top, .cm_panel.after-top {
 		border-bottom: 1px solid #ddd;
 	}
@@ -228,7 +238,7 @@ $(document).ready(function(){
 		[#if TYPE=="php" || TYPE=="html" || TYPE=="javascript"#]
 		enterMode: "indent",
 		undoDelay: 400,
-		lineWrapping: [#if SETTINGS_CODEEDITOR_WRAPLINES == 1#]true[#else#]false[#endif#],
+		lineWrapping: (window.innerWidth < 768) || [#if SETTINGS_CODEEDITOR_WRAPLINES == 1#]true[#else#]false[#endif#],
 		scrollbarStyle: 'native',
 		autofocus: [#if AUTOFOCUS == '0'#]false[#else#]true[#endif#],
 		[#if SETTINGS_CODEEDITOR_THEME != 'codemirror' && SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]theme: "[#SETTINGS_CODEEDITOR_THEME#]",[#endif#]

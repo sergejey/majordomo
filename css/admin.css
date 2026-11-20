@@ -413,3 +413,30 @@ label.checkbox {
         display: inline;
         padding: 0;
 }
+
+/* Мобильная админка: поля без зума на iOS и ссылки под палец */
+@media (max-width: 767px) {
+        .form-control,
+        input[type="text"],
+        input[type="password"],
+        input[type="number"],
+        textarea {
+                font-size: 16px;
+        }
+
+        #hideMenuDiv > li,
+        #breadcrumb_update > li {
+                padding: 3px 0;
+        }
+
+        #hideMenuDiv a,
+        #breadcrumb_update a {
+                display: inline-block;
+                padding: 4px 2px;
+        }
+
+        #linkToggleLeftPanel {
+                display: inline-block;
+                padding: 6px;
+        }
+}
