@@ -17,9 +17,10 @@
 }
 
 .CodeMirror-dialog-top {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #a8c4e0;
   top: 0;
-  background: antiquewhite;
+  background: #dbeafe;
+  padding: .4em .8em;
   box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.5);
 }
 
