@@ -413,3 +413,11 @@ label.checkbox {
         display: inline;
         padding: 0;
 }
+
+/* Mobile: larger hit area for the left panel toggle */
+@media (max-width: 767px) {
+        #linkToggleLeftPanel {
+                display: inline-block;
+                padding: 6px;
+        }
+}
