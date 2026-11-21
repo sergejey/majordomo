@@ -781,6 +781,8 @@ $dictionary = array(
 
 
     'KEEP_HISTORY_DAYS' => 'Keep history (days)',
+    'TRANSIENT' => 'Transient (in memory only)',
+    'TRANSIENT_HINT' => 'Do not write to the database: the value lives in RAM and is lost after restart',
 
 
     'DO_NOT_KEEP' => 'do not keep history',
