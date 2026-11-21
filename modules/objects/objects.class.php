@@ -801,7 +801,9 @@ class objects extends module
                 $v = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID=" . $property_id . " AND OBJECT_ID=" . (int)$row['OBJECT_ID']);
                 if (!is_array($v)) $v = array();
                 $v['VALUE'] = (string)$row['VALUE'];
-                $v['UPDATED'] = date('Y-m-d H:i:s');
+                $key = 'T:' . (int)$row['OBJECT_ID'] . '.' . $property_id;
+                $updated = checkTransient($key . '.u');
+                $v['UPDATED'] = ($updated !== false && $updated !== '') ? $updated : date('Y-m-d H:i:s');
                 if (isset($v['ID'])) {
                     SQLUpdate('pvalues', $v);
                 } else {
