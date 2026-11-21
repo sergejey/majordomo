@@ -204,6 +204,13 @@ MajorDoMo provides broad hardware interoperability:
 4. Copy `config.php.sample` to `config.php` and set the database connection details.
 5. Open `http://localhost/admin.php` in your browser.
 
+### Docker (optional)
+
+A multi-arch Docker stack (MariaDB + Apache + `cycle.php`) for x86_64 and 64-bit ARM
+hosts is described in [`docker/README.md`](docker/README.md). It does not replace the
+native installation and does not change PHP code; PHP 7.3 users should keep the
+native setup.
+
 ---
 
 ### Background Cycles Setup
