@@ -7258,3 +7258,134 @@ td.visible-print {
 	background-color: #e5e5e5;
 	border-bottom: 1px solid #fff
 }
+
+/* Light theme contrast tweaks */
+a,
+.text-primary {
+	color: #26648f;
+}
+a:hover,
+a:focus {
+	color: #1f527c;
+}
+#main-content .nav-tabs > li > a {
+	color: #26648f;
+}
+#main-content .nav-tabs > li.active > a {
+	color: #555555;
+}
+.btn-primary {
+	background-color: #2f6f9f;
+	border-color: #2a648f;
+}
+.btn-success {
+	background-color: #2e7d32;
+	border-color: #286b2b;
+}
+.btn-info {
+	background-color: #2a6a9c;
+	border-color: #245d89;
+}
+.btn-warning {
+	background-color: #a85f00;
+	border-color: #8f5100;
+}
+.btn-danger {
+	background-color: #b52b27;
+	border-color: #9e2522;
+}
+.label-primary {
+	background-color: #2f6f9f;
+}
+.label-success {
+	background-color: #2e7d32;
+}
+.label-info {
+	background-color: #2a6a9c;
+}
+.label-warning {
+	background-color: #a85f00;
+}
+.label-danger {
+	background-color: #b52b27;
+}
+.label-default,
+.badge {
+	background-color: #666666;
+}
+.nav-list > .active > a,
+.nav-list > .active > a:hover,
+.nav-list > .active > a:focus,
+.nav-list > .active > .leftmenutab,
+.nav-list > .active > .leftmenutab:hover,
+.nav-list > .active > .leftmenutab:focus {
+	background-color: #2f6f9f;
+}
+.panel-primary > .panel-heading {
+	background-color: #2f6f9f;
+	border-color: #2f6f9f;
+}
+.panel-success > .panel-heading {
+	background-color: #2e7d32;
+	border-color: #2e7d32;
+}
+.panel-info > .panel-heading {
+	background-color: #2a6a9c;
+	border-color: #2a6a9c;
+}
+.panel-warning > .panel-heading {
+	background-color: #a85f00;
+	border-color: #a85f00;
+}
+.panel-danger > .panel-heading {
+	background-color: #b52b27;
+	border-color: #b52b27;
+}
+.panel-primary > .panel-heading,
+.panel-success > .panel-heading,
+.panel-info > .panel-heading,
+.panel-warning > .panel-heading,
+.panel-danger > .panel-heading {
+	color: #ffffff;
+}
+.text-muted {
+	color: #6a6a6a;
+}
+#tabs .ui-tabs-nav li a {
+	color: #26648f;
+}
+#tabs .ui-tabs-nav li.ui-tabs-active a {
+	color: #2b2b2b;
+}
+.navbar-default .navbar-nav > li > a,
+.navbar-default .navbar-brand {
+	color: #666666;
+}
+#breadcrumb_update .console-debug-link {
+	color: #b03030;
+}
+/* alert colors in this build are from bootstrap 3.3.0 and fail contrast */
+.alert-success {
+	color: #3c763d;
+}
+.alert-info {
+	color: #31708f;
+}
+.alert-warning {
+	color: #8a6d3b;
+}
+.alert-danger {
+	color: #a94442;
+}
+span[style*="color: lightgray"] {
+	color: #767676 !important;
+}
+/* template inline colors need !important */
+#hideMenuDiv > li[style*="color: gray"],
+#hideMenuDiv > li > span[style*="color: gray"],
+#breadcrumb_update > li[style*="color: gray"],
+#main-content p[style*="color: gray"],
+#main-content li[style*="color: gray"],
+#main-content span[id^="statusUpdateTitle_"] i {
+	color: #6a6a6a !important;
+}
