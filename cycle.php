@@ -524,6 +524,10 @@ while (false !== ($result = $threads->iteration())) {
                     $auto_restarts[] = $title;
                 }
                 $cycle_updated_timestamp = $cyclesTimestamps[$title . 'Run'] ?? null;
+                if ($cycle_updated_timestamp && !is_numeric($cycle_updated_timestamp)) {
+                    $cycle_updated_timestamp = strtotime($cycle_updated_timestamp) ?: null;
+                }
+                $cycle_updated_timestamp = $cycle_updated_timestamp ? (int)$cycle_updated_timestamp : null;
 
                 if (!isset($to_start[$title]) && $cycle_updated_timestamp && in_array($title, $auto_restarts) && ((time() - $cycle_updated_timestamp) > 30 * 60)) { //
                     DebMes("Looks like $title is dead (updated: " . date('Y-m-d H:i:s', $cycle_updated_timestamp) . "). Need to recovery", 'boot');
