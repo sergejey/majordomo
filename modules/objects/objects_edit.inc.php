@@ -203,9 +203,9 @@ if ($this->tab == 'properties') {
         $value = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='" . $props[$i]['ID'] . "' AND OBJECT_ID='" . $rec['ID'] . "'");
         $transient = !empty($props[$i]['TRANSIENT']);
         $transient_key = 'T:' . (int)$rec['ID'] . '.' . (int)$props[$i]['ID'];
-        if ($this->mode == 'update' && !$transient) {
+        if ($this->mode == 'update') {
             global ${"value" . $props[$i]['ID']};
-            if (isset(${"value" . $props[$i]['ID']})) {
+            if (isset(${"value" . $props[$i]['ID']}) && (!$transient || (string)${"value" . $props[$i]['ID']} !== (string)checkTransient($transient_key))) {
                 setGlobal($rec['TITLE'] . "." . $props[$i]['TITLE'], ${"value" . $props[$i]['ID']});
             }
         }

@@ -201,6 +201,8 @@ function deleteTransientByProperty($propertyId)
 /** Drop rows that no longer belong to a transient property (RAM table hygiene). */
 function cleanupTransientValues()
 {
+    // objects module may not be reinstalled yet; a missing table would stop cycle.php
+    if (!SQLSelectOne("SHOW TABLES LIKE 'transient_values'")) return;
     $rows = SQLSelect("SELECT KEYWORD FROM transient_values");
     foreach ($rows as $row) {
         $key = strtolower($row['KEYWORD']);

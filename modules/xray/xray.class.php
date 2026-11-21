@@ -370,7 +370,7 @@ class xray extends module
                         }
                     }
                     //properties
-                    $pvalues = SQLSelect("SELECT pvalues.ID, objects.TITLE AS OBJECT, properties.ID AS PROPERTY_ID, properties.TITLE, properties.CLASS_ID, pvalues.OBJECT_ID FROM pvalues LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID WHERE (properties.TITLE LIKE '" . DBSafe($v) . "') AND properties.TRANSIENT=0");
+                    $pvalues = SQLSelect("SELECT pvalues.ID, objects.TITLE AS OBJECT, properties.ID AS PROPERTY_ID, properties.TITLE, properties.CLASS_ID, pvalues.OBJECT_ID FROM pvalues LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID WHERE (properties.TITLE LIKE '" . DBSafe($v) . "')");
                     //print_r($pvalues);
                     $total = count($pvalues);
                     for ($i = 0; $i < $total; $i++) {

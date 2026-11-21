@@ -766,7 +766,7 @@ class objects extends module
             return (int)$cached === 1;
         }
 
-        $rec = SQLSelectOne("SELECT TRANSIENT FROM properties WHERE ID=" . $property_id);
+        $rec = SQLSelectOne("SELECT * FROM properties WHERE ID=" . $property_id);
         $flag = !empty($rec['TRANSIENT']) ? 1 : 0;
         saveToCache($flag_key, $flag);
         return $flag === 1;
@@ -782,27 +782,35 @@ class objects extends module
     function migrateTransientFlag($property_id, $transient)
     {
         $property_id = (int)$property_id;
-        $prop = SQLSelectOne("SELECT ID FROM properties WHERE ID=" . $property_id);
+        $prop = SQLSelectOne("SELECT ID, TITLE FROM properties WHERE ID=" . $property_id);
         if (!isset($prop['ID'])) return;
 
-        $rows = SQLSelect("SELECT ID, OBJECT_ID, VALUE FROM pvalues WHERE PROPERTY_ID=" . $property_id);
-        foreach ($rows as $row) {
-            $key = 'T:' . (int)$row['OBJECT_ID'] . '.' . $property_id;
-            if ($transient) {
+        if ($transient) {
+            $rows = SQLSelect("SELECT OBJECT_ID, VALUE, UPDATED FROM pvalues WHERE PROPERTY_ID=" . $property_id);
+            foreach ($rows as $row) {
                 if (isset($row['VALUE']) && $row['VALUE'] !== '') {
+                    $key = 'T:' . (int)$row['OBJECT_ID'] . '.' . $property_id;
                     saveTransient($key, $row['VALUE']);
+                    if (!empty($row['UPDATED'])) {
+                        saveTransient($key . '.u', $row['UPDATED']);
+                    }
                 }
-            } else {
-                $current = checkTransient($key);
-                if ($current !== false) {
-                    SQLExec("UPDATE pvalues SET VALUE='" . DbSafe1($current) .
-                        "', UPDATED='" . date('Y-m-d H:i:s') . "' WHERE ID=" . (int)$row['ID']);
-                }
-                deleteTransient($key);
-                deleteTransient($key . '.u');
             }
-        }
-        if (!$transient) {
+        } else {
+            foreach (getTransientValuesByProperty($property_id) as $row) {
+                $v = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID=" . $property_id . " AND OBJECT_ID=" . (int)$row['OBJECT_ID']);
+                if (!is_array($v)) $v = array();
+                $v['VALUE'] = (string)$row['VALUE'];
+                $v['UPDATED'] = date('Y-m-d H:i:s');
+                if (isset($v['ID'])) {
+                    SQLUpdate('pvalues', $v);
+                } else {
+                    $v['PROPERTY_ID'] = $property_id;
+                    $v['OBJECT_ID'] = (int)$row['OBJECT_ID'];
+                    $v['PROPERTY_NAME'] = $row['TITLE'] . '.' . $prop['TITLE'];
+                    SQLInsert('pvalues', $v);
+                }
+            }
             deleteTransientByProperty($property_id);
         }
         saveToCache('MJ:TRANSIENT:' . $property_id, $transient ? 1 : 0);

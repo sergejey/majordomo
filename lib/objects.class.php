@@ -434,14 +434,18 @@ function getObjectsByProperty($property_name, $condition = '', $condition_value 
         $condition_value = $condition;
         $condition = '==';
     }
-    $pRecs = SQLSelect("SELECT ID FROM properties WHERE TITLE = '" . DBSafe($property_name) . "' AND TRANSIENT=0");
+    $pRecs = SQLSelect("SELECT * FROM properties WHERE TITLE = '" . DBSafe($property_name) . "'");
     $total = count($pRecs);
     if (!$total) {
         return 0;
     }
     $found = array();
     for ($i = 0; $i < $total; $i++) {
-        $pValues = SQLSelect("SELECT objects.TITLE, VALUE FROM pvalues LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID WHERE PROPERTY_ID='" . $pRecs[$i]['ID'] . "'");
+        if (!empty($pRecs[$i]['TRANSIENT'])) {
+            $pValues = getTransientValuesByProperty($pRecs[$i]['ID']);
+        } else {
+            $pValues = SQLSelect("SELECT objects.TITLE, VALUE FROM pvalues LEFT JOIN objects ON pvalues.OBJECT_ID=objects.ID WHERE PROPERTY_ID='" . $pRecs[$i]['ID'] . "'");
+        }
         $totalv = count($pValues);
         for ($iv = 0; $iv < $totalv; $iv++) {
             $v = $pValues[$iv]['VALUE'];
