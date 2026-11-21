@@ -233,13 +233,19 @@ function addScheduledJob($title, $commands, $datetime, $expire = 1800)
 }
 
 /**
- * Summary of clearScheduledJob
- * @param mixed $title Title
+ * Remove a scheduled job by its exact title.
+ *
+ * DbSafe() escapes '%' as '\%', which survives in a normal string literal
+ * and prevents jobs with '%' in the title from being matched. DbSafe1()
+ * only escapes quotes/backslashes, so the title is compared literally.
+ * SQL wildcards are not supported here (see #526).
+ *
+ * @param mixed $title Exact job title
  * @return void
  */
 function clearScheduledJob($title)
 {
-    SQLExec("DELETE FROM jobs WHERE TITLE = '" . DBSafe($title) . "'");
+    SQLExec("DELETE FROM jobs WHERE TITLE = '" . DbSafe1($title) . "'");
 }
 
 /**
@@ -285,7 +291,7 @@ function clearTimeOut($title)
  */
 function timeOutExists($title)
 {
-    $job = SQLSelectOne("SELECT ID FROM jobs WHERE PROCESSED = 0 AND TITLE = '" . DBSafe($title) . "'");
+    $job = SQLSelectOne("SELECT ID FROM jobs WHERE PROCESSED = 0 AND TITLE = '" . DbSafe1($title) . "'");
 	if(!isset($job)) return false;
     return (int)$job['ID'];
 }
