@@ -1269,9 +1269,11 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
         } else {
             // child
             $is_child = true;
-            if (function_exists('create_function')) {
-                register_shutdown_function(create_function('$pars', 'posix_kill(getmypid(), SIGKILL);'), array());
-            }
+            register_shutdown_function(function () {
+                if (function_exists('posix_kill')) {
+                    posix_kill(getmypid(), SIGKILL);
+                }
+            });
             set_time_limit(60);
         }
     }
