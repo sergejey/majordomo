@@ -1332,7 +1332,7 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
     }
 
     if ($is_child) {
-        curl_close($api_ch);
+        mjdCurlClose($api_ch);
         exit(0);
     }
 

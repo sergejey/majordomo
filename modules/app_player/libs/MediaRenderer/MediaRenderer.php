@@ -18,7 +18,7 @@ class MediaRenderer
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $content = curl_exec($ch);
-        curl_close($ch);
+        mjdCurlClose($ch);
 
         if (!$content) {
 			return;
@@ -78,7 +78,7 @@ class MediaRenderer
         curl_setopt($ch, CURLOPT_POST, TRUE);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
         $response = curl_exec($ch);
-        curl_close($ch);
+        mjdCurlClose($ch);
           $doc = new \DOMDocument();
         $doc->loadXML($response);
 
@@ -123,7 +123,7 @@ class MediaRenderer
         curl_setopt($ch, CURLOPT_POST, TRUE);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
         $response = curl_exec($ch);
-        curl_close($ch);
+        mjdCurlClose($ch);
         return $response;
     }
     
