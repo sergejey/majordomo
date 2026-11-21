@@ -265,10 +265,10 @@ When developing or patching code, **always reuse existing core functions** rathe
 
 ### 7.3 Timers, Scripts & Scheduling (`lib/common.class.php`)
 - `setTimeOut($title, $commands, $timeout_seconds)`: Sets or overrides a named timeout timer.
-- `clearTimeOut($title)`: Cancels an active named timeout.
-- `timeOutExists($title)`: Checks if a named timeout is currently pending.
+- `clearTimeOut($title)`: Cancels an active named timeout (exact title match, no `%`/`_` wildcards).
+- `timeOutExists($title)`: Checks if a named timeout is currently pending (exact title match).
 - `addScheduledJob($title, $commands, $datetime, $expire = 1800)`: Schedules command execution at a specific datetime.
-- `clearScheduledJob($title)` / `deleteScheduledJob($id)`: Removes scheduled job.
+- `clearScheduledJob($title)` / `deleteScheduledJob($id)`: Removes scheduled job (exact title match, no SQL wildcards).
 - `runScript($id_or_name, $params = array())`: Executes stored script synchronously.
 - `runScriptSafe($id_or_name, $params = array())`: Executes stored script in background subprocess.
 
