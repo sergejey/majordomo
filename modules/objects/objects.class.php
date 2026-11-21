@@ -1273,6 +1273,7 @@ class objects extends module
 
  phistory: ID int(10) unsigned NOT NULL auto_increment
  phistory: VALUE_ID int(10) unsigned NOT NULL DEFAULT '0'
+ phistory: VALUE varchar(255) NOT NULL DEFAULT ''
  phistory: SOURCE varchar(255) NOT NULL DEFAULT ''
  phistory: ADDED datetime
  phistory: INDEX (VALUE_ID)
