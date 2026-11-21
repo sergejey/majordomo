@@ -521,7 +521,7 @@ if ($_GET['op'] == 'json') {
 
 $DataSet->setAxisUnit(0, $unit);
 $DataSet->addPoints($hours, "Labels");
-$DataSet->setSerieDescription("Labels", "�����");
+$DataSet->setSerieDescription("Labels", "Время");
 $DataSet->setAbscissa("Labels");
 
 if ($_GET['gcolor'] == 'red') {
