@@ -297,6 +297,8 @@ $rows = SQLSelect("SELECT * FROM devices WHERE TYPE = 'motion'");
 $device = SQLSelectOne("SELECT * FROM devices WHERE ID = 5");
 ```
 
+Timer and job titles are matched exactly: `%` and `_` are ordinary characters, not SQL wildcards. `clearTimeOut()`, `clearScheduledJob()` and `timeOutExists()` will not match a group of jobs by prefix.
+
 > [!NOTE]
 > For internal architectural reference and complete module guidelines, see [`PROJECT_MAP.md`](PROJECT_MAP.md). If contributing code with AI agents or tools, review [`AGENTS.md`](AGENTS.md).
 
