@@ -29,6 +29,7 @@ $ctl = new control_modules();
     <script type="text/javascript" src="blocks/majordomo.js"></script>
     <script type="text/javascript" src="blocks/majordomo_objects.js"></script>
     <script type="text/javascript" src="blocks/majordomo_time.js"></script>
+    <script type="text/javascript" src="blocks/majordomo_emoji.js"></script>
     <script type="text/javascript" src="blocks/majordomo_states.js.php"></script>
     <script type="text/javascript" src="blocks/majordomo_scripts.js.php"></script>
     <script type="text/javascript" src="blocks/majordomo_myblocks.js.php"></script>
@@ -53,6 +54,7 @@ $ctl = new control_modules();
     <script type="text/javascript" src="generators/php/majordomo.js"></script>
     <script type="text/javascript" src="generators/php/majordomo_objects.js"></script>
     <script type="text/javascript" src="generators/php/majordomo_time.js"></script>
+    <script type="text/javascript" src="generators/php/majordomo_emoji.js"></script>
     <script type="text/javascript" src="generators/php/majordomo_states.js.php"></script>
     <script type="text/javascript" src="generators/php/colour.js"></script>
     <script type="text/javascript" src="generators/php/lists.js"></script>
@@ -442,6 +444,11 @@ $ctl = new control_modules();
       <block type="text_getSubstring"></block>
       <block type="text_changeCase"></block>
       <block type="text_trim"></block>
+    </category>
+    <category name="<?php echo defined('LANG_EMOJI') ? LANG_EMOJI : 'Emoji';?>">
+      <?php for ($emojiGroup = 1; $emojiGroup <= 15; $emojiGroup++) { ?>
+      <block type="majordomo_emoji_<?php echo $emojiGroup;?>"></block>
+      <?php } ?>
     </category>
     <category name="<?php echo LANG_LISTS;?>">
       <block type="lists_create_empty"></block>

@@ -39,3 +39,20 @@ Blockly.Msg.MAJORDOMO_SETTIMEOUTOPERATIONS = "actions";
 Blockly.Msg.MAJORDOMO_COLOR = "Color";
 
 Blockly.Msg.MAJORDOMO_SETTO = "to";
+
+Blockly.Msg.MAJORDOMO_EMOJI_TOOLTIP = "Inserts a UTF-8 emoji as PHP \\u{...} escapes, so the saved code stays ASCII";
+Blockly.Msg.MAJORDOMO_EMOJI_G1 = "Smileys & emotion";
+Blockly.Msg.MAJORDOMO_EMOJI_G2 = "People & body";
+Blockly.Msg.MAJORDOMO_EMOJI_G3 = "Hearts & feelings";
+Blockly.Msg.MAJORDOMO_EMOJI_G4 = "Animals";
+Blockly.Msg.MAJORDOMO_EMOJI_G5 = "Nature & weather";
+Blockly.Msg.MAJORDOMO_EMOJI_G6 = "Food & drink";
+Blockly.Msg.MAJORDOMO_EMOJI_G7 = "Activity & arts";
+Blockly.Msg.MAJORDOMO_EMOJI_G8 = "Travel & places";
+Blockly.Msg.MAJORDOMO_EMOJI_G9 = "Objects";
+Blockly.Msg.MAJORDOMO_EMOJI_G10 = "Communication & documents";
+Blockly.Msg.MAJORDOMO_EMOJI_G11 = "Symbols";
+Blockly.Msg.MAJORDOMO_EMOJI_G12 = "Media & controls";
+Blockly.Msg.MAJORDOMO_EMOJI_G13 = "Arrows";
+Blockly.Msg.MAJORDOMO_EMOJI_G14 = "Colors & shapes";
+Blockly.Msg.MAJORDOMO_EMOJI_G15 = "Flags";
