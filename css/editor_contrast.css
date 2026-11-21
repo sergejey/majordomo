@@ -12,3 +12,14 @@
 .cm-s-moxer span.cm-comment { color: #8a91b4; }
 .cm-s-dracula span.cm-comment { color: #8b9bd0; }
 .cm-s-neat span.cm-comment { color: #8a6a4a; }
+
+/* search dialog: CodeMirror keeps antiquewhite background, dark themes need their own */
+.cm-s-dracula .CodeMirror-dialog-top,
+.cm-s-material .CodeMirror-dialog-top,
+.cm-s-moxer .CodeMirror-dialog-top,
+.cm-s-ambiance .CodeMirror-dialog-top,
+.cm-s-icecoder .CodeMirror-dialog-top {
+	background: #2b2b2b;
+	color: #e6e6e6;
+	border-bottom-color: #444444;
+}
