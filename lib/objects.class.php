@@ -391,24 +391,26 @@ function getObject($name)
         $class_name = $m[1];
         $object_name = $m[2];
 
-        $sqlQuery = "SELECT objects.*
+        $sqlQuery = "SELECT objects.*, classes.TITLE AS CL_TITLE
                      FROM objects
                      LEFT JOIN classes ON objects.CLASS_ID = classes.ID
                     WHERE objects.TITLE = '" . DBSafe($object_name) . "'
                       AND classes.TITLE = '" . DBSafe($class_name) . "'";
         $rec = SQLSelectOne($sqlQuery);
     } else {
-        $sqlQuery = "SELECT objects.*
+        $sqlQuery = "SELECT objects.*, classes.TITLE AS CL_TITLE
                      FROM objects
-                    WHERE TITLE = '" . DBSafe($name) . "'";
+                     LEFT JOIN classes ON objects.CLASS_ID = classes.ID
+                    WHERE objects.TITLE = '" . DBSafe($name) . "'";
         $rec = SQLSelectOne($sqlQuery);
         //$rec = SQLSelectOne("SELECT objects.* FROM objects WHERE TITLE = '".DBSafe($name)."'");
     }
 
     if (!isset($rec['ID'])) {
-        $sqlQuery = "SELECT objects.*
+        $sqlQuery = "SELECT objects.*, classes.TITLE AS CL_TITLE
                      FROM objects
-                    WHERE TITLE = '" . DBSafe($name) . "'";
+                     LEFT JOIN classes ON objects.CLASS_ID = classes.ID
+                    WHERE objects.TITLE = '" . DBSafe($name) . "'";
         $rec = SQLSelectOne($sqlQuery);
     }
 
@@ -416,7 +418,7 @@ function getObject($name)
         include_once(DIR_MODULES . 'objects/objects.class.php');
         $obj = new objects();
         $obj->id = $rec['ID'];
-        $obj->loadObject($rec['ID']);
+        $obj->loadObject($rec['ID'], $rec);
         return $obj;
     }
 

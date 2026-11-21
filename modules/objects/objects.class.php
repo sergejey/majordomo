@@ -345,10 +345,12 @@ class objects extends module
      *
      * @access public
      */
-    function loadObject($id)
+    function loadObject($id, $rec = null)
     {
-        $rec = SQLSelectOne("SELECT objects.*, classes.TITLE AS CL_TITLE FROM objects " .
-            "LEFT JOIN classes ON objects.CLASS_ID=classes.ID WHERE objects.ID=" . (int)$id);
+        if (!is_array($rec)) {
+            $rec = SQLSelectOne("SELECT objects.*, classes.TITLE AS CL_TITLE FROM objects " .
+                "LEFT JOIN classes ON objects.CLASS_ID=classes.ID WHERE objects.ID=" . (int)$id);
+        }
         if (isset($rec['ID'])) {
             $this->id = $rec['ID'];
             $this->object_title = $rec['TITLE'];
