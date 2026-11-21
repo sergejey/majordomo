@@ -52,7 +52,6 @@
   if ($res[0]['ID']) {
    paging($res, 50, $out); // search result paging
    $total=count($res);
-   // SR_LIST_ENRICH_v15
    $sr_users_map = array('0' => 'Anonymous');
    $sr_users_rows = SQLSelect("SELECT ID, NAME FROM users");
    if (is_array($sr_users_rows)) {
@@ -270,7 +269,6 @@
         $res[$i]['OBJECT_LINKED'] = implode(' &middot; ', $sr_parts);
     }
    }
-   // /SR_LIST_ENRICH_v15
    $out['RESULT']=$res;
   }
 ?>
