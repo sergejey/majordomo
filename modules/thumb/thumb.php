@@ -1,5 +1,6 @@
 <?php
-error_reporting(E_ALL & ~(E_STRICT | E_NOTICE | E_DEPRECATED));
+$strict_mask = PHP_VERSION_ID < 80400 ? E_STRICT : 0;
+error_reporting(E_ALL & ~($strict_mask | E_NOTICE | E_DEPRECATED));
 
 chdir('../../');
 include_once("./config.php");
