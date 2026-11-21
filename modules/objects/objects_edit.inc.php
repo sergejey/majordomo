@@ -155,12 +155,14 @@ if ($this->tab == 'properties') {
 				$prop = SQLSelectOne("SELECT * FROM properties WHERE OBJECT_ID='" . $rec['ID'] . "' AND TITLE='" . $new_property . "'");
 				if(empty($prop['ID'])){
 					$tmp['ID'] = SQLInsert('properties', $tmp);
+					clearCacheData('P:');
 					if ($new_value != '') {
 						setGlobal($rec['TITLE'] . '.' . $new_property, $new_value);
 					}
 				}
 			}else{
 				SQLUpdate('properties', $tmp);
+				clearCacheData('P:');
 				if (getGlobal($rec['TITLE'] . '.' . $new_property) != $new_value) {
 					setGlobal($rec['TITLE'] . '.' . $new_property, $new_value);
 				}

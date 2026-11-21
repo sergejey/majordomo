@@ -223,6 +223,7 @@ function addClassProperty($class_name, $property_name, $keep_history = 0)
         $prop['KEEP_HISTORY'] = $keep_history;
         $prop['OBJECT_ID'] = 0;
         $prop['ID'] = SQLInsert('properties', $prop);
+        clearCacheData('P:');
     }
 
     return $prop['ID'];
@@ -1688,6 +1689,7 @@ function objectClassChanged($object_id)
             SQLExec("DELETE FROM properties WHERE ID='" . $old_prop . "'");
         }
     }
+    clearCacheData('P:');
 }
 
 function checkOperationsQueue($topic)
