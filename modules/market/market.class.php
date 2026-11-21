@@ -876,7 +876,7 @@ class market extends module
             }
         }
         $incoming = curl_exec($ch);
-        curl_close($ch);
+        mjdCurlClose($ch);
         @fclose($f);
 
         if (filesize($filename) > 0) {

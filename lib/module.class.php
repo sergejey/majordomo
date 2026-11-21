@@ -34,6 +34,7 @@ Define("EQ_DELIMITER", "qz_");
  * @license http://opensource.org/licenses/mit-license.php MIT License
  * @link https://github.com/sergejey/majordomo/blob/master/lib/modules.class.php
  */
+#[AllowDynamicProperties]
 class module
 {
     /**

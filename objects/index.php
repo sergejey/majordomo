@@ -37,7 +37,7 @@ if (defined('MASTER_HOST') && MASTER_HOST != '') {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
     $data = curl_exec($ch);
-    curl_close($ch);
+    mjdCurlClose($ch);
 
     exit;
 }

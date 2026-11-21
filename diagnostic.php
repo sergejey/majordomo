@@ -256,7 +256,7 @@ if (isset($_POST['send'])) {
         exit;
     }
 
-    curl_close($ch);
+    mjdCurlClose($ch);
 
     if ($_POST['code']) {
         header("Content-type:text/json");

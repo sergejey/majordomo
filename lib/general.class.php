@@ -792,3 +792,17 @@ function getEvalCode()
         return false;
     }
 }
+
+/**
+ * Close a cURL handle. curl_close() is a no-op since PHP 8.0 and deprecated
+ * in PHP 8.5, but it is still required on PHP 7.3 to release the resource.
+ *
+ * @param resource|\CurlHandle|null $handle
+ * @return void
+ */
+function mjdCurlClose($handle)
+{
+    if (PHP_VERSION_ID < 80500 && $handle) {
+        curl_close($handle);
+    }
+}

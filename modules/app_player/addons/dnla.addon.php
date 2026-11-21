@@ -21,7 +21,7 @@ class dnla extends app_player_addon
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $content = curl_exec($ch);
         $retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+        mjdCurlClose($ch);
         
         // автозаполнение поля PLAYER_CONTROL_ADDRESS при его отсутствии
         if ($retcode != 200 OR !stripos($content, 'AVTransport')) {
