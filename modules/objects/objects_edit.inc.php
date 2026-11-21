@@ -125,6 +125,9 @@ if ($this->tab == 'properties') {
             if (!empty($value['ID'])) {
                 cleanUpValueHistory($value['ID'], 0, $pr['DATA_TYPE']);
                 SQLExec("DELETE FROM pvalues WHERE PROPERTY_ID='" . $delete_prop . "' AND OBJECT_ID='" . $rec['ID'] . "'");
+                $transient_key = 'T:' . (int)$rec['ID'] . '.' . (int)$delete_prop;
+                deleteTransient($transient_key);
+                deleteTransient($transient_key . '.u');
             }
             if (!$pr['CLASS_ID']) {
                 SQLExec("DELETE FROM properties WHERE ID='" . $delete_prop . "' AND OBJECT_ID='" . $rec['ID'] . "'");
@@ -198,13 +201,20 @@ if ($this->tab == 'properties') {
             $props[$i]['KEEP_HISTORY'] = $rec['KEEP_HISTORY'];
         }
         $value = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='" . $props[$i]['ID'] . "' AND OBJECT_ID='" . $rec['ID'] . "'");
-        if ($this->mode == 'update') {
+        $transient = !empty($props[$i]['TRANSIENT']);
+        $transient_key = 'T:' . (int)$rec['ID'] . '.' . (int)$props[$i]['ID'];
+        if ($this->mode == 'update' && !$transient) {
             global ${"value" . $props[$i]['ID']};
             if (isset(${"value" . $props[$i]['ID']})) {
                 setGlobal($rec['TITLE'] . "." . $props[$i]['TITLE'], ${"value" . $props[$i]['ID']});
             }
         }
-        $props[$i]['VALUE'] = isset($value['VALUE']) ? $value['VALUE'] : '';
+        if ($transient) {
+            $live_value = checkTransient($transient_key);
+            $props[$i]['VALUE'] = $live_value !== false ? $live_value : '';
+        } else {
+            $props[$i]['VALUE'] = isset($value['VALUE']) ? $value['VALUE'] : '';
+        }
         $props[$i]['VALUE_HTML'] = htmlspecialchars($props[$i]['VALUE']);
         $props[$i]['SOURCE'] = isset($value['SOURCE']) ? $value['SOURCE'] : '';
         $props[$i]['SOURCE_HTML'] = htmlspecialchars($props[$i]['SOURCE']);

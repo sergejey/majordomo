@@ -311,6 +311,7 @@ $ctl = new control_modules();
 echo "Clearing the cache.\n";
 DebMes("Clearing the cache.", 'boot');
 clearCacheData();
+cleanupTransientValues();
 
 if (defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1) {
     // split data into multiple tables

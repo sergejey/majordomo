@@ -333,6 +333,7 @@ class objects extends module
             SQLExec("DELETE FROM $history_table WHERE VALUE_ID=" . $pvalue['ID']);
             SQLExec("DELETE FROM pvalues WHERE ID='" . $pvalue['ID'] . "'");
         }
+        deleteTransientByObject($rec['ID']);
         SQLExec("DELETE FROM properties WHERE OBJECT_ID='" . $rec['ID'] . "'");
         SQLExec("DELETE FROM objects WHERE ID='" . $rec['ID'] . "'");
     }
@@ -751,25 +752,60 @@ class objects extends module
 
 
     /**
-     * Whether the property is transient (in-memory only). The flag itself is
-     * cached in cached_values; if that cache is cleared we simply re-read it
-     * from properties, while the value lives in transient_values.
+     * Whether a property is transient. Called only on a cache miss, so the
+     * hot path keeps a single cached_values lookup.
      */
-    function isTransientProperty($property)
+    function isTransientById($property_id)
     {
-        $id = $this->getPropertyByName($property, $this->class_id, $this->id);
-        if (!$id) return false;
+        $property_id = (int)$property_id;
+        if (!$property_id) return false;
 
-        $flag_key = 'MJ:TRANSIENT:' . $id;
+        $flag_key = 'MJ:TRANSIENT:' . $property_id;
         $cached = checkFromCache($flag_key);
         if ($cached !== false) {
             return (int)$cached === 1;
         }
 
-        $rec = SQLSelectOne("SELECT TRANSIENT FROM properties WHERE ID=" . (int)$id);
+        $rec = SQLSelectOne("SELECT TRANSIENT FROM properties WHERE ID=" . $property_id);
         $flag = !empty($rec['TRANSIENT']) ? 1 : 0;
         saveToCache($flag_key, $flag);
         return $flag === 1;
+    }
+
+    /** Numeric key: survives object rename and makes cleanup deterministic. */
+    function transientKey($property_id)
+    {
+        return 'T:' . (int)$this->id . '.' . (int)$property_id;
+    }
+
+    /** Copy values when the TRANSIENT flag is switched on or off. */
+    function migrateTransientFlag($property_id, $transient)
+    {
+        $property_id = (int)$property_id;
+        $prop = SQLSelectOne("SELECT ID FROM properties WHERE ID=" . $property_id);
+        if (!isset($prop['ID'])) return;
+
+        $rows = SQLSelect("SELECT ID, OBJECT_ID, VALUE FROM pvalues WHERE PROPERTY_ID=" . $property_id);
+        foreach ($rows as $row) {
+            $key = 'T:' . (int)$row['OBJECT_ID'] . '.' . $property_id;
+            if ($transient) {
+                if (isset($row['VALUE']) && $row['VALUE'] !== '') {
+                    saveTransient($key, $row['VALUE']);
+                }
+            } else {
+                $current = checkTransient($key);
+                if ($current !== false) {
+                    SQLExec("UPDATE pvalues SET VALUE='" . DbSafe1($current) .
+                        "', UPDATED='" . date('Y-m-d H:i:s') . "' WHERE ID=" . (int)$row['ID']);
+                }
+                deleteTransient($key);
+                deleteTransient($key . '.u');
+            }
+        }
+        if (!$transient) {
+            deleteTransientByProperty($property_id);
+        }
+        saveToCache('MJ:TRANSIENT:' . $property_id, $transient ? 1 : 0);
     }
 
     function getProperty($property, $cache_checked = false)
@@ -784,17 +820,15 @@ class objects extends module
                 return '';
             }
 
-            if ($this->isTransientProperty($source_property)) {
-                $cached_updated = checkTransient('MJD:' . $this->object_title . '.' . $property);
+            $id = $this->getPropertyByName($source_property, $this->class_id, $this->id);
+            if ($id && $this->isTransientById($id)) {
+                $cached_updated = checkTransient($this->transientKey($id) . '.u');
                 return $cached_updated !== false ? $cached_updated : '';
             }
 
             $value = SQLSelectOne("SELECT UPDATED FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $source_property) . "' ORDER BY UPDATED DESC LIMIT 1");
-            if (!isset($value['UPDATED'])) {
-                $id = $this->getPropertyByName($source_property, $this->class_id, $this->id);
-                if ($id) {
-                    $value = SQLSelectOne("SELECT UPDATED FROM pvalues WHERE PROPERTY_ID='" . (int)$id . "' AND OBJECT_ID='" . (int)$this->id . "'");
-                }
+            if (!isset($value['UPDATED']) && $id) {
+                $value = SQLSelectOne("SELECT UPDATED FROM pvalues WHERE PROPERTY_ID='" . (int)$id . "' AND OBJECT_ID='" . (int)$this->id . "'");
             }
             return isset($value['UPDATED']) ? $value['UPDATED'] : '';
         }
@@ -811,16 +845,18 @@ class objects extends module
             return $this->class_title;
         }
 
-        if ($this->isTransientProperty($property)) {
-            $transient_value = checkTransient($cached_name);
-            return $transient_value !== false ? returnTypedValue($transient_value) : false;
-        }
-
         if (!$cache_checked) {
             $cached_value = checkFromCache($cached_name);
             if ($cached_value !== false) {
                 return returnTypedValue($cached_value);
             }
+        }
+
+        // Only on a cache miss: resolve the property once and reuse $id below.
+        $id = $this->getPropertyByName($property, $this->class_id, $this->id);
+        if ($id && $this->isTransientById($id)) {
+            $transient_value = checkTransient($this->transientKey($id));
+            return $transient_value !== false ? returnTypedValue($transient_value) : '';
         }
 
         $value = SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $property) . "' ORDER BY UPDATED DESC LIMIT 1");
@@ -841,7 +877,6 @@ class objects extends module
         }
 
 
-        $id = $this->getPropertyByName($property, $this->class_id, $this->id);
         startMeasure('getPropertyAll');
         startMeasure('getProperty (' . $property . ')');
 
@@ -987,8 +1022,9 @@ class objects extends module
 
             $property = $prop['TITLE'];
             $transient = !empty($prop['TRANSIENT']);
+            $transient_key = $transient ? $this->transientKey($id) : '';
             if ($transient) {
-                $old_value = checkTransient($cached_name);
+                $old_value = checkTransient($transient_key);
                 $v = SQLSelectOne("SELECT LINKED_MODULES FROM pvalues WHERE PROPERTY_ID=" . (int)$id . " AND OBJECT_ID=" . (int)$this->id);
                 if (!is_array($v)) $v = array();
             } else {
@@ -998,7 +1034,7 @@ class objects extends module
                 $old_value = isset($v['VALUE']) ? $v['VALUE'] : false;
             }
 
-            if (!$transient && $prop['DATA_TYPE'] == 5 && $value != $old_value) { // image
+            if ($prop['DATA_TYPE'] == 5 && $value != $old_value) { // image
                 $path_parts = pathinfo($value);
                 $extension = strtolower($path_parts['extension']);
                 if ($extension != 'jpg' && $extension != 'jpeg' && $extension != 'png' && $extension != 'gif') {
@@ -1071,8 +1107,8 @@ class objects extends module
 
         saveToCache($cached_name, $value);
         if ($transient) {
-            saveTransient($cached_name, $value);
-            saveTransient($cached_name . '__updated', date('Y-m-d H:i:s'));
+            saveTransient($transient_key, $value);
+            saveTransient($transient_key . '.u', date('Y-m-d H:i:s'));
         }
 
         $p_lower = strtolower($property);
@@ -1255,6 +1291,15 @@ class objects extends module
                ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
         SQLRecreateTable('cached_values', $sqlQuery);
         //SQLExec("ALTER TABLE `cached_values` CHANGE COLUMN `DATAVALUE` `DATAVALUE` VARCHAR($cache_value_max_size) NOT NULL DEFAULT ''");
+
+        // Transient property values: RAM only, not affected by clearCacheData().
+        $sqlQuery = "CREATE TABLE IF NOT EXISTS `transient_values`
+               (`KEYWORD`   CHAR(100) NOT NULL,
+                `DATAVALUE` VARCHAR(2048) NOT NULL DEFAULT '',
+                PRIMARY KEY (`KEYWORD`)
+               ) ENGINE = MEMORY DEFAULT CHARSET=utf8;";
+        SQLExec($sqlQuery);
+        SQLExec("ALTER TABLE `transient_values` MODIFY `DATAVALUE` VARCHAR(2048) NOT NULL DEFAULT ''");
 
         $sqlQuery = "CREATE TABLE IF NOT EXISTS `cached_ws`
                (`PROPERTY`   CHAR(100) NOT NULL,

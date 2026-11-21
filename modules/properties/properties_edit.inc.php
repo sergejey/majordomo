@@ -100,6 +100,9 @@
      SQLUpdate($table_name, $rec); // update
      cleanUpPropertyHistory($rec['ID'], $rec['KEEP_HISTORY']);
      if ((int)$rec['TRANSIENT'] !== ($was_transient?1:0)) {
+      include_once(DIR_MODULES.'objects/objects.class.php');
+      $objects_module=new objects();
+      $objects_module->migrateTransientFlag($rec['ID'], (int)$rec['TRANSIENT']);
       clearCacheData();
      }
     } else {

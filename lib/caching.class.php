@@ -141,27 +141,19 @@ function deleteFromCache($key) {
 /**
  * Storage for transient object properties. cached_values is intentionally NOT
  * used: it is wiped by clearCacheData() on cycle restarts and admin actions.
- * This table lives in RAM, so values disappear on a MySQL restart.
+ * The table is created in objects::dbInstall() and lives in RAM, so values
+ * disappear on a MySQL restart.
  */
-function ensureTransientTable_()
-{
-    static $done = false;
-    if ($done) return;
-    SQLExec("CREATE TABLE IF NOT EXISTS `transient_values` (
-      `KEYWORD` varchar(190) NOT NULL,
-      `DATAVALUE` varchar(255) NOT NULL DEFAULT '',
-      PRIMARY KEY (`KEYWORD`)
-    ) ENGINE=MEMORY DEFAULT CHARSET=utf8;");
-    $done = true;
-}
-
 function saveTransient($key, $value)
 {
     $key = strtolower((string)$key);
-    ensureTransientTable_();
+    $max = 2048;
     $value = (string)$value;
-    if (strlen($value) > 255) {
-        $value = substr($value, 0, 255);
+    if (mb_strlen($value, 'UTF-8') > $max) {
+        if (function_exists('DebMes')) {
+            DebMes('Transient value for ' . $key . ' is longer than ' . $max . ' characters and was cut', 'transient');
+        }
+        $value = mb_substr($value, 0, $max, 'UTF-8');
     }
     SQLExec("REPLACE INTO transient_values (KEYWORD, DATAVALUE) VALUES ('" .
         DbSafe1($key) . "', '" . DbSafe1($value) . "')");
@@ -170,7 +162,6 @@ function saveTransient($key, $value)
 function checkTransient($key)
 {
     $key = strtolower((string)$key);
-    ensureTransientTable_();
     $rec = SQLSelectOne("SELECT DATAVALUE FROM transient_values WHERE KEYWORD='" . DbSafe1($key) . "'");
     return isset($rec['DATAVALUE']) ? $rec['DATAVALUE'] : false;
 }
@@ -178,8 +169,42 @@ function checkTransient($key)
 function deleteTransient($key)
 {
     $key = strtolower((string)$key);
-    ensureTransientTable_();
     SQLExec("DELETE FROM transient_values WHERE KEYWORD='" . DbSafe1($key) . "'");
+}
+
+function deleteTransientByObject($objectId)
+{
+    SQLExec("DELETE FROM transient_values WHERE KEYWORD LIKE 't:" . (int)$objectId . ".%'");
+}
+
+function deleteTransientByProperty($propertyId)
+{
+    $rows = SQLSelect("SELECT KEYWORD FROM transient_values");
+    $propertyId = (int)$propertyId;
+    foreach ($rows as $row) {
+        if (preg_match('/^t:\d+\.' . $propertyId . '(\.u)?$/', strtolower($row['KEYWORD']))) {
+            deleteTransient($row['KEYWORD']);
+        }
+    }
+}
+
+/** Drop rows that no longer belong to a transient property (RAM table hygiene). */
+function cleanupTransientValues()
+{
+    $rows = SQLSelect("SELECT KEYWORD FROM transient_values");
+    foreach ($rows as $row) {
+        $key = strtolower($row['KEYWORD']);
+        if (!preg_match('/^t:(\d+)\.(\d+)(\.u)?$/', $key, $m)) {
+            deleteTransient($row['KEYWORD']);
+            continue;
+        }
+        $rec = SQLSelectOne("SELECT pvalues.ID FROM pvalues LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID " .
+            "WHERE pvalues.OBJECT_ID=" . (int)$m[1] . " AND pvalues.PROPERTY_ID=" . (int)$m[2] .
+            " AND properties.TRANSIENT=1 LIMIT 1");
+        if (!isset($rec['ID'])) {
+            deleteTransient($row['KEYWORD']);
+        }
+    }
 }
 
 /**

@@ -434,7 +434,7 @@ function getObjectsByProperty($property_name, $condition = '', $condition_value 
         $condition_value = $condition;
         $condition = '==';
     }
-    $pRecs = SQLSelect("SELECT ID FROM properties WHERE TITLE = '" . DBSafe($property_name) . "'");
+    $pRecs = SQLSelect("SELECT ID FROM properties WHERE TITLE = '" . DBSafe($property_name) . "' AND TRANSIENT=0");
     $total = count($pRecs);
     if (!$total) {
         return 0;

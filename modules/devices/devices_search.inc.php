@@ -147,7 +147,7 @@ if (isset($res[0])) {
             // get object properties
             $object_rec = SQLSelectOne("SELECT ID FROM objects WHERE TITLE='" . $res[$i]['LINKED_OBJECT'] . "'");
             if ($object_rec['ID']) {
-                $properties = SQLSelect("SELECT pvalues.*, properties.TITLE as PROPERTY FROM pvalues LEFT JOIN properties ON properties.ID=pvalues.PROPERTY_ID WHERE pvalues.OBJECT_ID=" . $object_rec['ID'] . " AND pvalues.LINKED_MODULES!='' ORDER BY UPDATED");
+                $properties = SQLSelect("SELECT pvalues.*, properties.TITLE as PROPERTY FROM pvalues LEFT JOIN properties ON properties.ID=pvalues.PROPERTY_ID WHERE pvalues.OBJECT_ID=" . $object_rec['ID'] . " AND pvalues.LINKED_MODULES!='' AND properties.TRANSIENT=0 ORDER BY UPDATED");
                 $totalp = count($properties);
                 if ($totalp > 0) {
                     $linked_modules = array();
