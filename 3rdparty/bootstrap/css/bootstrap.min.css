@@ -7309,9 +7309,28 @@ a:focus {
 .label-danger {
 	background-color: #b52b27;
 }
-.label-default,
-.badge {
+.label-default {
 	background-color: #666666;
+}
+/* generic badges only: status badges keep their own background below */
+.badge:not([class*="alert-"]):not([class*="label-"]) {
+	background-color: #666666;
+}
+.badge.alert-success {
+	background-color: #2e7d32;
+	color: #ffffff;
+}
+.badge.alert-info {
+	background-color: #2a6a9c;
+	color: #ffffff;
+}
+.badge.alert-warning {
+	background-color: #a85f00;
+	color: #ffffff;
+}
+.badge.alert-danger {
+	background-color: #b52b27;
+	color: #ffffff;
 }
 .nav-list > .active > a,
 .nav-list > .active > a:hover,
