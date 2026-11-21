@@ -120,7 +120,7 @@ $(function() {
 		font-size: 0.85em;
 	}
 	@media (max-width: 767px) {
-		/* на телефоне код крупнее, а подсказки про F11 и Ctrl+S бесполезны */
+		/* bigger code on phones, desktop hotkey hints are useless there */
 		.CodeMirror {
 			font-size: 16px;
 			line-height: 1.45;
@@ -228,6 +228,9 @@ function CtrlSSave() {
 
 $(document).ready(function(){
 	var myTextArea[#CODE_FIELD#] = document.getElementById('[#CODE_FIELD#]');
+	// wrap long lines on narrow screens unless the setting is explicitly off
+	var wrapSetting = '[#SETTINGS_CODEEDITOR_WRAPLINES#]';
+	var wrapMobile = (wrapSetting !== '0') && window.innerWidth < 768;
 	editor = CodeMirror.fromTextArea(myTextArea[#CODE_FIELD#], {
 		value: myTextArea[#CODE_FIELD#].value,
 		lineNumbers: true,
@@ -238,7 +241,7 @@ $(document).ready(function(){
 		[#if TYPE=="php" || TYPE=="html" || TYPE=="javascript"#]
 		enterMode: "indent",
 		undoDelay: 400,
-		lineWrapping: (window.innerWidth < 768) || [#if SETTINGS_CODEEDITOR_WRAPLINES == 1#]true[#else#]false[#endif#],
+		lineWrapping: [#if SETTINGS_CODEEDITOR_WRAPLINES == 1#]true[#else#]wrapMobile[#endif#],
 		scrollbarStyle: 'native',
 		autofocus: [#if AUTOFOCUS == '0'#]false[#else#]true[#endif#],
 		[#if SETTINGS_CODEEDITOR_THEME != 'codemirror' && SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]theme: "[#SETTINGS_CODEEDITOR_THEME#]",[#endif#]
@@ -301,6 +304,12 @@ $(document).ready(function(){
 
 
 	addPanel("top");
+
+	if (wrapSetting !== '0' && wrapSetting !== '1') {
+		window.addEventListener('resize', function () {
+			editor.setOption('lineWrapping', window.innerWidth < 768);
+		});
+	}
 
 	[#if TYPE=="php"#]
 		[#if SETTINGS_CODEEDITOR_TURNONSETTINGS == 1 && SETTINGS_CODEEDITOR_AUTOCOMPLETE == 1#]
