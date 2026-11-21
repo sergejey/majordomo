@@ -122,6 +122,10 @@ function collectData()
                     $result['cycles'][$path]['control'] = getGlobal($title . 'Control');
                 }
                 $cycle_run_update = getGlobal($title . 'Run');
+                if ($cycle_run_update && !is_numeric($cycle_run_update)) {
+                    $cycle_run_update = strtotime($cycle_run_update) ?: null;
+                }
+                $cycle_run_update = $cycle_run_update ? (int)$cycle_run_update : null;
                 if ($cycle_run_update) {
                     $result['cycles'][$path]['run'] = $cycle_run_update;
                     $time_passed = ($result['unixtime'] - $cycle_run_update);
