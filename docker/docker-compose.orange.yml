@@ -1,0 +1,14 @@
+# OrangePi / OrangePC boards with an arm64 kernel and 64-bit OS.
+# Same architecture override as RPi 5; adjust limits in .env if needed.
+services:
+  db:
+    platform: linux/arm64
+    mem_limit: 1g
+  web:
+    platform: linux/arm64
+    mem_limit: 1536m
+    cpus: 4
+  cycle:
+    platform: linux/arm64
+    mem_limit: 1g
+    cpus: 2

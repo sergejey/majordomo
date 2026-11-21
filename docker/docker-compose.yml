@@ -1,0 +1,95 @@
+# Base stack: MariaDB + Apache web + background cycle worker.
+# Copy .env.example to .env and adjust secrets before `docker compose up -d`.
+
+x-build: &build
+  context: ..
+  dockerfile: docker/Dockerfile
+  args:
+    PHP_VERSION: ${PHP_VERSION:-8.3}
+
+x-env: &env
+  DB_HOST: db
+  DB_PORT: 3306
+  DB_NAME: ${DB_NAME:-db_terminal}
+  DB_USER: ${DB_USER:-mj}
+  DB_PASSWORD: ${DB_PASSWORD:-mj}
+  GENERATE_CONFIG: ${GENERATE_CONFIG:-1}
+  S2G_BASE_URL: ${BASE_URL:-http://127.0.0.1:8080}
+
+x-volumes: &volumes
+  - mj-cached:/var/www/html/cached
+  - mj-cms-cached:/var/www/html/cms/cached
+  - mj-debmes:/var/www/html/cms/debmes
+  - mj-saverestore:/var/www/html/saverestore
+  - mj-modules:/var/www/html/modules
+  - mj-templates:/var/www/html/templates
+  - mj-languages:/var/www/html/languages
+  - mj-objects:/var/www/html/objects
+  - mj-rc:/var/www/html/rc
+
+services:
+  db:
+    image: mariadb:10.11
+    restart: unless-stopped
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-change-me-root}
+      MARIADB_DATABASE: ${DB_NAME:-db_terminal}
+      MARIADB_USER: ${DB_USER:-mj}
+      MARIADB_PASSWORD: ${DB_PASSWORD:-mj}
+    volumes:
+      - mj-db:/var/lib/mysql
+      - ../db_terminal.sql:/docker-entrypoint-initdb.d/01-db_terminal.sql:ro
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "127.0.0.1", "-uroot", "-p${MARIADB_ROOT_PASSWORD:-change-me-root}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: *build
+    image: majordomo-core:${TAG:-local}
+    restart: unless-stopped
+    environment:
+      <<: *env
+      APP_ROLE: web
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    volumes: *volumes
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(@file_get_contents('http://127.0.0.1/index.php') === false ? 1 : 0);"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  cycle:
+    build: *build
+    image: majordomo-core:${TAG:-local}
+    restart: unless-stopped
+    command: ["cycle"]
+    environment:
+      <<: *env
+      APP_ROLE: cycle
+    volumes: *volumes
+    depends_on:
+      db:
+        condition: service_healthy
+      web:
+        condition: service_started
+
+volumes:
+  mj-db:
+  mj-cached:
+  mj-cms-cached:
+  mj-debmes:
+  mj-saverestore:
+  mj-modules:
+  mj-templates:
+  mj-languages:
+  mj-objects:
+  mj-rc:

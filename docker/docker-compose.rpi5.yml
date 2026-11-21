@@ -1,0 +1,13 @@
+# Raspberry Pi 5 — 64-bit OS (linux/arm64), more RAM/CPU available.
+services:
+  db:
+    platform: linux/arm64
+    mem_limit: 1g
+  web:
+    platform: linux/arm64
+    mem_limit: 1536m
+    cpus: 4
+  cycle:
+    platform: linux/arm64
+    mem_limit: 1g
+    cpus: 2

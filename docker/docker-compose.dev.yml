@@ -1,0 +1,10 @@
+# Development only: mount the repository into both PHP containers so code
+# changes are visible without rebuilding the image. Do not use in production.
+# On Windows use WSL2 or the base stack with named volumes instead.
+services:
+  web:
+    volumes:
+      - ..:/var/www/html
+  cycle:
+    volumes:
+      - ..:/var/www/html

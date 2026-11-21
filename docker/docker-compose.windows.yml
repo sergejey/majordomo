@@ -1,0 +1,11 @@
+# Windows 10/11 with Docker Desktop + WSL2, Linux containers on x86_64.
+# Named volumes are used instead of bind mounts, so Windows path/CRLF and
+# file-permission differences do not leak into the container.
+# On an ARM Windows host use docker-compose.orange.yml instead.
+services:
+  db:
+    platform: linux/amd64
+  web:
+    platform: linux/amd64
+  cycle:
+    platform: linux/amd64

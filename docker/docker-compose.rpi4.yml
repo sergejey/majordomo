@@ -1,0 +1,14 @@
+# Raspberry Pi 4 — requires a 64-bit Raspberry Pi OS (linux/arm64).
+# Memory limits keep the stack usable on 2 GB boards.
+services:
+  db:
+    platform: linux/arm64
+    mem_limit: 512m
+  web:
+    platform: linux/arm64
+    mem_limit: 768m
+    cpus: 2
+  cycle:
+    platform: linux/arm64
+    mem_limit: 512m
+    cpus: 1
