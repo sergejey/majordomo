@@ -1434,6 +1434,12 @@ function processTitle($title, $object = 0)
             // return $title;
         } else {
 
+            $title = str_replace('<#ROOTHTML#>', ROOTHTML, $title);
+            // root-relative paths in menu HTML must respect subfolder installs
+            $title = preg_replace_callback('#(\ssrc=["\'])/(?!/)#uis', function ($m) {
+                return $m[1] . ROOTHTML;
+            }, $title);
+
             $title = preg_replace('/%rand%/is', rand(), $title);
             $title = preg_replace('/%([\w\d\.]+?)\.([\w\d\.]+?)\|(\d+)%/uis', '%\1.\2%', $title);
             if (preg_match_all('/%([\w\d\.]+?)\.([\w\d\.]+?)%/uis', $title, $m)) {
