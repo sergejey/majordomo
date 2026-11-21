@@ -571,7 +571,7 @@ class saverestore extends module
         }
         $incoming = curl_exec($ch);
         $curl_error = curl_error($ch);
-        curl_close($ch);
+        mjdCurlClose($ch);
         @fclose($f);
 
         if (file_exists($filename) && filesize($filename) > 0) {
@@ -701,7 +701,7 @@ class saverestore extends module
 
         $incoming = curl_exec($ch);
 
-        curl_close($ch);
+        mjdCurlClose($ch);
 
         $result = unserialize($incoming);
 
@@ -761,7 +761,7 @@ class saverestore extends module
 
         $incoming = curl_exec($ch);
 
-        curl_close($ch);
+        mjdCurlClose($ch);
 
         //echo $incoming;exit;
 
@@ -830,7 +830,7 @@ class saverestore extends module
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=prepare&repository=" . $repository_name . "&host=" . $_SERVER['HTTP_HOST'] . "&data=" . serialize($to_update));
         $incoming = curl_exec($ch);
-        curl_close($ch);
+        mjdCurlClose($ch);
 
         $res = unserialize($incoming);
 
@@ -853,7 +853,7 @@ class saverestore extends module
 
             $incoming = curl_exec($ch);
 
-            curl_close($ch);
+            mjdCurlClose($ch);
             @fclose($f);
 
             if (file_exists($filename) && filesize($filename) > 0) {
@@ -905,7 +905,7 @@ class saverestore extends module
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=prepareapps&repository=" . $repository_name . "&host=" . $_SERVER['HTTP_HOST'] . "&data=" . serialize($to_install));
         $incoming = curl_exec($ch);
-        curl_close($ch);
+        mjdCurlClose($ch);
 
         //echo $incoming;exit;
 
@@ -930,7 +930,7 @@ class saverestore extends module
 
             $incoming = curl_exec($ch);
 
-            curl_close($ch);
+            mjdCurlClose($ch);
             @fclose($f);
 
             if (file_exists($filename) && filesize($filename) > 0) {
@@ -999,7 +999,7 @@ class saverestore extends module
 
         $incoming = curl_exec($ch);
 
-        curl_close($ch);
+        mjdCurlClose($ch);
 
         //echo $incoming;exit;
 
@@ -1164,7 +1164,7 @@ class saverestore extends module
 
         $incoming = curl_exec($ch);
 
-        curl_close($ch);
+        mjdCurlClose($ch);
 
         //echo $incoming;exit;
 

@@ -356,7 +356,7 @@ class patterns extends module
             //execute post
             $result = curl_exec($ch);
             //close connection
-            curl_close($ch);
+            mjdCurlClose($ch);
 
             DebMes("External context response: " . $result, 'patterns');
 
@@ -443,7 +443,7 @@ class patterns extends module
             //execute post
             $result = curl_exec($ch);
             //close connection
-            curl_close($ch);
+            mjdCurlClose($ch);
             $data = unserialize($result);
 
             DebMes("External actions response: " . $result, 'patterns');

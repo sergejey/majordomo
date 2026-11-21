@@ -634,7 +634,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
                 $callSource = $backtrace[1]['function'];
                 DebMes("GetURL to $url (source " . $callSource . ") finished with error: \n" . $errorInfo . "\n" . json_encode($info), 'geturl_error');
             }
-            curl_close($ch);
+            mjdCurlClose($ch);
             endMeasure('curl_post');
 
 
@@ -773,7 +773,7 @@ function postURL($url, $query = array(), $cache = 0, $username = '', $password =
                 $callSource = $backtrace[1]['function'];
                 DebMes("GetURL to $url (source " . $callSource . ") finished with error: \n" . $errorInfo . "\n" . json_encode($info), 'geturl_error');
             }
-            curl_close($ch);
+            mjdCurlClose($ch);
             endMeasure('curl_post');
 
 
