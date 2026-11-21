@@ -750,6 +750,28 @@ class objects extends module
     }
 
 
+    /**
+     * Whether the property is transient (in-memory only). The flag itself is
+     * cached in cached_values; if that cache is cleared we simply re-read it
+     * from properties, while the value lives in transient_values.
+     */
+    function isTransientProperty($property)
+    {
+        $id = $this->getPropertyByName($property, $this->class_id, $this->id);
+        if (!$id) return false;
+
+        $flag_key = 'MJ:TRANSIENT:' . $id;
+        $cached = checkFromCache($flag_key);
+        if ($cached !== false) {
+            return (int)$cached === 1;
+        }
+
+        $rec = SQLSelectOne("SELECT TRANSIENT FROM properties WHERE ID=" . (int)$id);
+        $flag = !empty($rec['TRANSIENT']) ? 1 : 0;
+        saveToCache($flag_key, $flag);
+        return $flag === 1;
+    }
+
     function getProperty($property, $cache_checked = false)
     {
         if (!$this->object_title) return false;
@@ -760,6 +782,11 @@ class objects extends module
             $source_property = substr($property, 0, -9);
             if ($source_property == '') {
                 return '';
+            }
+
+            if ($this->isTransientProperty($source_property)) {
+                $cached_updated = checkTransient('MJD:' . $this->object_title . '.' . $property);
+                return $cached_updated !== false ? $cached_updated : '';
             }
 
             $value = SQLSelectOne("SELECT UPDATED FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $source_property) . "' ORDER BY UPDATED DESC LIMIT 1");
@@ -782,6 +809,11 @@ class objects extends module
             return returnTypedValue($this->id);
         } elseif ($property == 'class_title') {
             return $this->class_title;
+        }
+
+        if ($this->isTransientProperty($property)) {
+            $transient_value = checkTransient($cached_name);
+            return $transient_value !== false ? returnTypedValue($transient_value) : false;
         }
 
         if (!$cache_checked) {
@@ -922,6 +954,7 @@ class objects extends module
         $old_value = '';
 
         $cached_name = 'MJD:' . $this->object_title . '.' . $property;
+        $transient = false;
 
         startMeasure('setproperty_update');
         if ($id) {
@@ -953,12 +986,19 @@ class objects extends module
             }
 
             $property = $prop['TITLE'];
-            startMeasure('setproperty_update_getvalue');
-            $v = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID=" . (int)$id . " AND OBJECT_ID=" . (int)$this->id);
-            endMeasure('setproperty_update_getvalue');
-            $old_value = isset($v['VALUE']) ? $v['VALUE'] : false;
+            $transient = !empty($prop['TRANSIENT']);
+            if ($transient) {
+                $old_value = checkTransient($cached_name);
+                $v = SQLSelectOne("SELECT LINKED_MODULES FROM pvalues WHERE PROPERTY_ID=" . (int)$id . " AND OBJECT_ID=" . (int)$this->id);
+                if (!is_array($v)) $v = array();
+            } else {
+                startMeasure('setproperty_update_getvalue');
+                $v = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID=" . (int)$id . " AND OBJECT_ID=" . (int)$this->id);
+                endMeasure('setproperty_update_getvalue');
+                $old_value = isset($v['VALUE']) ? $v['VALUE'] : false;
+            }
 
-            if ($prop['DATA_TYPE'] == 5 && $value != $old_value) { // image
+            if (!$transient && $prop['DATA_TYPE'] == 5 && $value != $old_value) { // image
                 $path_parts = pathinfo($value);
                 $extension = strtolower($path_parts['extension']);
                 if ($extension != 'jpg' && $extension != 'jpeg' && $extension != 'png' && $extension != 'gif') {
@@ -995,21 +1035,23 @@ class objects extends module
                 if ($value == '') $value = $old_value;
             }
 
-            $v['VALUE'] = $value . '';
-            $v['SOURCE'] = $source . '';
-            if (!isset($v['PROPERTY_NAME'])) {
-                $v['PROPERTY_NAME'] = $this->object_title . '.' . $property;
-            }
-            if (isset($v['ID'])) {
-                $v['UPDATED'] = date('Y-m-d H:i:s');
-                SQLUpdate('pvalues', $v);
-            } else {
-                $v['PROPERTY_ID'] = $id;
-                $v['OBJECT_ID'] = $this->id;
+            if (!$transient) {
                 $v['VALUE'] = $value . '';
                 $v['SOURCE'] = $source . '';
-                $v['UPDATED'] = date('Y-m-d H:i:s');
-                $v['ID'] = SQLInsert('pvalues', $v);
+                if (!isset($v['PROPERTY_NAME'])) {
+                    $v['PROPERTY_NAME'] = $this->object_title . '.' . $property;
+                }
+                if (isset($v['ID'])) {
+                    $v['UPDATED'] = date('Y-m-d H:i:s');
+                    SQLUpdate('pvalues', $v);
+                } else {
+                    $v['PROPERTY_ID'] = $id;
+                    $v['OBJECT_ID'] = $this->id;
+                    $v['VALUE'] = $value . '';
+                    $v['SOURCE'] = $source . '';
+                    $v['UPDATED'] = date('Y-m-d H:i:s');
+                    $v['ID'] = SQLInsert('pvalues', $v);
+                }
             }
         } else {
             $prop = array();
@@ -1028,6 +1070,10 @@ class objects extends module
         endMeasure('setproperty_update');
 
         saveToCache($cached_name, $value);
+        if ($transient) {
+            saveTransient($cached_name, $value);
+            saveTransient($cached_name . '__updated', date('Y-m-d H:i:s'));
+        }
 
         $p_lower = strtolower($property);
         if (!defined('DISABLE_SIMPLE_DEVICES') &&
@@ -1087,7 +1133,7 @@ class objects extends module
             endMeasure('setproperty_postwebsocketqueue');
         }
 
-        if (isset($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY'] > 0)) {
+        if (!$transient && isset($prop['KEEP_HISTORY']) && ($prop['KEEP_HISTORY'] > 0)) {
             $q_rec = array();
             $q_rec['VALUE_ID'] = $v['ID'];
             $q_rec['ADDED'] = date('Y-m-d H:i:s');
@@ -1256,6 +1302,7 @@ class objects extends module
  properties: VALIDATION_LIST varchar(255) NOT NULL DEFAULT ''
  properties: VALIDATION_CODE text
  properties: ONCHANGE varchar(255) NOT NULL DEFAULT ''
+ properties: TRANSIENT tinyint(1) NOT NULL DEFAULT '0'
  properties: INDEX (CLASS_ID)
  properties: INDEX (OBJECT_ID)
  
