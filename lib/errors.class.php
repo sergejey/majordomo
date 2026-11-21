@@ -35,7 +35,7 @@ class custom_error
      * @access public
      *
      * @param string $description Error description
-     * @param int $stop Stop (0 - stop script execution, 1 - show warning and continue script execution)
+     * @param int $stop Stop (0 - show warning and continue script execution, 1 - stop execution)
      * @param int $short Short (default 0)
      * @return void
      */
