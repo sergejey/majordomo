@@ -20,6 +20,7 @@ if ($color == '000000') {
     $this->callMethodSafe('turnOff');
 } else {
     if (!$this->getProperty('status')) {
+        $this->setProperty('colorSaved', $color);
         $this->callMethod('turnOn');
     }
     $this->setProperty('color', $color);
