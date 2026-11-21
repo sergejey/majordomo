@@ -649,6 +649,7 @@ classes - Classes
  classes: ID int(10) unsigned NOT NULL auto_increment
  classes: TITLE varchar(255) NOT NULL DEFAULT ''
  classes: PARENT_ID int(10) NOT NULL DEFAULT '0'
+ classes: INDEX (TITLE)
  classes: NOLOG int(3) NOT NULL DEFAULT '0'
  classes: SUB_LIST text
  classes: PARENT_LIST text
