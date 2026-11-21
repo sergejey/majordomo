@@ -791,7 +791,17 @@ class objects extends module
             }
         }
 
-        $value = SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $property) . "' ORDER BY UPDATED DESC LIMIT 1");
+        // Resolve the property once and read by PROPERTY_ID (indexed). The
+        // PROPERTY_NAME lookup below is kept as a fallback for legacy rows.
+        $id = $this->getPropertyByName($property, $this->class_id, $this->id);
+        $value = array();
+        if ($id) {
+            $value = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='" . (int)$id . "' AND OBJECT_ID='" . (int)$this->id . "'");
+            if (isset($value['ID']) && !$value['PROPERTY_NAME'] && isset($this->object_title)) {
+                $value['PROPERTY_NAME'] = $this->object_title . '.' . $property;
+                SQLUpdate('pvalues', $value);
+            }
+        }
         if (isset($value['VALUE'])) {
             startMeasure('getPropertyCached2');
             endMeasure('getPropertyCached2', 1);
@@ -801,6 +811,15 @@ class objects extends module
             return $value['VALUE'];
         }
 
+        $legacy = SQLSelectOne("SELECT VALUE FROM pvalues WHERE PROPERTY_NAME = '" . DBSafe($this->object_title . '.' . $property) . "' ORDER BY UPDATED DESC LIMIT 1");
+        if (isset($legacy['VALUE'])) {
+            startMeasure('getPropertyCached2');
+            endMeasure('getPropertyCached2', 1);
+            endMeasure('getProperty (' . $property . ')', 1);
+            endMeasure('getProperty', 1);
+            saveToCache($cached_name, $legacy['VALUE']);
+            return $legacy['VALUE'];
+        }
 
         if ($property == 'location_title') {
             $value = current(SQLSelectOne("SELECT TITLE FROM locations WHERE ID=" . (int)$this->location_id));
@@ -808,25 +827,16 @@ class objects extends module
             return $value;
         }
 
-
-        $id = $this->getPropertyByName($property, $this->class_id, $this->id);
         startMeasure('getPropertyAll');
         startMeasure('getProperty (' . $property . ')');
-
-        if ($id) {
-            $value = SQLSelectOne("SELECT * FROM pvalues WHERE PROPERTY_ID='" . (int)$id . "' AND OBJECT_ID='" . (int)$this->id . "'");
-            if (isset($value['ID']) && !$value['PROPERTY_NAME'] && isset($this->object_title)) {
-                $value['PROPERTY_NAME'] = $this->object_title . '.' . $property;
-                SQLUpdate('pvalues', $value);
-            }
-        } else {
+        if (!is_array($value)) {
+            $value = array();
+        }
+        if (!isset($value['VALUE'])) {
             $value['VALUE'] = false;
         }
         endMeasure('getProperty (' . $property . ')', 1);
         endMeasure('getPropertyAll', 1);
-        if (!isset($value['VALUE'])) {
-            $value['VALUE'] = false;
-        }
         saveToCache($cached_name, $value['VALUE']);
         return returnTypedValue($value['VALUE']);
     }
