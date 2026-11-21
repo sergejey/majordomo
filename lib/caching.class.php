@@ -155,8 +155,11 @@ function saveTransient($key, $value)
         }
         $value = mb_substr($value, 0, $max, 'UTF-8');
     }
-    SQLExec("REPLACE INTO transient_values (KEYWORD, DATAVALUE) VALUES ('" .
-        DbSafe1($key) . "', '" . DbSafe1($value) . "')");
+    // ignore_errors: a full MEMORY table must not stop the calling process
+    if (!SQLExec("REPLACE INTO transient_values (KEYWORD, DATAVALUE) VALUES ('" .
+        DbSafe1($key) . "', '" . DbSafe1($value) . "')", true) && function_exists('DebMes')) {
+        DebMes('Cannot save transient value for ' . $key, 'transient');
+    }
 }
 
 function checkTransient($key)
@@ -170,6 +173,13 @@ function deleteTransient($key)
 {
     $key = strtolower((string)$key);
     SQLExec("DELETE FROM transient_values WHERE KEYWORD='" . DbSafe1($key) . "'");
+}
+
+function getTransientValuesByProperty($propertyId)
+{
+    $rows = SQLSelect("SELECT objects.ID AS OBJECT_ID, objects.TITLE, transient_values.DATAVALUE AS VALUE FROM objects, transient_values " .
+        "WHERE transient_values.KEYWORD=CONCAT('t:', objects.ID, '.', " . (int)$propertyId . ")");
+    return is_array($rows) ? $rows : array();
 }
 
 function deleteTransientByObject($objectId)
@@ -198,9 +208,9 @@ function cleanupTransientValues()
             deleteTransient($row['KEYWORD']);
             continue;
         }
-        $rec = SQLSelectOne("SELECT pvalues.ID FROM pvalues LEFT JOIN properties ON pvalues.PROPERTY_ID=properties.ID " .
-            "WHERE pvalues.OBJECT_ID=" . (int)$m[1] . " AND pvalues.PROPERTY_ID=" . (int)$m[2] .
-            " AND properties.TRANSIENT=1 LIMIT 1");
+        // transient values usually have no pvalues row
+        $rec = SQLSelectOne("SELECT properties.ID FROM properties, objects WHERE properties.ID=" . (int)$m[2] .
+            " AND properties.TRANSIENT=1 AND objects.ID=" . (int)$m[1] . " LIMIT 1");
         if (!isset($rec['ID'])) {
             deleteTransient($row['KEYWORD']);
         }
