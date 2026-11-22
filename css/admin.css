@@ -421,3 +421,22 @@ label.checkbox {
                 padding: 6px;
         }
 }
+
+/* Status badges keep their own palette: bootstrap.min.css sets a shared
+   .badge background, which is fine for plain badges but not for alert badges. */
+:root:not([data-theme="dark"]) .badge.alert-success {
+	background-color: #2e7d32;
+	color: #ffffff;
+}
+:root:not([data-theme="dark"]) .badge.alert-info {
+	background-color: #2a6a9c;
+	color: #ffffff;
+}
+:root:not([data-theme="dark"]) .badge.alert-warning {
+	background-color: #a85f00;
+	color: #ffffff;
+}
+:root:not([data-theme="dark"]) .badge.alert-danger {
+	background-color: #b52b27;
+	color: #ffffff;
+}
