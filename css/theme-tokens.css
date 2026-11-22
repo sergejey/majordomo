@@ -21,6 +21,12 @@
 	--mj-color-heading: #000000;
 	--mj-color-accent: #9ecf15;
 	--mj-font-heading: Arial, Helvetica, sans-serif;
+	--mj-color-nav-header: #6a6969;
+	--mj-color-border-subtle: rgba(0, 0, 0, 0.047);
+	--mj-color-shadow-subtle: rgba(0, 0, 0, 0.075);
+	--mj-color-divider: #999999;
+	--mj-color-overlay-bar: rgba(255, 255, 255, 0.60);
+	--mj-color-inset-highlight: rgba(255, 255, 255, 0.1);
 }
 
 :root[data-theme="dark"] {
@@ -35,4 +41,10 @@
 	--mj-color-heading: #ffffff;
 	--mj-color-accent: #9ecf15;
 	--mj-font-heading: 'Trebuchet MS', Arial, Helvetica, sans-serif;
+	--mj-color-nav-header: #b0b0b0;
+	--mj-color-border-subtle: rgba(255, 255, 255, 0.08);
+	--mj-color-shadow-subtle: rgba(0, 0, 0, 0.35);
+	--mj-color-divider: #aaaaaa;
+	--mj-color-overlay-bar: rgba(0, 0, 0, 0.60);
+	--mj-color-inset-highlight: rgba(255, 255, 255, 0.04);
 }
