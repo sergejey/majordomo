@@ -4,7 +4,9 @@
  * glyph is drawn from the free Font Awesome 7 font instead of the retired
  * Glyphicons Halflings font.
  */
-@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css");
+@import url("../3rdparty/fontawesome/css/all.min.css");
+
+/* Font Awesome Free 7.3.1: local copy, no external requests (CC BY 4.0 / SIL OFL 1.1 / MIT). */
 
 .glyphicon,
 .glyphicon::before {
