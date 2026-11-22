@@ -98,13 +98,14 @@ if (isset($_SERVER['REQUEST_METHOD']) &&
         if ($_GET['system_call']) {
             echo "Main cycle is down (timeout: $maincycleTimePassed)";
         } else {
+            $roothtml = ROOTHTML;
             echo "<html><head>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />
  <meta http-equiv=\"refresh\" content=\"10\">
-<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css\" integrity=\"sha512-Dop/vW3iOtayerlYAqCgkVr2aTr2ErwwTYOvRFUpzl2VhCMJyjQF0Q9TjUXIo6JhuM/3i0vVEt2e/7QQmnHQqw==\" crossorigin=\"anonymous\">
-<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap-theme.min.css\" integrity=\"sha512-iy8EXLW01a00b26BaqJWaCmk9fJ4PsMdgNRqV96KwMPSH+blO82OHzisF/zQbRIIi8m0PiO10dpS0QxrcXsisw==\" crossorigin=\"anonymous\">
+<link rel=\"stylesheet\" href=\"{$roothtml}3rdparty/bootstrap/css/bootstrap.min.css\">
+<link rel=\"stylesheet\" href=\"{$roothtml}3rdparty/bootstrap/css/bootstrap-theme.min.css\">
 <script src=\"https://code.jquery.com/jquery-3.3.1.min.js\" type=\"text/javascript\"></script>
-<script src=\"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js\" integrity=\"sha512-oBTprMeNEKCnqfuqKd6sbvFzmFQtlXS3e0C/RGFV0hD6QzhHV+ODfaQbAlmY6/q0ubbwlAM/nCJjkrgA3waLzg==\" crossorigin=\"anonymous\"></script>
+<script src=\"{$roothtml}3rdparty/bootstrap/js/bootstrap.min.js\"></script>
 </head><body><div class=\"container\">";
             echo "&nbsp;<div class='alert alert-danger'>" . LANG_MAINCYCLEDOWN . "</div>";
             echo '<p>' . LANG_MAINCYCLEDOWN_DETAILS . '<br/>(timeout: ' . $maincycleTimePassed . ')</p>';

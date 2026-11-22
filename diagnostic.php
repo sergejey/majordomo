@@ -302,14 +302,12 @@ if ($_GET['ajax'] == 1) {
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title><?php echo $lang_page_title; ?></title>
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css"
-          integrity="sha512-Dop/vW3iOtayerlYAqCgkVr2aTr2ErwwTYOvRFUpzl2VhCMJyjQF0Q9TjUXIo6JhuM/3i0vVEt2e/7QQmnHQqw==" crossorigin="anonymous">
+    <link rel="stylesheet" href="<?php echo ROOTHTML; ?>3rdparty/bootstrap/css/bootstrap.min.css">
     <!-- Optional theme -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap-theme.min.css"
-          integrity="sha512-iy8EXLW01a00b26BaqJWaCmk9fJ4PsMdgNRqV96KwMPSH+blO82OHzisF/zQbRIIi8m0PiO10dpS0QxrcXsisw==" crossorigin="anonymous">
+    <link rel="stylesheet" href="<?php echo ROOTHTML; ?>3rdparty/bootstrap/css/bootstrap-theme.min.css">
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"
+    <script src="<?php echo ROOTHTML; ?>3rdparty/bootstrap/js/bootstrap.min.js"
             integrity="sha512-oBTprMeNEKCnqfuqKd6sbvFzmFQtlXS3e0C/RGFV0hD6QzhHV+ODfaQbAlmY6/q0ubbwlAM/nCJjkrgA3waLzg=="
             crossorigin="anonymous"></script>
 </head>
