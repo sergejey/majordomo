@@ -238,10 +238,13 @@ $this->device_types = array(
         'PROPERTIES' => array(
             'color' => array('DESCRIPTION' => 'Current color', 'ONCHANGE' => 'colorUpdated', 'DATA_KEY' => 1),
             'colorSaved' => array('DESCRIPTION' => 'Saved color'),
-            'brightness' => array('DESCRIPTION' => 'Current brightness', 'ONCHANGE' => 'colorUpdated'),
+            'brightness' => array('DESCRIPTION' => 'Current brightness', 'ONCHANGE' => 'brightnessUpdated'),
+            'brightnessSaved' => array('DESCRIPTION' => 'Saved brightness'),
         ),
         'METHODS' => array(
             'colorUpdated' => array('DESCRIPTION' => 'Color Updated'),
+            'brightnessUpdated' => array('DESCRIPTION' => 'Brightness Updated'),
+            'setBrightness' => array('DESCRIPTION' => 'Brightness Set'),
             'setColor' => array('DESCRIPTION' => 'Color Set'),
             'turnOn' => array('DESCRIPTION' => LANG_DEVICES_TURN_ON, '_CONFIG_SHOW' => 1),
             'turnOff' => array('DESCRIPTION' => LANG_DEVICES_TURN_OFF, '_CONFIG_SHOW' => 1),
