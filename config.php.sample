@@ -140,6 +140,7 @@ $restart_threads = array( // Циклы, которые допускаются �
 //Define('REDIS_TIMEOUT', 2.5);             // Таймаут подключения к Redis (сек) | Redis connection timeout (sec)
 //Define('CACHE_VALUE_MAX_SIZE', 255);      // Максимальный размер значения в кэше | Maximum cache value size
 //Define('HISTORY_NO_OPTIMIZE', 1);         // Отключить оптимизацию записи истории | Disable history write optimization
+//Define('HISTORY_OPTIMIZE_MIN_ROWS', 1000); // OPTIMIZE TABLE после массового DELETE в MyISAM-истории; 0 = выключить | Optimize MyISAM history after bulk DELETE; 0 = disabled
 //Define('SEPARATE_HISTORY_STORAGE', 1);     // Хранить историю в отдельных таблицах | Store history in separate tables
 //Define('TRACK_DATA_CHANGES', 1);           // Логировать изменения данных объектов | Log object data changes
 //Define('TRACK_DATA_CHANGES_IGNORE', 'cycle_, clockchime, uptime, WSClientsTotal'); // Исключения для трекинга | Tracking exclusions
