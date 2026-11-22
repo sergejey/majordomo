@@ -124,6 +124,7 @@ body, html {
 					$(this).attr('href', href);
 				});
 				$('.full-size').toggleClass('theme-dark', dark);
+				document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
 				$('body').css('background-color', dark ? '#222222' : 'white');
 			});
 			</script>
