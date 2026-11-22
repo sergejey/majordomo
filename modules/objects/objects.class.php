@@ -347,15 +347,13 @@ class objects extends module
      */
     function loadObject($id)
     {
-        $rec = SQLSelectOne("SELECT * FROM objects WHERE ID=" . (int)$id);
+        $rec = SQLSelectOne("SELECT objects.*, classes.TITLE AS CL_TITLE FROM objects " .
+            "LEFT JOIN classes ON objects.CLASS_ID=classes.ID WHERE objects.ID=" . (int)$id);
         if (isset($rec['ID'])) {
             $this->id = $rec['ID'];
             $this->object_title = $rec['TITLE'];
             $this->class_id = $rec['CLASS_ID'];
-            if ($this->class_id) {
-                $class_rec = SQLSelectOne("SELECT ID,TITLE FROM classes WHERE ID=" . $this->class_id);
-                $this->class_title = $class_rec['TITLE'];
-            }
+            $this->class_title = isset($rec['CL_TITLE']) ? $rec['CL_TITLE'] : '';
             $this->description = $rec['DESCRIPTION'];
             $this->location_id = $rec['LOCATION_ID'];
             if (preg_match('/^sdevice(\d+)/', $rec['SYSTEM'], $m)) {
