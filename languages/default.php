@@ -1455,6 +1455,7 @@ $dictionary = array(
     'PATTERN_HOUR' => 'hours',
 
     'THEME' => 'Theme',
+    'THEME_AUTO' => 'Auto (by time of day)',
     'THEME_DARK' => 'Dark',
     'THEME_LIGHT' => 'Light',
     'DATA_SOURCE' => 'Data source',
