@@ -153,9 +153,7 @@ class panel extends module
 
         if ($this->authorized) {
 
-            include_once(DIR_MODULES . "control_access/control_access.class.php");
-            $acc = new control_access();
-            if (!$acc->checkAccess($this->action, 1)) {
+            if (!core_can($this->action)) {
                 $this->redirect("?");
             }
 
@@ -197,7 +195,7 @@ class panel extends module
                     }
                 }
 
-                if (!$acc->checkAccess($modules[$i]['NAME'])) {
+                if (!core_can($modules[$i]['NAME'])) {
                     $modules[$i]['DENIED'] = 1;
                 } else {
                     $last_allow = $i;

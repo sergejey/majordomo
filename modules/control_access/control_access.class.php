@@ -307,30 +307,7 @@ function getParams() {
 // --------------------------------------------------------------------
    function checkAccess($action = "", $log = 0)
    {
-
-      if (defined('NO_DATABASE_CONNECTION')) {
-       return 1;
-      }
-      global $session;
-
-      if ($session->data['USER_ID'] == 1) 
-         return 1;
-  
-      $user = SQLSelectOne("SELECT ID FROM admin_users WHERE LOGIN='".$session->data['USER_NAME']."'");
-      if (!$user['ID'])
-      {
-         UnSet($session->data['AUTHORIZED']);
-         UnSet($session->data['USER_NAME']);
-         $this->redirect("?");
-      }
-
-      if ($action != "") 
-         $user=SQLSelectOne("SELECT ID FROM admin_users WHERE LOGIN='".$session->data['USER_NAME']."' AND (ACCESS LIKE '$action' OR ACCESS LIKE '$action,%' OR ACCESS LIKE '%,$action' OR ACCESS LIKE '%,$action,%')");
-    
-      if (isset($user['ID']))
-         return 1;
-  
-      return 0;
+      return core_can($action) ? 1 : 0;
    }
 
 // --------------------------------------------------------------------
