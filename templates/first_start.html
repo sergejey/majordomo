@@ -117,9 +117,9 @@ body, html {
 					if (this.id == 'theme') return;
 					var href = $(this).attr('href');
 					if (dark) {
-						href = href.replace('bootstrap.min.css', 'bootstrap_dark.min.css').replace('ui-lightness', 'ui-darkness').replace('stl_light.css', 'stl_dark.css');
+						href = href.replace('bootstrap.min.css', 'bootstrap_dark.min.css').replace('ui-lightness', 'ui-darkness');
 					} else {
-						href = href.replace('bootstrap_dark.min.css', 'bootstrap.min.css').replace('ui-darkness', 'ui-lightness').replace('stl_dark.css', 'stl_light.css');
+						href = href.replace('bootstrap_dark.min.css', 'bootstrap.min.css').replace('ui-darkness', 'ui-lightness');
 					}
 					$(this).attr('href', href);
 				});
