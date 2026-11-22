@@ -88,6 +88,10 @@ class saverestore extends module
     function run()
     {
         global $session;
+        $sr_mode = gr('mode');
+        if (in_array($sr_mode, array('force_update', 'auto_update_settings', 'clear', 'upload', 'dump', 'delete'))) {
+            core_require($this->name, CORE_ACCESS_ADMIN);
+        }
         $out = array();
         if ($this->action == 'admin') {
             $this->admin($out);

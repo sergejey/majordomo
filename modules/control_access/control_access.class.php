@@ -207,6 +207,7 @@ function getParams() {
    global $id;
 
    if (!$session->data['AUTHORIZED']) exit;
+   core_require($this->name, CORE_ACCESS_ADMIN);
 
    if ($mode == "delete") {
     SQLExec("DELETE FROM admin_users WHERE ID='".$id."'");

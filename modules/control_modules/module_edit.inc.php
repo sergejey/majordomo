@@ -1,5 +1,7 @@
 <?php
 
+core_require($this->name, CORE_ACCESS_EDIT);
+
 $mode2 = gr('mode2');
 
 $rec = SQLSelectOne("SELECT * FROM project_modules WHERE NAME='" . DBSafe($name) . "'");
