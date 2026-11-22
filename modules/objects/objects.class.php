@@ -683,7 +683,11 @@ class objects extends module
                         }
                     } catch (Throwable $e) {
                         //getLogger($this)->error(sprintf('Exception in "%s.%s" method', $this->object_title, $name), $e);
-                        registerError('method', sprintf('Exception in "%s.%s" method ' . $e->getMessage(), $this->object_title, $name));
+                        $message = $e->getMessage();
+                        if (stripos($message, 'Undefined constant') !== false) {
+                            $message .= ". If this is an object property name, put it in quotes, e.g. gg('ThisComputer.SunRiseTime')";
+                        }
+                        registerError('method', sprintf('Exception in "%s.%s" method %s', $this->object_title, $name, $message));
                     }
                 }
             }
