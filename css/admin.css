@@ -435,8 +435,7 @@ label.checkbox {
         }
 }
 
-/* Status badges keep their own palette: bootstrap.min.css sets a shared
-   .badge background, which is fine for plain badges but not for alert badges. */
+
 :root:not([data-theme="dark"]) .badge.alert-success {
 	background-color: #2e7d32;
 	color: #ffffff;
@@ -452,4 +451,36 @@ label.checkbox {
 :root:not([data-theme="dark"]) .badge.alert-danger {
 	background-color: #b52b27;
 	color: #ffffff;
+}
+
+/* Large screens (TV): keep controls readable from a distance. */
+@media (min-width: 1600px) {
+        body {
+                font-size: 15px;
+        }
+        .navbar-nav > li > a {
+                font-size: 15px;
+        }
+        .form-control, .btn, .table, .nav-tabs > li > a {
+                font-size: 15px;
+        }
+        .navbar-brand img {
+                height: 64px !important; /* overrides the inline height in panel.html */
+        }
+}
+
+/* Extra-large screens: one more step, without changing the grid. */
+@media (min-width: 2200px) {
+        body {
+                font-size: 17px;
+        }
+        .navbar-nav > li > a {
+                font-size: 17px;
+        }
+        .form-control, .btn, .table, .nav-tabs > li > a {
+                font-size: 17px;
+        }
+        .navbar-brand img {
+                height: 72px !important;
+        }
 }
