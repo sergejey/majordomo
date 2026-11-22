@@ -1268,6 +1268,7 @@ function hsvToHex($h, $s, $v)
 function logAction($action_type, $details = '')
 {
     if (!isModuleInstalled('actions_log')) return;
+    if (!SQLSelectOne("SHOW TABLES LIKE 'actions_log'")) return;
 
     global $session;
     $rec = array();
