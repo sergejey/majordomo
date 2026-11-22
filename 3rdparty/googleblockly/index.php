@@ -18,8 +18,8 @@ $ctl = new control_modules();
   <head>
     <meta charset="utf-8">
 
-    <script type="text/javascript"  src="<?php echo ROOTHTML;?>3rdparty/jquery/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript"  src="<?php echo ROOTHTML;?>3rdparty/jquery/jquery-migrate-3.0.0.min.js"></script>
+    <script type="text/javascript"  src="<?php echo ROOTHTML;?>3rdparty/jquery/jquery-3.7.1.min.js"></script>
+    <script type="text/javascript"  src="<?php echo ROOTHTML;?>3rdparty/jquery/jquery-migrate-3.5.0.min.js"></script>
 
     <link rel="stylesheet" href="<?php echo ROOTHTML;?>3rdparty/bootstrap/css/bootstrap.min.css" type="text/css">
     <script type="text/javascript" src="<?php echo ROOTHTML;?>3rdparty/bootstrap/js/bootstrap.min.js"></script>

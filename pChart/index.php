@@ -258,7 +258,7 @@ if ($total > 0) {
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <link href="{$roothtml}css/devices.css?v=19-10-15"  rel="stylesheet" type="text/css"/>
 <script type="text/javascript"  src="{$roothtml}3rdparty/jquery/jquery-3.7.1.min.js"></script>
-<script type="text/javascript"  src="{$roothtml}3rdparty/jquery/jquery-migrate-3.0.0.min.js"></script>
+<script type="text/javascript"  src="{$roothtml}3rdparty/jquery/jquery-migrate-3.5.0.min.js"></script>
 <link rel="stylesheet" href="{$roothtml}3rdparty/bootstrap/css/bootstrap.min.css" type="text/css">
 <script type="text/javascript" src="{$roothtml}3rdparty/bootstrap/js/bootstrap.min.js"></script>
 <link rel="stylesheet" type="text/css" href="{$roothtml}3rdparty/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css"/>

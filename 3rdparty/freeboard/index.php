@@ -77,8 +77,8 @@ if ($_GET['theme']) {
     <script src="<?php echo ROOTHTML;?>3rdparty/freeboard/lib/js/thirdparty/jquery.js"></script>
     <!--#
     <script src="<?php echo ROOTHTML;?>3rdparty/freeboard/lib/js/thirdparty/head.js"></script>
-    <script type="text/javascript" src="<?php echo ROOTHTML;?>3rdparty/jquery/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="<?php echo ROOTHTML;?>3rdparty/jquery/jquery-migrate-3.0.0.min.js"></script>
+    <script type="text/javascript" src="<?php echo ROOTHTML;?>3rdparty/jquery/jquery-3.7.1.min.js"></script>
+    <script type="text/javascript" src="<?php echo ROOTHTML;?>3rdparty/jquery/jquery-migrate-3.5.0.min.js"></script>
 
     #-->
 
