@@ -236,6 +236,7 @@ jobs - jobs
  jobs: STARTED datetime
  jobs: PROCESSED int(3) NOT NULL DEFAULT '0'
  jobs: EXPIRED int(3) NOT NULL DEFAULT '0'
+ jobs: INDEX (TITLE)
 EOD;
   parent::dbInstall($data);
 
