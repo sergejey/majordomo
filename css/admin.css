@@ -46,8 +46,21 @@
 	.collapse.in{
 			display:block !important;
 	}
-	#searchbtnhide {
+}
+
+/* Exactly one search entry point at every viewport width. */
+.mj-search-toggle {
+	display: block;
+}
+#searchbtnhide {
+	display: none;
+}
+@media (min-width: 1231px) {
+	.mj-search-toggle {
 		display: none;
+	}
+	#searchbtnhide {
+		display: block;
 	}
 }
 
