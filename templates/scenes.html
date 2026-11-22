@@ -4,16 +4,16 @@
 <title><#PROJECT_TITLE#></title>
 [#inc common_header.html#]
 <link href="<#ROOTHTML#>css/stl.css" rel="stylesheet" type="text/css"/>
-<link href="<#ROOTHTML#>css/stl_<#SETTINGS_THEME#>.css" rel="stylesheet" type="text/css"/>
-<link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#SETTINGS_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/jquery-ui-1.9.1.custom.css"/>
-<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap[#if "<#SETTINGS_THEME#>"=="dark"#]_dark[#endif#].min.css" type="text/css">
+<link href="<#ROOTHTML#>css/stl_<#MJ_THEME#>.css" rel="stylesheet" type="text/css"/>
+<link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#MJ_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/jquery-ui-1.9.1.custom.css"/>
+<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap[#if "<#MJ_THEME#>"=="dark"#]_dark[#endif#].min.css" type="text/css">
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery-ui-1.9.1.custom.min.js"></script>
 <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/jquerymobile/jquery.mobile-1.4.5.min.css" />
 
 
 [#inc websockets.html#]
 </head>
-<!--#[#if "<#SETTINGS_THEME#>"=="dark"#] bgcolor="black"[#else#] bgcolor="white"[#endif#]#-->
+<!--#[#if "<#MJ_THEME#>"=="dark"#] bgcolor="black"[#else#] bgcolor="white"[#endif#]#-->
 <style>
 #body_background {
 position: absolute;
@@ -68,7 +68,7 @@ position: absolute;
 
 $(document).ready(function() {
  if (!inIframe()) {
-  $("body").css('background-color', '[#if "<#SETTINGS_THEME#>"=="dark"#]black[#else#]white[#endif#]');
+  $("body").css('background-color', '[#if "<#MJ_THEME#>"=="dark"#]black[#else#]white[#endif#]');
  }
 });
 </script>

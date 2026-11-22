@@ -9,10 +9,8 @@
 	(function () {
 		// 07:00-19:00 is light, the rest of the day is dark.
 		function resolve(choice) {
-			if (choice === 'auto') {
-				var hour = new Date().getHours();
-				return (hour >= 7 && hour < 19) ? 'light' : 'dark';
-			}
+			// auto уже разрешён на сервере (MJ_THEME), чтобы не расходиться с CSS-ссылками
+			if (choice === 'auto') return '<#MJ_THEME#>';
 			return choice === 'dark' ? 'dark' : 'light';
 		}
 
