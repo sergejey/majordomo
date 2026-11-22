@@ -260,6 +260,7 @@ if ($total > 0) {
 <script type="text/javascript"  src="{$roothtml}3rdparty/jquery/jquery-3.3.1.min.js"></script>
 <script type="text/javascript"  src="{$roothtml}3rdparty/jquery/jquery-migrate-3.0.0.min.js"></script>
 <link rel="stylesheet" href="{$roothtml}3rdparty/bootstrap/css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="{$roothtml}css/fontawesome-compat.css" type="text/css">
 <script type="text/javascript" src="{$roothtml}3rdparty/bootstrap/js/bootstrap.min.js"></script>
 <link rel="stylesheet" type="text/css" href="{$roothtml}3rdparty/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css"/>
 <script type="text/javascript" src="{$roothtml}3rdparty/moment/moment.min.js"></script>
