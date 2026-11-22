@@ -22,7 +22,7 @@ $link = gr('link');
 header('X-Accel-Buffering: no');
 echo "<html>";
 echo "<head>";
-echo '<link rel="stylesheet" href="/3rdparty/bootstrap/css/bootstrap-3.4.1.min.css" type="text/css"><script type="text/javascript" src="/3rdparty/bootstrap/js/bootstrap-3.4.1.min.js"></script>';
+echo '<link rel="stylesheet" href="/3rdparty/bootstrap/css/bootstrap.min.css" type="text/css"><script type="text/javascript" src="/3rdparty/bootstrap/js/bootstrap.min.js"></script>';
 $dark_theme = isset($_COOKIE['theme']) && $_COOKIE['theme'] == 'dark';
 if ($dark_theme) {
     echo '<style>html{color-scheme:dark}font[color="green"]{color:#a8ffbe}font[color="red"]{color:#ff6b6b}</style>';

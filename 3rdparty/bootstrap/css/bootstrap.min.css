@@ -1,0 +1,231 @@
+@import url("bootstrap-3.4.1.min.css");
+
+/* Custom rules from the previous local build (kept on upgrade). */
+.notyBody::-webkit-scrollbar {
+	width: 7px;
+	height: 10px;
+}
+
+.notyBody::-webkit-scrollbar-button {
+	display: none;
+}
+
+.notyBody::-webkit-scrollbar-track {
+	background-color: #4792d1;
+}
+
+.notyBody::-webkit-scrollbar-track-piece {
+	background-color: #ffffff;
+}
+
+.notyBody::-webkit-scrollbar-thumb {
+	height: 30px;
+	background-color: #4792d1;
+	border-radius: 3px;
+}
+
+.notyBody::-webkit-scrollbar-corner {
+	background-color: #999;
+}
+
+.notyBody::-webkit-resizer {
+	background-color: #4792d1;
+}
+
+ul>li.strip {
+	background-color: #f5f5f5;
+
+/*new*/
+.nav .nav-header {
+	display: block;
+	padding: 3px 15px;
+	font-size: 11px;
+	font-weight: bold;
+	line-height: 18px;
+	color: #999;
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+	text-transform: uppercase
+}
+
+.nav li+.nav-header {
+	margin-top: 9px
+}
+
+.nav-list {
+	padding-right: 15px;
+	padding-left: 15px;
+	margin-bottom: 0
+}
+
+.nav-list>li>a,
+.nav-list .nav-header {
+	
+	margin-right: -15px;
+	margin-left: -15px;
+}
+
+.nav-list>li>a {
+	color: #333;
+	padding: 5px 5px;
+	border-radius: 5px;
+}
+
+.nav-list>.active>a,
+.nav-list>.active>a:hover {
+	color: #fff;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+	background-color: #08c
+}
+
+.nav-list>.active>.leftmenutab,
+.nav-list>.active>.leftmenutab:hover {
+	text-decoration: none;
+	background-color: #4792d1;
+	color: white;
+	padding: 5px 5px;
+}
+
+.nav-list [class^="icon-"] {
+	margin-right: 2px
+}
+
+.nav-list .divider {
+	*width: 100%;
+	height: 1px;
+	margin: 8px 1px;
+	*margin: -5px 0 5px;
+	overflow: hidden;
+	background-color: #e5e5e5;
+	border-bottom: 1px solid #fff
+}
+
+/* Light theme contrast tweaks */
+a,
+.text-primary {
+	color: #26648f;
+}
+a:hover,
+a:focus {
+	color: #1f527c;
+}
+#main-content .nav-tabs > li > a {
+	color: #26648f;
+}
+#main-content .nav-tabs > li.active > a {
+	color: #555555;
+}
+.btn-primary {
+	background-color: #2f6f9f;
+	border-color: #2a648f;
+}
+.btn-success {
+	background-color: #2e7d32;
+	border-color: #286b2b;
+}
+.btn-info {
+	background-color: #2a6a9c;
+	border-color: #245d89;
+}
+.btn-warning {
+	background-color: #a85f00;
+	border-color: #8f5100;
+}
+.btn-danger {
+	background-color: #b52b27;
+	border-color: #9e2522;
+}
+.label-primary {
+	background-color: #2f6f9f;
+}
+.label-success {
+	background-color: #2e7d32;
+}
+.label-info {
+	background-color: #2a6a9c;
+}
+.label-warning {
+	background-color: #a85f00;
+}
+.label-danger {
+	background-color: #b52b27;
+}
+.label-default,
+.badge {
+	background-color: #666666;
+}
+.nav-list > .active > a,
+.nav-list > .active > a:hover,
+.nav-list > .active > a:focus,
+.nav-list > .active > .leftmenutab,
+.nav-list > .active > .leftmenutab:hover,
+.nav-list > .active > .leftmenutab:focus {
+	background-color: #2f6f9f;
+}
+.panel-primary > .panel-heading {
+	background-color: #2f6f9f;
+	border-color: #2f6f9f;
+}
+.panel-success > .panel-heading {
+	background-color: #2e7d32;
+	border-color: #2e7d32;
+}
+.panel-info > .panel-heading {
+	background-color: #2a6a9c;
+	border-color: #2a6a9c;
+}
+.panel-warning > .panel-heading {
+	background-color: #a85f00;
+	border-color: #a85f00;
+}
+.panel-danger > .panel-heading {
+	background-color: #b52b27;
+	border-color: #b52b27;
+}
+.panel-primary > .panel-heading,
+.panel-success > .panel-heading,
+.panel-info > .panel-heading,
+.panel-warning > .panel-heading,
+.panel-danger > .panel-heading {
+	color: #ffffff;
+}
+.text-muted {
+	color: #6a6a6a;
+}
+#tabs .ui-tabs-nav li a {
+	color: #26648f;
+}
+#tabs .ui-tabs-nav li.ui-tabs-active a {
+	color: #2b2b2b;
+}
+.navbar-default .navbar-nav > li > a,
+.navbar-default .navbar-brand {
+	color: #666666;
+}
+#breadcrumb_update .console-debug-link {
+	color: #b03030;
+}
+/* alert colors in this build are from bootstrap 3.3.0 and fail contrast */
+.alert-success {
+	color: #3c763d;
+}
+.alert-info {
+	color: #31708f;
+}
+.alert-warning {
+	color: #8a6d3b;
+}
+.alert-danger {
+	color: #a94442;
+}
+span[style*="color: lightgray"] {
+	color: #767676 !important;
+}
+/* template inline colors need !important */
+#hideMenuDiv > li[style*="color: gray"],
+#hideMenuDiv > li > span[style*="color: gray"],
+#breadcrumb_update > li[style*="color: gray"],
+#main-content p[style*="color: gray"],
+#main-content li[style*="color: gray"],
+#main-content span[id^="statusUpdateTitle_"] i {
+	color: #6a6a6a !important;
+}

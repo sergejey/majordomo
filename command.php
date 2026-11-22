@@ -167,8 +167,8 @@ if (!headers_sent()) {
     <title></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="<?php echo ROOTHTML;?>3rdparty/bootstrap/css/bootstrap-3.4.1.min.css" type="text/css">
-    <script type="text/javascript" src="<?php echo ROOTHTML;?>3rdparty/bootstrap/js/bootstrap-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="<?php echo ROOTHTML;?>3rdparty/bootstrap/css/bootstrap.min.css" type="text/css">
+    <script type="text/javascript" src="<?php echo ROOTHTML;?>3rdparty/bootstrap/js/bootstrap.min.js"></script>
 </head>
 
 <body class="container">
