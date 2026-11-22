@@ -39,7 +39,7 @@ class phpSerial
 	 *
 	 * @return phpSerial
 	 */
-	function phpSerial ()
+	function __construct()
 	{
 		setlocale(LC_ALL, "en_US");
 
@@ -68,6 +68,14 @@ class phpSerial
 			trigger_error("Host OS is neither linux nor windows, unable tu run.", E_USER_WARNING);
 			exit();
 		}
+	}
+
+	/**
+	 * Compatibility wrapper for the old-style constructor name.
+	 */
+	function phpSerial()
+	{
+		$this->__construct();
 	}
 
 	//
