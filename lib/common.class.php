@@ -922,6 +922,101 @@ function checkAccessCopy($object_type, $src_id, $dst_id)
     }
 }
 
+if (!defined('CORE_ACCESS_VIEW')) {
+    define('CORE_ACCESS_VIEW', 0);
+}
+if (!defined('CORE_ACCESS_EDIT')) {
+    define('CORE_ACCESS_EDIT', 1);
+}
+if (!defined('CORE_ACCESS_ADMIN')) {
+    define('CORE_ACCESS_ADMIN', 2);
+}
+
+/**
+ * Returns the current admin user record (cached) or false.
+ * Admin user #1 and installations without a database are always allowed.
+ *
+ * @return array|false
+ */
+function core_current_user()
+{
+    global $session, $core_access_user_cache;
+
+    if (defined('NO_DATABASE_CONNECTION')) {
+        return array('ID' => 1, 'LOGIN' => 'admin', 'ACCESS' => '', 'PRIVATE' => CORE_ACCESS_ADMIN);
+    }
+
+    if (isset($core_access_user_cache)) {
+        return $core_access_user_cache;
+    }
+
+    if (!isset($session) || !is_object($session) || empty($session->data['AUTHORIZED'])) {
+        $core_access_user_cache = false;
+        return false;
+    }
+
+    if (!empty($session->data['USER_ID']) && (int)$session->data['USER_ID'] === 1) {
+        $core_access_user_cache = array('ID' => 1, 'LOGIN' => 'admin', 'ACCESS' => '', 'PRIVATE' => CORE_ACCESS_ADMIN);
+        return $core_access_user_cache;
+    }
+
+    $login = isset($session->data['USER_NAME']) ? $session->data['USER_NAME'] : '';
+    if ($login === '') {
+        $core_access_user_cache = false;
+        return false;
+    }
+
+    $user = SQLSelectOne("SELECT ID, LOGIN, ACCESS, PRIVATE FROM admin_users WHERE LOGIN='" . DBSafe($login) . "'");
+    $core_access_user_cache = !empty($user['ID']) ? $user : false;
+    return $core_access_user_cache;
+}
+
+/**
+ * Core-level permission check for a module/action.
+ * ACCESS is a comma-separated list of module names saved in admin_users.
+ *
+ * @param string $permission Module or action name
+ * @param int $minLevel Minimum user level (PRIVATE)
+ * @return bool
+ */
+function core_can($permission, $minLevel = CORE_ACCESS_VIEW)
+{
+    if ($permission === '' || $permission === null) {
+        return true;
+    }
+
+    $user = core_current_user();
+    if (!$user) {
+        return false;
+    }
+    if ((int)$user['ID'] === 1) {
+        return true;
+    }
+    if (!empty($minLevel) && (int)$user['PRIVATE'] < (int)$minLevel) {
+        return false;
+    }
+
+    $access = isset($user['ACCESS']) ? ',' . trim($user['ACCESS'], ',') . ',' : ',,';
+    return strpos($access, ',' . trim($permission) . ',') !== false;
+}
+
+/**
+ * Stops the request with 403 when the permission is missing.
+ *
+ * @param string $permission
+ * @param int $minLevel
+ * @return bool
+ */
+function core_require($permission, $minLevel = CORE_ACCESS_VIEW)
+{
+    if (core_can($permission, $minLevel)) {
+        return true;
+    }
+    http_response_code(403);
+    echo 'Forbidden';
+    exit;
+}
+
 /**
  * Summary of registerError
  * @param mixed $code Code (default 'custom')
