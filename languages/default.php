@@ -10,6 +10,24 @@
 
 $dictionary = array(
 
+    /* compatibility audit */
+    'AUDIT_TITLE' => 'Script compatibility audit',
+    'AUDIT_DESCRIPTION' => 'Read-only check of custom scripts against the current PHP, JavaScript and bundled library versions.',
+    'AUDIT_ENVIRONMENT' => 'Current environment',
+    'AUDIT_PHP_VERSION' => 'PHP version',
+    'AUDIT_LIBRARY_VERSIONS' => 'Bundled library versions',
+    'AUDIT_ISSUES' => 'Findings',
+    'AUDIT_RECOMMENDATION' => 'Recommendation',
+    'AUDIT_COMMAND' => 'Search command',
+    'AUDIT_NO_ISSUES' => 'No compatibility issues found.',
+    'AUDIT_SCAN_AGAIN' => 'Run scan',
+    'AUDIT_FILE' => 'File',
+    'AUDIT_LINE' => 'Line',
+    'AUDIT_SEVERITY' => 'Severity',
+    'AUDIT_RULE' => 'Check',
+    'AUDIT_FOUND' => 'Occurrences',
+    'AUDIT_MASS_FIX_NOTE' => 'Commands are for reference only. Check each occurrence before applying a mass replacement.',
+
     /* general */
     'SETTINGS_SITE_LANGUAGE_CODE'=>'en_GB',
     'WIKI_URL' => 'http://majordomohome.com/',

@@ -10,6 +10,24 @@
 
 $dictionary = array(
 
+    /* compatibility audit */
+    'AUDIT_TITLE' => 'Аудит совместимости скриптов',
+    'AUDIT_DESCRIPTION' => 'Проверка пользовательских скриптов на совместимость с текущими версиями PHP, JavaScript и библиотек. Только чтение файлов.',
+    'AUDIT_ENVIRONMENT' => 'Текущее окружение',
+    'AUDIT_PHP_VERSION' => 'Версия PHP',
+    'AUDIT_LIBRARY_VERSIONS' => 'Версии встроенных библиотек',
+    'AUDIT_ISSUES' => 'Замечания',
+    'AUDIT_RECOMMENDATION' => 'Рекомендация',
+    'AUDIT_COMMAND' => 'Команда поиска',
+    'AUDIT_NO_ISSUES' => 'Проблем совместимости не найдено.',
+    'AUDIT_SCAN_AGAIN' => 'Повторить проверку',
+    'AUDIT_FILE' => 'Файл',
+    'AUDIT_LINE' => 'Строка',
+    'AUDIT_SEVERITY' => 'Важность',
+    'AUDIT_RULE' => 'Проверка',
+    'AUDIT_FOUND' => 'Найдено',
+    'AUDIT_MASS_FIX_NOTE' => 'Команды приведены для справки. Перед массовой заменой проверьте каждое вхождение.',
+
     /* general */
     'SETTINGS_SITE_LANGUAGE_CODE' => 'ru_RU',
     'WIKI_URL' => 'https://ru.majordomohome.com/',
