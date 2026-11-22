@@ -7,11 +7,16 @@
     position: relative;
     height: 22px;
     margin: 4px 15px 8px;
-    display: flex;
+    display: none;
     align-items: flex-start;
     justify-content: space-around;
     pointer-events: none;
     overflow: hidden;
+}
+
+/* shown only during the New Year season */
+body[data-holiday="1"] .mj-holiday {
+    display: flex;
 }
 
 /* garland wire */
