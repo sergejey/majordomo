@@ -1,0 +1,79 @@
+/*
+ * Free Font Awesome as a drop-in replacement for Bootstrap 3 glyphicons.
+ * Existing <i class="glyphicon glyphicon-..."> markup keeps working: the
+ * glyph is drawn from the free Font Awesome 7 font instead of the retired
+ * Glyphicons Halflings font.
+ */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css");
+
+.glyphicon,
+.glyphicon::before {
+    font-family: "Font Awesome 7 Free" !important;
+    font-weight: 900 !important;
+    font-style: normal;
+}
+
+.glyphicon::before {
+    content: "\f015";
+}
+
+.glyphicon-align-justify::before { content: "\f0c9"; }
+.glyphicon-arrow-down::before { content: "\f063"; }
+.glyphicon-arrow-right::before { content: "\f061"; }
+.glyphicon-arrow-up::before { content: "\f062"; }
+.glyphicon-book::before { content: "\f02d"; }
+.glyphicon-bullhorn::before { content: "\f0a1"; }
+.glyphicon-chevron-right::before { content: "\f054"; }
+.glyphicon-cloud-download::before { content: "\f0ed"; }
+.glyphicon-cog::before { content: "\f013"; }
+.glyphicon-copy::before { content: "\f0c5"; }
+.glyphicon-dashboard::before { content: "\f625"; }
+.glyphicon-download::before { content: "\f019"; }
+.glyphicon-download-alt::before { content: "\f019"; }
+.glyphicon-edit::before { content: "\f303"; }
+.glyphicon-exclamation-sign::before { content: "\f06a"; }
+.glyphicon-export::before { content: "\f08b"; }
+.glyphicon-eye-close::before { content: "\f070"; }
+.glyphicon-eye-open::before { content: "\f06e"; }
+.glyphicon-filter::before { content: "\f0b0"; }
+.glyphicon-flash::before { content: "\e0b7"; }
+.glyphicon-floppy-disk::before { content: "\f0c7"; }
+.glyphicon-floppy-open::before { content: "\f07c"; }
+.glyphicon-floppy-remove::before { content: "\f1f8"; }
+.glyphicon-floppy-saved::before { content: "\f0c7"; }
+.glyphicon-folder-open::before { content: "\f07c"; }
+.glyphicon-globe::before { content: "\f0ac"; }
+.glyphicon-hdd::before { content: "\f0a0"; }
+.glyphicon-home::before { content: "\f015"; }
+.glyphicon-info-sign::before { content: "\f05a"; }
+.glyphicon-link::before { content: "\f0c1"; }
+.glyphicon-lock::before { content: "\f023"; }
+.glyphicon-log-in::before { content: "\f2f6"; }
+.glyphicon-log-out::before { content: "\f2f5"; }
+.glyphicon-minus-sign::before { content: "\f056"; }
+.glyphicon-ok::before { content: "\f00c"; }
+.glyphicon-ok-sign::before { content: "\f058"; }
+.glyphicon-pause::before { content: "\f04c"; }
+.glyphicon-pencil::before { content: "\f303"; }
+.glyphicon-play::before { content: "\f04b"; }
+.glyphicon-play-circle::before { content: "\f144"; }
+.glyphicon-plus::before { content: "\2b"; }
+.glyphicon-question-sign::before { content: "\f059"; }
+.glyphicon-refresh::before { content: "\f2f9"; }
+.glyphicon-remove::before { content: "\f00d"; }
+.glyphicon-remove-circle::before { content: "\f057"; }
+.glyphicon-resize-horizontal::before { content: "\f07e"; }
+.glyphicon-screenshot::before { content: "\f05b"; }
+.glyphicon-search::before { content: "\f002"; }
+.glyphicon-send::before { content: "\f1d8"; }
+.glyphicon-share::before { content: "\f1e0"; }
+.glyphicon-star::before { content: "\f005"; }
+.glyphicon-stats::before { content: "\f080"; }
+.glyphicon-stop::before { content: "\f04d"; }
+.glyphicon-th::before { content: "\f0ce"; }
+.glyphicon-th-large::before { content: "\f0ce"; }
+.glyphicon-th-list::before { content: "\f00b"; }
+.glyphicon-trash::before { content: "\f1f8"; }
+.glyphicon-usd::before { content: "\24"; }
+.glyphicon-user-plus::before { content: "\f234"; }
+.glyphicon-wrench::before { content: "\f0ad"; }
