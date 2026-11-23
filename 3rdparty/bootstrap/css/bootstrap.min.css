@@ -229,3 +229,15 @@ span[style*="color: lightgray"] {
 #main-content span[id^="statusUpdateTitle_"] i {
 	color: #6a6a6a !important;
 }
+
+/* Notification badges: keep the number readable in every theme. */
+.badge[class*="alert-"] {
+	color: #ffffff !important;
+}
+.badge.alert-success { background-color: #2e7d32 !important; }
+.badge.alert-info    { background-color: #2a6a9c !important; }
+.badge.alert-warning { background-color: #a85f00 !important; }
+.badge.alert-danger,
+.badge.alert-error   { background-color: #b52b27 !important; }
+.badge.alert-primary,
+.badge.alert-default { background-color: #2f6f9f !important; }
