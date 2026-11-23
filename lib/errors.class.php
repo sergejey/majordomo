@@ -96,7 +96,15 @@ FF;
             echo $content;
         }
         //sendmail("errors@" . PROJECT_DOMAIN, PROJECT_BUGTRACK, "Error reporting: $script", $description);
-        if ($stop) exit;
+        if ($stop) {
+            // keep the reason visible in cycle_stop (stdout of cycles goes to /dev/null)
+            static $rememberingCrash = false;
+            if (!$rememberingCrash) {
+                $rememberingCrash = true; // saveCycleToCache() uses SQL and may fail again
+                majordomoRememberCycleCrash('custom_error: ' . strip_tags(preg_replace('/<br\s*\/?>/i', ' ', (string)$description)));
+            }
+            exit;
+        }
     }
 
 }
