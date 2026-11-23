@@ -10,6 +10,11 @@
 
 $dictionary = array (
 
+    /* hardcoded template strings */
+    'PLAY_ON' => 'Відтворити на:',
+    'ERROR_SENDING_REQUEST' => 'Помилка надсилання запиту',
+    'NO_DATA' => 'Немає даних',
+
     /* general */
     'SETTINGS_SITE_LANGUAGE_CODE' => 'uk_UA',
     'WIKI_URL' => 'https://majordomohome.com/',
