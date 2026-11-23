@@ -469,7 +469,7 @@ function runScriptSafe($id, $params = 0)
         }
         $raiseEvent = isset($params['raiseEvent']) ? $params['raiseEvent'] : '';
         unset($params['raiseEvent']);
-        unset($params['r_s_m']);
+        unset($params['r_s_s']);
         unset($params['m_c_s']);
         $current_call .= '.' . md5(json_encode($params));
     }
