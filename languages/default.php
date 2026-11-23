@@ -10,6 +10,10 @@
 
 $dictionary = array(
 
+    /* hardcoded template strings */
+    'PLAY_ON' => 'Play on:',
+    'ERROR_SENDING_REQUEST' => 'Error sending request',
+
     /* general */
     'SETTINGS_SITE_LANGUAGE_CODE'=>'en_GB',
     'WIKI_URL' => 'http://majordomohome.com/',
