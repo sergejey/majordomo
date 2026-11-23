@@ -68,6 +68,12 @@ if (!defined('SETTINGS_SITE_TIMEZONE')) {
 ini_set('date.timezone', SETTINGS_SITE_TIMEZONE);
 date_default_timezone_set(SETTINGS_SITE_TIMEZONE);
 
+// New Year decoration window: 25 December - 15 January (site timezone).
+if (!defined('MJ_HOLIDAY_SEASON')) {
+    $mj_holiday_day = (int)date('nd');
+    Define('MJ_HOLIDAY_SEASON', (($mj_holiday_day >= 1225) || ($mj_holiday_day <= 115)) ? 1 : 0);
+}
+
 function timezone_offset_string($offset)
 {
     return sprintf("%s%02d:%02d", ($offset >= 0) ? '+' : '-', abs(intdiv($offset, 3600)), abs(intdiv($offset % 3600, 60)));
