@@ -185,6 +185,7 @@ class objects extends module
                 SQLInsert('pvalues', $p_value);
             }
         }
+        clearCacheData('P:');
 
         $pvalues = SQLSelect("SELECT * FROM pvalues WHERE OBJECT_ID='" . $id . "'");
         $total = count($pvalues);
@@ -734,7 +735,8 @@ class objects extends module
         $cached_name = 'P:' . $class_id . '.' . $object_id . '.' . $name;
         $cached_value = checkFromCache($cached_name);
         if ($cached_value !== false) {
-            return $cached_value;
+            // '0' means the property does not exist (see below).
+            return $cached_value === '0' ? false : $cached_value;
         }
 
         $rec = SQLSelectOne("SELECT ID FROM properties WHERE OBJECT_ID='" . (int)$object_id . "' AND TITLE = '" . DBSafe($name) . "'");
@@ -750,6 +752,7 @@ class objects extends module
                 return $props[$i]['ID'];
             }
         }
+        saveToCache($cached_name, '0');
         return false;
     }
 
@@ -922,6 +925,12 @@ class objects extends module
 
         startMeasure('getPropertyByName');
         $id = $this->getPropertyByName($property, $this->class_id, $this->id);
+        if (!$id) {
+            // A third-party module may have inserted the property directly while
+            // our negative result was cached: re-check without the cache.
+            deleteFromCache('P:' . $this->class_id . '.' . $this->id . '.' . $property);
+            $id = $this->getPropertyByName($property, $this->class_id, $this->id);
+        }
         endMeasure('getPropertyByName');
         $old_value = '';
 
@@ -1020,6 +1029,7 @@ class objects extends module
             $prop['OBJECT_ID'] = $this->id;
             $prop['TITLE'] = $property;
             $prop['ID'] = SQLInsert('properties', $prop);
+            clearCacheData('P:');
 
             $v['PROPERTY_NAME'] = $this->object_title . '.' . $property;
             $v['PROPERTY_ID'] = $prop['ID'];
