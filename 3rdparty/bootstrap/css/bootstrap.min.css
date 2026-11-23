@@ -154,6 +154,13 @@ a:focus {
 .badge {
 	background-color: #666666;
 }
+/* Left menu hover/focus: restored from the previous local build (#1319 follow-up). */
+.leftmenutab:hover,
+.leftmenutab:focus {
+	text-decoration: none;
+	background-color: #4792d1;
+	color: white;
+}
 .nav-list > .active > a,
 .nav-list > .active > a:hover,
 .nav-list > .active > a:focus,
