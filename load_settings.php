@@ -197,3 +197,12 @@ if ($home_network != ''
         }
     }
 }
+
+// One-time post-update database migrations. Safe to run on every request:
+// applied migration ids are stored in the settings table.
+if (!defined('MJ_SKIP_MIGRATIONS') && is_file(ROOT . 'lib/mjd_migrations.php')) {
+    include_once(ROOT . 'lib/mjd_migrations.php');
+    if (function_exists('mjd_run_migrations')) {
+        mjd_run_migrations();
+    }
+}
