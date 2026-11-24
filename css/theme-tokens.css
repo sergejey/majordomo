@@ -27,8 +27,8 @@
 	--mj-color-divider: #999999;
 	--mj-color-overlay-bar: rgba(255, 255, 255, 0.60);
 	--mj-color-inset-highlight: rgba(255, 255, 255, 0.1);
-	/* Logo: darkened brand blue for adequate contrast on light surfaces (5.1:1). */
-	--mj-logo-color: #26648f;
+	/* Brand blue from the original raster logo: 3.3:1 on light chrome (WCAG 1.4.11). */
+	--mj-logo-color: #4792d1;
 	/* CodeMirror dialog: these editors are dark regardless of the UI theme. */
 	--mj-editor-dialog-bg: #2b2b2b;
 	--mj-editor-dialog-fg: #e6e6e6;
@@ -53,6 +53,6 @@
 	--mj-color-divider: #aaaaaa;
 	--mj-color-overlay-bar: rgba(0, 0, 0, 0.60);
 	--mj-color-inset-highlight: rgba(255, 255, 255, 0.04);
-	/* Logo: lighter brand blue for contrast on dark surfaces (6.9:1). */
-	--mj-logo-color: #8ac4f0;
+	/* Same brand blue: 6.3:1 on dark chrome, so the logo stays recognizable. */
+	--mj-logo-color: #4792d1;
 }
