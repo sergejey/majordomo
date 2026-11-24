@@ -32,7 +32,34 @@
 	/* CodeMirror dialog: these editors are dark regardless of the UI theme. */
 	--mj-editor-dialog-bg: #2b2b2b;
 	--mj-editor-dialog-fg: #e6e6e6;
-	--mj-editor-dialog-border: #444444;}
+	--mj-editor-dialog-border: #444444;
+	/* Device widget tokens. Fallbacks keep custom themes that predate them working. */
+	--mj-widget-surface: var(--mj-color-surface, #f5f5f5);
+	--mj-widget-fg: var(--mj-color-fg, #333333);
+	--mj-widget-muted: var(--mj-color-muted, #6a6a6a);
+	--mj-widget-border: var(--mj-color-border, #dddddd);
+	--mj-widget-radius: 6px;
+	--mj-widget-padding: 10px;
+	--mj-widget-mini-padding: 5px;
+	--mj-widget-gap: 10px;
+	--mj-widget-max-width: 350px;
+	--mj-widget-mini-width: 150px;
+	--mj-widget-compact-width: 75px;
+	--mj-widget-icon-size: 40px;
+	--mj-widget-touch: 44px;
+	--mj-widget-header-size: 18px;
+	--mj-widget-details-size: 11px;
+	--mj-widget-offline-bg: #eeeeee;
+	--mj-widget-offline-fg: #555555;
+	--mj-widget-offline-border: #cccccc;
+	--mj-widget-on-bg: #fff3cd;
+	--mj-widget-alert-bg: #c62828;
+	--mj-widget-pressed-bg: #c6ef4a;
+	--mj-widget-status-text: #dddddd;
+	--mj-widget-status-muted: #666666;
+	--mj-widget-status-ok: #2e7d32;
+	--mj-widget-status-info: #1565c0;
+}
 
 :root[data-theme="dark"] {
 	/* Values match the dark bootstrap admin theme and the existing dark editor dialog. */
@@ -54,4 +81,19 @@
 	--mj-color-inset-highlight: rgba(255, 255, 255, 0.04);
 	/* Same brand blue: 6.3:1 on dark chrome, so the logo stays recognizable. */
 	--mj-logo-color: #4792d1;
+	/* Widget states on dark surfaces. */
+	--mj-widget-surface: var(--mj-color-surface, #2b2b2b);
+	--mj-widget-fg: var(--mj-color-fg, #e6e6e6);
+	--mj-widget-muted: var(--mj-color-muted, #aaaaaa);
+	--mj-widget-border: var(--mj-color-border, #444444);
+	--mj-widget-offline-bg: #3a3a3a;
+	--mj-widget-offline-fg: #d0d0d0;
+	--mj-widget-offline-border: #555555;
+	--mj-widget-on-bg: #6b5310;
+	--mj-widget-alert-bg: #8e2f2f;
+	--mj-widget-pressed-bg: #9ecf15;
+	--mj-widget-status-text: #e6e6e6;
+	--mj-widget-status-muted: #a0a0a0;
+	--mj-widget-status-ok: #9ecf15;
+	--mj-widget-status-info: #8ac4f0;
 }
