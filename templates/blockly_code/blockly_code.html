@@ -154,6 +154,16 @@ $(function() {
 		height: auto !important;
 	}
 [#endif#]
+	.mj-run-btn { color: #26648f; text-decoration: none; font-weight: bold; margin-right: 8px; }
+	.mj-run-btn:hover { text-decoration: underline; }
+	#mj-run-fab { display: none; position: fixed; bottom: 14px; right: 14px; z-index: 10001; padding: 10px 14px; background: #26648f; color: #fff; border-radius: 22px; box-shadow: 0 2px 8px rgba(0,0,0,.25); text-decoration: none; }
+	#mj-run-popup { position: fixed; z-index: 10002; top: 50%; left: 50%; transform: translate(-50%,-50%); width: min(720px, calc(100vw - 32px)); max-height: 70vh; display: flex; flex-direction: column; background: var(--mj-color-bg,#fff); color: var(--mj-color-fg,#333); border: 1px solid var(--mj-color-border,#ddd); border-radius: 8px; box-shadow: 0 12px 40px rgba(0,0,0,.3); opacity: 1; transition: opacity .18s ease, transform .18s ease; }
+	#mj-run-popup.hiding { opacity: 0; transform: translate(-50%,-48%); }
+	#mj-run-popup .mj-run-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--mj-color-border,#ddd); font-weight: bold; }
+	#mj-run-popup .mj-run-close { cursor: pointer; border: 0; background: transparent; font-size: 20px; line-height: 1; color: inherit; }
+	#mj-run-popup pre { margin: 0; padding: 12px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; }
+	#mj-run-popup.mj-error { border-color: #b52b27; }
+	@media (max-width: 767px) { #mj-run-fab { display: block; } }
 </style>
 
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/edit/matchbrackets.js"></script>
@@ -176,6 +186,8 @@ $(function() {
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/dialog.js"></script>
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/searchcursor.js"></script>
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/display/panel.js"></script>
+
+<a href="#" id="mj-run-fab" onclick="return runCodeQuick();">▶ <#LANG_CODEEDITOR_RUN#></a>
 
 <script language="javascript">
 var editor;
@@ -200,7 +212,7 @@ function makePanel(where) {
 		panels[node.id].clear();
 	});
 	label = node.appendChild(document.createElement("span"));
-	label.innerHTML = "<#LANG_CODEEDITOR_TIPS#>";
+	label.innerHTML = "<a href='#' id='mj-run-link' class='mj-run-btn' onclick='return runCodeQuick();'>▶ <#LANG_CODEEDITOR_RUN#></a> <#LANG_CODEEDITOR_TIPS#>";
 	return node;
 }
 function addPanel(where) {
@@ -221,6 +233,79 @@ function switchFullscreen() {
 	editor.setOption("fullScreen", !editor.getOption("fullScreen"));
 }
 
+function showRunPopup(text, isError, loading) {
+	var popup = document.getElementById('mj-run-popup');
+	if (!popup) {
+		popup = document.createElement('div');
+		popup.id = 'mj-run-popup';
+		var head = document.createElement('div');
+		head.className = 'mj-run-head';
+		var title = document.createElement('span');
+		title.textContent = '<#LANG_CODEEDITOR_RESULT#>';
+		var close = document.createElement('button');
+		close.type = 'button';
+		close.className = 'mj-run-close';
+		close.setAttribute('aria-label', '<#LANG_CODEEDITOR_CLOSE#>');
+		close.textContent = '×';
+		close.onclick = function () { closeRunPopup(); };
+		head.appendChild(title);
+		head.appendChild(close);
+		var pre = document.createElement('pre');
+		pre.className = 'mj-run-output';
+		popup.appendChild(head);
+		popup.appendChild(pre);
+		document.body.appendChild(popup);
+	}
+	popup.className = isError ? 'mj-error' : '';
+	var pre = popup.querySelector('.mj-run-output');
+	pre.textContent = text || '<#LANG_CODEEDITOR_NO_OUTPUT#>';
+	popup.setAttribute('data-loading', loading ? '1' : '0');
+}
+function closeRunPopup(immediate) {
+	var popup = document.getElementById('mj-run-popup');
+	if (!popup) return;
+	if (immediate) { document.body.removeChild(popup); return; }
+	popup.classList.add('hiding');
+	setTimeout(function () {
+		var current = document.getElementById('mj-run-popup');
+		if (current && current.classList.contains('hiding')) document.body.removeChild(current);
+	}, 180);
+}
+function runCodeQuick() {
+	if (typeof editor === 'undefined') return false;
+	closeRunPopup(true);
+	showRunPopup('<#LANG_CODEEDITOR_RUNNING#>', false, true);
+	var idField = $('input[name*="id"]').first();
+	var mdField = $('input[name*="md"]').eq(2);
+	$.ajax({
+		url: ROOTHTML + 'modules/blockly_code/run_code.php',
+		type: 'POST',
+		dataType: 'json',
+		data: {
+			code: editor.getValue(),
+			type: '[#TYPE#]',
+			md: mdField.length ? mdField.val() : 'scripts',
+			id: idField.length ? idField.val() : ''
+		}
+	}).done(function (response) {
+		if (response && response.status === 'ok') {
+			showRunPopup(response.output, false, false);
+		} else {
+			var text = (response && response.error ? response.error + "\n" : '') + (response && response.output ? response.output : '<#LANG_CODEEDITOR_ERROR#>');
+			showRunPopup(text, true, false);
+		}
+	}).fail(function (xhr) {
+		showRunPopup(xhr.status + ' ' + xhr.statusText, true, false);
+	});
+	return false;
+}
+document.addEventListener('keydown', function (e) {
+	if (e.keyCode === 27 && document.getElementById('mj-run-popup')) {
+		e.preventDefault();
+		e.stopPropagation();
+		closeRunPopup();
+	}
+}, true);
 function CtrlSSave() {
 	[#if SETTINGS_CODEEDITOR_AUTOSAVE != '0'#]ajaxAutosave('save');[#endif#]
 	$("[name='subm']").click();
@@ -262,7 +347,8 @@ $(document).ready(function(){
 			"F11": function(cm) {
 				switchFullscreen();
 			},
-			"Ctrl-S": function(instance) {
+			"Ctrl-Enter": function(cm) { runCodeQuick(); },
+"Ctrl-S": function(instance) {
 				CtrlSSave();
 				return;
 			},

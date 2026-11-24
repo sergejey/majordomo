@@ -1579,7 +1579,7 @@ $dictionary = array(
 	'CODEEDITOR_RESTORE' => 'Восстановить',
 	'CODEEDITOR_RESTORE_CODE' => 'Восстановить код',
 	'CODEEDITOR_REMOVE_ME' => 'Удалить',
-	'CODEEDITOR_TIPS' => 'Подсказка: <a href=\'#\' onClick=\'return switchFullscreen();\'>F11</a> — полноэкранный режим; <a href=\'#\' onclick=\'return CtrlSSave();\'>Ctrl+S</a> — сохранить код.',
+	'CODEEDITOR_TIPS' => 'Подсказка: <a href=\'#\' onClick=\'return switchFullscreen();\'>F11</a> — полноэкранный режим; <a href=\'#\' onclick=\'return CtrlSSave();\'>Ctrl+S</a> — сохранить; <a href=\'#\' onclick=\'return runCodeQuick();\'>Ctrl+Enter</a> — выполнить.',
 	'CODEEDITOR_CLOSE_BTN' => 'Закрыть',
 	'CODEEDITOR_CREATE' => 'Создан',
 	'CODEEDITOR_AUTOSAVE' => 'Автосохранение кода',
@@ -2102,3 +2102,11 @@ foreach ($dictionary as $k => $v) {
         @define('LANG_' . $k, $v);
     }
 }
+
+if (!defined('LANG_CODEEDITOR_RUN')) define('LANG_CODEEDITOR_RUN', 'Выполнить');
+if (!defined('LANG_CODEEDITOR_RESULT')) define('LANG_CODEEDITOR_RESULT', 'Результат выполнения');
+if (!defined('LANG_CODEEDITOR_CLOSE')) define('LANG_CODEEDITOR_CLOSE', 'Закрыть');
+if (!defined('LANG_CODEEDITOR_NO_OUTPUT')) define('LANG_CODEEDITOR_NO_OUTPUT', 'Нет вывода');
+if (!defined('LANG_CODEEDITOR_RUNNING')) define('LANG_CODEEDITOR_RUNNING', 'Выполнение...');
+if (!defined('LANG_CODEEDITOR_ERROR')) define('LANG_CODEEDITOR_ERROR', 'Ошибка выполнения');
+if (!defined('LANG_CODEEDITOR_ONLY_PHP')) define('LANG_CODEEDITOR_ONLY_PHP', 'На сервере можно выполнить только PHP-код.');
