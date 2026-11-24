@@ -440,8 +440,6 @@ label.checkbox {
 	background-color: #b52b27;
 	color: #ffffff;
 }
-<<<<<<< HEAD
-=======
 
 /* Links inside the legacy grey cells need a bit more contrast (pvalues page). */
 :root:not([data-theme="dark"]) #main-content td[bgcolor="#CCCCCC"] a {
@@ -495,4 +493,3 @@ label.checkbox {
 		min-height: 32px;
 	}
 }
->>>>>>> origin/alpha
