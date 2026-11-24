@@ -1,8 +1,12 @@
 <?php
 
-if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES==1) return;
+if (defined('DISABLE_SIMPLE_DEVICES') && DISABLE_SIMPLE_DEVICES == 1) return;
 
-$rooms = getObjectsByClass("Rooms");
+$rooms = getObjectsByClass('Rooms');
+if (!is_array($rooms)) {
+    $rooms = array();
+}
+
 $total = count($rooms);
 for ($i = 0; $i < $total; $i++) {
     $rooms[$i]['room'] = getGlobal($rooms[$i]['TITLE'] . '.Title');
@@ -17,31 +21,29 @@ for ($i = 0; $i < $total; $i++) {
     $rooms[$i]['diff'] = time() - $rooms[$i]['time'];
 }
 
-usort($rooms, function ($a,$b) {
+usort($rooms, function ($a, $b) {
     if ($a['diff'] == $b['diff']) {
         return 0;
     }
     return ($a['diff'] < $b['diff']) ? -1 : 1;
 });
 
-if (getGlobal('NobodyHomeMode.active')) {
-    if (!empty($rooms[0])) {
-        $somebodyHomeText = LANG_DEVICES_ROOMS_NOBODYHOME." ".LANG_DEVICES_ROOMS_ACTIVITY." " . date('H:i', $rooms[0]['time']) . " (" . $rooms[0]['room'] . ")";
-    } else {
-        $somebodyHomeText = LANG_DEVICES_ROOMS_NOBODYHOME . '.';
-    }
+if (!$total) {
+    $somebodyHomeText = LANG_DEVICES_ROOMS_NOBODYHOME . '.';
+} elseif (getGlobal('NobodyHomeMode.active')) {
+    $somebodyHomeText = LANG_DEVICES_ROOMS_NOBODYHOME . ' ' . LANG_DEVICES_ROOMS_ACTIVITY . ' '
+        . date('H:i', $rooms[0]['time']) . ' (' . $rooms[0]['room'] . ')';
 } else {
     $res_rooms = array();
     for ($i = 0; $i < $total; $i++) {
         if ($rooms[$i]['active']) {
-            $res_rooms[] = $rooms[$i]['room'].' ('.getPassedText($rooms[$i]['time']).')';
+            $res_rooms[] = $rooms[$i]['room'] . ' (' . getPassedText($rooms[$i]['time']) . ')';
         }
     }
-    $somebodyHomeText = LANG_DEVICES_ROOMS_SOMEBODYHOME.'.';
-    if (count($res_rooms)>0) {
-        $somebodyHomeText.=" ". LANG_DEVICES_ROOMS_ACTIVITY . ": " . implode(", ", $res_rooms);
+    $somebodyHomeText = LANG_DEVICES_ROOMS_SOMEBODYHOME . '.';
+    if (count($res_rooms) > 0) {
+        $somebodyHomeText .= ' ' . LANG_DEVICES_ROOMS_ACTIVITY . ': ' . implode(', ', $res_rooms);
     }
-
 }
 
 echo $somebodyHomeText;
