@@ -48,6 +48,11 @@
 	#navFrame {
 		max-width: 100%;
 	}
+
+	/* On phones the menu is a drawer: the home page should be visible first. */
+	#leftPanel {
+		display: none;
+	}
 }
 
 @media (max-width: 360px) {
