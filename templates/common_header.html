@@ -4,6 +4,30 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 
+<script type="text/javascript">
+	// Set the theme before stylesheets load to avoid a flash of the wrong palette.
+	(function () {
+		var match = document.cookie.match(/(?:^|;\s*)theme=([^;]+)/);
+		var theme = match ? match[1] : '<#SETTINGS_THEME#>';
+		try { theme = decodeURIComponent(theme); } catch (e) { /* keep raw value */ }
+		if (theme !== 'dark' && theme !== 'light') theme = 'light';
+		document.documentElement.setAttribute('data-theme', theme);
+
+		window.MJDTheme = {
+			set: function (value) {
+				theme = value === 'dark' ? 'dark' : 'light';
+				document.documentElement.setAttribute('data-theme', theme);
+				document.cookie = 'theme=' + theme + '; path=/; max-age=' + (180 * 24 * 60 * 60);
+				var link = document.getElementById('theme');
+				if (link) {
+					link.href = '<#ROOTHTML#>3rdparty/bootstrap/css/' +
+						(theme === 'dark' ? 'bootstrap_dark_admin.css' : 'bootstrap.min.css');
+				}
+			}
+		};
+	})();
+</script>
+
 <link rel="shortcut icon" href="<#ROOTHTML#>favicon.ico" type="image/x-icon"/>
 <link href="<#ROOTHTML#>css/devices.css?v=22-01-03"  rel="stylesheet" type="text/css"/>
 
@@ -15,11 +39,13 @@
 [#else#]
 <link rel="stylesheet" id="theme" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap_dark_admin.css" type="text/css">
 [#endif#]
+<link rel="stylesheet" href="<#ROOTHTML#>css/theme-tokens.css" type="text/css">
 
+<link rel="stylesheet" href="<#ROOTHTML#>css/fontawesome-compat.css" type="text/css">
 <script type="text/javascript" src="<#ROOTHTML#>3rdparty/bootstrap/js/bootstrap.min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>3rdparty/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css"/>
-<script type="text/javascript" src="<#ROOTHTML#>3rdparty/moment/moment.min.js"></script>
+<script type="text/javascript" src="<#ROOTHTML#>3rdparty/moment/moment-2.31.0.min.js"></script>
 <script type="text/javascript" src="<#ROOTHTML#>3rdparty/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
 <script type="text/javascript" src="<#ROOTHTML#>3rdparty/duration-picker/html-duration-picker.min.js"></script>
 

@@ -117,13 +117,13 @@ body, html {
 					if (this.id == 'theme') return;
 					var href = $(this).attr('href');
 					if (dark) {
-						href = href.replace('bootstrap.min.css', 'bootstrap_dark.min.css').replace('ui-lightness', 'ui-darkness').replace('stl_light.css', 'stl_dark.css');
-					} else {
+						href = href.replace('bootstrap.min.css', 'bootstrap_dark.min.css').replace('bootstrap.min.css', 'bootstrap_dark.min.css').replace('ui-lightness', 'ui-darkness').replace('stl_light.css', 'stl_dark.css');					} else {
 						href = href.replace('bootstrap_dark.min.css', 'bootstrap.min.css').replace('ui-darkness', 'ui-lightness').replace('stl_dark.css', 'stl_light.css');
 					}
 					$(this).attr('href', href);
 				});
 				$('.full-size').toggleClass('theme-dark', dark);
+				document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
 				$('body').css('background-color', dark ? '#222222' : 'white');
 			});
 			</script>

@@ -345,7 +345,9 @@ function SQLMakeTableDump($dump_file, $table_name)
 
 function SQLRestoreDBDump($dump_file)
 {
-    if (IsWindowsOS())
+    if (defined('PATH_TO_MYSQL'))
+        $mysqlCmdPath = PATH_TO_MYSQL;
+    elseif (IsWindowsOS())
         $mysqlCmdPath = SERVER_ROOT . "/server/mysql/bin/mysql";
     else
         $mysqlCmdPath = "mysql";

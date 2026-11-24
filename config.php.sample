@@ -37,6 +37,8 @@ Define('ROOTHTML', "/");                 // Веб-корень (путь в URL
 Define('PATH_TO_PHP', 'php');               // Команда/путь к интерпретатору PHP для фоновых циклов | Command/path to PHP interpreter for background cycles
 Define('PATH_TO_MYSQLDUMP', "mysqldump");   // Команда/путь к mysqldump для резервных копий | Command/path to mysqldump for backups
 Define('DB_BACKUP_IGNORE_TABLES', ''); // Таблицы, исключаемые из ВСЕХ дампов БД (через запятую) | Tables skipped in every DB dump. Leave empty: periodic_db_save.php already excludes phistory/cached_values per call, full backups keep them.
+Define('PATH_TO_MYSQL', "mysql");           // Команда/путь к mysql для восстановления БД | Command/path to mysql client for restore
+// Define('PATH_TO_MYSQL', "c:/_majordomo/mysql/bin/mysql.exe"); // пример для Windows | Windows example
 //Define('PATH_TO_FFMPEG', 'avconv');       // Команда/путь к ffmpeg/avconv для мультимедиа | Command/path to ffmpeg/avconv for multimedia
 //Define('PYTHON_PATH', 'python');          // Команда/путь к Python | Command/path to Python
 //Define('AUDIO_PLAYER', 'omxplayer --no-osd'); // Команда системного аудиоплеера | System audio player command

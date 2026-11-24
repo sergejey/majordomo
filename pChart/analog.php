@@ -142,9 +142,14 @@ bgcolor= - background graphics (-*)
  include_once("./lib/loader.php");
  include_once(DIR_MODULES."application.class.php");
  include_once("./load_settings.php");
- include("./pChart/pData.class");   
- include("./pChart/pChart.class");  
+ include("./pChart/pData.class.php");   
+ include("./pChart/pChart.class.php");  
  
+function pchart_add_point($dataSet, $value, $serie)
+{
+    $dataSet->addPoints(is_array($value) ? $value : array($value), $serie);
+}
+
 //---------------------------- Settings 
 
  $settings = SQLSelect("SELECT NAME, VALUE FROM settings");
@@ -522,11 +527,11 @@ function filter02($val, $al, $fil) {
  
 //----- final 1
  
-   $DataSet->AddPoint($values,"Serie1");  
-   $DataSet->AddPoint($hours,"Serie0");  
+   pchart_add_point($DataSet, $values, "Serie1");  
+   pchart_add_point($DataSet, $hours, "Serie0");  
    } else {
-   $DataSet->AddPoint(0,"Serie1");
-   $DataSet->AddPoint(0,"Serie0");
+   pchart_add_point($DataSet, 0, "Serie1");
+   pchart_add_point($DataSet, 0, "Serie0");
   } //end if ($total>0)
 
 //---------------------------- Channel 2
@@ -553,7 +558,7 @@ function filter02($val, $al, $fil) {
   $all2 = count($values2);
   if ($c2fil01>0) {$values2=filter01($values2,$all2,$c2fil01);}
   if ($c2fil02>0) {$values2=filter02($values2,$all2,$c2fil02);}
-  $DataSet->AddPoint($values2,"Serie2");  
+  pchart_add_point($DataSet, $values2, "Serie2");  
   } //end if ($p2!='')
   
 //---------------------------- Channel 3
@@ -580,7 +585,7 @@ function filter02($val, $al, $fil) {
   $all3 = count($values3);
   if ($c3fil01>0) {$values3=filter01($values3,$all3,$c3fil01);}
   if ($c3fil02>0) {$values3=filter02($values3,$all3,$c3fil02);}
-  $DataSet->AddPoint($values3,"Serie3");  
+  pchart_add_point($DataSet, $values3, "Serie3");  
   } //end if ($p3!='')
   
 //---------------------------- Channel 4
@@ -607,7 +612,7 @@ function filter02($val, $al, $fil) {
   $all4 = count($values4);
   if ($c4fil01>0) {$values4=filter01($values4,$all4,$c4fil01);}
   if ($c4fil02>0) {$values4=filter02($values4,$all4,$c4fil02);}
-  $DataSet->AddPoint($values4,"Serie4");  
+  pchart_add_point($DataSet, $values4, "Serie4");  
   } //end if ($p4!='')
 
 //---------------------------- Channel 5
@@ -634,7 +639,7 @@ function filter02($val, $al, $fil) {
   $all5 = count($values5);
   if ($c5fil01>0) {$values5=filter01($values5,$all5,$c5fil01);}
   if ($c5fil02>0) {$values5=filter02($values5,$all5,$c5fil02);}
-  $DataSet->AddPoint($values5,"Serie5");  
+  pchart_add_point($DataSet, $values5, "Serie5");  
   } //end if ($p5!='')
 
 //---------------------------- Channel 6
@@ -661,7 +666,7 @@ function filter02($val, $al, $fil) {
   $all6 = count($values6);
   if ($c6fil01>0) {$values6=filter01($values6,$all6,$c6fil01);}
   if ($c6fil02>0) {$values6=filter02($values6,$all6,$c6fil02);}
-  $DataSet->AddPoint($values6,"Serie6");  
+  pchart_add_point($DataSet, $values6, "Serie6");  
   } //end if ($p6!='')
 
 //---------------------------- Channel 7
@@ -688,7 +693,7 @@ function filter02($val, $al, $fil) {
   $all7 = count($values7);
   if ($c7fil01>0) {$values7=filter01($values7,$all7,$c7fil01);}
   if ($c7fil02>0) {$values7=filter02($values7,$all7,$c7fil02);}
-  $DataSet->AddPoint($values7,"Serie7");  
+  pchart_add_point($DataSet, $values7, "Serie7");  
   } //end if ($p7!='')
 
 //---------------------------- Channel 8
@@ -715,7 +720,7 @@ function filter02($val, $al, $fil) {
   $all8 = count($values8);
   if ($c8fil01>0) {$values8=filter01($values8,$all8,$c8fil01);}
   if ($c8fil02>0) {$values8=filter02($values8,$all8,$c8fil02);}
-  $DataSet->AddPoint($values8,"Serie8");  
+  pchart_add_point($DataSet, $values8, "Serie8");  
   } //end if ($p8!='')
 
 //---------------------------- Channel 9
@@ -742,7 +747,7 @@ function filter02($val, $al, $fil) {
   $all9 = count($values9);
   if ($c9fil01>0) {$values9=filter01($values9,$all9,$c9fil01);}
   if ($c9fil02>0) {$values9=filter02($values9,$all9,$c9fil02);}
-  $DataSet->AddPoint($values9,"Serie9");  
+  pchart_add_point($DataSet, $values9, "Serie9");  
   } //end if ($p9!='')
   
 
@@ -762,7 +767,7 @@ function filter02($val, $al, $fil) {
    for($z=0; $z<$total_m; $z++){
      $values_middle[$z]=($values[$z]+$values2[$z])/2;
    } 
-   $DataSet->AddPoint($values_middle,"Serie10");
+   pchart_add_point($DataSet, $values_middle, "Serie10");
 } 
   
 //---------------------------- DataSet Series
@@ -772,10 +777,10 @@ function filter02($val, $al, $fil) {
    for($z=0; $z<$total_m; $z++){
      $values_z[$z]=0;
    } 
-   $DataSet->AddPoint($values_z,"Serie11");
+   pchart_add_point($DataSet, $values_z, "Serie11");
  }
 
- $DataSet->AddAllSeries();  
+ // pChart 2: series become drawable when points are added.  
  $DataSet->RemoveSerie("Serie0");  
  if ($p2=='') {$DataSet->RemoveSerie("Serie2");}
  
@@ -784,21 +789,22 @@ function filter02($val, $al, $fil) {
   $DataSet->RemoveSerie("Serie2");  
  }
  
- $DataSet->SetAbsciseLabelSerie("Serie0");  
- $DataSet->SetSerieName("24 hours","Serie1");  
+ $DataSet->setAbscissa("Serie0");  
+ $DataSet->setSerieDescription("24 hours","Serie1");  
 
 //---------------------------- Set X & Y axis units
   
  if ($unit) {
-    $DataSet->SetYAxisUnit($unit);
+    $DataSet->setAxisUnit(1, $unit);
  } else {
-     $DataSet->SetYAxisUnit("");  
+     $DataSet->setAxisUnit(1, "");  
    }
- $DataSet->SetXAxisUnit("");  
+ $DataSet->setAxisUnit(0, "");  
    
 //---------------------------- Create Object of pChart  
   
  $Test = new pChart($w,$h);  
+$Test->setDataSetObject($DataSet);
  
 //---------------------------- Set generic colors for one (first) channel
   
@@ -897,14 +903,14 @@ function filter02($val, $al, $fil) {
   
 //---------------------------- Title
   
- $Test->setFontProperties("./pChart/Fonts/tahoma.ttf",10);  
+ $Test->setLegacyFontProperties("./pChart/fonts/tahoma.ttf",10);  
  if ($_GET['title']) {
   $Test->drawTitle(100,15,$_GET['title'],150,150,150);
  } else { }
 
 //---------------------------- Font
 
- $Test->setFontProperties("./pChart/Fonts/tahoma.ttf",8);  
+ $Test->setLegacyFontProperties("./pChart/fonts/tahoma.ttf",8);  
   
 //---------------------------- Set GraphArea  
   
@@ -928,7 +934,7 @@ function filter02($val, $al, $fil) {
 
 //---------------------------- drawScale
 
- $Test->drawScale($DataSet->GetData(),$DataSet->GetDataDescription(),$scale,80,80,80,TRUE,0,2);
+ $Test->drawLegacyScale($DataSet->GetData(),array(),$scale,80,80,80,TRUE,0,2);
   
 //---------------------------- Grid  
 
@@ -965,17 +971,17 @@ function filter02($val, $al, $fil) {
 //---------------------------- Draw points  
 
  if ($_GET['points']=='1') {
-   $Test->drawPlotGraph($DataSet->GetData(),$DataSet->GetDataDescription(),$point); //plot
+   $Test->drawPlotGraph($DataSet->GetData(),array(),$point); //plot
  } 
  
 //---------------------------- Draw graphics 
  
- if       ($_GET['gtype']=='curve') {$Test->drawCubicCurve      ($DataSet->GetData(),$DataSet->GetDataDescription());
- } elseif ($_GET['gtype']=='bar')   {$Test->drawBarGraph        ($DataSet->GetData(),$DataSet->GetDataDescription(),FALSE);
- } elseif ($_GET['gtype']=='line')  {$Test->drawLineGraph       ($DataSet->GetData(),$DataSet->GetDataDescription());
- } elseif ($_GET['gtype']=='plot')  {$Test->drawPlotGraph       ($DataSet->GetData(),$DataSet->GetDataDescription(),$point);
- } elseif ($_GET['gtype']=='fline') {$Test->drawFilledLineGraph ($DataSet->GetData(),$DataSet->GetDataDescription(),20,FALSE);
- } elseif ($_GET['gtype']=='fcurve'){$Test->drawFilledCubicCurve($DataSet->GetData(),$DataSet->GetDataDescription(),0.1,20,FALSE);
+ if       ($_GET['gtype']=='curve') {$Test->drawCubicCurve      ($DataSet->GetData(),array());
+ } elseif ($_GET['gtype']=='bar')   {$Test->drawBarGraph        ($DataSet->GetData(),array(),FALSE);
+ } elseif ($_GET['gtype']=='line')  {$Test->drawLineGraph       ($DataSet->GetData(),array());
+ } elseif ($_GET['gtype']=='plot')  {$Test->drawPlotGraph       ($DataSet->GetData(),array(),$point);
+ } elseif ($_GET['gtype']=='fline') {$Test->drawFilledLineGraph ($DataSet->GetData(),array(),20,FALSE);
+ } elseif ($_GET['gtype']=='fcurve'){$Test->drawFilledCubicCurve($DataSet->GetData(),array(),0.1,20,FALSE);
  } else { }
 
  
@@ -989,16 +995,16 @@ function filter02($val, $al, $fil) {
          $r=$hours[$i];
        }
      }
-     $Test->setLabel($DataSet->GetData(),$DataSet->GetDataDescription(),"Serie1",$r,$n1,221,230,174);
+     $Test->setLabel($DataSet->GetData(),array(),"Serie1",$r,$n1,221,230,174);
    }
-   if ($p2!='' && $n2!="") {$Test->setLabel($DataSet->GetData(),$DataSet->GetDataDescription(),"Serie2",$r,$n2,221,230,174);}
-   if ($p3!='' && $n3!="") {$Test->setLabel($DataSet->GetData(),$DataSet->GetDataDescription(),"Serie3",$r,$n3,221,230,174);}
-   if ($p4!='' && $n4!="") {$Test->setLabel($DataSet->GetData(),$DataSet->GetDataDescription(),"Serie4",$r,$n4,221,230,174);}
-   if ($p5!='' && $n5!="") {$Test->setLabel($DataSet->GetData(),$DataSet->GetDataDescription(),"Serie5",$r,$n5,221,230,174);}
-   if ($p6!='' && $n6!="") {$Test->setLabel($DataSet->GetData(),$DataSet->GetDataDescription(),"Serie6",$r,$n6,221,230,174);}
-   if ($p7!='' && $n7!="") {$Test->setLabel($DataSet->GetData(),$DataSet->GetDataDescription(),"Serie7",$r,$n7,221,230,174);}
-   if ($p8!='' && $n8!="") {$Test->setLabel($DataSet->GetData(),$DataSet->GetDataDescription(),"Serie8",$r,$n8,221,230,174);}
-   if ($p9!='' && $n9!="") {$Test->setLabel($DataSet->GetData(),$DataSet->GetDataDescription(),"Serie9",$r,$n9,221,230,174);}
+   if ($p2!='' && $n2!="") {$Test->setLabel($DataSet->GetData(),array(),"Serie2",$r,$n2,221,230,174);}
+   if ($p3!='' && $n3!="") {$Test->setLabel($DataSet->GetData(),array(),"Serie3",$r,$n3,221,230,174);}
+   if ($p4!='' && $n4!="") {$Test->setLabel($DataSet->GetData(),array(),"Serie4",$r,$n4,221,230,174);}
+   if ($p5!='' && $n5!="") {$Test->setLabel($DataSet->GetData(),array(),"Serie5",$r,$n5,221,230,174);}
+   if ($p6!='' && $n6!="") {$Test->setLabel($DataSet->GetData(),array(),"Serie6",$r,$n6,221,230,174);}
+   if ($p7!='' && $n7!="") {$Test->setLabel($DataSet->GetData(),array(),"Serie7",$r,$n7,221,230,174);}
+   if ($p8!='' && $n8!="") {$Test->setLabel($DataSet->GetData(),array(),"Serie8",$r,$n8,221,230,174);}
+   if ($p9!='' && $n9!="") {$Test->setLabel($DataSet->GetData(),array(),"Serie9",$r,$n9,221,230,174);}
  }
  
 //---------------------------- Border
