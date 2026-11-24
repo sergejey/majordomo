@@ -923,7 +923,7 @@ class xray extends module
                         for ($iv = 0; $iv < $totalv; $iv++) {
                             $v = $pValues[$iv]['VALUE'];
 
-                            if ($v == '0') {
+                            if ((int)$v === 0) {
                                 $found[] = array("TITLE" => $pValues[$iv]['TITLE'], 'UPDATED' => $pValues[$iv]['UPDATED'], 'DESCRIPTION' => $pValues[$iv]['DESCRIPTION'], 'LOCATIONTITLE' => $pValues[$iv]['LOCATIONTITLE']);
                             }
 

@@ -23,7 +23,7 @@ $this->device_types = array(
         'DESCRIPTION' => 'General Devices Class',
         'PROPERTIES' => array(
             'status' => array('DESCRIPTION' => LANG_DEVICES_STATUS, 'KEEP_HISTORY' => 365, 'ONCHANGE' => 'statusUpdated', 'DATA_KEY' => 1),
-            'alive' => array('DESCRIPTION' => 'Alive'),
+            'alive' => array('DESCRIPTION' => 'Alive', '_CONFIG_DEFAULT' => 1),
             'aliveTimeout' => array('DESCRIPTION' => LANG_DEVICES_ALIVE_TIMEOUT, '_CONFIG_TYPE' => 'num', '_CONFIG_HELP' => 'SdAliveTimeout'),
             'linkedRoom' => array('DESCRIPTION' => 'LinkedRoom'),
             'updated' => array('DESCRIPTION' => 'Updated Timestamp'),
