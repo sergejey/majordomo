@@ -34,7 +34,7 @@ class GChromecast
 		$contextOptions = ['ssl' => ['verify_peer' => false, 'verify_peer_name' => false, ]];
 		$context = stream_context_create($contextOptions);
 		if ($this->socket = @stream_socket_client('ssl://' . $ip . ":" . $port, $errno, $errstr, 10, STREAM_CLIENT_CONNECT, $context)) {
-			stream_set_timeout($this->socket,0,64);
+			stream_set_timeout($this->socket, 3, 0);
 		}
 		else {
 			throw new Exception("Failed to connect to remote Chromecast");
@@ -117,9 +117,10 @@ class GChromecast
 		$this->lastactivetime = time();
 		$this->requestId++;
 		$oldtransportid = $this->transportid;
-		while ($this->transportid == "" || $this->transportid == $oldtransportid) {
+		$wait_launch = time() + 5;
+		while (($this->transportid == "" || $this->transportid == $oldtransportid) && time() <= $wait_launch) {
 			$r = $this->getCastMessage();
-			usleep(10);
+			usleep(20000);
 		}
 	}
 	
@@ -142,9 +143,12 @@ class GChromecast
 		$this->lastactivetime = time();
 		$this->requestId++;
 		$r = "";
-		while (!preg_match("/RECEIVER_STATUS/s", $r)) {
+		$response = "";
+		$wait_status = time() + 5;
+		while (!preg_match("/RECEIVER_STATUS/s", $r) && time() <= $wait_status) {
 			$r = $this->getCastMessage();
 			$response = substr($r, strpos($r,'{"requestId"'),50000);
+			usleep(20000);
 		}
 		return json_decode($response,TRUE);
 	}
@@ -157,10 +161,12 @@ class GChromecast
 			$this->launch('CC1AD845');
 			$this->connect(); // Auto-reconnects
 		}
-        $zeit60 = time()+2;
+		$response = '';
 		$this->sendMessage("urn:x-cast:com.google.cast.media",'{"type":"GET_STATUS", "requestId":'.$this->requestId.'}');
-		while (!preg_match("/\"type\":\"MEDIA_STATUS\"/",$response) or time() > $zeit60) {
+		$zeit60 = time() + 3;
+		while (!preg_match('/"type":"MEDIA_STATUS"/', $response) && time() <= $zeit60) {
 			$response = $this->getCastMessage();
+			usleep(20000);
 		}
 		// Grab the mediaSessionId
 		if (preg_match("/\"mediaSessionId\":([^\,]*)/",$response,$m)) {
@@ -221,14 +227,12 @@ class GChromecast
 
 
 		$response = fread($this->socket, 2000);
-		while (preg_match("/urn:x-cast:com.google.cast.tp.heartbeat/", $response) && preg_match("/\"PING\"/", $response)) {
+		$wait_ping = time() + 5;
+		while (preg_match("/urn:x-cast:com.google.cast.tp.heartbeat/", $response) && preg_match("/\"PING\"/", $response) && time() <= $wait_ping) {
 			$this->pong();
-			usleep(10);
+			usleep(20000);
 			$response = fread($this->socket, 2000);
-
-			// Wait infinitely for a packet.
-			//set_time_limit(30);
-		} 
+		}
 		// get transport id
 		if (preg_match("/transportId/s", $response)) {
 			preg_match("/transportId\"\:\"([^\"]*)/", $response, $matches);
@@ -391,11 +395,13 @@ class GChromecast
         if (!$content_type) {
             $content_type = 'audio/mpeg';
         }
-		$json = '{"type":"LOAD","media":{"contentId":"' . $url . '","streamType":"BUFFERED","contentType":"' . $content_type . '"},"autoplay":"false","currentTime":' . $currentTime . ',"requestId":'.$this->requestId.'}';
+		$json = '{"type":"LOAD","media":{"contentId":"' . $url . '","streamType":"BUFFERED","contentType":"' . $content_type . '"},"autoplay":true,"currentTime":' . (float)$currentTime . ',"requestId":'.$this->requestId.'}';
 		$this->sendMessage("urn:x-cast:com.google.cast.media", $json);
 		$r = "";
-		while (!preg_match("/\"playerState\":\"PLAYING\"/",$r)) {
+		$wait_load = time() + 5;
+		while (!preg_match('/"playerState":"(PLAYING|BUFFERING|PAUSED)"/', $r) && !preg_match('/"type":"MEDIA_STATUS"/', $r) && time() <= $wait_load) {
 			$r = $this->getCastMessage();
+			usleep(20000);
 		}
 		// Grab the mediaSessionId
 		if (preg_match("/\"mediaSessionId\":([^\,]*)/",$r,$m)) {
