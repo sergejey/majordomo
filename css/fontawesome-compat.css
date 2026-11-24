@@ -79,3 +79,12 @@
 .glyphicon-usd::before { content: "\24"; }
 .glyphicon-user-plus::before { content: "\f234"; }
 .glyphicon-wrench::before { content: "\f0ad"; }
+
+/* Glyphicons still used by third-party modules and Bootstrap admin themes. */
+.glyphicon-save::before,
+.glyphicon-saved::before,
+.glyphicon-floppy-save::before { content: "\f0c7"; }
+.glyphicon-off::before { content: "\f011"; }
+.glyphicon-menu-hamburger::before { content: "\f0c9"; }
+.glyphicon-bell::before { content: "\f0f3"; }
+.glyphicon-print::before { content: "\f02f"; }
