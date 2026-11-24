@@ -1,0 +1,50 @@
+/*
+ * Legacy base styles (formerly stl_light.css / stl_dark.css).
+ * Colours and the h1 font family come from css/theme-tokens.css, so the same
+ * file works for both themes and switching data-theme needs no stylesheet swap.
+ */
+a {
+	color: var(--mj-color-heading);
+	text-decoration: underline;
+}
+
+a:hover {
+	color: var(--mj-color-accent);
+}
+
+h1 {
+	font: 24px var(--mj-font-heading);
+	color: var(--mj-color-heading);
+	padding: 0;
+	margin: 0 0 5px 0;
+	letter-spacing: -1px;
+}
+
+h2 {
+	font: 20px 'Trebuchet MS', Arial, Helvetica, sans-serif;
+	color: var(--mj-color-heading);
+	padding: 0;
+	margin: 0 0 5px 0;
+	letter-spacing: -1px;
+}
+
+h3 {
+	font: 18px 'Trebuchet MS', Arial, Helvetica, sans-serif;
+	color: var(--mj-color-heading);
+	padding: 0;
+	margin: 0 0 5px 0;
+}
+
+h4 {
+	font: bold 16px 'Trebuchet MS', Arial, Helvetica, sans-serif;
+	color: var(--mj-color-heading);
+	padding: 0;
+	margin: 0 0 5px 0;
+}
+
+h5 {
+	font: bold 14px 'Trebuchet MS', Arial, Helvetica, sans-serif;
+	color: var(--mj-color-heading);
+	padding: 0;
+	margin: 0 0 5px 0;
+}

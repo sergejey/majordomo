@@ -440,6 +440,8 @@ label.checkbox {
 	background-color: #b52b27;
 	color: #ffffff;
 }
+<<<<<<< HEAD
+=======
 
 /* Links inside the legacy grey cells need a bit more contrast (pvalues page). */
 :root:not([data-theme="dark"]) #main-content td[bgcolor="#CCCCCC"] a {
@@ -479,9 +481,18 @@ label.checkbox {
 	border-color: #8f5100;
 }
 
-/* Vector logo inherits the theme token; SVG uses currentColor internally. */
+/* Vector logo inherits the theme token when present. The fallback keeps the
+   original brand blue on alpha, where theme-tokens.css is not loaded yet. */
 .mj-logo {
-	color: var(--mj-logo-color);
+	color: var(--mj-logo-color, #4792d1);
 	height: 54px;
 	width: auto;
 }
+
+/* Touch targets: icon-only small buttons are 22px high on phones and tablets. */
+@media (max-width: 991px) {
+	.btn.btn-sm {
+		min-height: 32px;
+	}
+}
+>>>>>>> origin/alpha
