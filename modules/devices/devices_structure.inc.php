@@ -23,8 +23,7 @@ $this->device_types = array(
         'DESCRIPTION' => LANG_DEVICES_DESC_GENERAL_DEVICES_CLASS,
         'PROPERTIES' => array(
             'status' => array('DESCRIPTION' => LANG_DEVICES_STATUS, 'KEEP_HISTORY' => 365, 'ONCHANGE' => 'statusUpdated', 'DATA_KEY' => 1),
-            'alive' => array('DESCRIPTION' => LANG_DEVICES_DESC_ALIVE),
-            'aliveTimeout' => array('DESCRIPTION' => LANG_DEVICES_ALIVE_TIMEOUT, '_CONFIG_TYPE' => 'num', '_CONFIG_HELP' => 'SdAliveTimeout'),
+'alive' => array('DESCRIPTION' => LANG_DEVICES_DESC_ALIVE, '_CONFIG_DEFAULT' => 1),            'aliveTimeout' => array('DESCRIPTION' => LANG_DEVICES_ALIVE_TIMEOUT, '_CONFIG_TYPE' => 'num', '_CONFIG_HELP' => 'SdAliveTimeout'),
             'linkedRoom' => array('DESCRIPTION' => LANG_DEVICES_DESC_LINKED_ROOM),
             'updated' => array('DESCRIPTION' => LANG_DEVICES_DESC_UPDATED_TIMESTAMP),
             'batteryOperated' => array('DESCRIPTION' => LANG_DEVICES_BATTERY_OPERATED, '_CONFIG_TYPE' => 'yesno', 'ONCHANGE' => 'batteryLevelUpdated'),
