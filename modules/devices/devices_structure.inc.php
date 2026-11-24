@@ -184,7 +184,7 @@ $this->device_types = array(
             'fanSpeedModes' => array('DESCRIPTION' => LANG_DEVICES_AC_FAN_SPEED,
                 '_CONFIG_TYPE' => 'multi_select',
                 '_CONFIG_OPTIONS' => 'high=' . LANG_DEVICES_AC_FAN_SPEED_HIGH . ',medium=' . LANG_DEVICES_AC_FAN_SPEED_MEDIUM . ',low=' . LANG_DEVICES_AC_FAN_SPEED_LOW . ',auto=' . LANG_DEVICES_AC_FAN_SPEED_AUTO,
-                '_CONFIG_DEFAULT' => 'high,medium,low,auto', 'ONCHANGE' => 'configUpdated', 'ONCHANGE' => 'fanSpeedUpdated'),
+                '_CONFIG_DEFAULT' => 'high,medium,low,auto', 'ONCHANGE' => 'configUpdated'),
             'fanSpeedModesHTML' => array('DESCRIPTION' => LANG_DEVICES_DESC_FAN_SPEED_MODES_HTML),
             'thermostat' => array('DESCRIPTION' => LANG_DEVICES_DESC_THERMOSTAT, '_CONFIG_DEFAULT' => 'auto', 'ONCHANGE' => 'thermostatUpdated'),
             'thermostatModes' => array('DESCRIPTION' => LANG_DEVICES_AC_THERMOSTAT,
