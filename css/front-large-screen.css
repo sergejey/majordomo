@@ -1,0 +1,23 @@
+/* admin.css is only loaded by the control panel. Client templates keep the
+   Bootstrap default of 14px even on TVs and large monitors. */
+@media (min-width: 1600px) {
+	body,
+	.nav-tabs > li > a,
+	.table,
+	.form-control,
+	.btn,
+	.btn-sm {
+		font-size: 15px;
+	}
+}
+
+@media (min-width: 2200px) {
+	body,
+	.nav-tabs > li > a,
+	.table,
+	.form-control,
+	.btn,
+	.btn-sm {
+		font-size: 17px;
+	}
+}
