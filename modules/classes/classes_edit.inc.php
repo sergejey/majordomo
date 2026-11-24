@@ -50,6 +50,7 @@
    if ($ok) {
     if ($rec['ID']) {
      SQLUpdate($table_name, $rec); // update
+     clearCacheData('P:');
     } else {
      $new_rec=1;
      $rec['ID']=SQLInsert($table_name, $rec); // adding new record

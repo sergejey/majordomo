@@ -738,7 +738,10 @@ class patterns extends module
                 }
             }
             $check = implode('@@@@', $lines_pattern);
-            if (preg_match('/' . $check . '/isu', implode('@@@@', $lines), $matches)) {
+            $regexResult = @preg_match('/' . $check . '/isu', implode('@@@@', $lines), $matches);
+            if ($regexResult === false) {
+                DebMes('Invalid regular expression in pattern "' . $rec['TITLE'] . '": ' . $check, 'patterns');
+            } elseif ($regexResult) {
                 $condition_matched = 1;
             }
 

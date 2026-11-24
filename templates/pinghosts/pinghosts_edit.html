@@ -73,8 +73,8 @@ $(window).load(function() {
 				<div class="col-lg-10 col-md-8">
 					<input type="text"  class="form-control [#if ERR_HOSTNAME#]alert-danger[#endif#]"  name="hostname" value="[#HOSTNAME#]" required="true">
 					[#if HOSTNAME!=""#]
-					<div><img src="/panel/pinghosts.html?view_mode=img&ip=[#HOSTNAME#]">
-					&lt;img src="/panel/pinghosts.html?view_mode=img&ip=[#HOSTNAME#]"&gt;</div>
+					<div><img src="<#ROOTHTML#>panel/pinghosts.html?view_mode=img&ip=[#HOSTNAME#]">
+					&lt;img src="<#ROOTHTML#>panel/pinghosts.html?view_mode=img&ip=[#HOSTNAME#]"&gt;</div>
 					[#endif#]
 				</div>
 			</div>

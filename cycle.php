@@ -100,7 +100,7 @@ if (file_exists(ROOT . 'scripts/cycle_db_save.php') && $restored_this_boot) {
     if (file_exists($db_filename) && filesize($db_filename) > 0) {
         echo "Running: mysql main db restore from file: " . $db_filename . PHP_EOL;
         DebMes("Running: mysql main db restore from file: " . $db_filename, 'boot');
-        $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
+        $mysql_path = defined('PATH_TO_MYSQL') ? PATH_TO_MYSQL : ((substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql');
         $mysqlParam = " -h " . DB_HOST;
         $mysqlParam .= " -u " . DB_USER;
         if (DB_PASSWORD != '') $mysqlParam .= " --password=\"" . DB_PASSWORD . "\"";
@@ -115,7 +115,7 @@ if (file_exists(ROOT . 'scripts/cycle_db_save.php') && $restored_this_boot) {
         if (file_exists($db_history_filename) && filesize($db_history_filename) > 0) {
             echo "Running: mysql history db restore from file: " . $db_history_filename . PHP_EOL;
             DebMes("Running: mysql history db restore from file: " . $db_history_filename, 'boot');
-            $mysql_path = (substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql';
+            $mysql_path = defined('PATH_TO_MYSQL') ? PATH_TO_MYSQL : ((substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql');
             $mysqlParam = " -h " . DB_HOST;
             $mysqlParam .= " -u " . DB_USER;
             if (DB_PASSWORD != '') $mysqlParam .= " --password=\"" . DB_PASSWORD . "\"";
