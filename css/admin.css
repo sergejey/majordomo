@@ -485,3 +485,10 @@ label.checkbox {
 	height: 54px;
 	width: auto;
 }
+
+/* Touch targets: icon-only small buttons are 22px high on phones and tablets. */
+@media (max-width: 991px) {
+	.btn.btn-sm {
+		min-height: 32px;
+	}
+}
