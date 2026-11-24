@@ -39,7 +39,7 @@ class phpSerial
 	 *
 	 * @return phpSerial
 	 */
-	function phpSerial ()
+	function __construct()
 	{
 		setlocale(LC_ALL, "en_US");
 
@@ -55,7 +55,7 @@ class phpSerial
 			}
 			else
 			{
-				trigger_error("No stty availible, unable to run.", E_USER_ERROR);
+				trigger_error("No stty availible, unable to run.", E_USER_WARNING);
 			}
 		}
 		elseif($isWindows)
@@ -65,9 +65,17 @@ class phpSerial
 		}
 		else
 		{
-			trigger_error("Host OS is neither linux nor windows, unable tu run.", E_USER_ERROR);
+			trigger_error("Host OS is neither linux nor windows, unable tu run.", E_USER_WARNING);
 			exit();
 		}
+	}
+
+	/**
+	 * Compatibility wrapper for the old-style constructor name.
+	 */
+	function phpSerial()
+	{
+		$this->__construct();
 	}
 
 	//
@@ -181,7 +189,7 @@ class phpSerial
 			return true;
 		}
 
-		trigger_error("Unable to close the device", E_USER_ERROR);
+		trigger_error("Unable to close the device", E_USER_WARNING);
 		return false;
 	}
 
@@ -393,7 +401,7 @@ class phpSerial
 		);
 
 		if ($mode !== "none" and $mode !== "rts/cts" and $mode !== "xon/xoff") {
-			trigger_error("Invalid flow control mode specified", E_USER_ERROR);
+			trigger_error("Invalid flow control mode specified", E_USER_WARNING);
 			return false;
 		}
 
@@ -404,7 +412,7 @@ class phpSerial
 
 		if ($ret === 0) return true;
 		else {
-			trigger_error("Unable to set flow control : " . $out[1], E_USER_ERROR);
+			trigger_error("Unable to set flow control : " . $out[1], E_USER_WARNING);
 			return false;
 		}
 	}

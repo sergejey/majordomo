@@ -249,7 +249,7 @@
             error: function(data){
                 if (seq !== filterSearchSeq) return;
                 $('#filter_add').show();
-                $('#filter_add').html('<div style="min-width: 200px;padding: 10px;background: #ffafaf;border-radius: 10px;text-align: center;">Error sending request - filterSearch()</div>');
+                $('#filter_add').html('<div style="min-width: 200px;padding: 10px;background: #ffafaf;border-radius: 10px;text-align: center;"><#LANG_ERROR_SENDING_REQUEST#> - filterSearch()</div>');
             },
         });
         return false;
@@ -675,7 +675,7 @@
                 $('#console_output_hintResize').hide();
 
                 //$('#console_output').show();
-                $('#console_output').html('<div id="error_console_request" style="min-width: 200px;padding: 10px;border: 3px solid #fa0000;border-radius: 10px;text-align: center;color: white;">Error sending request - sendConsoleCommand()</div>');
+                $('#console_output').html('<div id="error_console_request" style="min-width: 200px;padding: 10px;border: 3px solid #fa0000;border-radius: 10px;text-align: center;color: white;"><#LANG_ERROR_SENDING_REQUEST#> - sendConsoleCommand()</div>');
             },
         });
         return false;
@@ -722,7 +722,7 @@
                 }
             },
             error: function(data) {
-                $('#news_body').html('<div style="min-width: 200px;padding: 10px;background: #ffafaf;border-radius: 10px;text-align: center;">Error sending request - checkNews()</div>');
+                $('#news_body').html('<div style="min-width: 200px;padding: 10px;background: #ffafaf;border-radius: 10px;text-align: center;"><#LANG_ERROR_SENDING_REQUEST#> - checkNews()</div>');
             },
         });
 
