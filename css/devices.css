@@ -139,7 +139,6 @@
 .device-icon.thermostat {
 }
 .device-icon.thermostat.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .thermostat .status_text {
@@ -181,19 +180,15 @@
 }
 
 .device-icon.group_state.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .device-icon.button.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .device-icon.ac.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .device-icon.motion.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .device-icon.smoke.on {
@@ -208,43 +203,36 @@
 }
 
 .device-icon.openclose.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .opentype_curtains .device-icon {
 }
 .opentype_curtains .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .opentype_window .device-icon {
 }
 .opentype_window .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .opentype_door .device-icon {
 }
 .opentype_door .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .opentype_shutters .device-icon {
 }
 .opentype_shutters .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .opentype_gates .device-icon {
 }
 .opentype_gates .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .opentype_valve .device-icon {
 }
 .opentype_valve .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 
@@ -276,7 +264,6 @@
 }
 
 .device-icon.power-sensor.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .controller .device-icon {
@@ -292,34 +279,28 @@
 }
 
 .controller.loadtype_heating .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .controller.loadtype_curtains .device-icon {
 }
 .controller.loadtype_curtains .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .controller.loadtype_gates .device-icon {
 }
 .controller.loadtype_gates .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .controller.loadtype_vent .device-icon {
 }
 
 .controller.loadtype_vent .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .controller.loadtype_power .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .controller .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .device-icon.pressed {
