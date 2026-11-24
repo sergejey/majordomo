@@ -10,6 +10,10 @@
 
 $dictionary = array(
 
+    /* hardcoded template strings */
+    'PLAY_ON' => 'Воспроизвести на:',
+    'ERROR_SENDING_REQUEST' => 'Ошибка отправки запроса',
+
     /* general */
     'SETTINGS_SITE_LANGUAGE_CODE' => 'ru_RU',
     'WIKI_URL' => 'https://ru.majordomohome.com/',

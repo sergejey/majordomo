@@ -22,6 +22,7 @@ $ctl = new control_modules();
     <script type="text/javascript"  src="<?php echo ROOTHTML;?>3rdparty/jquery/jquery-migrate-3.0.0.min.js"></script>
 
     <link rel="stylesheet" href="<?php echo ROOTHTML;?>3rdparty/bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="<?php echo ROOTHTML;?>css/fontawesome-compat.css" type="text/css">
     <script type="text/javascript" src="<?php echo ROOTHTML;?>3rdparty/bootstrap/js/bootstrap.min.js"></script>
 
     <script type="text/javascript" src="blockly_compressed.js"></script>
