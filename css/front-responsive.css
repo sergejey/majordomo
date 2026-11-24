@@ -1,0 +1,57 @@
+/* Front-end header: the legacy 350px cell plus the terminal selector and
+   control links forced horizontal scrolling on phones and small tablets. */
+@media (max-width: 991px) {
+	/* The player header injects a fixed 435px width for every instance. */
+	[id^="app_player_"] {
+		min-width: 0 !important;
+		width: 100% !important;
+		max-width: 100%;
+	}
+
+	.mj-topbar,
+	.mj-topbar-row,
+	.mj-topbar tbody,
+	.mj-topbar-row tbody,
+	.mj-topbar tr,
+	.mj-topbar-row tr {
+		display: block;
+		width: 100%;
+		max-width: 100%;
+	}
+
+	.mj-topbar td,
+	.mj-topbar-row td {
+		display: inline-block;
+		max-width: 100%;
+		vertical-align: middle;
+	}
+
+	.mj-topbar-left,
+	.mj-topbar-left-table {
+		width: auto !important;
+		max-width: 100%;
+	}
+
+	.mj-topbar-row .form-control {
+		width: auto;
+		max-width: 140px;
+	}
+
+	.mj-topbar-row .btn {
+		padding: 5px 8px;
+	}
+
+	[id^="app_player_"] .controls .column {
+		margin: 0 4px !important;
+	}
+
+	#navFrame {
+		max-width: 100%;
+	}
+}
+
+@media (max-width: 360px) {
+	[id^="app_player_"] .controls .column {
+		margin: 0 2px !important;
+	}
+}
