@@ -136,6 +136,9 @@
 							<#LANG_THEME#>
 							<span class="badge" style="background:transparent;">
 								<div class="btn-group" data-toggle="buttons">
+									<label class="btn btn-sm btn-default" style="padding: 0px 5px;font-size: 1.1rem;background: #6a6969;border: 0px;">
+										<input type="radio" onChange="if($(this).is(':checked')) MJDTheme.set('auto');"> <#LANG_THEME_AUTO#>
+									</label>
 									<label class="btn btn-sm btn-primary" style="padding: 0px 5px;font-size: 1.1rem;background: #474747;border: 0px;">
 										<input type="radio" onChange="if($(this).is(':checked')) MJDTheme.set('dark');"> <#LANG_THEME_DARK#>
 									</label>
