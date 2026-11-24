@@ -156,7 +156,9 @@ a:focus {
 }
 /* Left menu hover/focus: restored from the previous local build (#1319 follow-up). */
 .leftmenutab:hover,
-.leftmenutab:focus {
+.leftmenutab:focus,
+.nav-list > li > a.leftmenutab:hover,
+.nav-list > li > a.leftmenutab:focus {
 	text-decoration: none;
 	background-color: #4792d1;
 	color: white;
