@@ -31,7 +31,11 @@ ExecStart=/usr/bin/php /var/www/html/cycle.php
 # Останавливает cycle.php и все циклы, не затрагивая другие процессы PHP
 KillMode=control-group
 TimeoutStopSec=30
-Restart=on-failure
+# cycle.php exits with code 0 both on a normal stop and on a panel update
+# (the reboot file is created). With Restart=on-failure systemd treats such
+# exit as successful and does not start the cycles again: the site responds,
+# while states, phistory, ping and scheduler stay down until a manual start.
+Restart=always
 RestartSec=10
 
 [Install]
