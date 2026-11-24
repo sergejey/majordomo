@@ -85,6 +85,12 @@ if (!defined('SETTINGS_SITE_TIMEZONE')) {
 ini_set('date.timezone', SETTINGS_SITE_TIMEZONE);
 date_default_timezone_set(SETTINGS_SITE_TIMEZONE);
 
+// New Year decoration window: 25 December - 15 January (site timezone).
+if (!defined('MJ_HOLIDAY_SEASON')) {
+    $mj_holiday_day = (int)date('nd');
+    Define('MJ_HOLIDAY_SEASON', (($mj_holiday_day >= 1225) || ($mj_holiday_day <= 115)) ? 1 : 0);
+}
+
 function timezone_offset_string($offset)
 {
     return sprintf("%s%02d:%02d", ($offset >= 0) ? '+' : '-', abs(intdiv($offset, 3600)), abs(intdiv($offset % 3600, 60)));
@@ -115,13 +121,14 @@ if (isset($_SERVER['REQUEST_METHOD']) &&
         if ($_GET['system_call']) {
             echo "Main cycle is down (timeout: $maincycleTimePassed)";
         } else {
+            $roothtml = ROOTHTML;
             echo "<html><head>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />
  <meta http-equiv=\"refresh\" content=\"10\">
-<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\" integrity=\"sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u\" crossorigin=\"anonymous\">
-<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css\" integrity=\"sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp\" crossorigin=\"anonymous\">
+<link rel=\"stylesheet\" href=\"{$roothtml}3rdparty/bootstrap/css/bootstrap.min.css\">
+<link rel=\"stylesheet\" href=\"{$roothtml}3rdparty/bootstrap/css/bootstrap-theme.min.css\">
 <script src=\"https://code.jquery.com/jquery-3.3.1.min.js\" type=\"text/javascript\"></script>
-<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js\" integrity=\"sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa\" crossorigin=\"anonymous\"></script>
+<script src=\"{$roothtml}3rdparty/bootstrap/js/bootstrap.min.js\"></script>
 </head><body><div class=\"container\">";
             echo "&nbsp;<div class='alert alert-danger'>" . LANG_MAINCYCLEDOWN . "</div>";
             echo '<p>' . LANG_MAINCYCLEDOWN_DETAILS . '<br/>(timeout: ' . $maincycleTimePassed . ')</p>';

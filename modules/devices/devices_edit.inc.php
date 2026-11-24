@@ -560,7 +560,8 @@ if ($this->mode == 'update' && $this->tab == '') {
             setGlobal($object_rec['TITLE'] . '.maxValue', 60);
         }
 
-        clearCacheData();
+        clearCacheData('P:');
+        clearCacheData('MJD:');
         addToOperationsQueue('connect_sync_devices', 'required');
 
         if ($out['SOURCE_TABLE'] && $out['SOURCE_TABLE_ID']) {
