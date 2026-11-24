@@ -236,8 +236,14 @@ jobs - jobs
  jobs: STARTED datetime
  jobs: PROCESSED int(3) NOT NULL DEFAULT '0'
  jobs: EXPIRED int(3) NOT NULL DEFAULT '0'
+ jobs: INDEX (TITLE)
 EOD;
   parent::dbInstall($data);
+
+  // runScheduledJobs() filters by these columns and sorts by RUNTIME.
+  if (!SQLSelectOne("SHOW INDEX FROM jobs WHERE Key_name='idx_jobs_queue'")) {
+   SQLExec("CREATE INDEX idx_jobs_queue ON jobs (PROCESSED, EXPIRED, RUNTIME)");
+  }
  }
 // --------------------------------------------------------------------
 }

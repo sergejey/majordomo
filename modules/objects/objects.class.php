@@ -185,6 +185,7 @@ class objects extends module
                 SQLInsert('pvalues', $p_value);
             }
         }
+        clearCacheData('P:');
 
         $pvalues = SQLSelect("SELECT * FROM pvalues WHERE OBJECT_ID='" . $id . "'");
         $total = count($pvalues);
@@ -345,17 +346,17 @@ class objects extends module
      *
      * @access public
      */
-    function loadObject($id)
+    function loadObject($id, $rec = null)
     {
-        $rec = SQLSelectOne("SELECT * FROM objects WHERE ID=" . (int)$id);
+        if (!is_array($rec)) {
+            $rec = SQLSelectOne("SELECT objects.*, classes.TITLE AS CL_TITLE FROM objects " .
+                "LEFT JOIN classes ON objects.CLASS_ID=classes.ID WHERE objects.ID=" . (int)$id);
+        }
         if (isset($rec['ID'])) {
             $this->id = $rec['ID'];
             $this->object_title = $rec['TITLE'];
             $this->class_id = $rec['CLASS_ID'];
-            if ($this->class_id) {
-                $class_rec = SQLSelectOne("SELECT ID,TITLE FROM classes WHERE ID=" . $this->class_id);
-                $this->class_title = $class_rec['TITLE'];
-            }
+            $this->class_title = isset($rec['CL_TITLE']) ? $rec['CL_TITLE'] : '';
             $this->description = $rec['DESCRIPTION'];
             $this->location_id = $rec['LOCATION_ID'];
             if (preg_match('/^sdevice(\d+)/', $rec['SYSTEM'], $m)) {
@@ -683,7 +684,11 @@ class objects extends module
                         }
                     } catch (Throwable $e) {
                         //getLogger($this)->error(sprintf('Exception in "%s.%s" method', $this->object_title, $name), $e);
-                        registerError('method', sprintf('Exception in "%s.%s" method ' . $e->getMessage(), $this->object_title, $name));
+                        $message = $e->getMessage();
+                        if (stripos($message, 'Undefined constant') !== false) {
+                            $message .= ". If this is an object property name, put it in quotes, e.g. gg('ThisComputer.SunRiseTime')";
+                        }
+                        registerError('method', sprintf('Exception in "%s.%s" method %s', $this->object_title, $name, $message));
                     }
                 }
             }
@@ -730,7 +735,8 @@ class objects extends module
         $cached_name = 'P:' . $class_id . '.' . $object_id . '.' . $name;
         $cached_value = checkFromCache($cached_name);
         if ($cached_value !== false) {
-            return $cached_value;
+            // '0' means the property does not exist (see below).
+            return $cached_value === '0' ? false : $cached_value;
         }
 
         $rec = SQLSelectOne("SELECT ID FROM properties WHERE OBJECT_ID='" . (int)$object_id . "' AND TITLE = '" . DBSafe($name) . "'");
@@ -746,6 +752,7 @@ class objects extends module
                 return $props[$i]['ID'];
             }
         }
+        saveToCache($cached_name, '0');
         return false;
     }
 
@@ -918,6 +925,12 @@ class objects extends module
 
         startMeasure('getPropertyByName');
         $id = $this->getPropertyByName($property, $this->class_id, $this->id);
+        if (!$id) {
+            // A third-party module may have inserted the property directly while
+            // our negative result was cached: re-check without the cache.
+            deleteFromCache('P:' . $this->class_id . '.' . $this->id . '.' . $property);
+            $id = $this->getPropertyByName($property, $this->class_id, $this->id);
+        }
         endMeasure('getPropertyByName');
         $old_value = '';
 
@@ -1016,6 +1029,7 @@ class objects extends module
             $prop['OBJECT_ID'] = $this->id;
             $prop['TITLE'] = $property;
             $prop['ID'] = SQLInsert('properties', $prop);
+            clearCacheData('P:');
 
             $v['PROPERTY_NAME'] = $this->object_title . '.' . $property;
             $v['PROPERTY_ID'] = $prop['ID'];
@@ -1240,6 +1254,7 @@ class objects extends module
  objects: CLASS_ID int(10) NOT NULL DEFAULT '0'
  objects: DESCRIPTION text
  objects: LOCATION_ID int(10) NOT NULL DEFAULT '0'
+ objects: INDEX (TITLE)
 
  properties: ID int(10) unsigned NOT NULL auto_increment
  properties: CLASS_ID int(10) NOT NULL DEFAULT '0'

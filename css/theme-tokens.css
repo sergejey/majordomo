@@ -18,6 +18,21 @@
 	--mj-color-link-hover: #1f527c;
 	--mj-color-border: #dddddd;
 	--mj-color-surface: #f5f5f5;
+	--mj-color-heading: #000000;
+	--mj-color-accent: #4a7c0f;
+	--mj-font-heading: Arial, Helvetica, sans-serif;
+	--mj-color-nav-header: #6a6969;
+	--mj-color-border-subtle: rgba(0, 0, 0, 0.047);
+	--mj-color-shadow-subtle: rgba(0, 0, 0, 0.075);
+	--mj-color-divider: #999999;
+	--mj-color-overlay-bar: rgba(255, 255, 255, 0.60);
+	--mj-color-inset-highlight: rgba(255, 255, 255, 0.1);
+	/* Brand blue from the original raster logo: 3.3:1 on light chrome (WCAG 1.4.11). */
+	--mj-logo-color: #4792d1;
+	/* CodeMirror dialog: these editors are dark regardless of the UI theme. */
+	--mj-editor-dialog-bg: #2b2b2b;
+	--mj-editor-dialog-fg: #e6e6e6;
+	--mj-editor-dialog-border: #444444;
 }
 
 :root[data-theme="dark"] {
@@ -29,4 +44,15 @@
 	--mj-color-link-hover: #b6e93a;
 	--mj-color-border: #444444;
 	--mj-color-surface: #2b2b2b;
+	--mj-color-heading: #ffffff;
+	--mj-color-accent: #9ecf15;
+	--mj-font-heading: 'Trebuchet MS', Arial, Helvetica, sans-serif;
+	--mj-color-nav-header: #b0b0b0;
+	--mj-color-border-subtle: rgba(255, 255, 255, 0.08);
+	--mj-color-shadow-subtle: rgba(0, 0, 0, 0.35);
+	--mj-color-divider: #aaaaaa;
+	--mj-color-overlay-bar: rgba(0, 0, 0, 0.60);
+	--mj-color-inset-highlight: rgba(255, 255, 255, 0.04);
+	/* Same brand blue: 6.3:1 on dark chrome, so the logo stays recognizable. */
+	--mj-logo-color: #4792d1;
 }
