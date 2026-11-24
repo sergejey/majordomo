@@ -46,8 +46,6 @@
 	--mj-color-heading: #ffffff;
 	--mj-color-accent: #9ecf15;
 	--mj-font-heading: 'Trebuchet MS', Arial, Helvetica, sans-serif;
-<<<<<<< HEAD
-=======
 	--mj-color-nav-header: #b0b0b0;
 	--mj-color-border-subtle: rgba(255, 255, 255, 0.08);
 	--mj-color-shadow-subtle: rgba(0, 0, 0, 0.35);
@@ -56,5 +54,4 @@
 	--mj-color-inset-highlight: rgba(255, 255, 255, 0.04);
 	/* Same brand blue: 6.3:1 on dark chrome, so the logo stays recognizable. */
 	--mj-logo-color: #4792d1;
->>>>>>> origin/alpha
 }
