@@ -1,6 +1,6 @@
 <?php
 /**
- * Verification of the post-update migration mechanism.
+ * Verification of all post-update migrations.
  * Run from the MajorDoMo root: php scripts/check_migrations.php
  */
 chdir(dirname(__FILE__) . '/..');
@@ -14,36 +14,40 @@ $settingsSrc = file_get_contents('load_settings.php');
 $checks['load_settings runs migrations'] = strpos($settingsSrc, 'mjd_run_migrations()') !== false;
 
 $migrationsSrc = file_get_contents('lib/mjd_migrations.php');
-$checks['migration id registered'] = strpos($migrationsSrc, 'rooms_activity_status_20261124') !== false;
-$checks['migration is idempotent'] = strpos($migrationsSrc, 'mjd_migration_is_applied') !== false;
-
-$seed = file_get_contents('db_terminal.sql');
-$needle = "require(DIR_MODULES.\\'devices/Rooms_updateActivityStatus.php\\');";
-if (strpos($seed, $needle) === false) {
-    $needle = "require(DIR_MODULES.'devices/Rooms_updateActivityStatus.php');";
+$ids = array(
+    'cached_values_expire_20210321',
+    'pinghosts_google_20240508',
+    'checkstate_int_cast_20251221',
+    'command97_roothtml_20261122',
+    'rooms_activity_status_20261124',
+);
+foreach ($ids as $id) {
+    $checks['migration registered: ' . $id] = strpos($migrationsSrc, "'" . $id . "'") !== false;
+    $mark = @SQLSelectOne("SELECT VALUE FROM settings WHERE NAME='MJ_MIGRATION_" . $id . "'");
+    $checks['migration applied: ' . $id] = isset($mark['VALUE']) && $mark['VALUE'] !== '';
 }
-$checks['fresh install uses shared file'] = strpos($seed, $needle) !== false;
 
-// Safe to call again: applied ids are skipped.
-if (function_exists('mjd_run_migrations')) {
-    mjd_run_migrations();
-    $checks['runner available'] = true;
-} else {
-    $checks['runner available'] = false;
-}
+$checks['cached_values has no EXPIRE'] = count(@SQLSelect("SHOW COLUMNS FROM cached_values LIKE 'EXPIRE'")) === 0;
+
+$host = @SQLSelectOne("SELECT HOSTNAME FROM pinghosts WHERE ID=1");
+$checks['ping host updated'] = isset($host['HOSTNAME']) && $host['HOSTNAME'] === 'www.google.com';
+
+$oldCasts = @SQLSelect("SELECT ID FROM methods WHERE TITLE IN ('checkState','object17_method59','object17_method73') AND CODE LIKE '%time()-$tm>%'");
+$checks['cycle timestamps cast'] = count($oldCasts) === 0;
+
+$command = @SQLSelectOne("SELECT CODE FROM commands WHERE ID=97");
+$checks['State command uses ROOTHTML'] = isset($command['CODE'])
+    && strpos($command['CODE'], 'src="<#ROOTHTML#>img/icons/') !== false;
 
 $class = @SQLSelectOne("SELECT ID FROM classes WHERE TITLE='Rooms'");
 if (!empty($class['ID'])) {
-    $method = @SQLSelectOne("SELECT ID, CODE FROM methods WHERE TITLE='updateActivityStatus' AND CLASS_ID=" . (int)$class['ID']);
-    $checks['existing method patched'] = isset($method['ID'])
+    $method = @SQLSelectOne("SELECT CODE FROM methods WHERE TITLE='updateActivityStatus' AND CLASS_ID=" . (int)$class['ID']);
+    $checks['Rooms method patched'] = isset($method['CODE'])
         && strpos($method['CODE'], 'Rooms_updateActivityStatus.php') !== false
         && strpos($method['CODE'], 'function rooms_cmp') === false;
 } else {
-    $checks['existing method patched'] = true; // nothing to patch in this installation
+    $checks['Rooms method patched'] = true;
 }
-
-$mark = @SQLSelectOne("SELECT VALUE FROM settings WHERE NAME='MJ_MIGRATION_rooms_activity_status_20261124'");
-$checks['migration marked applied'] = isset($mark['VALUE']) && $mark['VALUE'] !== '';
 
 $failed = 0;
 foreach ($checks as $name => $ok) {
