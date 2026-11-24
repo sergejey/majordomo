@@ -5,13 +5,13 @@ $this->device_types['sensor_temphum'] = array(
     'PARENT_CLASS'=>'SSensors',
     'CLASS'=>'STempHumSensors',
     'PROPERTIES'=>array(
-        'valueHumidity'=>array('DESCRIPTION'=>'Humidity Sensor Value','ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
-        'minHumidityValue'=>array('DESCRIPTION'=>LANG_DEVICES_MIN_VALUE.' (humidity)','_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdSensorMinMax'),
-        'maxHumidityValue'=>array('DESCRIPTION'=>LANG_DEVICES_MAX_VALUE.' (humidity)','_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdSensorMinMax'),
-        'directionHumidity'=>array('DESCRIPTION'=>'Direction of changes','KEEP_HISTORY'=>0),
+        'valueHumidity'=>array('DESCRIPTION'=>LANG_DEVICES_DESC_HUMIDITY_SENSOR_VALUE,'ONCHANGE'=>'valueUpdated','KEEP_HISTORY'=>365,'DATA_KEY'=>1),
+        'minHumidityValue'=>array('DESCRIPTION'=>LANG_DEVICES_DESC_MIN_HUMIDITY_VALUE,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdSensorMinMax'),
+        'maxHumidityValue'=>array('DESCRIPTION'=>LANG_DEVICES_DESC_MAX_HUMIDITY_VALUE,'_CONFIG_TYPE'=>'num','_CONFIG_HELP'=>'SdSensorMinMax'),
+        'directionHumidity'=>array('DESCRIPTION'=>LANG_DEVICES_DESC_DIRECTION_OF_CHANGES,'KEEP_HISTORY'=>0),
     ),
     'METHODS'=>array(
-        'valueUpdated'=>array('DESCRIPTION'=>'Value Updated','CALL_PARENT'=>1),
+        'valueUpdated'=>array('DESCRIPTION'=>LANG_DEVICES_DESC_VALUE_UPDATED,'CALL_PARENT'=>1),
     ));
 
 

@@ -302,7 +302,9 @@ function timeOutExists($title)
  */
 function runScheduledJobs()
 {
-    SQLExec("DELETE FROM jobs WHERE EXPIRE <= '" . date('Y-m-d H:i:s') . "'");
+    $now = date('Y-m-d H:i:s');
+    $stale = date('Y-m-d H:i:s', time() - 300);
+    SQLExec("DELETE FROM jobs WHERE EXPIRE <= '" . $now . "'");
 
     if (defined('JOBS_QUEUE_LIMIT') && (int)JOBS_QUEUE_LIMIT > 0) {
         $limit = (int)JOBS_QUEUE_LIMIT;
@@ -314,8 +316,8 @@ function runScheduledJobs()
                   FROM jobs
                  WHERE PROCESSED = 0
                    AND EXPIRED   = 0
-                   AND (STARTED IS NULL OR STARTED <= '" . date('Y-m-d H:i:s', time() - 300) . "')
-                   AND RUNTIME   <= '" . date('Y-m-d H:i:s') . "'
+                   AND (STARTED IS NULL OR STARTED <= '" . $stale . "')
+                   AND RUNTIME   <= '" . $now . "'
                  ORDER BY RUNTIME, ID
                  LIMIT " . $limit;
 
@@ -324,7 +326,7 @@ function runScheduledJobs()
 
     for ($i = 0; $i < $total; $i++) {
         $jobs[$i]['STARTED'] = date('Y-m-d H:i:s');
-        SQLExec("UPDATE jobs SET STARTED='" . $jobs[$i]['STARTED'] . "' WHERE ID=" . (int)$jobs[$i]['ID'] . " AND PROCESSED=0 AND (STARTED IS NULL OR STARTED <= '" . date('Y-m-d H:i:s', time() - 300) . "')");
+        SQLExec("UPDATE jobs SET STARTED='" . $jobs[$i]['STARTED'] . "' WHERE ID=" . (int)$jobs[$i]['ID'] . " AND PROCESSED=0 AND (STARTED IS NULL OR STARTED <= '" . $stale . "')");
         $claimed_job = SQLSelectOne("SELECT ID FROM jobs WHERE ID=" . (int)$jobs[$i]['ID'] . " AND STARTED='" . DBSafe($jobs[$i]['STARTED']) . "' AND PROCESSED=0");
         if (!isset($claimed_job['ID'])) {
             continue;
@@ -469,7 +471,7 @@ function runScriptSafe($id, $params = 0)
         }
         $raiseEvent = isset($params['raiseEvent']) ? $params['raiseEvent'] : '';
         unset($params['raiseEvent']);
-        unset($params['r_s_m']);
+        unset($params['r_s_s']);
         unset($params['m_c_s']);
         $current_call .= '.' . md5(json_encode($params));
     }
@@ -1268,6 +1270,7 @@ function hsvToHex($h, $s, $v)
 function logAction($action_type, $details = '')
 {
     if (!isModuleInstalled('actions_log')) return;
+    if (!SQLSelectOne("SHOW TABLES LIKE 'actions_log'")) return;
 
     global $session;
     $rec = array();

@@ -255,6 +255,7 @@ function admin(&$out) {
       $properties[$p]['CLASS_ID']=$records[$i]['ID'];
       $properties[$p]['ID']=SQLInsert('properties', $properties[$p]);
      }
+     clearCacheData('P:');
     }
 
     if (is_array($methods)) {
@@ -288,6 +289,7 @@ function admin(&$out) {
         $properties[$p]['OBJECT_ID']=$objects[$o]['ID'];
         $properties[$p]['ID']=SQLInsert('properties', $properties[$p]);
        }
+       clearCacheData('P:');
       }
 
       if (is_array($methods)) {
@@ -548,7 +550,8 @@ function usual(&$out) {
   }
   SQLExec("DELETE FROM classes WHERE ID='".$rec['ID']."'");
   $this->updateTree_classes();
-  clearCacheData();
+  clearCacheData('P:');
+  clearCacheData('MJD:');
   return 1;
  }
 /**
@@ -649,6 +652,7 @@ classes - Classes
  classes: ID int(10) unsigned NOT NULL auto_increment
  classes: TITLE varchar(255) NOT NULL DEFAULT ''
  classes: PARENT_ID int(10) NOT NULL DEFAULT '0'
+ classes: INDEX (TITLE)
  classes: NOLOG int(3) NOT NULL DEFAULT '0'
  classes: SUB_LIST text
  classes: PARENT_LIST text

@@ -453,3 +453,59 @@ label.checkbox {
 	background-color: #b52b27;
 	color: #ffffff;
 }
+<<<<<<< HEAD
+=======
+
+/* Links inside the legacy grey cells need a bit more contrast (pvalues page). */
+:root:not([data-theme="dark"]) #main-content td[bgcolor="#CCCCCC"] a {
+	color: #1f527c;
+}
+
+/* Inline grey hints and links on the dashboard need contrast in light theme. */
+:root:not([data-theme="dark"]) div[style*="color: gray"],
+:root:not([data-theme="dark"]) div[style*="color: lightgray"],
+:root:not([data-theme="dark"]) a[style*="color: lightgray"] {
+	color: #6a6a6a !important;
+}
+
+/* Placeholders are text too: keep them readable in both themes. */
+:root:not([data-theme="dark"]) ::placeholder {
+	color: #6a6a6a;
+	opacity: 1;
+}
+:root[data-theme="dark"] ::placeholder {
+	color: #bdbdbd;
+	opacity: 1;
+}
+
+/* Legacy <font color> messages in the light theme. */
+:root:not([data-theme="dark"]) #main-content font[color="red"] {
+	color: #c62828;
+}
+:root:not([data-theme="dark"]) #main-content font[color="green"] {
+	color: #2e7d32;
+}
+
+/* Dark warning buttons: #a8670e with #f0f0f0 is only 4.0:1. */
+:root[data-theme="dark"] .btn-warning,
+:root[data-theme="dark"] .btn-warning:hover,
+:root[data-theme="dark"] .btn-warning:focus {
+	background-color: #8f5100;
+	border-color: #8f5100;
+}
+
+/* Vector logo inherits the theme token when present. The fallback keeps the
+   original brand blue on alpha, where theme-tokens.css is not loaded yet. */
+.mj-logo {
+	color: var(--mj-logo-color, #4792d1);
+	height: 54px;
+	width: auto;
+}
+
+/* Touch targets: icon-only small buttons are 22px high on phones and tablets. */
+@media (max-width: 991px) {
+	.btn.btn-sm {
+		min-height: 32px;
+	}
+}
+>>>>>>> origin/alpha
