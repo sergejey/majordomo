@@ -367,7 +367,12 @@ new TWEEN.Tween( camera.position ).to( {
         }
 
         $.subscribe('scenesNoUpdates', function (_) {
-         window.location.reload();
+         if (typeof checkAllStates === 'function') {
+          clearTimeout(checkTimer);
+          checkAllStates();
+         } else {
+          window.location.reload();
+         }
         });
 
 
