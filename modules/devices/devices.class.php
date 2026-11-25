@@ -1517,6 +1517,27 @@ class devices extends module
      *
      * @access private
      */
+    /**
+     * Replace the legacy Rooms.updateActivityStatus method code with a single
+     * require. The old code declared a global rooms_cmp() function, which
+     * caused a fatal error when the method was called twice in one request.
+     */
+    function patchRoomsActivityStatus()
+    {
+        $roomClass = SQLSelectOne("SELECT ID FROM classes WHERE TITLE='Rooms'");
+        if (empty($roomClass['ID'])) {
+            return;
+        }
+        $code = "require(DIR_MODULES . 'devices/Rooms_updateActivityStatus.php');";
+        $rows = SQLSelect("SELECT ID, CODE FROM methods WHERE TITLE='updateActivityStatus' AND CLASS_ID=" . (int)$roomClass['ID']);
+        foreach ($rows as $row) {
+            if (trim($row['CODE']) === $code) {
+                continue;
+            }
+            SQLExec("UPDATE methods SET CODE='" . DBSafe($code) . "' WHERE ID=" . (int)$row['ID']);
+        }
+    }
+
     function install($data = '')
     {
         parent::install();
@@ -1534,6 +1555,7 @@ class devices extends module
 
         $this->setDictionary();
         $this->renderStructure();
+        $this->patchRoomsActivityStatus();
         $this->homebridgeSync();
     }
 
