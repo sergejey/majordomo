@@ -1,6 +1,6 @@
 [#if VIEW_MODE=""#]
 <div>
-<a href="?tab=<#TAB#>&view_mode=edit_calls&id=" class="btn btn-default"><#LANG_ADD#></a>
+<a href="?tab=<#TAB#>&view_mode=edit_calls&id=" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD#></a>
 [#if CALLS#]
 <a href="?tab=<#TAB#>&view_mode=sync" class="btn btn-default"><#LANG_SEND_TO_CONNECT#></a>
 [#endif CALLS#]
@@ -23,8 +23,8 @@
   <#LANG_VALUE_IMAGE_URL#>: https://connect.majordomohome.com/public.php?key=[#PUBLIC_KEY#]&img=value&<br/>
    &lt;img src="https://connect.majordomohome.com/public.php?key=[#PUBLIC_KEY#]&img=value&"&gt;
   [#else#]<#LANG_NA#>[#endif#]</td>
-  <td valign="top"><a href="?tab=<#TAB#>&view_mode=edit_calls&id=[#ID#]" class="btn btn-default"><#LANG_EDIT#></a>
-  <a href="?tab=<#TAB#>&view_mode=delete_calls&id=[#ID#]" class="btn btn-default" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_DELETE#></a>
+  <td valign="top"><a href="?tab=<#TAB#>&view_mode=edit_calls&id=[#ID#]" class="btn btn-default"><i class="glyphicon glyphicon-pencil"></i> <#LANG_EDIT#></a>
+  <a href="?tab=<#TAB#>&view_mode=delete_calls&id=[#ID#]" class="btn btn-default" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-trash"></i> <#LANG_DELETE#></a>
   </td>
  </tr>
  [#end CALLS#]

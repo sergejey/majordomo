@@ -1381,6 +1381,7 @@ $dictionary = array (
     'PATTERN_HOUR' => 'годин',
 
     'THEME' => 'Тема',
+    'THEME_AUTO' => 'авто (за часом доби)',
     'THEME_DARK' => 'темна',
     'THEME_LIGHT' => 'світла',
 

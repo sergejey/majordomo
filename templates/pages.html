@@ -4,14 +4,14 @@
 <title>MajorDoMo</title>
 [#inc common_header.html#]
 <link href="<#ROOTHTML#>css/stl.css" rel="stylesheet" type="text/css"/>
-<link href="<#ROOTHTML#>css/stl_<#SETTINGS_THEME#>.css" rel="stylesheet" type="text/css"/>
-<link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#SETTINGS_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/jquery-ui-1.9.1.custom.css"/>
-<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap[#if "<#SETTINGS_THEME#>"=="dark"#]_dark[#endif#].min.css" type="text/css">
+<link href="<#ROOTHTML#>css/stl_<#MJ_THEME#>.css" rel="stylesheet" type="text/css"/>
+<link type="text/css" rel="stylesheet" href="<#ROOTHTML#>css/ui-[#if "<#MJ_THEME#>"=="dark"#]dark[#else#]light[#endif#]ness/jquery-ui-1.9.1.custom.css"/>
+<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap[#if "<#MJ_THEME#>"=="dark"#]_dark[#endif#].min.css" type="text/css">
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery-ui-1.9.1.custom.min.js"></script>
 <style>
 #body_background {
 position: absolute;
-background-color:[#if "<#SETTINGS_THEME#>"=="dark"#]black[#else#]transparent[#endif#];
+background-color:[#if "<#MJ_THEME#>"=="dark"#]black[#else#]transparent[#endif#];
 [#if "<#SETTINGS_SCENES_BACKGROUND#>"!=""#]background:url(<#SETTINGS_SCENES_BACKGROUND#>) no-repeat left top;[#endif#]
 -webkit-background-size: cover;
  -moz-background-size: cover;
@@ -27,7 +27,7 @@ background-color:[#if "<#SETTINGS_THEME#>"=="dark"#]black[#else#]transparent[#en
 
 </head>
 <body>
-<!--#body style='margin:0px; padding:0px; [#if "<#SETTINGS_THEME#>"=="dark"#] bgcolor="black";[#else#] bgcolor="#639FC7";[#endif#][#if "<#SETTINGS_SCENES_BACKGROUND#>"!=""#]background-image:url(<#SETTINGS_SCENES_BACKGROUND#>);[#endif#][#if "<#SETTINGS_SCENES_BACKGROUND_FIXED#>"=="1"#]background-attachment: fixed;[#endif#][#if "<#SETTINGS_SCENES_BACKGROUND_NOREPEAT#>"=="1"#]background-repeat: no-repeat; background-size: 100%;[#endif#]  overflow: hidden; bottom: 0px; right: 0px;'#-->
+<!--#body style='margin:0px; padding:0px; [#if "<#MJ_THEME#>"=="dark"#] bgcolor="black";[#else#] bgcolor="#639FC7";[#endif#][#if "<#SETTINGS_SCENES_BACKGROUND#>"!=""#]background-image:url(<#SETTINGS_SCENES_BACKGROUND#>);[#endif#][#if "<#SETTINGS_SCENES_BACKGROUND_FIXED#>"=="1"#]background-attachment: fixed;[#endif#][#if "<#SETTINGS_SCENES_BACKGROUND_NOREPEAT#>"=="1"#]background-repeat: no-repeat; background-size: 100%;[#endif#]  overflow: hidden; bottom: 0px; right: 0px;'#-->
 
 [#if "<#SETTINGS_SCENES_BACKGROUND_VIDEO#>"!=""#]
 <video id="video_background" preload="auto" autoplay="true" loop="loop" muted="muted" volume="0">

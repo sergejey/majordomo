@@ -16,12 +16,12 @@ for ($idv = 0; $idv < $total; $idv++) {
                 isset($this->device_types[$devices[$idv]['TYPE']]['PARENT_CLASS']) &&
                 $this->device_types[$devices[$idv]['TYPE']]['PARENT_CLASS'] == 'SSensors') ||
             (int)gg($devices[$idv]['LINKED_OBJECT'] . '.aliveTimeout') > 0
-        ) && gg($devices[$idv]['LINKED_OBJECT'] . '.alive') === '0') {
+        ) && (int)gg($devices[$idv]['LINKED_OBJECT'] . '.alive') === 0) {
         $yellow_state = 1;
         $details[] = $devices[$idv]['TITLE'] . ' ' . LANG_DEVICES_NOT_UPDATING;
     }
     $batteryWarning = gg($devices[$idv]['LINKED_OBJECT'] . '.batteryWarning');
-    if ($batteryWarning == 1) {
+    if ((int)$batteryWarning >= 1) {
         $yellow_state = 1;
         $details[] = $devices[$idv]['TITLE'] . ' ' . LANG_DEVICES_LOW_BATTERY;
     }
