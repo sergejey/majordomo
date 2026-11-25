@@ -1,0 +1,79 @@
+/*
+ * Small modernisation layer for MajorDoMo admin UI.
+ * Uses existing colour tokens, so light/dark/auto themes stay consistent.
+ */
+:root {
+	--mj-ui-radius: 10px;
+	--mj-ui-radius-sm: 7px;
+	--mj-ui-ease: 160ms ease;
+	--mj-ui-focus: rgba(71, 146, 209, 0.22);
+}
+
+[data-theme="dark"] {
+	--mj-ui-focus: rgba(158, 207, 21, 0.22);
+}
+
+.panel,
+.jumbotron,
+.well {
+	border-radius: var(--mj-ui-radius);
+	box-shadow: 0 1px 2px var(--mj-color-shadow-subtle);
+}
+
+.btn {
+	border-radius: var(--mj-ui-radius-sm);
+	transition: background-color var(--mj-ui-ease), border-color var(--mj-ui-ease), box-shadow var(--mj-ui-ease), transform var(--mj-ui-ease);
+}
+
+.btn:active {
+	transform: translateY(1px);
+}
+
+.btn:focus,
+.btn:focus-visible {
+	box-shadow: 0 0 0 3px var(--mj-ui-focus);
+}
+
+.form-control {
+	border-radius: var(--mj-ui-radius-sm);
+	transition: border-color var(--mj-ui-ease), box-shadow var(--mj-ui-ease);
+}
+
+.form-control:focus {
+	border-color: var(--mj-color-link);
+	box-shadow: 0 0 0 3px var(--mj-ui-focus);
+}
+
+.nav-tabs > li > a {
+	transition: color var(--mj-ui-ease), background-color var(--mj-ui-ease);
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+	box-shadow: inset 0 -2px 0 var(--mj-logo-color);
+}
+
+.breadcrumb,
+.label,
+.badge {
+	border-radius: var(--mj-ui-radius-sm);
+}
+
+a {
+	transition: color var(--mj-ui-ease);
+}
+
+.list-group-item {
+	transition: background-color var(--mj-ui-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.btn,
+	.form-control,
+	.nav-tabs > li > a,
+	a,
+	.list-group-item {
+		transition: none !important;
+	}
+}
