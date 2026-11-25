@@ -194,6 +194,7 @@ class saverestore extends module
         $link = gr('link');
         $update_url = $this->getUpdateURL($link);
         $out['UPDATE_URL'] = $update_url;
+        $out['CURRENT_BRANCH'] = isset($this->config['LATEST_CURR_BRANCH']) ? strtoupper((string)$this->config['LATEST_CURR_BRANCH']) : '';
 
         $out['UPDATE_AUTO'] = $this->config['UPDATE_AUTO'];
         $out['UPDATE_AUTO_DELAY'] = $this->config['UPDATE_AUTO_DELAY'];
@@ -515,7 +516,9 @@ class saverestore extends module
         } elseif (defined('MASTER_UPDATE_URL') && MASTER_UPDATE_URL != '') {
             $update_url = MASTER_UPDATE_URL;
         } else {
-            $update_url = GIT_URL . 'archive/master.tar.gz';
+            $current = isset($this->config['LATEST_CURR_BRANCH']) ? strtoupper((string)$this->config['LATEST_CURR_BRANCH']) : '';
+            $branch = ($current === 'ALPHA') ? 'alpha' : 'master';
+            $update_url = GIT_URL . 'archive/' . $branch . '.tar.gz';
         }
         if ($link != '') {
             if (preg_match('/\/commit\/(.+?)$/', $link, $m)) {
