@@ -5,7 +5,6 @@ error_reporting(E_ALL & ~($strict_mask | E_NOTICE | E_DEPRECATED));
 mb_internal_encoding("UTF-8");
 
 
-// Normalize the obsolete Ukrainian language code to ISO 639-1.\nfunction mjNormalizeLanguage($code) {\n    return ($code === 'ua') ? 'uk' : $code;\n}\n\n// get settings
 $settings = SQLSelect('SELECT NAME, VALUE FROM settings');
 $total = count($settings);
 
@@ -35,10 +34,10 @@ if (isset($_GET['disable_websockets'])) {
 }
 
 if (isset($_GET['lang'])) {
-    Define("SETTINGS_SITE_LANGUAGE", mjNormalizeLanguage($_GET['lang']));
+    Define("SETTINGS_SITE_LANGUAGE", ($_GET['lang'] === 'ua' ? 'uk' : $_GET['lang']));
     $_SESSION['lang'] = SETTINGS_SITE_LANGUAGE;
 } elseif (isset($_SESSION['lang'])) {
-    Define("SETTINGS_SITE_LANGUAGE", mjNormalizeLanguage($_SESSION['lang']));
+    Define("SETTINGS_SITE_LANGUAGE", ($_SESSION['lang'] === 'ua' ? 'uk' : $_SESSION['lang']));
 }
 
 
@@ -47,7 +46,7 @@ for ($i = 0; $i < $total; $i++) {
         continue;
     }
     if ($settings[$i]['NAME'] == 'SITE_LANGUAGE') {
-        $normalized = mjNormalizeLanguage($settings[$i]['VALUE']);
+        $normalized = ($settings[$i]['VALUE'] === 'ua' ? 'uk' : $settings[$i]['VALUE']);
         if ($normalized !== $settings[$i]['VALUE']) {
             SQLExec("UPDATE settings SET VALUE='uk' WHERE NAME='SITE_LANGUAGE");
             $settings[$i]['VALUE'] = $normalized;
