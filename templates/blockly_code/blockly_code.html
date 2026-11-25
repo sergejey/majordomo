@@ -358,6 +358,22 @@ function showSaveToast(text, isError) {
 		showRunPopup(text, isError, false);
 	}
 }
+function checkCodeAjax() {
+	var data = new FormData();
+	data.append('id', $('input[name*="id"]').first().val() || '');
+	data.append('md', $('input[name*="md"]:eq(2)').val() || 'scripts');
+	data.append('code', editor.getValue());
+	data.append('action', 'checkcode');
+	return fetch('/modules/blockly_code/autosave.php', {
+		method: 'POST',
+		body: data,
+		credentials: 'same-origin'
+	}).then(function (response) {
+		return response.json();
+	}).then(function (result) {
+		return result && result.status === 'ok' ? result.msg : '<#LANG_CODEEDITOR_ERROR#>';
+	});
+}
 function saveEditorAjax() {
 	saveEditorState();
 	[#if SETTINGS_CODEEDITOR_AUTOSAVE != '0'#]ajaxAutosave('save');[#endif#]
@@ -369,6 +385,7 @@ function saveEditorAjax() {
 	var data = new FormData(form[0]);
 	data.append('subm', 'Submit');
 	if (!data.get('mode')) data.append('mode', 'update');
+	var submitForm = function () {
 	showSaveToast('<#LANG_CODEEDITOR_SAVING#>', false);
 	fetch(location.href, {
 		method: 'POST',
@@ -385,6 +402,22 @@ function saveEditorAjax() {
 		showSaveToast('<#LANG_CODEEDITOR_SAVE_ERROR#>', true);
 		restoreEditorState();
 	});
+	};
+	if ('[#TYPE#]' === 'php' && typeof checkCodeAjax === 'function') {
+		showSaveToast('<#LANG_CODEEDITOR_CHECKING#>', false);
+		checkCodeAjax().then(function (message) {
+			if (message) {
+				showSaveToast('<#LANG_CODEEDITOR_ERROR_IN_CODE#>: ' + message, true);
+				restoreEditorState();
+				return;
+			}
+			submitForm();
+		}).catch(function () {
+			submitForm();
+		});
+	} else {
+		submitForm();
+	}
 	return false;
 }
 function CtrlSSave() {

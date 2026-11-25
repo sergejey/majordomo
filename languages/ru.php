@@ -2114,3 +2114,5 @@ if (!defined('LANG_CODEEDITOR_ONLY_PHP')) define('LANG_CODEEDITOR_ONLY_PHP', 'Н
 if (!defined('LANG_CODEEDITOR_SAVED')) define('LANG_CODEEDITOR_SAVED', 'Сохранено');
 if (!defined('LANG_CODEEDITOR_SAVE_ERROR')) define('LANG_CODEEDITOR_SAVE_ERROR', 'Не удалось сохранить. Проверьте код и попробуйте снова.');
 if (!defined('LANG_CODEEDITOR_SAVING')) define('LANG_CODEEDITOR_SAVING', 'Сохранение...');
+
+if (!defined('LANG_CODEEDITOR_CHECKING')) define('LANG_CODEEDITOR_CHECKING', 'Проверка кода...');

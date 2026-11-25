@@ -2098,3 +2098,5 @@ if (!defined('LANG_CODEEDITOR_ONLY_PHP')) define('LANG_CODEEDITOR_ONLY_PHP', 'On
 if (!defined('LANG_CODEEDITOR_SAVED')) define('LANG_CODEEDITOR_SAVED', 'Saved');
 if (!defined('LANG_CODEEDITOR_SAVE_ERROR')) define('LANG_CODEEDITOR_SAVE_ERROR', 'Save failed. Check the code and try again.');
 if (!defined('LANG_CODEEDITOR_SAVING')) define('LANG_CODEEDITOR_SAVING', 'Saving...');
+
+if (!defined('LANG_CODEEDITOR_CHECKING')) define('LANG_CODEEDITOR_CHECKING', 'Перевірка коду...');
