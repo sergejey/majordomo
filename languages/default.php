@@ -2107,3 +2107,5 @@ if (!defined('LANG_CODEEDITOR_AUDIT_ERROR')) define('LANG_CODEEDITOR_AUDIT_ERROR
 if (!defined('LANG_CODEEDITOR_AUDIT_NO_MODULE')) define('LANG_CODEEDITOR_AUDIT_NO_MODULE', 'gptchat module is not installed.');
 if (!defined('LANG_CODEEDITOR_AUDIT_NO_METHOD')) define('LANG_CODEEDITOR_AUDIT_NO_METHOD', 'Installed gptchat version does not support code audit.');
 if (!defined('LANG_CODEEDITOR_AUDIT_NO_CHAT')) define('LANG_CODEEDITOR_AUDIT_NO_CHAT', 'No audit chat is configured in gptchat.');
+
+if (!defined('LANG_CODEEDITOR_GPTCHAT_ID')) define('LANG_CODEEDITOR_GPTCHAT_ID', 'GPT chat ID for code audit');
