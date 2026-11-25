@@ -1577,7 +1577,7 @@ $dictionary = array(
 	'CODEEDITOR_RESTORE' => 'Restore',
 	'CODEEDITOR_RESTORE_CODE' => 'Restore code',
 	'CODEEDITOR_REMOVE_ME' => 'Remove me!',
-	'CODEEDITOR_TIPS' => 'Tips: you can hit <a href=\'#\' onClick=\'return switchFullscreen();\'>F11</a> for a fullscreen mode; <a href=\'#\' onclick=\'return CtrlSSave();\'>Ctrl+S</a> to save code.',
+	'CODEEDITOR_TIPS' => 'Tips: <a href=\'#\' onClick=\'return switchFullscreen();\'>F11</a> — fullscreen; <a href=\'#\' onclick=\'return CtrlSSave();\'>Ctrl+S</a> — save; <a href=\'#\' onclick=\'return runCodeQuick();\'>Ctrl+Enter</a> — run.',
 	'CODEEDITOR_CLOSE_BTN' => 'Close',
 	'CODEEDITOR_CREATE' => 'Create',
 	'CODEEDITOR_AUTOSAVE' => 'Autosave code',
@@ -2086,3 +2086,11 @@ foreach ($dictionary as $k => $v) {
         @define('LANG_' . $k, $v);
     }
 }
+
+if (!defined('LANG_CODEEDITOR_RUN')) define('LANG_CODEEDITOR_RUN', 'Run');
+if (!defined('LANG_CODEEDITOR_RESULT')) define('LANG_CODEEDITOR_RESULT', 'Execution result');
+if (!defined('LANG_CODEEDITOR_CLOSE')) define('LANG_CODEEDITOR_CLOSE', 'Close');
+if (!defined('LANG_CODEEDITOR_NO_OUTPUT')) define('LANG_CODEEDITOR_NO_OUTPUT', 'No output');
+if (!defined('LANG_CODEEDITOR_RUNNING')) define('LANG_CODEEDITOR_RUNNING', 'Running...');
+if (!defined('LANG_CODEEDITOR_ERROR')) define('LANG_CODEEDITOR_ERROR', 'Execution failed');
+if (!defined('LANG_CODEEDITOR_ONLY_PHP')) define('LANG_CODEEDITOR_ONLY_PHP', 'Only PHP code can be executed on the server.');

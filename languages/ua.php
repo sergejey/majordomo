@@ -2000,3 +2000,11 @@ foreach ($dictionary as $k => $v) {
         define('LANG_' . $k, $v);
     }
 }
+
+if (!defined('LANG_CODEEDITOR_RUN')) define('LANG_CODEEDITOR_RUN', 'Виконати');
+if (!defined('LANG_CODEEDITOR_RESULT')) define('LANG_CODEEDITOR_RESULT', 'Результат виконання');
+if (!defined('LANG_CODEEDITOR_CLOSE')) define('LANG_CODEEDITOR_CLOSE', 'Закрити');
+if (!defined('LANG_CODEEDITOR_NO_OUTPUT')) define('LANG_CODEEDITOR_NO_OUTPUT', 'Немає виводу');
+if (!defined('LANG_CODEEDITOR_RUNNING')) define('LANG_CODEEDITOR_RUNNING', 'Виконуємо...');
+if (!defined('LANG_CODEEDITOR_ERROR')) define('LANG_CODEEDITOR_ERROR', 'Помилка виконання');
+if (!defined('LANG_CODEEDITOR_ONLY_PHP')) define('LANG_CODEEDITOR_ONLY_PHP', 'На сервері можна виконати лише PHP-код.');
