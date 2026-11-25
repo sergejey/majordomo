@@ -1123,6 +1123,15 @@ function cleanUpValueHistory($value_id, $max_age_days, $data_type = 0)
     if (isset($tmp['TOTAL']) && $tmp['TOTAL'] > 0) {
         $total_removed = (int)$tmp['TOTAL'];
         SQLExec("DELETE FROM $table_name WHERE $qry");
+
+        // MyISAM does not return freed space to the OS until OPTIMIZE TABLE.
+        // Do it only after a bulk delete and only for the shared phistory table;
+        // separate history tables use MEMORY and do not need it.
+        $optimize_min = defined('HISTORY_OPTIMIZE_MIN_ROWS') ? (int) HISTORY_OPTIMIZE_MIN_ROWS : 1000;
+        $separate = defined('SEPARATE_HISTORY_STORAGE') && SEPARATE_HISTORY_STORAGE == 1;
+        if (!$separate && $optimize_min > 0 && $total_removed >= $optimize_min) {
+            SQLExec("OPTIMIZE TABLE $table_name");
+        }
     }
     return $total_removed;
 }
