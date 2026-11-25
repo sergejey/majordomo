@@ -21,4 +21,6 @@ if ($op !== 'dontupdate' || !$name || !$value) {
     exit;
 }
 SQLExec("UPDATE plugins SET CURRENT_VERSION = '" . DBSafe($value) . "' WHERE MODULE_NAME = '" . DBSafe($name) . "' LIMIT 1");
+include_once(DIR_MODULES . 'market/stats.php');
+mksStatsAdd('skip', $name);
 echo json_encode(array('status' => 'ok', 'msg' => 'Update skipped', 'name' => $name, 'version' => $value));

@@ -1069,6 +1069,8 @@ class market extends module
             }
 
             if ($frame) {
+            include_once(DIR_MODULES . 'market/stats.php');
+            mksStatsAdd('module', $name);
                 $this->echonow("Plugin '$name' ($version) installed.<br/>", 'green');
                 return "Plugin '$name' ($version) installed.";
             } else {

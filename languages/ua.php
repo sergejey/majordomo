@@ -283,6 +283,7 @@ $dictionary = array (
 
 
     'SETTINGS_UPDATED' => 'Налаштування збережені!',
+'UPDATES_STATS_TITLE' => 'Статистика оновлень',
     'SETTINGS_ERROR' => 'Не вдалося зберегти налаштування',
 
 

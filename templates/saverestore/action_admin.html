@@ -422,3 +422,20 @@ function saveSaverestoreSettings(form) {
         <input type="hidden" name="mode" value="clear">
     </form>
     [#endif CLEAR_FIRST#]
+
+<div class="panel panel-default" style="margin-top:10px;">
+ <div class="panel-heading"><#LANG_UPDATES_STATS_TITLE#></div>
+ <div class="panel-body" id="updates_stats"><#LANG_NEWDASH_LOADING#></div>
+</div>
+<script type="text/javascript">
+function loadUpdateStats() {
+ fetch('/modules/market/stats_ajax.php', {credentials:'same-origin'})
+ .then(function(r){return r.json();})
+ .then(function(res){
+  if (!res || res.status !== 'ok') return;
+  var s = res.stats;
+  $('#updates_stats').html('<p><#LANG_UPDATES_STATS_CORE#>: ' + s.core_updates + ' (' + s.core_last + ')</p><p><#LANG_UPDATES_STATS_MODULES#>: ' + s.module_updates + ' / <#LANG_UPDATES_STATS_SKIPS#>: ' + s.module_skips + '</p>');
+ });
+}
+$(document).ready(function(){ loadUpdateStats(); });
+</script>
