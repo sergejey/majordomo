@@ -46,8 +46,21 @@
 	.collapse.in{
 			display:block !important;
 	}
-	#searchbtnhide {
+}
+
+/* Exactly one search entry point at every viewport width. */
+.mj-search-toggle {
+	display: block;
+}
+#searchbtnhide {
+	display: none;
+}
+@media (min-width: 1231px) {
+	.mj-search-toggle {
 		display: none;
+	}
+	#searchbtnhide {
+		display: block;
 	}
 }
 
@@ -422,8 +435,7 @@ label.checkbox {
         }
 }
 
-/* Status badges keep their own palette: bootstrap.min.css sets a shared
-   .badge background, which is fine for plain badges but not for alert badges. */
+
 :root:not([data-theme="dark"]) .badge.alert-success {
 	background-color: #2e7d32;
 	color: #ffffff;

@@ -34,7 +34,7 @@ h3 {
 <input type="password" name="psw" class=form />
 <input type="hidden" name="mode" value="check" />
 <input type="hidden" name="action" value="enter" />
-<div><button type="submit" class="btn btn-large btn-success"><#LANG_LOGIN#></button></div>
+<div><button type="submit" class="btn btn-large btn-success"><i class="glyphicon glyphicon-log-in"></i> <#LANG_LOGIN#></button></div>
 </form>
 
 <script language="javascript">
@@ -110,7 +110,7 @@ document.frmEnter.login.focus();
    [#endif ID#]
    [#end USERS#]
    <tr>
-    <td colspan=2>[ <a href="?action=<#ACTION#>&mode=edit"><b><#LANG_ADD_NEW_USER#></a> ]</td>
+    <td colspan=2>[ <a href="?action=<#ACTION#>&mode=edit"><i class="glyphicon glyphicon-user-plus"></i> <b><#LANG_ADD_NEW_USER#></a> ]</td>
    </tr>
   </table>
   </td>

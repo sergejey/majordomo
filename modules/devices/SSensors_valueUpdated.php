@@ -33,6 +33,8 @@ if ($this->getProperty('direction') != $direction) {
   $this->setProperty('direction', $direction);
 }
 
+$this->callMethodSafe('keepAlive');
+
 $is_blocked=(int)$this->getProperty('blocked');
 if ($is_blocked) {
   return;
@@ -68,7 +70,6 @@ if ($linked_room && $this->getProperty('mainSensor')) {
   }
 }
 
-$this->callMethodSafe('keepAlive');
 $this->callMethod('statusUpdated', $params);
 /*
 include_once(dirname(__FILE__).'/devices.class.php');

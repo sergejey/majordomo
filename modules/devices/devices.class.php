@@ -850,9 +850,11 @@ class devices extends module
                             $devices[$idv]['TYPE'] == 'smoke' ||
                             $devices[$idv]['TYPE'] == 'counter' ||
                             preg_match('/^sensor/', $devices[$idv]['TYPE']) ||
-                            $this->device_types[$devices[$idv]['TYPE']]['PARENT_CLASS'] == 'SSensors' ||
+                            (isset($this->device_types[$devices[$idv]['TYPE']]) &&
+                                isset($this->device_types[$devices[$idv]['TYPE']]['PARENT_CLASS']) &&
+                                $this->device_types[$devices[$idv]['TYPE']]['PARENT_CLASS'] == 'SSensors') ||
                             (int)gg($devices[$idv]['LINKED_OBJECT'] . '.aliveTimeout') > 0
-                        ) && gg($devices[$idv]['LINKED_OBJECT'] . '.alive') === '0'
+                        ) && (int)gg($devices[$idv]['LINKED_OBJECT'] . '.alive') === 0
                     ) {
                         $problem_devices[] = $devices[$idv];
                         $problem_devices[0]['NEW_SECTION'] = 1;
