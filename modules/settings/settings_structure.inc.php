@@ -32,6 +32,11 @@ $settings_structure = array(
             'title' => LANG_SPEAK_SIGNAL,
             'notes' => LANG_SPEAK_SIGNAL_NOTE,
             'type' => 'onoff',
+        ),
+        'SPEAK_SIGNAL_FILE' => array(
+            'title' => LANG_SPEAK_SIGNAL_FILE,
+            'notes' => LANG_SPEAK_SIGNAL_FILE_NOTE,
+            'type' => 'path'
         )
     ),
     'system' => array(
