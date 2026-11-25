@@ -180,7 +180,11 @@ $settings_structure = array(
             'title' => LANG_CODEEDITOR_WRAPLINES,
             'type' => 'onoff'
         ),
-        'CODEEDITOR_AUTOCOMPLETE' => array(
+        'CODEEDITOR_GPTCHAT_ID' => array(
+            'title' => LANG_CODEEDITOR_GPTCHAT_ID,
+            'type' => 'text',
+            'default' => '0'
+        ),        'CODEEDITOR_AUTOCOMPLETE' => array(
             'title' => LANG_CODEEDITOR_AUTOCOMPLETE,
             'type' => 'onoff'
         ),
