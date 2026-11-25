@@ -79,7 +79,7 @@
    $('.devicecol').on('long-press',function(e) {
     var elem_id=(jQuery(this).attr("id"));
     var url='/panel/popup/devices.html?md=devices&view_mode=edit_devices&tab=settings&no_nav=1&id='+encodeURIComponent(elem_id.replace('devicecol',''));
-    parent.$.fancybox.open({ src: url, type: 'iframe' });
+    parent.$.fancybox.open({ src: url, type: 'iframe', 'beforeClose': function() { loadAllDevicesHTML<#UNIQ#>(); } });
     e.preventDefault();
    });
   });
