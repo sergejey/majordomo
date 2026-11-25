@@ -30,7 +30,7 @@ function openableSet%.object_id%(val) {
 }
 </script>
 
-<div class="device-widget openable %.alive|"offline;online"% opentype_%.openType%">
+<div aria-label="%.object_description%" data-state="%.alive|"offline;online"%" class="device-widget openable %.alive|"offline;online"% opentype_%.openType%">
 	<div class="device-icon openclose %.status|"on;off"% icon%.object_id%_openable"
 onClick='$(".icon%.object_id%_openable").addClass("pressed");
 setTimeout("$(\".icon%.object_id%_openable\").removeClass(\"pressed\");",300);

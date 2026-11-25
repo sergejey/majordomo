@@ -24,9 +24,9 @@
     clear: both;
 }
 
-.device-widget.controller:focus-visible,
-.device-widget.sensor:focus-visible,
-.device-widget.button:focus-visible {
+.device-widget.controller:focus,
+.device-widget.sensor:focus,
+.device-widget.button:focus {
     outline: 2px solid var(--mj-color-link, #26648f);
     outline-offset: 2px;
 }

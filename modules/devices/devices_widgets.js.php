@@ -191,3 +191,11 @@ function requestDeviceHTML(device_id,widgetElement) {
 
 
 }());
+
+$(document).on('keydown', '.device-widget[tabindex="0"]', function(e) {
+    if (e.target !== this) return;
+    if (e.which === 13 || e.which === 32) {
+        e.preventDefault();
+        $(this).trigger('click');
+    }
+});
