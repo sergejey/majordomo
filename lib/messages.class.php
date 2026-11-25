@@ -175,7 +175,8 @@ function say($ph, $level = 0, $member_id = 0, $source = '')
             if ($level >= (int)getGlobal('minMsgLevel') && !$member_id) { // && !$ignoreVoice
                 $passed = time() - $last_say_time;
                 if ($passed > 20) {
-                    playSound('dingdong', 1, $level);
+                    $signal = (defined('SETTINGS_SPEAK_SIGNAL_FILE') && SETTINGS_SPEAK_SIGNAL_FILE != '') ? SETTINGS_SPEAK_SIGNAL_FILE : 'dingdong';
+                    playSound($signal, 1, $level);
                 }
             }
         }
