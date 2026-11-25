@@ -367,3 +367,13 @@
 .device-icon.media { --mj-icon: "\f04b"; }
 .device-icon.on { color: var(--mj-widget-icon-on, var(--mj-color-accent, #4a7c0f)); }
 .device-icon.off { color: var(--mj-widget-icon-off, var(--mj-color-muted, #6a6a6a)); }
+@keyframes mj-widget-flash {
+    from { box-shadow: 0 0 0 0 var(--mj-color-link, #26648f); }
+    to   { box-shadow: 0 0 0 8px transparent; }
+}
+.device-widget.updated {
+    animation: mj-widget-flash .5s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+    .device-widget.updated { animation: none; }
+}

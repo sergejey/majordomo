@@ -9,6 +9,40 @@ include_once("./load_settings.php");
 var activeDevices = Array();
 var devicesWidgetWSTimer;
 var devicesWidgetWSUpdatedTimer;
+var mjPendingUpdates = {};
+var mjWidgetUpdateTimer;
+
+function mjApplyWidgetHTML(container, html) {
+    var $container = $(container);
+    var $new = $('<div>').html(html).find('.device-widget').first();
+    var $old = $container.find('.device-widget').first();
+    if (!$new.length || !$old.length) {
+        $container.html(html);
+        return;
+    }
+    var newClass = $new.attr('class') || '';
+    if (($old.attr('class') || '') !== newClass) {
+        $old.attr('class', newClass);
+    }
+    if (typeof $new.attr('data-state') !== 'undefined') {
+        $old.attr('data-state', $new.attr('data-state'));
+    }
+    $('.device-header, .device-details', $new).each(function() {
+        var $source = $(this);
+        var selector = '.' + $source.attr('class').split(/\s+/).join('.');
+        $old.find(selector).first().html($source.html());
+    });
+    $old.addClass('updated');
+    setTimeout(function() { $old.removeClass('updated'); }, 600);
+}
+
+function mjFlushWidgetUpdates() {
+    for (var deviceId in mjPendingUpdates) {
+        if (!mjPendingUpdates.hasOwnProperty(deviceId)) continue;
+        mjApplyWidgetHTML('#device' + deviceId, mjPendingUpdates[deviceId]);
+        delete mjPendingUpdates[deviceId];
+    }
+}
 
 $.subscribe('wsData', function (_, response) {
     if (response.action=='subscribed') {
@@ -17,27 +51,23 @@ $.subscribe('wsData', function (_, response) {
     if (response.action=='devices') {
         var obj=jQuery.parseJSON(response.data);
         if (typeof obj.DATA !='object') return false;
-        var objCnt = obj.DATA.length;
-        if (objCnt) {
-            for(var i=0;i<objCnt;i++) {
-                var device_id=obj.DATA[i].DEVICE_ID;
-                var html=obj.DATA[i].DATA;
-                $('#device'+device_id).html(html);
-            }
+        for (var i=0; i<obj.DATA.length; i++) {
+            mjPendingUpdates[obj.DATA[i].DEVICE_ID] = obj.DATA[i].DATA;
         }
+        clearTimeout(mjWidgetUpdateTimer);
+        mjWidgetUpdateTimer = setTimeout(mjFlushWidgetUpdates, 120);
     }
 });
 
 function refreshDevicesHTTP() {
-    var baseURL = ROOTHTML + "ajax/devices.html?op=get_device&id=";
-    activeDevices.forEach(function(item, index) {
-        var url = baseURL + item;
-        $.ajax({
-            url: url
-        }).done(function(data) {
-            var obj=jQuery.parseJSON(data);
-            $('#device'+item).html(obj.HTML);
-        });
+    if (!activeDevices.length || document.visibilityState === 'hidden') return;
+    var url = ROOTHTML + "ajax/devices.html?op=get_devices&ids=" + activeDevices.join(',');
+    $.ajax({ url: url }).done(function(data) {
+        var obj = jQuery.parseJSON(data);
+        if (!obj.devices) return;
+        for (var i=0; i<obj.devices.length; i++) {
+            mjApplyWidgetHTML('#device' + obj.devices[i].DEVICE_ID, obj.devices[i].HTML);
+        }
     });
 }
 
