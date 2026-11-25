@@ -49,7 +49,7 @@
 							<a href="?data_source=<#DATA_SOURCE#>&view_mode=edit_system_errors&id=[#ID#]&tab=history" class="btn btn btn-sm btn-info" title="<#LANG_VIEW#>"><i class="glyphicon glyphicon-eye-open"></i> <#LANG_NEWSYSTEM_ERROR_SEE_BTN#></a>
 							<a href="?data_source=<#DATA_SOURCE#>&view_mode=delete_system_errors&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn btn-sm btn-danger" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i> <#LANG_STRING_DELETE#></a>
 							[#if ACTIVE!="0"#]
-								<a href="?data_source=<#DATA_SOURCE#>&view_mode=clear_system_errors&id=[#ID#]" class="btn btn btn-sm btn-success" title="<#LANG_CLEAR#>"><i class="glyphicon glyphicon-ok"></i> <#LANG_NEWSYSTEM_ERROR_READ_BTN#></a>
+								<a href="#" onclick="return markErrorsRead([#ID#], this);" class="btn btn btn-sm btn-success" title="<#LANG_CLEAR#>"><i class="glyphicon glyphicon-ok"></i> <#LANG_NEWSYSTEM_ERROR_READ_BTN#></a>
 							[#endif#]
 						</td>
 					</tr>
