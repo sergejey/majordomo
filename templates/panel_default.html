@@ -98,6 +98,15 @@
 							<#LANG_DEVICES_STATUS#> WebSocket
 							<span id="wsStatus" class="badge"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
 						</li>
+						<li class="list-group-item">
+							<#LANG_HEALTH_MQTT#> <span id="health_mqtt" class="badge"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
+						</li>
+						<li class="list-group-item">
+							<#LANG_HEALTH_CONNECT#> <span id="health_connect" class="badge"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
+						</li>
+						<li class="list-group-item">
+							<#LANG_HEALTH_ERRORS#> <span id="health_errors" class="badge"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
+						</li>
 						
 						<li class="list-group-item" onclick="$('.reqPerMinHour').toggle('slow');" style="cursor:pointer">
 							<#LANG_NEWDASH_DB_REQ_SEC#>
@@ -387,3 +396,21 @@
 </script>
 
 [#endif#]
+
+<script type="text/javascript">
+function loadHealth() {
+ fetch('/modules/settings/ajax_health.php', {credentials:'same-origin'})
+ .then(function(r){return r.json();})
+ .then(function(d){
+  if (!d || d.status !== 'ok') return;
+  function label(value) {
+   var cls = value === 'ok' ? 'label-success' : (value === 'stale' ? 'label-danger' : 'label-default');
+   return '<span class="label ' + cls + '">' + value + '</span>';
+  }
+  $('#health_mqtt').html(label(d.mqtt));
+  $('#health_connect').html(label(d.connect));
+  $('#health_errors').html('<span class="label ' + (d.errors ? 'label-danger' : 'label-success') + '">' + d.errors + '</span>');
+ });
+}
+$(document).ready(function(){ loadHealth(); setInterval(loadHealth, 30000); });
+</script>
