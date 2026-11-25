@@ -2008,3 +2008,7 @@ if (!defined('LANG_CODEEDITOR_NO_OUTPUT')) define('LANG_CODEEDITOR_NO_OUTPUT', '
 if (!defined('LANG_CODEEDITOR_RUNNING')) define('LANG_CODEEDITOR_RUNNING', 'Виконуємо...');
 if (!defined('LANG_CODEEDITOR_ERROR')) define('LANG_CODEEDITOR_ERROR', 'Помилка виконання');
 if (!defined('LANG_CODEEDITOR_ONLY_PHP')) define('LANG_CODEEDITOR_ONLY_PHP', 'На сервері можна виконати лише PHP-код.');
+
+if (!defined('LANG_CODEEDITOR_SAVED')) define('LANG_CODEEDITOR_SAVED', 'Збережено');
+if (!defined('LANG_CODEEDITOR_SAVE_ERROR')) define('LANG_CODEEDITOR_SAVE_ERROR', 'Не вдалося зберегти. Перевірте код і спробуйте ще раз.');
+if (!defined('LANG_CODEEDITOR_SAVING')) define('LANG_CODEEDITOR_SAVING', 'Збереження...');
