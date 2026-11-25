@@ -115,8 +115,8 @@
 					<li class="list-group-item">
 						<span style="float: right;">
 							<select name="set_update_url" id="set_update_url" style="border: 0px;" onchange="this.form.submit();">
-								<option value="<#GIT_URL#>archive/master.tar.gz"[#if UPDATE_URL="<#GIT_URL#>archive/master.tar.gz"#] selected[#endif#]><#LANG_UPDATES_SOURCE_MASTER#></option>
-								<option value="<#GIT_URL#>archive/alpha.tar.gz"[#if UPDATE_URL="<#GIT_URL#>archive/alpha.tar.gz"#] selected[#endif#]><#LANG_UPDATES_SOURCE_ALPHA#></option>
+								<option value="<#GIT_URL#>archive/master.tar.gz"[#if UPDATE_URL="<#GIT_URL#>archive/master.tar.gz" AND CURRENT_BRANCH!="ALPHA"#] selected[#endif#]><#LANG_UPDATES_SOURCE_MASTER#></option>
+								<option value="<#GIT_URL#>archive/alpha.tar.gz"[#if UPDATE_URL="<#GIT_URL#>archive/alpha.tar.gz" OR CURRENT_BRANCH="ALPHA"#] selected[#endif#]><#LANG_UPDATES_SOURCE_ALPHA#></option>
 								[#if ADITIONAL_GIT_URLS#]
 								[#begin ADITIONAL_GIT_URLS#]
 								<option value="[#URL#]" [#SELECTED#]>[#TITLE#]</option>
