@@ -91,6 +91,18 @@ function collectData()
     if ($db) {
 
         $result['LatestUpdateId'] = gg('LatestUpdateId');
+        $result['LatestAvailableId'] = gg('LatestAvailableId');
+        $result['ModulesUpdates'] = 0;
+        $modules_updates = json_decode((string)gg('LatestModulesUpdates'), true);
+        if (is_array($modules_updates)) {
+            foreach ($modules_updates as $module_name => $version) {
+                $plugin_rec = SQLSelectOne("SELECT ID, CURRENT_VERSION FROM plugins WHERE MODULE_NAME LIKE '" . DBSafe($module_name) . "'");
+                $installed = isset($plugin_rec['CURRENT_VERSION']) ? $plugin_rec['CURRENT_VERSION'] : '';
+                if ((isset($plugin_rec['ID']) || is_dir(DIR_MODULES . $module_name)) && $installed != $version) {
+                    $result['ModulesUpdates']++;
+                }
+            }
+        }
         $result['LatestUpdateTimestamp'] = gg('LatestUpdateTimestamp');
 
         include_once("./load_settings.php");

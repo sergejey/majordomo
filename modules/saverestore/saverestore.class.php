@@ -274,6 +274,9 @@ class saverestore extends module
                     }
 
                     $out['LATEST_ID'] = $out['UPDATES'][0]['ID'];
+                    if ($out['LATEST_ID'] != '' && gg('LatestAvailableId') != $out['LATEST_ID']) {
+                        setGlobal('LatestAvailableId', $out['LATEST_ID']);
+                    }
 
                     $out['LATEST_CURR_BRANCH'] = $this->config['LATEST_CURR_BRANCH'];
                     $out['LATEST_UPDATED_ID'] = $this->config['LATEST_UPDATED_ID'];
@@ -1808,6 +1811,14 @@ class saverestore extends module
             }
             if (is_array($items)) {
                 $latest_id = preg_replace('/.+Commit\//is', '', trim($items[0]['id']['textvalue']));
+                foreach ($items as $item) {
+                    if (!isset($item['author']['name']['textvalue']) || $item['author']['name']['textvalue'] != 'sergejey') continue;
+                    $available_id = preg_replace('/.+Commit\//is', '', trim($item['id']['textvalue']));
+                    if ($available_id != '' && gg('LatestAvailableId') != $available_id) {
+                        setGlobal('LatestAvailableId', $available_id);
+                    }
+                    break;
+                }
                 $latest_tm = strtotime($items[0]['updated']['textvalue']);
                 //$latest_id = 'force_new_id';
                 if ($latest_id && ($latest_id == $this->config['LATEST_UPDATED_ID'])) {

@@ -511,6 +511,17 @@
                 $('#dashInfoOS').text(data.OS);
                 $('#dashInfoErrors').text(data.active_errors);
                 $('#dashInfoLastUpdate').text(data.LatestUpdateTimestamp);
+                if (data.LatestAvailableId && data.LatestAvailableId != data.LatestUpdateId) {
+                    $('#updates-check-system').show();
+                    $('#breadcrumb_update').attr('style', 'border-radius: 0px 4px 4px 0px;background-image: radial-gradient(circle farthest-corner at 0px 10px, #f5f5f5, #4792d1);');
+                }
+                if (data.ModulesUpdates > 0) {
+                    $('#updates-check-market').show();
+                    $('#updates-check-market-text').html('<#LANG_NEWDASH_UPDATE_MODULE_HINT1#> ' + data.ModulesUpdates + ' <#LANG_NEWDASH_UPDATE_MODULE_HINT2#>');
+                    $('#breadcrumb_update').attr('style', 'border-radius: 0px 4px 4px 0px;background-image: radial-gradient(circle farthest-corner at 0px 10px, #f5f5f5, #4792d1);');
+                } else {
+                    $('#updates-check-market').hide();
+                }
             },
             error: function(data) {
                 console.log('error');
