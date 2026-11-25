@@ -1,4 +1,24 @@
-<!--#
+<script language="javascript">
+function saveSettingInline(el) {
+	var data = new FormData();
+	data.append('id', el.dataset.id);
+	data.append('value', el.value);
+	fetch('/modules/settings/ajax_save.php', {
+		method: 'POST',
+		body: data,
+		credentials: 'same-origin'
+	}).then(function (r) { return r.json(); }).then(function (result) {
+		if (!result || result.status !== 'ok') {
+			if ($.toast) $.toast({ text: '<#LANG_SETTINGS_ERROR#>', position: 'top-right', bgColor: '#b52b27', textColor: '#fff', hideAfter: 3000, stack: 1 });
+			return;
+		}
+		if ($.toast) $.toast({ text: '<#LANG_SETTINGS_UPDATED#>', position: 'top-right', bgColor: '#3c763d', textColor: '#fff', hideAfter: 3000, stack: 1 });
+	}).catch(function () {
+		if ($.toast) $.toast({ text: '<#LANG_SETTINGS_ERROR#>', position: 'top-right', bgColor: '#b52b27', textColor: '#fff', hideAfter: 3000, stack: 1 });
+	});
+	return false;
+}
+</script><!--#
  @version 0.2 (auto-set)
 #-->
 [#if FILTER_SET="" && HIDE_FILTERS!="1"#]
@@ -42,14 +62,16 @@ $(function() {
         </label>
         <div class="controls">
                 [#if TYPE="text"#]
-                [#if NAME=="SITE_TIMEZONE" || NAME=="SITE_LANGUAGE" || NAME=="THEME"#]
-                [#VALUE#]
-                <a href="<#ROOTHTML#>popup/first_start.html" target=_blank><#LANG_UPDATE#></a>
-                <input type="hidden" class="form-control" name="value_[#ID#]" value="[#VALUE#]">
-                [#else#]
-                <input type="text" class="form-control" name="value_[#ID#]" value="[#VALUE#]" size=50>
+                [#if NAME=="SITE_TIMEZONE" || NAME=="SITE_LANGUAGE" || NAME=="VOICE_LANGUAGE" || NAME=="THEME"#]
+<select name="value_[#ID#]" class="form-control setting-inline" data-id="[#ID#]" onchange="return saveSettingInline(this);">
+[#begin OPTIONS#]
+<option value="[#OPTION_VALUE#]"[#if SELECTED="1"#] selected[#endif#] >[#OPTION_TITLE#]</option>
+[#end OPTIONS#]
+</select>
+[#else#]
+<input type="text" class="form-control" name="value_[#ID#]" value="[#VALUE#]" size=50>
                 [#endif#]
-                [#endif TYPE#]
+[#endif TYPE#]
 
                 [#if TYPE="json"#]
                 <pre>[#VALUE#]</pre>

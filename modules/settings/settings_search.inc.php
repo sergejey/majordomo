@@ -199,6 +199,25 @@ if ($res[0]['ID']) {
             SQLUpdate('settings', $res[$i]);
         }
 
+        if (in_array($res[$i]['NAME'], array('SITE_LANGUAGE', 'VOICE_LANGUAGE'), true)) {
+            foreach (glob(ROOT . 'languages/*.php') as $lang_file) {
+                if (preg_match('/([a-z_]+)\.php$/', basename($lang_file), $m)) {
+                    $code = $m[1];
+                    $res[$i]['OPTIONS'][] = array('OPTION_TITLE' => strtoupper($code), 'OPTION_VALUE' => $code, 'SELECTED' => ($code === $res[$i]['VALUE']) ? 1 : 0);
+                }
+            }
+            usort($res[$i]['OPTIONS'], function ($a, $b) {
+                return strcmp($a['OPTION_VALUE'], $b['OPTION_VALUE']);
+            });
+        } elseif ($res[$i]['NAME'] == 'SITE_TIMEZONE') {
+            foreach (DateTimeZone::listIdentifiers() as $zone) {
+                $res[$i]['OPTIONS'][] = array('OPTION_TITLE' => $zone, 'OPTION_VALUE' => $zone, 'SELECTED' => ($zone === $res[$i]['VALUE']) ? 1 : 0);
+            }
+        } elseif ($res[$i]['NAME'] == 'THEME') {
+            foreach (array('auto', 'light', 'dark') as $theme_code) {
+                $res[$i]['OPTIONS'][] = array('OPTION_TITLE' => $theme_code, 'OPTION_VALUE' => $theme_code, 'SELECTED' => ($theme_code === $res[$i]['VALUE']) ? 1 : 0);
+            }
+        }
         // use language structure titles/notes/data (if defined) instead of stored values
         // (applied after update/reset so localized values are not written back to the database)
         if (isset($structure_titles[$res[$i]['NAME']])) {
