@@ -231,7 +231,55 @@
 				</div>
 			</div>
 		</div>
-		<div class="row" id="content">
+		<div id="mj_health" class="alert alert-info" style="display:none;margin:0 0 10px 0;padding:5px 10px;font-size:11pt;">
+ <b><#LANG_SYSTEM_HEALTH#>:</b>
+ <span id="mj_health_mqtt"></span>
+ <span id="mj_health_connect"></span>
+ <span id="mj_health_errors"></span>
+</div>
+<script type="text/javascript">
+function loadHealth() {
+ fetch('/modules/settings/ajax_health.php', {credentials:'same-origin'})
+ .then(function(r){return r.json();})
+ .then(function(d){
+  if (!d || d.status !== 'ok') return;
+  function label(value) {
+   var cls = value === 'ok' ? 'label-success' : (value === 'stale' ? 'label-danger' : 'label-default');
+   return '<span class="label ' + cls + '">' + value + '</span>';
+  }
+  $('#mj_health_mqtt').html('<#LANG_HEALTH_MQTT#>: ' + label(d.mqtt) + ' ');
+  $('#mj_health_connect').html('<#LANG_HEALTH_CONNECT#>: ' + label(d.connect) + ' ');
+  $('#mj_health_errors').html('<#LANG_HEALTH_ERRORS#>: <span class="label ' + (d.errors ? 'label-danger' : 'label-success') + '">' + d.errors + '</span>');
+  $('#mj_health').show();
+ });
+}
+$(document).ready(function(){ loadHealth(); setInterval(loadHealth, 30000); });
+</script>
+<div id="mj_health" class="alert alert-info" style="display:none;margin:0 0 10px 0;padding:5px 10px;font-size:11pt;">
+ <b><#LANG_SYSTEM_HEALTH#>:</b>
+ <span id="mj_health_mqtt"></span>
+ <span id="mj_health_connect"></span>
+ <span id="mj_health_errors"></span>
+</div>
+<script type="text/javascript">
+function loadHealth() {
+ fetch('/modules/settings/ajax_health.php', {credentials:'same-origin'})
+ .then(function(r){return r.json();})
+ .then(function(d){
+  if (!d || d.status !== 'ok') return;
+  function label(value) {
+   var cls = value === 'ok' ? 'label-success' : (value === 'stale' ? 'label-danger' : 'label-default');
+   return '<span class="label ' + cls + '">' + value + '</span>';
+  }
+  $('#mj_health_mqtt').html('<#LANG_HEALTH_MQTT#>: ' + label(d.mqtt) + ' ');
+  $('#mj_health_connect').html('<#LANG_HEALTH_CONNECT#>: ' + label(d.connect) + ' ');
+  $('#mj_health_errors').html('<#LANG_HEALTH_ERRORS#>: <span class="label ' + (d.errors ? 'label-danger' : 'label-success') + '">' + d.errors + '</span>');
+  $('#mj_health').show();
+ });
+}
+$(document).ready(function(){ loadHealth(); setInterval(loadHealth, 30000); });
+</script>
+<div class="row" id="content">
 			[#if PRINT!="1" && HIDE_LEFT_PANEL!="1"#]
 			[#inc panel_nav_left.html#]
 			[#endif PRINT#]
