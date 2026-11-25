@@ -18,7 +18,7 @@ class MediaRendererVolume {
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $content = curl_exec($ch);
-        curl_close($ch);
+        mjdCurlClose($ch);
 
         // загружаем xml
         libxml_use_internal_errors(true);
@@ -94,7 +94,7 @@ class MediaRendererVolume {
         curl_setopt($ch, CURLOPT_POST, TRUE);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
         $response = curl_exec($ch);
-        curl_close($ch);
+        mjdCurlClose($ch);
         return $response;
     }
 }

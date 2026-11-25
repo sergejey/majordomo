@@ -1,6 +1,7 @@
 <?php
 
-error_reporting(E_ALL & ~(E_STRICT | E_NOTICE | E_DEPRECATED));
+$strict_mask = PHP_VERSION_ID < 80400 ? E_STRICT : 0;
+error_reporting(E_ALL & ~($strict_mask | E_NOTICE | E_DEPRECATED));
 mb_internal_encoding("UTF-8");
 
 
@@ -10,6 +11,23 @@ $total = count($settings);
 
 if (isset($_GET['theme']) && !defined('SETTINGS_THEME')) {
     Define('SETTINGS_THEME', $_GET['theme']);
+}
+
+// Effective colour theme for templates. The `theme` cookie wins over the
+// server setting; `auto` is resolved by local time (07:00-19:00 = light).
+if (!defined('MJ_THEME')) {
+    $mj_theme_cookie = isset($_COOKIE['theme']) ? $_COOKIE['theme'] : '';
+    if ($mj_theme_cookie === 'auto') {
+        $mj_hour = (int) date('H');
+        $mj_theme_cookie = ($mj_hour >= 7 && $mj_hour < 19) ? 'light' : 'dark';
+    }
+    if (!in_array($mj_theme_cookie, array('dark', 'light'), true)) {
+        $mj_theme_cookie = defined('SETTINGS_THEME') ? SETTINGS_THEME : 'light';
+    }
+    if (!in_array($mj_theme_cookie, array('dark', 'light'), true)) {
+        $mj_theme_cookie = 'light';
+    }
+    Define('MJ_THEME', $mj_theme_cookie);
 }
 
 if (isset($_GET['disable_websockets'])) {
@@ -67,6 +85,12 @@ if (!defined('SETTINGS_SITE_TIMEZONE')) {
 ini_set('date.timezone', SETTINGS_SITE_TIMEZONE);
 date_default_timezone_set(SETTINGS_SITE_TIMEZONE);
 
+// New Year decoration window: 25 December - 15 January (site timezone).
+if (!defined('MJ_HOLIDAY_SEASON')) {
+    $mj_holiday_day = (int)date('nd');
+    Define('MJ_HOLIDAY_SEASON', (($mj_holiday_day >= 1225) || ($mj_holiday_day <= 115)) ? 1 : 0);
+}
+
 function timezone_offset_string($offset)
 {
     return sprintf("%s%02d:%02d", ($offset >= 0) ? '+' : '-', abs(intdiv($offset, 3600)), abs(intdiv($offset % 3600, 60)));
@@ -97,13 +121,14 @@ if (isset($_SERVER['REQUEST_METHOD']) &&
         if ($_GET['system_call']) {
             echo "Main cycle is down (timeout: $maincycleTimePassed)";
         } else {
+            $roothtml = ROOTHTML;
             echo "<html><head>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />
  <meta http-equiv=\"refresh\" content=\"10\">
-<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\" integrity=\"sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u\" crossorigin=\"anonymous\">
-<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css\" integrity=\"sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp\" crossorigin=\"anonymous\">
+<link rel=\"stylesheet\" href=\"{$roothtml}3rdparty/bootstrap/css/bootstrap.min.css\">
+<link rel=\"stylesheet\" href=\"{$roothtml}3rdparty/bootstrap/css/bootstrap-theme.min.css\">
 <script src=\"https://code.jquery.com/jquery-3.3.1.min.js\" type=\"text/javascript\"></script>
-<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js\" integrity=\"sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa\" crossorigin=\"anonymous\"></script>
+<script src=\"{$roothtml}3rdparty/bootstrap/js/bootstrap.min.js\"></script>
 </head><body><div class=\"container\">";
             echo "&nbsp;<div class='alert alert-danger'>" . LANG_MAINCYCLEDOWN . "</div>";
             echo '<p>' . LANG_MAINCYCLEDOWN_DETAILS . '<br/>(timeout: ' . $maincycleTimePassed . ')</p>';

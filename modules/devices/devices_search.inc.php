@@ -75,7 +75,7 @@ if ($group_name == 'manage_groups') {
         $qry .= " AND 0";
     }
 } elseif ($group_name == 'is:battery_low') {
-    $object_names = getObjectsByProperty('batteryWarning', 1);
+    $object_names = getObjectsByProperty('batteryWarning', '>=', 1);
     if (!is_array($object_names)) {
         $object_names = array(0);
     }

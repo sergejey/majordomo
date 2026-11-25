@@ -1,0 +1,90 @@
+/*
+ * Permanent holiday mood for the control panel.
+ * Pure CSS: no images, no JavaScript, no PHP date checks.
+ * The "random" look comes from :nth-child colours and mismatched delays.
+ */
+.mj-holiday {
+    position: relative;
+    height: 22px;
+    margin: 4px 15px 8px;
+    display: none;
+    align-items: flex-start;
+    justify-content: space-around;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* shown only during the New Year season */
+body[data-holiday="1"] .mj-holiday {
+    display: flex;
+}
+
+/* garland wire */
+.mj-holiday::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, #607d8b, #90a4ae 20%, #455a64 50%, #90a4ae 80%, #607d8b);
+    border-radius: 1px;
+}
+
+/* small festive star at the right end */
+.mj-holiday::after {
+    content: "\2726";
+    position: absolute;
+    top: -3px;
+    right: 2px;
+    color: #ffd54f;
+    font-size: 12px;
+    line-height: 1;
+    text-shadow: 0 0 6px #ffd54f;
+}
+
+.mj-holiday span {
+    position: relative;
+    width: 8px;
+    height: 12px;
+    margin-top: 2px;
+    border-radius: 50% 50% 45% 45%;
+    background: currentColor;
+    box-shadow: 0 0 6px currentColor, inset 0 -2px 2px rgba(0, 0, 0, .25);
+    transform-origin: 50% 0;
+    animation: mj-holiday-swing 2.4s ease-in-out infinite alternate,
+               mj-holiday-twinkle 1.6s ease-in-out infinite;
+}
+
+/* colour cycle: looks scattered without any random() call */
+.mj-holiday span:nth-child(6n + 1) { color: #e53935; animation-delay: -1.3s, -0.2s; }
+.mj-holiday span:nth-child(6n + 2) { color: #ffb300; animation-delay: -0.4s, -0.9s; }
+.mj-holiday span:nth-child(6n + 3) { color: #43a047; animation-delay: -1.9s, -0.5s; }
+.mj-holiday span:nth-child(6n + 4) { color: #1e88e5; animation-delay: -0.8s, -1.2s; }
+.mj-holiday span:nth-child(6n + 5) { color: #8e24aa; animation-delay: -2.1s, -0.7s; }
+.mj-holiday span:nth-child(6n + 6) { color: #00acc1; animation-delay: -1.0s, -1.5s; }
+
+.mj-holiday span:nth-child(3n)   { animation-duration: 2.9s, 1.9s; }
+.mj-holiday span:nth-child(4n)   { animation-duration: 2.1s, 1.3s; }
+.mj-holiday span:nth-child(5n)   { animation-duration: 3.3s, 2.2s; }
+
+@keyframes mj-holiday-swing {
+    from { transform: rotate(-7deg) translateY(0); }
+    to   { transform: rotate(7deg) translateY(1px); }
+}
+
+@keyframes mj-holiday-twinkle {
+    0%, 100% { opacity: .95; box-shadow: 0 0 6px currentColor, inset 0 -2px 2px rgba(0, 0, 0, .25); }
+    50%      { opacity: .45; box-shadow: 0 0 2px currentColor, inset 0 -2px 2px rgba(0, 0, 0, .25); }
+}
+
+@media (max-width: 767px) {
+    .mj-holiday span:nth-child(n + 9) { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mj-holiday span {
+        animation: none;
+        opacity: 1;
+    }
+}

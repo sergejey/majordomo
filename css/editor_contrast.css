@@ -1,0 +1,25 @@
+/* CodeMirror theme contrast fixes (2026-11-20) */
+.cm-s-base16-light span.cm-string { color: #a34f00; }
+.cm-s-base16-light span.cm-variable { color: #4f6b2a; }
+.cm-s-base16-light span.cm-variable-2 { color: #2f6f8f; }
+.cm-s-icecoder.CodeMirror { color: #d0d0d0; }
+.cm-s-icecoder span.cm-variable-2 { color: #ff7eb6; }
+.cm-s-smoke_theme span.cm-comment { color: #777777; }
+.cm-s-smoke_theme span.cm-keyword { color: #cc0000; }
+.cm-s-smoke_theme span.cm-string { color: #b03030; }
+.cm-s-ambiance span.cm-comment { color: #999999; }
+.cm-s-material span.cm-comment { color: #8fa5b0; }
+.cm-s-moxer span.cm-comment { color: #8a91b4; }
+.cm-s-dracula span.cm-comment { color: #8b9bd0; }
+.cm-s-neat span.cm-comment { color: #8a6a4a; }
+
+/* search dialog: CodeMirror keeps antiquewhite background, dark themes need their own */
+.cm-s-dracula .CodeMirror-dialog-top,
+.cm-s-material .CodeMirror-dialog-top,
+.cm-s-moxer .CodeMirror-dialog-top,
+.cm-s-ambiance .CodeMirror-dialog-top,
+.cm-s-icecoder .CodeMirror-dialog-top {
+	background: var(--mj-editor-dialog-bg);
+	color: var(--mj-editor-dialog-fg);
+	border-bottom-color: var(--mj-editor-dialog-border);
+}

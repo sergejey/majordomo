@@ -111,13 +111,23 @@ $(function() {
 <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/display/fullscreen.css">
 <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/fold/foldgutter.css">
 <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/hint/show-hint.css">
-[#if SETTINGS_CODEEDITOR_THEME != 'codemirror' && SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/lib/[#SETTINGS_CODEEDITOR_THEME#].css">[#endif#]
+[#if SETTINGS_CODEEDITOR_THEME != 'codemirror' && SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]<link rel="stylesheet" href="<#ROOTHTML#>css/theme-tokens.css"><link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/lib/[#SETTINGS_CODEEDITOR_THEME#].css"><link rel="stylesheet" href="<#ROOTHTML#>css/editor_contrast.css">[#endif#]
 
 <style>
 	.cm_panel {
 		background: #f7f7f7;
 		padding: 3px 7px;
 		font-size: 0.85em;
+	}
+	@media (max-width: 767px) {
+		/* bigger code on phones, desktop hotkey hints are useless there */
+		.CodeMirror {
+			font-size: 16px;
+			line-height: 1.45;
+		}
+		.cm_panel {
+			display: none;
+		}
 	}
 	.cm_panel.top, .cm_panel.after-top {
 		border-bottom: 1px solid #ddd;
@@ -218,6 +228,9 @@ function CtrlSSave() {
 
 $(document).ready(function(){
 	var myTextArea[#CODE_FIELD#] = document.getElementById('[#CODE_FIELD#]');
+	// wrap long lines on narrow screens unless the setting is explicitly off
+	var wrapSetting = '[#SETTINGS_CODEEDITOR_WRAPLINES#]';
+	var wrapMobile = (wrapSetting !== '0') && window.innerWidth < 768;
 	editor = CodeMirror.fromTextArea(myTextArea[#CODE_FIELD#], {
 		value: myTextArea[#CODE_FIELD#].value,
 		lineNumbers: true,
@@ -228,7 +241,7 @@ $(document).ready(function(){
 		[#if TYPE=="php" || TYPE=="html" || TYPE=="javascript"#]
 		enterMode: "indent",
 		undoDelay: 400,
-		lineWrapping: [#if SETTINGS_CODEEDITOR_WRAPLINES == 1#]true[#else#]false[#endif#],
+		lineWrapping: [#if SETTINGS_CODEEDITOR_WRAPLINES == 1#]true[#else#]wrapMobile[#endif#],
 		scrollbarStyle: 'native',
 		autofocus: [#if AUTOFOCUS == '0'#]false[#else#]true[#endif#],
 		[#if SETTINGS_CODEEDITOR_THEME != 'codemirror' && SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]theme: "[#SETTINGS_CODEEDITOR_THEME#]",[#endif#]
@@ -291,6 +304,12 @@ $(document).ready(function(){
 
 
 	addPanel("top");
+
+	if (wrapSetting !== '0' && wrapSetting !== '1') {
+		window.addEventListener('resize', function () {
+			editor.setOption('lineWrapping', window.innerWidth < 768);
+		});
+	}
 
 	[#if TYPE=="php"#]
 		[#if SETTINGS_CODEEDITOR_TURNONSETTINGS == 1 && SETTINGS_CODEEDITOR_AUTOCOMPLETE == 1#]

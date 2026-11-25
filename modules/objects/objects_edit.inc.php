@@ -81,7 +81,8 @@ if ($this->mode == 'update') {
             $new_rec = 1;
             $rec['ID'] = SQLInsert($table_name, $rec); // adding new record
         }
-        clearCacheData();
+        clearCacheData('P:');
+        clearCacheData('MJD:');
         $out['OK'] = 1;
     } else {
         $out['ERR'] = 1;
@@ -133,11 +134,13 @@ if ($this->tab == 'properties') {
                 SQLExec("DELETE FROM properties WHERE ID='" . $delete_prop . "' AND OBJECT_ID='" . $rec['ID'] . "'");
             }
         }
-        clearCacheData();
+        clearCacheData('P:');
+        clearCacheData('MJD:');
     }
 
     if ($this->mode == 'update') {
-        clearCacheData();
+        clearCacheData('P:');
+        clearCacheData('MJD:');
         $new_property = gr('new_property', 'trim');
         $new_property = str_replace(' ', '', $new_property);
 		$new_description = gr('new_description', 'trim');
@@ -158,12 +161,14 @@ if ($this->tab == 'properties') {
 				$prop = SQLSelectOne("SELECT * FROM properties WHERE OBJECT_ID='" . $rec['ID'] . "' AND TITLE='" . $new_property . "'");
 				if(empty($prop['ID'])){
 					$tmp['ID'] = SQLInsert('properties', $tmp);
+					clearCacheData('P:');
 					if ($new_value != '') {
 						setGlobal($rec['TITLE'] . '.' . $new_property, $new_value);
 					}
 				}
 			}else{
 				SQLUpdate('properties', $tmp);
+				clearCacheData('P:');
 				if (getGlobal($rec['TITLE'] . '.' . $new_property) != $new_value) {
 					setGlobal($rec['TITLE'] . '.' . $new_property, $new_value);
 				}

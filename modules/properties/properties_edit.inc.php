@@ -128,6 +128,7 @@
      }
 
     }
+    clearCacheData('P:');
 
    } else {
     $out['ERR']=1;

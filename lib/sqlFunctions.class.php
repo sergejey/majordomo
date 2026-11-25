@@ -259,6 +259,36 @@ if (!function_exists('SQLRecreateTable')) {
     }
 }
 
+/**
+ * Build the list of tables to exclude from a DB dump.
+ * DB_BACKUP_IGNORE_TABLES is a comma-separated list from config.php;
+ * per-call exclusions are merged on top of it.
+ *
+ * @param mixed $extra array of table names or 0
+ * @return array
+ */
+function SQLBackupIgnoreTables($extra = 0)
+{
+    $ignore = array();
+    if (defined('DB_BACKUP_IGNORE_TABLES')) {
+        foreach (explode(',', (string) DB_BACKUP_IGNORE_TABLES) as $table) {
+            $table = trim($table);
+            if ($table !== '' && preg_match('/^[A-Za-z0-9_]+$/', $table)) {
+                $ignore[] = $table;
+            }
+        }
+    }
+    if (is_array($extra)) {
+        foreach ($extra as $table) {
+            $table = trim((string) $table);
+            if ($table !== '' && preg_match('/^[A-Za-z0-9_]+$/', $table)) {
+                $ignore[] = $table;
+            }
+        }
+    }
+    return array_values(array_unique($ignore));
+}
+
 function SQLMakeDBDump($dump_file, $ignore_tables = 0)
 {
     $dir = dirname($dump_file);
@@ -273,10 +303,8 @@ function SQLMakeDBDump($dump_file, $ignore_tables = 0)
     }
     $mysqlDumpParam = " -h " . DB_HOST . " --user=\"" . DB_USER . "\" --password=\"" . DB_PASSWORD . "\"";
     $mysqlDumpParam .= " --no-create-db --add-drop-table " . DB_NAME;
-    if (is_array($ignore_tables)) {
-        foreach ($ignore_tables as $table) {
-            $mysqlDumpParam .= " --ignore-table=" . DB_NAME . "." . $table;
-        }
+    foreach (SQLBackupIgnoreTables($ignore_tables) as $table) {
+        $mysqlDumpParam .= " --ignore-table=" . DB_NAME . "." . $table;
     }
     exec($mysqlDumpPath . $mysqlDumpParam . "> " . $dump_file . '.tmp', $output);
     if (file_exists($dump_file . '.tmp') && filesize($dump_file . '.tmp') > 0) {
@@ -317,7 +345,9 @@ function SQLMakeTableDump($dump_file, $table_name)
 
 function SQLRestoreDBDump($dump_file)
 {
-    if (IsWindowsOS())
+    if (defined('PATH_TO_MYSQL'))
+        $mysqlCmdPath = PATH_TO_MYSQL;
+    elseif (IsWindowsOS())
         $mysqlCmdPath = SERVER_ROOT . "/server/mysql/bin/mysql";
     else
         $mysqlCmdPath = "mysql";

@@ -4,22 +4,59 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 
+<script type="text/javascript">
+	// Set the theme before stylesheets load to avoid a flash of the wrong palette.
+	(function () {
+		// 07:00-19:00 is light, the rest of the day is dark.
+		function resolve(choice) {
+			// auto уже разрешён на сервере (MJ_THEME), чтобы не расходиться с CSS-ссылками
+			if (choice === 'auto') return '<#MJ_THEME#>';
+			return choice === 'dark' ? 'dark' : 'light';
+		}
+
+		var match = document.cookie.match(/(?:^|;\s*)theme=([^;]+)/);
+		var choice = match ? match[1] : '<#MJ_THEME#>';
+		try { choice = decodeURIComponent(choice); } catch (e) { /* keep raw value */ }
+		if (choice !== 'auto' && choice !== 'dark' && choice !== 'light') {
+			choice = '<#MJ_THEME#>';
+		}
+		if (choice !== 'auto' && choice !== 'dark' && choice !== 'light') choice = 'light';
+		document.documentElement.setAttribute('data-theme', resolve(choice));
+
+		window.MJDTheme = {
+			set: function (value) {
+				choice = value === 'auto' ? 'auto' : (value === 'dark' ? 'dark' : 'light');
+				var theme = resolve(choice);
+				document.documentElement.setAttribute('data-theme', theme);
+				document.cookie = 'theme=' + choice + '; path=/; max-age=' + (180 * 24 * 60 * 60);
+				var link = document.getElementById('theme');
+				if (link) {
+					link.href = '<#ROOTHTML#>3rdparty/bootstrap/css/' +
+						(theme === 'dark' ? 'bootstrap_dark_admin.css' : 'bootstrap.min.css');
+				}
+			}
+		};
+	})();
+</script>
+
 <link rel="shortcut icon" href="<#ROOTHTML#>favicon.ico" type="image/x-icon"/>
 <link href="<#ROOTHTML#>css/devices.css?v=22-01-03"  rel="stylesheet" type="text/css"/>
 
 <script type="text/javascript"  src="<#ROOTHTML#>3rdparty/jquery/jquery-3.3.1.min.js"></script>
 <script type="text/javascript"  src="<#ROOTHTML#>3rdparty/jquery/jquery-migrate-3.0.0.min.js"></script>
 
-[#if "<#SETTINGS_THEME#>"!="dark" || PANEL_THEME!="dark"#]
+[#if "<#MJ_THEME#>"!="dark" || PANEL_THEME!="dark"#]
 <link rel="stylesheet" id="theme" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap.min.css" type="text/css">
 [#else#]
 <link rel="stylesheet" id="theme" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap_dark_admin.css" type="text/css">
 [#endif#]
+<link rel="stylesheet" href="<#ROOTHTML#>css/theme-tokens.css" type="text/css">
 
+<link rel="stylesheet" href="<#ROOTHTML#>css/fontawesome-compat.css" type="text/css">
 <script type="text/javascript" src="<#ROOTHTML#>3rdparty/bootstrap/js/bootstrap.min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="<#ROOTHTML#>3rdparty/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css"/>
-<script type="text/javascript" src="<#ROOTHTML#>3rdparty/moment/moment.min.js"></script>
+<script type="text/javascript" src="<#ROOTHTML#>3rdparty/moment/moment-2.31.0.min.js"></script>
 <script type="text/javascript" src="<#ROOTHTML#>3rdparty/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
 <script type="text/javascript" src="<#ROOTHTML#>3rdparty/duration-picker/html-duration-picker.min.js"></script>
 

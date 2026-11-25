@@ -18,14 +18,27 @@
 <form action="?" method="post" name="frmList_security_rules" class="form">
 <div class="table-responsive">
 <table class="table table-striped table-hover">
+<thead>
+<tr>
+ <th><#LANG_OBJECT#></th>
+ <th><#LANG_MODULE_SECURITY_RULES#></th>
+ <th width="100"></th>
+</tr>
+</thead>
 <tbody>
 [#begin RESULT#]
 <tr class="hover_btn2">
- <td style="vertical-align: middle;">[#OBJECT_TYPE#] (id: [#OBJECT_ID#])</td>
- <td width="1%" nowrap>
+ <td valign="top">[#OBJECT_LINKED#]</td>
+ <td valign="top">
+  [#if TERMINALS_TITLES#]<div><b><#LANG_SECURITY_TERMINALS#>:</b> [#TERMINALS_TITLES#]</div>[#endif#]
+  [#if USERS_TITLES#]<div><b><#LANG_SECURITY_USERS#>:</b> [#USERS_TITLES#]</div>[#endif#]
+  [#if TIMES#]<div><b><#LANG_SECURITY_TIMES#>:</b> [#TIMES#]</div>[#endif#]
+  [#if CONDITIONS_SUMMARY#]<div><b><#LANG_CONDITION#>:</b> <code>[#CONDITIONS_SUMMARY#]</code></div>[#endif#]
+ </td>
+ <td width="100" valign="top">
   [#if "<#ACTION#>"=="admin"#]
-  <a href="?view_mode=edit_security_rules&id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-pencil"></i></a>
-  <a href="?view_mode=delete_security_rules&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default btn-sm" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i></a>
+   <a class="btn btn-default btn-sm" href="?view_mode=edit_security_rules&id=[#ID#]" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-pencil"></i></a>
+   <a class="btn btn-default btn-sm" href="?view_mode=delete_security_rules&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i></a>
   [#endif ACTION#]
  </td>
 </tr>

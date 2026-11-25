@@ -34,7 +34,7 @@ class vlcweb extends app_player_addon {
 	
 	// Destructor
 	function destroy() {
-		curl_close($this->curl);
+		mjdCurlClose($this->curl);
 	}
 	
 	// Private: VLC-WEB request

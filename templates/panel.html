@@ -5,10 +5,11 @@
 		<title>{#TITLE#}</title>
 		[#inc common_header.html#]
 		<link rel="stylesheet" href="<#ROOTHTML#>css/admin.css" type="text/css">
+		<link rel="stylesheet" href="<#ROOTHTML#>css/holiday.css" type="text/css">
 		[#inc websockets.html#]
 	</head>
 
-<body>
+<body data-holiday="<#MJ_HOLIDAY_SEASON#>">
 	[#if AUTHORIZED#]
 	[#inc panel_js_scripts.html#]
 	<style>
@@ -69,10 +70,10 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<button type="button" class="navbar-toggle" data-toggle="modal" data-target="#mdmGlobalSearchModal" data-backdrop="static" title="<#LANG_SEARCH#>">
+			<button type="button" class="navbar-toggle mj-search-toggle" data-toggle="modal" data-target="#mdmGlobalSearchModal" data-backdrop="static" title="<#LANG_SEARCH#>" aria-label="<#LANG_SEARCH#>">
 				<span class="icon-bar icon-bar-search"></span>
 			</button>
-			<a class="navbar-brand" style="margin-right: 20px;padding:0px" href="<#ROOTHTML#>admin.php"><img src="<#ROOTHTML#>img/logo-md.png" style="height: 54px;"></a>
+			<a class="navbar-brand" style="margin-right: 20px;padding:0px" href="<#ROOTHTML#>admin.php">[#inc ../img/logo-md.svg#]</a>
 		</div>
 		
 		<div class="navbar-collapse collapse" id="responsive-menu">
@@ -125,7 +126,7 @@
 			<div id="searchbtnhide">
 				<ul class="nav navbar-nav navbar-right">
 					<li>
-						<a href="javascript://" data-toggle="modal" data-target="#mdmGlobalSearchModal" data-backdrop="static"><span style="border: 1px solid;border-radius: 4px;background: #f0ad4e;color: white;padding: 1rem 2rem;"><i class="glyphicon glyphicon-search"></i> <#LANG_SEARCH#></span></a>
+						<a href="javascript://" data-toggle="modal" data-target="#mdmGlobalSearchModal" data-backdrop="static"><span style="border: 1px solid;border-radius: 4px;background: #f0ad4e;color: #2b2b2b;padding: 1rem 2rem;"><i class="glyphicon glyphicon-search"></i> <#LANG_SEARCH#></span></a>
 					</li>
 				</ul>
 			</div>
@@ -214,6 +215,8 @@
 		<a id="stopLoadBtnPreloader" href="" class="btn btn-success btn-md" role="button"><#LANG_NEWDASH_PRELOAD_BTN#></a>
 	</div>
 
+	<div class="mj-holiday" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+
 	
 	<style>
 		#partLoadContent {
@@ -261,7 +264,7 @@
 						<ol class="breadcrumb" id="breadcrumb_update" style="">
 							[#if ACTION!=""#]
 							<li>
-								<a href="javascript://" id="linkConsoleDebug" style="text-decoration: none;margin-right: 15px;color: #d74b4b;"><i class="glyphicon glyphicon-screenshot"></i> <#LANG_NEWDASH_CONSOLE_DEBUG#></a>
+								<a href="javascript://" id="linkConsoleDebug" class="console-debug-link" style="text-decoration: none;margin-right: 15px;"><i class="glyphicon glyphicon-screenshot"></i> <#LANG_NEWDASH_CONSOLE_DEBUG#></a>
 								<a href="<#LANG_KB_URL#><#ACTION#>_help/?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help" target="_blank"><i class="glyphicon glyphicon-question-sign"></i> <#LANG_KNOWLEDGE_BASE#></a>
 								<a href="https://connect.majordomohome.com/addons/name/<#ACTION#>.html?utm_source=system&utm_medium=help&utm_campaign=<#ACTION#>Help" target="_blank"><i class="glyphicon glyphicon-info-sign"></i> <#LANG_MODULE_SUPPORT#> [#NAV_MODULE_NAME#]</a>
 							</li>

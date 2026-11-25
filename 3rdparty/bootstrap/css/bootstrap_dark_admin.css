@@ -9275,3 +9275,54 @@ body li.CodeMirror-hint-active {
 [style*="rgb(0, 0, 128)"] font[color="red"] {
 	color: #ff6b6b;
 }
+
+/* Dark theme contrast fixes */
+.nav-list > .active > a,
+.nav-list > .active > a:hover,
+.nav-list > .active > a:focus,
+.nav-list > .active > .leftmenutab,
+.nav-list > .active > .leftmenutab:hover,
+.nav-list > .active > .leftmenutab:focus {
+	background-color: #2f6f9f;
+}
+#breadcrumb_update .console-debug-link {
+	color: #ffa8a0;
+}
+#main-content p[style*="color: gray"],
+#main-content li[style*="color: gray"] {
+	color: #a0a0a0 !important;
+}
+/* breadcrumbs come last: same specificity, must win */
+#hideMenuDiv > li[style*="color: gray"],
+#breadcrumb_update > li[style*="color: gray"] {
+	color: #cfcfcf !important;
+}
+#main-content span[id^="statusUpdateTitle_"] i {
+	color: #a0a0a0 !important;
+}
+#tabs .ui-tabs-nav li.ui-tabs-active a {
+	color: #2b2b2b;
+}
+#main-content .alert[style*="#398439"] {
+	color: #7ee787 !important;
+	border-color: #2e7d32 !important;
+}
+/* legacy markup: bgcolor tables and font color statuses */
+table[bgcolor="#000000"],
+table[bgcolor="#666666"] {
+	background-color: #222222 !important;
+}
+td[bgcolor="#AAAAAA"], th[bgcolor="#AAAAAA"],
+td[bgcolor="#CCCCCC"], th[bgcolor="#CCCCCC"],
+td[bgcolor="#FFFFFF"], th[bgcolor="#FFFFFF"],
+td[bgcolor="#EEEEEE"], th[bgcolor="#EEEEEE"],
+td[bgcolor="#666666"], th[bgcolor="#666666"] {
+	background-color: #303030 !important;
+	color: #d4d4d4 !important;
+}
+#main-content font[color="green"] {
+	color: #5cd65c !important;
+}
+#main-content font[color="red"] {
+	color: #ff8a80 !important;
+}

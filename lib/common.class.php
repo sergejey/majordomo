@@ -233,13 +233,19 @@ function addScheduledJob($title, $commands, $datetime, $expire = 1800)
 }
 
 /**
- * Summary of clearScheduledJob
- * @param mixed $title Title
+ * Remove a scheduled job by its exact title.
+ *
+ * DbSafe() escapes '%' as '\%', which survives in a normal string literal
+ * and prevents jobs with '%' in the title from being matched. DbSafe1()
+ * only escapes quotes/backslashes, so the title is compared literally.
+ * SQL wildcards are not supported here (see #526).
+ *
+ * @param mixed $title Exact job title
  * @return void
  */
 function clearScheduledJob($title)
 {
-    SQLExec("DELETE FROM jobs WHERE TITLE = '" . DBSafe($title) . "'");
+    SQLExec("DELETE FROM jobs WHERE TITLE = '" . DbSafe1($title) . "'");
 }
 
 /**
@@ -285,7 +291,7 @@ function clearTimeOut($title)
  */
 function timeOutExists($title)
 {
-    $job = SQLSelectOne("SELECT ID FROM jobs WHERE PROCESSED = 0 AND TITLE = '" . DBSafe($title) . "'");
+    $job = SQLSelectOne("SELECT ID FROM jobs WHERE PROCESSED = 0 AND TITLE = '" . DbSafe1($title) . "'");
 	if(!isset($job)) return false;
     return (int)$job['ID'];
 }
@@ -296,7 +302,9 @@ function timeOutExists($title)
  */
 function runScheduledJobs()
 {
-    SQLExec("DELETE FROM jobs WHERE EXPIRE <= '" . date('Y-m-d H:i:s') . "'");
+    $now = date('Y-m-d H:i:s');
+    $stale = date('Y-m-d H:i:s', time() - 300);
+    SQLExec("DELETE FROM jobs WHERE EXPIRE <= '" . $now . "'");
 
     if (defined('JOBS_QUEUE_LIMIT') && (int)JOBS_QUEUE_LIMIT > 0) {
         $limit = (int)JOBS_QUEUE_LIMIT;
@@ -308,8 +316,8 @@ function runScheduledJobs()
                   FROM jobs
                  WHERE PROCESSED = 0
                    AND EXPIRED   = 0
-                   AND (STARTED IS NULL OR STARTED <= '" . date('Y-m-d H:i:s', time() - 300) . "')
-                   AND RUNTIME   <= '" . date('Y-m-d H:i:s') . "'
+                   AND (STARTED IS NULL OR STARTED <= '" . $stale . "')
+                   AND RUNTIME   <= '" . $now . "'
                  ORDER BY RUNTIME, ID
                  LIMIT " . $limit;
 
@@ -318,7 +326,7 @@ function runScheduledJobs()
 
     for ($i = 0; $i < $total; $i++) {
         $jobs[$i]['STARTED'] = date('Y-m-d H:i:s');
-        SQLExec("UPDATE jobs SET STARTED='" . $jobs[$i]['STARTED'] . "' WHERE ID=" . (int)$jobs[$i]['ID'] . " AND PROCESSED=0 AND (STARTED IS NULL OR STARTED <= '" . date('Y-m-d H:i:s', time() - 300) . "')");
+        SQLExec("UPDATE jobs SET STARTED='" . $jobs[$i]['STARTED'] . "' WHERE ID=" . (int)$jobs[$i]['ID'] . " AND PROCESSED=0 AND (STARTED IS NULL OR STARTED <= '" . $stale . "')");
         $claimed_job = SQLSelectOne("SELECT ID FROM jobs WHERE ID=" . (int)$jobs[$i]['ID'] . " AND STARTED='" . DBSafe($jobs[$i]['STARTED']) . "' AND PROCESSED=0");
         if (!isset($claimed_job['ID'])) {
             continue;
@@ -463,7 +471,7 @@ function runScriptSafe($id, $params = 0)
         }
         $raiseEvent = isset($params['raiseEvent']) ? $params['raiseEvent'] : '';
         unset($params['raiseEvent']);
-        unset($params['r_s_m']);
+        unset($params['r_s_s']);
         unset($params['m_c_s']);
         $current_call .= '.' . md5(json_encode($params));
     }
@@ -634,7 +642,7 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
                 $callSource = $backtrace[1]['function'];
                 DebMes("GetURL to $url (source " . $callSource . ") finished with error: \n" . $errorInfo . "\n" . json_encode($info), 'geturl_error');
             }
-            curl_close($ch);
+            mjdCurlClose($ch);
             endMeasure('curl_post');
 
 
@@ -773,7 +781,7 @@ function postURL($url, $query = array(), $cache = 0, $username = '', $password =
                 $callSource = $backtrace[1]['function'];
                 DebMes("GetURL to $url (source " . $callSource . ") finished with error: \n" . $errorInfo . "\n" . json_encode($info), 'geturl_error');
             }
-            curl_close($ch);
+            mjdCurlClose($ch);
             endMeasure('curl_post');
 
 
@@ -1262,6 +1270,7 @@ function hsvToHex($h, $s, $v)
 function logAction($action_type, $details = '')
 {
     if (!isModuleInstalled('actions_log')) return;
+    if (!SQLSelectOne("SHOW TABLES LIKE 'actions_log'")) return;
 
     global $session;
     $rec = array();

@@ -182,7 +182,7 @@ class connect extends module
         }
         $result = curl_exec($ch);
         //DebMes("sending result: " . $result, 'connect_msg');
-        curl_close($ch);
+        mjdCurlClose($ch);
     }
 
     function cloudBackup()
@@ -241,7 +241,7 @@ class connect extends module
             //execute post
             $result = curl_exec($ch);
             //close connection
-            curl_close($ch);
+            mjdCurlClose($ch);
 
             DebMes("Cloudbackup result: " . $result, 'cloudbackup');
 
@@ -439,7 +439,7 @@ class connect extends module
             }
         }
         $result = curl_exec($ch);
-        curl_close($ch);
+        mjdCurlClose($ch);
         return $result;
     }
 
@@ -465,7 +465,7 @@ class connect extends module
             }
         }
         $result = curl_exec($ch);
-        curl_close($ch);
+        mjdCurlClose($ch);
 
         if ($result != '') {
             $data = json_decode($result, true);
@@ -529,7 +529,7 @@ class connect extends module
         } else {
             $data['content_type'] = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
         }
-        curl_close($ch);
+        mjdCurlClose($ch);
         $this->sendReverseURL($data, $result);
     }
 
@@ -612,7 +612,7 @@ class connect extends module
             }
         }
         $result = curl_exec($ch);
-        curl_close($ch);
+        mjdCurlClose($ch);
         return $result;
     }
 
@@ -683,7 +683,7 @@ class connect extends module
             DebMes("Error: " . $errorInfo, 'device_sync');
             $result = false;
         }
-        curl_close($ch);
+        mjdCurlClose($ch);
         return $result;
     }
 
@@ -732,7 +732,7 @@ class connect extends module
         } else {
             //DebMes("Result : ".$result,'device_sync');
         }
-        curl_close($ch);
+        mjdCurlClose($ch);
 
     }
 
@@ -772,7 +772,7 @@ class connect extends module
         //execute post
         $result = curl_exec($ch);
         //close connection
-        curl_close($ch);
+        mjdCurlClose($ch);
     }
 
     /**
@@ -856,7 +856,7 @@ class connect extends module
             $info = curl_getinfo($ch);
             //DebMes("GetURL to $url (source ".$callSource.") finished with error: \n".$errorInfo."\n".json_encode($info),'connect_menu');
         }
-        curl_close($ch);
+        mjdCurlClose($ch);
         //DebMes('Connect sending menu request $url ('.$this->config['CONNECT_USERNAME'].":".$this->config['CONNECT_PASSWORD'].'): '. json_encode($fields),'connect_menu');
         //DebMes('Connect sending menu response: '.$result,'connect_menu');
     }
@@ -934,7 +934,7 @@ class connect extends module
         }
 
         //close connection
-        curl_close($ch);
+        mjdCurlClose($ch);
 
 
     }
@@ -1063,7 +1063,7 @@ class connect extends module
         //execute post
         $result = curl_exec($ch);
         //close connection
-        curl_close($ch);
+        mjdCurlClose($ch);
 
         if (!$silent) {
             $this->redirect("?uploaded=1&result=" . urlencode($result));

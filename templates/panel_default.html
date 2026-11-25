@@ -50,7 +50,7 @@
 						<h4 class="modal-title" id="myModalLabel"><#LANG_NEWDASH_DMB_TITLE_MODAL#></h4>
 					</div>
 					<div class="modal-body">
-						<div class="alert" style="font-size: 8pt;background: radial-gradient(circle farthest-corner at 450px 10px, #198f22, #86bea4);color: white;padding: 5px;text-align: center;">
+						<div class="alert" style="font-size: 8pt;background: radial-gradient(circle farthest-corner at 450px 10px, #146b19, #2e7d5b);color: white;padding: 5px;text-align: center;">
 							<i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;margin-right: 5px;"></i>
 							<#LANG_NEWDASH_DMB_TITLE_MODAL_HINT#> <a href="https://forum.majordomohome.com/viewtopic.php?f=6&t=7303#p124597" style="color: white" target="_blank"><#LANG_NEWDASH_DMB_TITLE_MODAL_HINT_FORUM#></a>
 						</div>
@@ -136,11 +136,14 @@
 							<#LANG_THEME#>
 							<span class="badge" style="background:transparent;">
 								<div class="btn-group" data-toggle="buttons">
+									<label class="btn btn-sm btn-default" style="padding: 0px 5px;font-size: 1.1rem;background: #6a6969;border: 0px;">
+										<input type="radio" onChange="if($(this).is(':checked')) MJDTheme.set('auto');"> <#LANG_THEME_AUTO#>
+									</label>
 									<label class="btn btn-sm btn-primary" style="padding: 0px 5px;font-size: 1.1rem;background: #474747;border: 0px;">
-										<input type="radio" onChange="if($(this).is(':checked')) $('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap_dark_admin.css');$.cookie('theme', 'dark', {expires: 180});"> <#LANG_THEME_DARK#>
+										<input type="radio" onChange="if($(this).is(':checked')) MJDTheme.set('dark');"> <#LANG_THEME_DARK#>
 									</label>
 									<label class="btn btn-sm btn-default" style="padding: 0px 5px;font-size: 1.1rem;background: #939191;border: 0px;">
-										<input type="radio" onChange="if($(this).is(':checked')) $('link#theme').attr('href', '<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap.min.css');$.cookie('theme', 'light', {expires: 180});"> <#LANG_THEME_LIGHT#>
+										<input type="radio" onChange="if($(this).is(':checked')) MJDTheme.set('light');"> <#LANG_THEME_LIGHT#>
 									</label>
 								</div>
 							</span>
@@ -304,7 +307,7 @@
 			</div>
 			<div class="panel-collapse collapse out" id="row_scriptBlockDiv">
 				<div class="panel-body">
-					<div class="alert" style="background: radial-gradient(circle farthest-corner at 450px 10px, #a6e7bb, #0e6080);color: white;text-align: center;border: 0px;"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i><#LANG_NEWDASH_SHOW_LAST_SCRIPTS#></div>
+					<div class="alert" style="background: radial-gradient(circle farthest-corner at 450px 10px, #2f7f6a, #0b4f69);color: white;text-align: center;border: 0px;"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i><#LANG_NEWDASH_SHOW_LAST_SCRIPTS#></div>
 					<ul class="list-group" id="scriptLast">
 						<center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center>
 					</ul>

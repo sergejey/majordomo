@@ -356,7 +356,7 @@ class patterns extends module
             //execute post
             $result = curl_exec($ch);
             //close connection
-            curl_close($ch);
+            mjdCurlClose($ch);
 
             DebMes("External context response: " . $result, 'patterns');
 
@@ -443,7 +443,7 @@ class patterns extends module
             //execute post
             $result = curl_exec($ch);
             //close connection
-            curl_close($ch);
+            mjdCurlClose($ch);
             $data = unserialize($result);
 
             DebMes("External actions response: " . $result, 'patterns');
@@ -738,7 +738,10 @@ class patterns extends module
                 }
             }
             $check = implode('@@@@', $lines_pattern);
-            if (preg_match('/' . $check . '/isu', implode('@@@@', $lines), $matches)) {
+            $regexResult = @preg_match('/' . $check . '/isu', implode('@@@@', $lines), $matches);
+            if ($regexResult === false) {
+                DebMes('Invalid regular expression in pattern "' . $rec['TITLE'] . '": ' . $check, 'patterns');
+            } elseif ($regexResult) {
                 $condition_matched = 1;
             }
 

@@ -16,7 +16,7 @@
 	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel ul li input { cursor: pointer; }
 	#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel { z-index: inherit; position: absolute; display: none; cursor: default; width: 34px; height: 101px; margin-top: 4px; margin-left: -5px; border: 1px; border-radius: 0px 0px 3px 3px; border-style: solid; border-top-style: hidden; }
 	#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel input[type=range][orient=vertical] { position: relative; float: left; writing-mode: bt-lr; -webkit-appearance: slider-vertical; writing-mode: vertical-lr; direction: rtl; width: 100%; height: 100%; padding: 5px; border-style: none; }
-	[#if "<#SETTINGS_THEME#>"=="dark"#]
+	[#if "<#MJ_THEME#>"=="dark"#]
 		#[#APP_PLAYER_ID#] { color: #ffffff; background-color: #464545; border-color: #464545; }
 		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container { border-color: #686868; }
 		#[#APP_PLAYER_ID#] .content .controls .column.button img, #[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container img { }
@@ -90,7 +90,9 @@
 </div>
 <script language="javascript">
 	var [#APP_PLAYER_ID#]_volumeLevel = parseInt('%ThisComputer.volumeLevel%');
+	if (!isFinite([#APP_PLAYER_ID#]_volumeLevel)) [#APP_PLAYER_ID#]_volumeLevel = 100;
 	var [#APP_PLAYER_ID#]_volumeMediaLevel = parseInt('%ThisComputer.volumeMediaLevel%');
+	if (!isFinite([#APP_PLAYER_ID#]_volumeMediaLevel)) [#APP_PLAYER_ID#]_volumeMediaLevel = 100;
 	$(function() {
 		// Volume
 		$.subscribe('wsData', function(_, response) {
@@ -101,10 +103,10 @@
 					for(var i=0;i<objCnt;i++) {
 						switch(obj[i]['PROPERTY'].toLowerCase()) {
 							case 'thiscomputer.volumelevel':
-								[#APP_PLAYER_ID#]_volumeLevel = parseInt(obj[i]['VALUE']);
+								if (isFinite(parseInt(obj[i]['VALUE']))) [#APP_PLAYER_ID#]_volumeLevel = parseInt(obj[i]['VALUE']);
 								break;
 							case 'thiscomputer.volumemedialevel':
-								[#APP_PLAYER_ID#]_volumeMediaLevel = parseInt(obj[i]['VALUE']);
+								if (isFinite(parseInt(obj[i]['VALUE']))) [#APP_PLAYER_ID#]_volumeMediaLevel = parseInt(obj[i]['VALUE']);
 								break;
 						}
 					}
@@ -248,7 +250,10 @@
 							}
 							break;
 						case 'set_volume':
-							[#APP_PLAYER_ID#]_html5audio.volume = parseInt(param, 10)/100;
+							var volumeValue = parseInt(param, 10);
+							if (!isFinite(volumeValue)) volumeValue = 100;
+							volumeValue = Math.max(0, Math.min(100, volumeValue));
+							[#APP_PLAYER_ID#]_html5audio.volume = volumeValue / 100;
 							break;
 					}
 					break;

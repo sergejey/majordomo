@@ -199,6 +199,8 @@ class properties extends module
         SQLExec("DELETE FROM properties WHERE ID='" . $rec['ID'] . "'");
         deleteTransientByProperty($rec['ID']);
         clearCacheData();
+        clearCacheData('P:');
+        clearCacheData('MJD:');
     }
 
     /**

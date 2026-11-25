@@ -231,7 +231,7 @@
         <div id="home" class="current">
 {if !isset($ONE_ITEM_MODE)}
 {if isset($PARENT_TITLE)}
-            <div data-role="header"{if $smarty.const.SETTINGS_THEME=="dark"} data-theme="b"{/if}>
+            <div data-role="header"{if $smarty.const.MJ_THEME=="dark"} data-theme="b"{/if}>
 {if $IFRAME_MODE==''}
                 <h1 id="label_{$PARENT_ID}">{if $PARENT_TITLE!=''}{$PARENT_TITLE}{else}MajorDoMo{/if}</h1>
                 {if $PARENT_ID!=''}
