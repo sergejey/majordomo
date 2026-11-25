@@ -410,6 +410,17 @@ class market extends module
             $total = count($data->PLUGINS);
             for ($i = 0; $i < $total; $i++) {
                 $rec = (array)$data->PLUGINS[$i];
+                if (!empty($rec['URL'])) {
+                    $stats_url = str_replace('connect.majordomohome.com', 'connect.smartliving.ru', $rec['URL']);
+                    $stats_page = @getURL($stats_url, 60 * 60);
+                    $stats_text = strip_tags((string)$stats_page);
+                    if (preg_match('/Всего установок:\s*(\d+)/u', $stats_text, $sm)) {
+                        $rec['INSTALL_TOTAL'] = (int)$sm[1];
+                    }
+                    if (preg_match('/За прошедший месяц:\s*(\d+)/u', $stats_text, $sm2)) {
+                        $rec['INSTALL_MONTH'] = (int)$sm2[1];
+                    }
+                }
                 $plugin_rec = SQLSelectOne("SELECT * FROM plugins WHERE MODULE_NAME LIKE '" . DBSafe($rec['MODULE_NAME']) . "'");
                 if (is_dir(ROOT . 'modules/' . $rec['MODULE_NAME']) || isset($plugin_rec['ID'])) {
                     $rec['EXISTS'] = 1;
