@@ -1120,8 +1120,10 @@ $dictionary = array(
     'SAVE_CHANGES' => 'Save changes',
     'ADD_PANE' => 'Add Pane',
 
-    'HCB' => ' <a href="https://ru.majordomohome.com/Hints/',
-    'HCE' => '?skin=hint" class="wiki_hint fancybox.iframe"><i class="glyphicon glyphicon-info-sign"></i></a>',
+    'HCB' => ' <a href="#" class="mj-hint" onclick="return showLocalHint(this, ' . "'",
+    'HINT_UNAVAILABLE' => 'Hint is unavailable offline',
+    'HINT_RUSSIAN_ONLY' => 'This hint is available only in Russian.',
+    'HCE' => "');\"><i class=\"glyphicon glyphicon-info-sign\"></i></a>",
 
     'DATA_KEY' => 'Key data',
     'DATA_TYPE' => 'Data type',

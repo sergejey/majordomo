@@ -1878,8 +1878,10 @@ $dictionary = array(
     'MODULE_SHOUTBOX' => 'Чат',
     'MODULE_SHOUTROOMS' => 'Комнаты чата',
     'MODULE_THUMB' => 'Миниатюры',
-    'HCB' => ' <a href="https://ru.majordomohome.com/Hints/',
-    'HCE' => '?skin=hint" class="wiki_hint fancybox.iframe"><i class="glyphicon glyphicon-info-sign"></i></a>',
+    'HCB' => ' <a href="#" class="mj-hint" onclick="return showLocalHint(this, ' . "'",
+    'HINT_UNAVAILABLE' => 'Подсказка недоступна без сети',
+    'HINT_RUSSIAN_ONLY' => 'Подсказка доступна только на русском языке.',
+    'HCE' => "');\"><i class=\"glyphicon glyphicon-info-sign\"></i></a>",
 
     // hook settings
     'HOOK_BEFORE_SAY' => 'Перед озвучиванием (код)',

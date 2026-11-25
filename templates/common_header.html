@@ -1,3 +1,35 @@
+<script type="text/javascript">
+	function showLocalHint(el, name) {
+	var lang = '<#SETTINGS_SITE_LANGUAGE#>';
+	var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+	var timer = controller ? setTimeout(function () { controller.abort(); }, 3000) : null;
+	fetch('/modules/hints/hint.php?name=' + encodeURIComponent(name) + '&lang=' + encodeURIComponent(lang), {
+		credentials: 'same-origin',
+		signal: controller ? controller.signal : undefined
+	}).then(function (r) { return r.json(); }).then(function (result) {
+		if (timer) clearTimeout(timer);
+		if (!result || result.status !== 'ok' || !result.html) {
+			if ($.toast) $.toast({ text: '<#LANG_HINT_UNAVAILABLE#>', position: 'top-right', bgColor: '#b52b27', textColor: '#fff', hideAfter: 3000, stack: 1 });
+			return;
+		}
+		$.fancybox.open({
+			type: 'html',
+			content: '<div class="mj-hint-content">' + result.html + '</div>',
+			maxWidth: 560,
+			minWidth: 280,
+			fitToView: true,
+			autoSize: true,
+			closeClick: true,
+			openEffect: 'none',
+			closeEffect: 'none'
+		});
+	}).catch(function () {
+		if (timer) clearTimeout(timer);
+		if ($.toast) $.toast({ text: '<#LANG_HINT_UNAVAILABLE#>', position: 'top-right', bgColor: '#b52b27', textColor: '#fff', hideAfter: 3000, stack: 1 });
+	});
+	return false;
+}
+</script>
 <meta name="robots" content="noindex, nofollow"/>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -79,3 +111,4 @@
 <script language="javascript">
       const ROOTHTML = "<#ROOTHTML#>";
 </script>
+
