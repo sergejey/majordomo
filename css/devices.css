@@ -40,6 +40,14 @@
     border: 1px solid var(--mj-widget-border, #dddddd);
 }
 
+.device-widget.mini.icon-only {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--mj-widget-compact-width, 75px);
+    min-height: var(--mj-widget-touch, 44px);
+}
+
 .device-widget.mini.controller,
 .device-widget.mini.sensor,
 .device-widget.mini.openable,

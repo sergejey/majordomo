@@ -35,7 +35,7 @@
     $.get("<#ROOTHTML#>ajax/devices.html?op=clicked&object="+encodeURIComponent("%.object_title%"));'></div>
 <div class="device-details"> <span id="dimmer%.object_id%_level">%.level%</span>%
     &nbsp;
-    <select id="dimmerSelect%.object_id%" onchange="dimmerSet%.object_id%(this.value);" style="color:black">
+    <select id="dimmerSelect%.object_id%" onchange="dimmerSet%.object_id%(this.value);">
         <option value=""><#LANG_SET#></option>
         <option value="10">10%</option>
         <option value="20">20%</option>
