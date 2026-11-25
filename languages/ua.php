@@ -2014,3 +2014,10 @@ if (!defined('LANG_CODEEDITOR_SAVE_ERROR')) define('LANG_CODEEDITOR_SAVE_ERROR',
 if (!defined('LANG_CODEEDITOR_SAVING')) define('LANG_CODEEDITOR_SAVING', 'Збереження...');
 
 if (!defined('LANG_CODEEDITOR_CHECKING')) define('LANG_CODEEDITOR_CHECKING', 'Перевірка коду...');
+
+if (!defined('LANG_CODEEDITOR_AUDIT')) define('LANG_CODEEDITOR_AUDIT', 'AI-аудит');
+if (!defined('LANG_CODEEDITOR_AUDIT_RUNNING')) define('LANG_CODEEDITOR_AUDIT_RUNNING', 'Аудит коду...');
+if (!defined('LANG_CODEEDITOR_AUDIT_ERROR')) define('LANG_CODEEDITOR_AUDIT_ERROR', 'Не вдалося виконати аудит');
+if (!defined('LANG_CODEEDITOR_AUDIT_NO_MODULE')) define('LANG_CODEEDITOR_AUDIT_NO_MODULE', 'Модуль gptchat не встановлено.');
+if (!defined('LANG_CODEEDITOR_AUDIT_NO_METHOD')) define('LANG_CODEEDITOR_AUDIT_NO_METHOD', 'Встановлена версія gptchat не підтримує аудит коду.');
+if (!defined('LANG_CODEEDITOR_AUDIT_NO_CHAT')) define('LANG_CODEEDITOR_AUDIT_NO_CHAT', 'У gptchat не налаштовано чат для аудиту.');

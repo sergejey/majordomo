@@ -2116,3 +2116,10 @@ if (!defined('LANG_CODEEDITOR_SAVE_ERROR')) define('LANG_CODEEDITOR_SAVE_ERROR',
 if (!defined('LANG_CODEEDITOR_SAVING')) define('LANG_CODEEDITOR_SAVING', 'Сохранение...');
 
 if (!defined('LANG_CODEEDITOR_CHECKING')) define('LANG_CODEEDITOR_CHECKING', 'Проверка кода...');
+
+if (!defined('LANG_CODEEDITOR_AUDIT')) define('LANG_CODEEDITOR_AUDIT', 'AI-аудит');
+if (!defined('LANG_CODEEDITOR_AUDIT_RUNNING')) define('LANG_CODEEDITOR_AUDIT_RUNNING', 'Аудит кода...');
+if (!defined('LANG_CODEEDITOR_AUDIT_ERROR')) define('LANG_CODEEDITOR_AUDIT_ERROR', 'Не удалось выполнить аудит');
+if (!defined('LANG_CODEEDITOR_AUDIT_NO_MODULE')) define('LANG_CODEEDITOR_AUDIT_NO_MODULE', 'Модуль gptchat не установлен.');
+if (!defined('LANG_CODEEDITOR_AUDIT_NO_METHOD')) define('LANG_CODEEDITOR_AUDIT_NO_METHOD', 'Установленная версия gptchat не поддерживает аудит кода.');
+if (!defined('LANG_CODEEDITOR_AUDIT_NO_CHAT')) define('LANG_CODEEDITOR_AUDIT_NO_CHAT', 'В gptchat не настроен чат для аудита.');
