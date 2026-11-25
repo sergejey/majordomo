@@ -1,10 +1,7 @@
 <?php
 /**
- * Ukranian language file
- *
- * @package MajorDoMo
- * @author Serge Dzheigalo <sergejey@gmail.com> https://majordomohome.com/
- * @version 1.0
+ * Backward-compatible alias for the old "ua" language code.
+ * The Ukrainian dictionary lives in uk.php (ISO 639-1).
  */
 
 
