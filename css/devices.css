@@ -75,7 +75,6 @@
 
 .device-icon {
     box-sizing: border-box;
-    background-image: url(../cms/scenes/styles/button/i_button.png);
     background-repeat: no-repeat;
     background-position: center 4px;
     margin-right: 5px;
@@ -130,10 +129,8 @@
 }
 
 .device-icon.thermostat {
-    background-image: url(../cms/scenes/styles/switch/i_warm_on.png);
 }
 .device-icon.thermostat.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .thermostat .status_text {
@@ -154,47 +151,36 @@
 }
 
 .device-icon.ac {
-    background-image: url(../cms/scenes/styles/common/i_condition_on_cool.png);
 }
 
 .device-icon.camera {
-    background-image: url(../cms/scenes/styles/common/i_camera_on.png);
 }
 
 .device-icon.motion {
-    background-image: url(../cms/scenes/styles/informer/i_motion.png);
 }
 
 .device-icon.smoke {
-    background-image: url(../cms/scenes/styles/informer/i_alarm.png);
 }
 
 .device-icon.leak {
-    background-image: url(../cms/scenes/styles/informer/i_water.png);
 }
 
 .device-icon.button {
-    background-image: url(../cms/scenes/styles/button/i_knopka.png);
 }
 
 .device-icon.group_state {
-    background-image: url(../cms/scenes/styles/button/i_knopka.png);
 }
 
 .device-icon.group_state.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .device-icon.button.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .device-icon.ac.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .device-icon.motion.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .device-icon.smoke.on {
@@ -206,157 +192,107 @@
 }
 
 .device-icon.openclose {
-    background-image: url(../cms/scenes/styles/common/i_window_off.png);
 }
 
 .device-icon.openclose.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
-    background-image: url(../cms/scenes/styles/common/i_window_on.png);
 }
 
 .opentype_curtains .device-icon {
-    background-image: url(../cms/scenes/styles/switch/i_shtory_off.png);
 }
 .opentype_curtains .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
-    background-image: url(../cms/scenes/styles/switch/i_shtory_on.png);
 }
 
 .opentype_window .device-icon {
-    background-image: url(../cms/scenes/styles/switch/i_window_off.png);
 }
 .opentype_window .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
-    background-image: url(../cms/scenes/styles/switch/i_window_on.png);
 }
 
 .opentype_door .device-icon {
-    background-image: url(../cms/scenes/styles/switch/i_door_off.png);
 }
 .opentype_door .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
-    background-image: url(../cms/scenes/styles/switch/i_door_on.png);
 }
 
 .opentype_shutters .device-icon {
-    background-image: url(../cms/scenes/styles/switch/i_jaluzi_off.png);
 }
 .opentype_shutters .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
-    background-image: url(../cms/scenes/styles/switch/i_jaluzi_on.png);
 }
 
 .opentype_gates .device-icon {
-    background-image: url(../cms/scenes/styles/switch/i_gate_off.png);
 }
 .opentype_gates .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
-    background-image: url(../cms/scenes/styles/switch/i_gate_on.png);
 }
 
 .opentype_valve .device-icon {
-    background-image: url(../cms/scenes/styles/informer/i_check_n-a.png);
 }
 .opentype_valve .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
-    background-image: url(../cms/scenes/styles/informer/i_check_water.png);
 }
 
 
 .device-icon.temperature {
-    background-image: url(../cms/scenes/styles/informer/i_temp.png);
 }
 .device-icon.humidity {
-    background-image: url(../cms/scenes/styles/informer/i_humidity.png);
 }
 
 .device-icon.moisture {
-    background-image: url(../cms/scenes/styles/common/i_sad.png);
 }
 
 
 .device-icon.pressure {
-    background-image: url(../cms/scenes/styles/informer/i_temp.png);
 }
 
 .device-icon.general-sensor {
-    background-image: url(../cms/scenes/styles/informer/i_temp.png);
 }
 
 .device-icon.light-sensor {
-    background-image: url(../cms/scenes/styles/informer/i_illum.png);
 }
 
 .device-icon.current-sensor {
-    background-image: url(../cms/scenes/styles/informer/i_power.png);
 }
 
 .device-icon.voltage-sensor {
-    background-image: url(../cms/scenes/styles/informer/i_power.png);
 }
 
 .device-icon.power-sensor {
-    background-image: url(../cms/scenes/styles/informer/i_power.png);
 }
 
 .device-icon.power-sensor.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
 }
 
 .controller .device-icon {
-    background-image: url(../cms/scenes/styles/switch/i_light_off.png);
 }
 
 .controller.loadtype_ac .device-icon {
-    background-image: url(../cms/scenes/styles/common/i_condition_off.png);
 }
 
 .controller.loadtype_power .device-icon {
-    background-image: url(../cms/scenes/styles/switch/i_rozetka_on.png);
 }
 
 .controller.loadtype_heating .device-icon {
-    background-image: url(../cms/scenes/styles/switch/i_warm.png);
 }
 
 .controller.loadtype_heating .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
-    background-image: url(../cms/scenes/styles/switch/i_warm.png);
 }
 
 .controller.loadtype_curtains .device-icon {
-    background-image: url(../cms/scenes/styles/switch/i_shtory_mid.png);
 }
 .controller.loadtype_curtains .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
-    background-image: url(../cms/scenes/styles/switch/i_shtory_mid.png);
 }
 
 .controller.loadtype_gates .device-icon {
-    background-image: url(../cms/scenes/styles/switch/i_gate_off.png);
 }
 .controller.loadtype_gates .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
-    background-image: url(../cms/scenes/styles/switch/i_gate_on.png);
 }
 
 .controller.loadtype_vent .device-icon {
-    background-image: url(../cms/scenes/styles/switch/i_ventilacia_on.png);
 }
 
 .controller.loadtype_vent .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
-    background-image: url(../cms/scenes/styles/switch/i_ventilacia_on.png);
 }
 
 .controller.loadtype_power .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
-    background-image: url(../cms/scenes/styles/switch/i_rozetka_on.png);
 }
 
 .controller .device-icon.on {
-    background-color: var(--mj-widget-on-bg, #fff3cd);
-    background-image: url(../cms/scenes/styles/switch/i_light_on.png);
 }
 
 .device-icon.pressed {
@@ -376,13 +312,50 @@
 }
 
 .device-icon.tv {
-    background-image: url(../cms/scenes/styles/common/i_tv_on.png);
 }
 
 .device-icon.vacuum {
-    background-image: url(../cms/scenes/styles/common/i_dimmer_on.png);
 }
 
 .device-icon.media {
-    background-image: url(../cms/scenes/styles/common/i_videoplayer_on.png);
 }
+
+/* Local Font Awesome glyphs replace the legacy raster sprite. */
+.device-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: none;
+    color: var(--mj-widget-icon-fg, inherit);
+}
+.device-icon::before {
+    font-family: "Font Awesome 7 Free";
+    font-weight: 900;
+    font-style: normal;
+    content: var(--mj-icon, "\f2db");
+    font-size: 20px;
+    line-height: 1;
+}
+.device-icon.temperature { --mj-icon: "\f2c9"; }
+.device-icon.thermostat { --mj-icon: "\f769"; }
+.device-icon.ac { --mj-icon: "\f2dc"; }
+.device-icon.camera { --mj-icon: "\f03d"; }
+.device-icon.motion { --mj-icon: "\f554"; }
+.device-icon.smoke { --mj-icon: "\f46a"; }
+.device-icon.leak { --mj-icon: "\f043"; }
+.device-icon.button { --mj-icon: "\f205"; }
+.device-icon.group_state { --mj-icon: "\f5fd"; }
+.device-icon.openclose { --mj-icon: "\f52b"; }
+.device-icon.humidity,
+.device-icon.moisture { --mj-icon: "\f043"; }
+.device-icon.pressure { --mj-icon: "\f624"; }
+.device-icon.general-sensor { --mj-icon: "\f2db"; }
+.device-icon.light-sensor { --mj-icon: "\f185"; }
+.device-icon.current-sensor,
+.device-icon.voltage-sensor { --mj-icon: "\f0e7"; }
+.device-icon.power-sensor { --mj-icon: "\f1e6"; }
+.device-icon.tv { --mj-icon: "\f26c"; }
+.device-icon.vacuum { --mj-icon: "\f544"; }
+.device-icon.media { --mj-icon: "\f04b"; }
+.device-icon.on { color: var(--mj-widget-icon-on, var(--mj-color-accent, #4a7c0f)); }
+.device-icon.off { color: var(--mj-widget-icon-off, var(--mj-color-muted, #6a6a6a)); }

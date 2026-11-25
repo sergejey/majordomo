@@ -55,6 +55,9 @@
 	--mj-widget-on-bg: #fff3cd;
 	--mj-widget-alert-bg: #c62828;
 	--mj-widget-pressed-bg: #c6ef4a;
+--mj-widget-icon-fg: var(--mj-color-fg, #333333);
+--mj-widget-icon-on: #2e7d32;
+--mj-widget-icon-off: #6a6a6a;
 	--mj-widget-status-text: #dddddd;
 	--mj-widget-status-muted: #666666;
 	--mj-widget-status-ok: #2e7d32;
@@ -92,6 +95,9 @@
 	--mj-widget-on-bg: #6b5310;
 	--mj-widget-alert-bg: #8e2f2f;
 	--mj-widget-pressed-bg: #9ecf15;
+--mj-widget-icon-fg: var(--mj-color-fg, #e6e6e6);
+--mj-widget-icon-on: #9ecf15;
+--mj-widget-icon-off: #a0a0a0;
 	--mj-widget-status-text: #e6e6e6;
 	--mj-widget-status-muted: #a0a0a0;
 	--mj-widget-status-ok: #9ecf15;
