@@ -1,4 +1,25 @@
-<div id="settings_form" style="display:none">
+<script type="text/javascript">
+function markErrorsRead(id, element) {
+	var data = new FormData();
+	if (id) data.append('id', id);
+	fetch('/modules/system_errors/ajax_mark_read.php', {
+		method: 'POST',
+		body: data,
+		credentials: 'same-origin'
+	}).then(function (response) {
+		return response.json();
+	}).then(function (result) {
+		if (!result || result.status !== 'ok') return;
+		if (!id) {
+			$('#errors-alert').html('<h2><#LANG_NEWSYSTEM_ERROR_NOT_ERROR#></h2><p style="font-size:11pt;"><#LANG_NEWSYSTEM_ERROR_NOT_ERROR_TEXT#></p>');
+			if ($.toast) $.toast({ text: '<#LANG_DATA_SAVED#>', showHideTransition: 'fade', allowToastClose: true, hideAfter: 2500, stack: 1, position: 'top-right', bgColor: '#3c763d', textColor: '#fff' });
+		} else if (element) {
+			$(element).closest('tr').fadeOut(200, function () { $(this).remove(); });
+		}
+	});
+	return false;
+}
+</script><div id="settings_form" style="display:none">
 	<form action="?" method="post" class="form form-horizontal">
 		<div class="form-group">
 			<label for="clean_up" class="col-lg-5"><#LANG_KEEP_HISTORY_DAYS#>:</label>
@@ -22,11 +43,11 @@
 <div class="row" style="margin-right: -15px;margin-left: -15px;display: flex;flex-wrap: wrap;">
 	<div class="col-md-6" style="display: flex;flex-wrap: wrap;">
 		[#if ERRORS_FOUND!=0#]
-		<div class="jumbotron" style="margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background-image: radial-gradient(circle farthest-corner at 10px 10px, #ffffff, #ec1b2e);">
+		<div id="errors-alert" class="jumbotron" style="margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background-image: radial-gradient(circle farthest-corner at 10px 10px, #ffffff, #ec1b2e);">
 			<h2><#LANG_NEWSYSTEM_ERROR_FIND_ERROR#></h2>
 			<p style="font-size: 11pt;"><#LANG_NEWSYSTEM_ERROR_FIND_ERROR_TEXT#></p>
 			<p class="text-right">
-				<a style="border-color: #ffffff;" onclick="location.href='?action=system_errors&md=system_errors&view_mode=readall'" class="btn btn-default btn-md" role="button"><#LANG_NEWSYSTEM_ERROR_CHECK_ALL_READ#></a>
+				<a style="border-color: #ffffff;" onclick="return markErrorsRead(0, this);" class="btn btn-default btn-md" role="button"><#LANG_NEWSYSTEM_ERROR_CHECK_ALL_READ#></a>
 			</p>
 		</div>
 		[#else#]
@@ -73,7 +94,7 @@ $(document).ready(function() {
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal"><#LANG_CODEEDITOR_CLOSE_BTN#></button>
 				[#if ACTIVE!="0"#]
-					<a href="?data_source=<#DATA_SOURCE#>&view_mode=clear_system_errors&id=[#ID#]" class="btn btn-success" title=""><i class="glyphicon glyphicon-ok"></i> <#LANG_NEWSYSTEM_ERROR_READ_BTN#></a>
+					<a href="#" onclick="return markErrorsRead([#ID#], this);" class="btn btn-success" title=""><i class="glyphicon glyphicon-ok"></i> <#LANG_NEWSYSTEM_ERROR_READ_BTN#></a>
 				[#endif#]
 			</div>
 		</div>
