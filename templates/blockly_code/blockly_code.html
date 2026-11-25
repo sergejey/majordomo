@@ -156,6 +156,7 @@ $(function() {
 [#endif#]
 	.mj-run-btn { color: #26648f; text-decoration: none; font-weight: bold; margin-right: 8px; }
 	.mj-run-btn:hover { text-decoration: underline; }
+	#mj-audit-fab { display: none; position: fixed; bottom: 72px; right: 14px; z-index: 10001; padding: 10px 14px; background: #6a3da0; color: #fff; border-radius: 22px; box-shadow: 0 2px 8px rgba(0,0,0,.25); text-decoration: none; }
 	#mj-run-fab { display: none; position: fixed; bottom: 14px; right: 14px; z-index: 10001; padding: 10px 14px; background: #26648f; color: #fff; border-radius: 22px; box-shadow: 0 2px 8px rgba(0,0,0,.25); text-decoration: none; }
 	#mj-run-popup { position: fixed; z-index: 10002; top: 50%; left: 50%; transform: translate(-50%,-50%); width: min(720px, calc(100vw - 32px)); max-height: 70vh; display: flex; flex-direction: column; background: var(--mj-color-bg,#fff); color: var(--mj-color-fg,#333); border: 1px solid var(--mj-color-border,#ddd); border-radius: 8px; box-shadow: 0 12px 40px rgba(0,0,0,.3); opacity: 1; transition: opacity .18s ease, transform .18s ease; }
 	#mj-run-popup.hiding { opacity: 0; transform: translate(-50%,-48%); }
@@ -163,7 +164,7 @@ $(function() {
 	#mj-run-popup .mj-run-close { cursor: pointer; border: 0; background: transparent; font-size: 20px; line-height: 1; color: inherit; }
 	#mj-run-popup pre { margin: 0; padding: 12px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; }
 	#mj-run-popup.mj-error { border-color: #b52b27; }
-	@media (max-width: 767px) { #mj-run-fab { display: block; } }
+	@media (max-width: 767px) { #mj-run-fab { display: block; } #mj-audit-fab { display: block; } }
 </style>
 
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/edit/matchbrackets.js"></script>
@@ -187,6 +188,7 @@ $(function() {
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/searchcursor.js"></script>
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/display/panel.js"></script>
 
+<a href="#" id="mj-audit-fab" onclick="return auditCodeAjax();">✦ <#LANG_CODEEDITOR_AUDIT#></a>
 <a href="#" id="mj-run-fab" onclick="return runCodeQuick();">▶ <#LANG_CODEEDITOR_RUN#></a>
 
 <script language="javascript">
@@ -212,7 +214,7 @@ function makePanel(where) {
 		panels[node.id].clear();
 	});
 	label = node.appendChild(document.createElement("span"));
-	label.innerHTML = "<a href='#' id='mj-run-link' class='mj-run-btn' onclick='return runCodeQuick();'>▶ <#LANG_CODEEDITOR_RUN#></a> <#LANG_CODEEDITOR_TIPS#>";
+	label.innerHTML = "<a href='#' id='mj-audit-link' class='mj-audit-btn' onclick='return auditCodeAjax();'>✦ <#LANG_CODEEDITOR_AUDIT#></a> <a href='#' id='mj-run-link' class='mj-run-btn' onclick='return runCodeQuick();'>▶ <#LANG_CODEEDITOR_RUN#></a> <#LANG_CODEEDITOR_TIPS#>";
 	return node;
 }
 function addPanel(where) {
@@ -420,6 +422,32 @@ function saveEditorAjax() {
 	}
 	return false;
 }
+function auditCodeAjax() {
+	if (typeof editor === 'undefined') return false;
+	showRunPopup('<#LANG_CODEEDITOR_AUDIT_RUNNING#>', false, true);
+	var data = new FormData();
+	data.append('code', editor.getValue());
+	data.append('language', '[#TYPE#]');
+	data.append('md', $('input[name*="md"]:eq(2)').val() || 'scripts');
+	fetch('/modules/blockly_code/audit_code.php', {
+		method: 'POST',
+		body: data,
+		credentials: 'same-origin'
+	}).then(function (response) {
+		return response.json();
+	}).then(function (result) {
+		if (!result || result.status === 'error') {
+			showRunPopup((result && result.msg) || '<#LANG_CODEEDITOR_AUDIT_ERROR#>', true, false);
+		} else if (result.status === 'skip') {
+			showSaveToast(result.msg, false);
+		} else {
+			showRunPopup(result.msg, false, false);
+		}
+	}).catch(function () {
+		showRunPopup('<#LANG_CODEEDITOR_AUDIT_ERROR#>', true, false);
+	});
+	return false;
+}
 function CtrlSSave() {
 	return saveEditorAjax();
 }
@@ -460,7 +488,8 @@ $(document).ready(function(){
 			"F11": function(cm) {
 				switchFullscreen();
 			},
-			"Ctrl-Enter": function(cm) { runCodeQuick(); },
+			"Ctrl-Shift-A": function(cm) { auditCodeAjax(); },
+"Ctrl-Enter": function(cm) { runCodeQuick(); },
 "Ctrl-S": function(instance) {
 				CtrlSSave();
 				return;
