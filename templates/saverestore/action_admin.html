@@ -1,4 +1,16 @@
-[#if CLEAR_FIRST!="1"#]
+<script type="text/javascript">
+function saveSaverestoreSettings(form) {
+	var data = new FormData(form);
+	fetch('/modules/saverestore/ajax_settings.php', {method:'POST', body:data, credentials:'same-origin'})
+	.then(function(r){return r.json();})
+	.then(function(res){
+		if ($.toast) $.toast({text:res.msg, position:'top-right', bgColor:res.status==='ok'?'#3c763d':'#b52b27', textColor:'#fff', hideAfter:3000, stack:1});
+	}).catch(function(){
+		if ($.toast) $.toast({text:'<#LANG_ERROR#>', position:'top-right', bgColor:'#b52b27', textColor:'#fff', hideAfter:3000, stack:1});
+	});
+	return false;
+}
+</script>[#if CLEAR_FIRST!="1"#]
 <div class="row" style="margin-right: -15px;margin-left: -15px;">
 	[#if ERR_MSG!=""#]
 		<div class="col-md-12"><div class="alert alert-danger">[#ERR_MSG#]</div></div>
@@ -114,7 +126,7 @@
 				<ul class="list-group" id="">
 					<li class="list-group-item">
 						<span style="float: right;">
-							<select name="set_update_url" id="set_update_url" style="border: 0px;" onchange="this.form.submit();">
+							<select name="set_update_url" id="set_update_url" style="border: 0px;" onchange="return saveSaverestoreSettings(this.form);">
 								<option value="<#GIT_URL#>archive/master.tar.gz"[#if UPDATE_URL="<#GIT_URL#>archive/master.tar.gz" AND CURRENT_BRANCH!="ALPHA"#] selected[#endif#]><#LANG_UPDATES_SOURCE_MASTER#></option>
 								<option value="<#GIT_URL#>archive/alpha.tar.gz"[#if UPDATE_URL="<#GIT_URL#>archive/alpha.tar.gz" OR CURRENT_BRANCH="ALPHA"#] selected[#endif#]><#LANG_UPDATES_SOURCE_ALPHA#></option>
 								[#if ADITIONAL_GIT_URLS#]
