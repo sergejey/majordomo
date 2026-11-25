@@ -286,6 +286,7 @@ $dictionary = array (
 
 
     'SETTINGS_UPDATED' => 'Налаштування збережені!',
+    'SETTINGS_ERROR' => 'Не вдалося зберегти налаштування',
 
 
     'DEFAULT_VALUE' => 'Значення за замовчуванням',

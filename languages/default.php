@@ -296,6 +296,7 @@ $dictionary = array(
 
 
     'SETTINGS_UPDATED' => 'Settings updated!',
+    'SETTINGS_ERROR' => 'Settings save failed',
 
 
     'DEFAULT_VALUE' => 'Default value',
