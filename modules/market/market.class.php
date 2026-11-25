@@ -467,6 +467,17 @@ class market extends module
                 $plugins[] = $rec;
             }
 
+            if ($search == '' && in_array((string)$category_id, array('', 'installed', 'updates', 'all'))) {
+                $available = array();
+                foreach ($this->can_be_updated_new as $item) {
+                    $available[$item['NAME']] = $item['VERSION'];
+                }
+                $available = count($available) ? json_encode($available) : '';
+                if (gg('LatestModulesUpdates') != $available) {
+                    setGlobal('LatestModulesUpdates', $available);
+                }
+            }
+
             if ($this->ajax && $_GET['op'] == 'check_updates') {
                 $total = count($this->have_updates);
                 if ($total > 0) {
