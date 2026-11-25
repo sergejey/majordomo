@@ -496,40 +496,52 @@ class connect extends module
             $url .= '?no_session=1';
         }
         //DebMes("$method request to $url: ".$msg,'connect_post');
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        if ($this->config['CONNECT_INSECURE']) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        }
-        if ($method != 'GET') {
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-            //curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-        }
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10); // connection timeout
-        @curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 45);  // operation timeout 45 seconds
-        $tmpfname = ROOT . 'cms/cached/cookie.txt';
-        curl_setopt($ch, CURLOPT_COOKIEJAR, $tmpfname);
-        curl_setopt($ch, CURLOPT_COOKIEFILE, $tmpfname);
-        if (defined('USE_PROXY') && USE_PROXY != '') {
-            curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
-            if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
-                curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+        $cookie_file = ROOT . 'cms/cached/cookie_' . getmypid() . '_' . str_replace('.', '', microtime(true)) . '.txt';
+        $result = '';
+        for ($attempt = 1; $attempt <= 2; $attempt++) {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            if ($this->config['CONNECT_INSECURE']) {
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
             }
+            if ($method != 'GET') {
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+            }
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+            @curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 45);
+            curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie_file);
+            curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie_file);
+            if (defined('USE_PROXY') && USE_PROXY != '') {
+                curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+                if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                    curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+                }
+            }
+            $result = curl_exec($ch);
+            $curl_error = curl_error($ch);
+            $http_code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $redirectURL = curl_getinfo($ch, CURLINFO_REDIRECT_URL);
+            if ($redirectURL != '') {
+                $redirectURL = str_replace(BASE_URL, '', $redirectURL);
+                $result = 'redirect:' . $redirectURL;
+                $data['content_type'] = 'redirect';
+            } else {
+                $data['content_type'] = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+            }
+            mjdCurlClose($ch);
+            if ($curl_error && function_exists('DebMes')) {
+                DebMes('Connect request failed (attempt ' . $attempt . '): ' . $curl_error . ' HTTP ' . $http_code . ' URL ' . $url, 'connect_error');
+            }
+            if (!$curl_error || $attempt == 2) {
+                break;
+            }
+            usleep(500000);
         }
-        $result = curl_exec($ch);
-        $redirectURL = curl_getinfo($ch, CURLINFO_REDIRECT_URL);
-        if ($redirectURL != '') {
-            $redirectURL = str_replace(BASE_URL, '', $redirectURL);
-            $result = 'redirect:' . $redirectURL;
-            $data['content_type'] = 'redirect';
-        } else {
-            $data['content_type'] = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-        }
-        mjdCurlClose($ch);
+        @unlink($cookie_file);
         $this->sendReverseURL($data, $result);
     }
 
@@ -1089,6 +1101,37 @@ class connect extends module
             }
             if ($op == 'reverse_request_full') {
                 $this->requestReverseFull($msg);
+            }
+            if ($op == 'diagnose') {
+                $start = microtime(true);
+                $url = 'https://connect.majordomohome.com/market/?op=categories&lang=' . SETTINGS_SITE_LANGUAGE;
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+                if (!empty($this->config['CONNECT_USERNAME']) && !empty($this->config['CONNECT_PASSWORD'])) {
+                    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+                    curl_setopt($ch, CURLOPT_USERPWD, $this->config['CONNECT_USERNAME'] . ':' . $this->config['CONNECT_PASSWORD']);
+                }
+                if (defined('USE_PROXY') && USE_PROXY != '') {
+                    curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
+                    if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
+                        curl_setopt($ch, CURLOPT_PROXYUSERPWD, USE_PROXY_AUTH);
+                    }
+                }
+                $response = curl_exec($ch);
+                $error = curl_error($ch);
+                $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                mjdCurlClose($ch);
+                echo json_encode(array(
+                    'status' => ($response !== false && !$error && $code >= 200 && $code < 300) ? 'ok' : 'error',
+                    'http_code' => $code,
+                    'error' => $error,
+                    'bytes' => strlen((string)$response),
+                    'latency_ms' => (int)round((microtime(true) - $start) * 1000)
+                ));
+                exit;
             }
         }
 

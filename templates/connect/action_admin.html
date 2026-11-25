@@ -3,6 +3,23 @@
  <li [#if TAB=="calls"#]class="active"[#endif#]><a href="?tab=calls"><#LANG_PUBLIC_CALLS#></a></li>
 </ul>
 
+<div class="alert alert-info">
+ <button type="button" class="btn btn-default" onclick="return connectDiagnose();"><#LANG_CONNECT_DIAGNOSE#></button>
+ <span id="connect_diagnose_result" style="margin-left:10px;"></span>
+</div>
+<script type="text/javascript">
+function connectDiagnose() {
+ $('#connect_diagnose_result').text('<#LANG_NEWDASH_LOADING#>');
+ fetch('/ajax/connect.html?op=diagnose', {credentials:'same-origin'})
+ .then(function(r){return r.json();})
+ .then(function(d){
+  $('#connect_diagnose_result').text(d.status + ' / HTTP ' + d.http_code + ' / ' + d.latency_ms + ' ms / ' + d.bytes + ' bytes' + (d.error ? ' / ' + d.error : ''));
+ }).catch(function(){
+  $('#connect_diagnose_result').text('<#LANG_ERROR#>');
+ });
+ return false;
+}
+</script>
 [#if STATUS!=""#]
 <div class="alert alert-info">[#STATUS#]</div>
 [#endif#]
