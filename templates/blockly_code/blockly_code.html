@@ -306,9 +306,89 @@ document.addEventListener('keydown', function (e) {
 		closeRunPopup();
 	}
 }, true);
-function CtrlSSave() {
+function editorStateKey() {
+	return 'mj-editor-state:' + location.pathname + location.search;
+}
+function saveEditorState() {
+	if (typeof editor === 'undefined') return;
+	try {
+		var state = {
+			fullScreen: editor.getOption('fullScreen') === true,
+			panelVisible: $('.cm_panel').is(':visible'),
+			cursor: editor.getCursor(),
+			selection: editor.listSelections(),
+			scroll: editor.getScrollInfo()
+		};
+		sessionStorage.setItem(editorStateKey(), JSON.stringify(state));
+	} catch (e) { /* private mode or quota */ }
+}
+function restoreEditorState() {
+	if (typeof editor === 'undefined') return;
+	var raw = null;
+	try { raw = sessionStorage.getItem(editorStateKey()); } catch (e) { return; }
+	if (!raw) return;
+	var state;
+	try { state = JSON.parse(raw); } catch (e) { return; }
+	if (state.fullScreen && !editor.getOption('fullScreen')) switchFullscreen();
+	if (!state.fullScreen && editor.getOption('fullScreen')) switchFullscreen();
+	if (typeof state.panelVisible === 'boolean') $('.cm_panel').toggle(state.panelVisible);
+	if (state.selection && state.selection.length) {
+		try { editor.setSelections(state.selection); } catch (e) { if (state.cursor) editor.setCursor(state.cursor); }
+	} else if (state.cursor) {
+		editor.setCursor(state.cursor);
+	}
+	if (state.scroll) editor.scrollTo(state.scroll.left || 0, state.scroll.top || 0);
+}
+function showSaveToast(text, isError) {
+	if (typeof $ !== 'undefined' && $.toast) {
+		$.toast({
+			text: text,
+			showHideTransition: 'fade',
+			allowToastClose: true,
+			hideAfter: 3000,
+			stack: 1,
+			position: 'top-right',
+			bgColor: isError ? '#b52b27' : '#3c763d',
+			textColor: '#ffffff',
+			textAlign: 'left',
+			loader: true,
+			loaderBg: '#9EC600'
+		});
+	} else {
+		showRunPopup(text, isError, false);
+	}
+}
+function saveEditorAjax() {
+	saveEditorState();
 	[#if SETTINGS_CODEEDITOR_AUTOSAVE != '0'#]ajaxAutosave('save');[#endif#]
-	$("[name='subm']").click();
+	var form = $('#frmEdit');
+	if (!form.length) {
+		$("[name='subm']").click();
+		return false;
+	}
+	var data = new FormData(form[0]);
+	data.append('subm', 'Submit');
+	if (!data.get('mode')) data.append('mode', 'update');
+	showSaveToast('<#LANG_CODEEDITOR_SAVING#>', false);
+	fetch(location.href, {
+		method: 'POST',
+		body: data,
+		credentials: 'same-origin',
+		redirect: 'follow'
+	}).then(function (response) {
+		return response.text();
+	}).then(function (html) {
+		var failed = html.indexOf('error_noty') >= 0 || html.indexOf('alert-danger') >= 0;
+		showSaveToast(failed ? '<#LANG_CODEEDITOR_SAVE_ERROR#>' : '<#LANG_CODEEDITOR_SAVED#>', failed);
+		restoreEditorState();
+	}).catch(function () {
+		showSaveToast('<#LANG_CODEEDITOR_SAVE_ERROR#>', true);
+		restoreEditorState();
+	});
+	return false;
+}
+function CtrlSSave() {
+	return saveEditorAjax();
 }
 
 $(document).ready(function(){
@@ -390,6 +470,7 @@ $(document).ready(function(){
 
 
 	addPanel("top");
+	restoreEditorState();
 
 	if (wrapSetting !== '0' && wrapSetting !== '1') {
 		window.addEventListener('resize', function () {

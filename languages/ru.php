@@ -2110,3 +2110,7 @@ if (!defined('LANG_CODEEDITOR_NO_OUTPUT')) define('LANG_CODEEDITOR_NO_OUTPUT', '
 if (!defined('LANG_CODEEDITOR_RUNNING')) define('LANG_CODEEDITOR_RUNNING', 'Выполнение...');
 if (!defined('LANG_CODEEDITOR_ERROR')) define('LANG_CODEEDITOR_ERROR', 'Ошибка выполнения');
 if (!defined('LANG_CODEEDITOR_ONLY_PHP')) define('LANG_CODEEDITOR_ONLY_PHP', 'На сервере можно выполнить только PHP-код.');
+
+if (!defined('LANG_CODEEDITOR_SAVED')) define('LANG_CODEEDITOR_SAVED', 'Сохранено');
+if (!defined('LANG_CODEEDITOR_SAVE_ERROR')) define('LANG_CODEEDITOR_SAVE_ERROR', 'Не удалось сохранить. Проверьте код и попробуйте снова.');
+if (!defined('LANG_CODEEDITOR_SAVING')) define('LANG_CODEEDITOR_SAVING', 'Сохранение...');
