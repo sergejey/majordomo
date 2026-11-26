@@ -1510,6 +1510,7 @@ $dictionary = array(
 
     'CONNECT_LOGIN_FAILED' => 'Could not login into CONNECT service. Please check username/password.',
     'CONNECT_ABOUT' => 'CONNECT service allows you to organize easy access to your smarthome system by Internet. Also it provides tools for other cloud-based services like Cloud Backup, voice assistants, etc. More details available <a href="https://connect.majordomohome.com/services/s2.html">by the link</a>',
+'CONNECT_DIAGNOSE' => 'Diagnose connection',
     'CONNECT_REGISTER' => 'Register at CONNECT',
     'CONNECT_PUBLISH_DATA' => 'Publish Data',
     'CONNECT_CLOUD_BACKUP' => 'Cloud Backup',
