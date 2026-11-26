@@ -149,7 +149,7 @@ if (isset($_SERVER['REQUEST_METHOD']) &&
  <meta http-equiv=\"refresh\" content=\"10\">
 <link rel=\"stylesheet\" href=\"{$roothtml}3rdparty/bootstrap/css/bootstrap.min.css\">
 <link rel=\"stylesheet\" href=\"{$roothtml}3rdparty/bootstrap/css/bootstrap-theme.min.css\">
-<script src=\"https://code.jquery.com/jquery-3.3.1.min.js\" type=\"text/javascript\"></script>
+<script src=\"{$roothtml}3rdparty/jquery/jquery-3.3.1.min.js\" type=\"text/javascript\"></script>
 <script src=\"{$roothtml}3rdparty/bootstrap/js/bootstrap.min.js\"></script>
 </head><body><div class=\"container\">";
             echo "&nbsp;<div class='alert alert-danger'>" . LANG_MAINCYCLEDOWN . "</div>";
