@@ -791,7 +791,7 @@ function ajaxAutosave(action) {
 				
 				$("#restoreCodeList").html('');
 				while (i <= responseArray.length) {
-					$("#restoreCodeList").append('<tr><th scope="row" style="vertical-align: middle;">'+responseArray[i].name+'</th><td style="vertical-align: middle;">'+responseArray[i].create+'</td><td style="cursor:pointer;vertical-align: middle;"><a href="javascript://" onclick="seeCodeFunc(\''+responseArray[i].code+'\')"><i class="glyphicon glyphicon-eye-open" style="font-size: 1.5rem;"></i></a></td><td style="vertical-align: middle;"><button type="button" class="btn btn-warning btn-xs" onclick="if(confirm(\'<#LANG_ARE_YOU_SURE#>\')) setValueEditor(\''+responseArray[i].code+'\');"><#LANG_CODEEDITOR_RESTORE#></button></td></tr>');
+					$("#restoreCodeList").append('<tr><th scope="row" style="vertical-align: middle;">'+responseArray[i].name+'</th><td style="vertical-align: middle;">'+responseArray[i].create+'</td><td style="cursor:pointer;vertical-align: middle;"><a href="javascript://" onclick="seeCodeFunc(\''+responseArray[i].code+'\')"><i class="glyphicon glyphicon-eye-open" style="font-size: 1.5rem;"></i></a></td><td style="vertical-align: middle;"><button type="button" class="btn btn-default btn-xs" onclick="if(confirm(\'<#LANG_ARE_YOU_SURE#>\')) setValueEditor(\''+responseArray[i].code+'\');"><#LANG_CODEEDITOR_RESTORE#></button></td></tr>');
 					i++;
 				}
 			}
@@ -863,7 +863,7 @@ function modalRestoreCode() {
 </div>
 
 <div id="xml_row"[#if CODE_TYPE!="1"#] style="display:none"[#endif#]>
-<a href="#" onClick="return [#CODE_FIELD#]_editBlocklyUpdated();" class="btn btn-default btn-success"><#LANG_EDIT#></a>
+<a href="#" onClick="return [#CODE_FIELD#]_editBlocklyUpdated();" class="btn btn-primary"><#LANG_EDIT#></a>
     <br/>
     <small><a href="#" onClick="$('#xml_area').toggle();return false;"><#LANG_SHOW#> XML</a></small>
     <div id="xml_area" style="display:none">

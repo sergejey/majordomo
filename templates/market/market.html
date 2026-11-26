@@ -1,23 +1,23 @@
 [#if MODE=""#]
-<div class="row" style="margin-right: -15px;margin-left: -15px;">
+<div class="row">
 	<div class="col-md-6">
-		<div class="jumbotron" style="margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background-image: radial-gradient(circle farthest-corner at 10px 10px, #ffffff, #6bce2c);">
-			<h2><#LANG_NEWMARKET_BANNER#></h2>
-			<p style="font-size: 11pt;"><#LANG_NEWMARKET_BANNER_TEXT#>
-			</p>
-			<p class="text-right">
-				<a style="border-color: #ffffff;" href="https://forum.majordomohome.com/viewforum.php?f=36" target="_blank" class="btn btn-warning btn-md" role="button"><#LANG_NEWMARKET_BANNER_BTN#></a>
-			</p>
+		<div class="panel panel-default" style="margin-bottom: 10px;">
+			<div class="panel-body">
+				<h2 style="margin-top: 0;"><#LANG_NEWMARKET_BANNER#></h2>
+				<p class="text-muted"><#LANG_NEWMARKET_BANNER_TEXT#></p>
+				<p class="text-right" style="margin-bottom: 0;">
+					<a href="https://forum.majordomohome.com/viewforum.php?f=36" target="_blank" class="btn btn-primary btn-md" role="button"><#LANG_NEWMARKET_BANNER_BTN#></a>
+				</p>
+			</div>
 		</div>
 	</div>
 	<div class="col-md-6">
-		<div class="panel panel-default">
+		<div class="panel panel-default" style="margin-bottom: 10px;">
 			<div class="panel-heading">
 				<h3 class="panel-title"><#LANG_NEWMARKET_SERACH_BLOCK#></h3>
 			</div>
 			<div class="panel-body">
-				<div style="margin-bottom: 10px;border-bottom: 1px solid #ddd;padding-bottom: 10px;">
-					<script type="text/javascript">
+				<script type="text/javascript">
 					var upTimer=0;
 					function filterPlugins() {
 						var str=$('#filter').val();
@@ -52,13 +52,13 @@
 						upTimer=setTimeout('filterPlugins();',1000);
 					}
 					</script>
-					<input type="text" class="form-control" placeholder="<#LANG_NEWMARKET_SEARCH_INPUT_PLACEHOLDER#>" id="filter" onInput="searchKeyUp();" autofocus>
-				</div>
-				<div >
+					<input type="text" class="form-control" placeholder="<#LANG_NEWMARKET_SEARCH_INPUT_PLACEHOLDER#>" id="filter" onInput="searchKeyUp();" autofocus style="margin-bottom: 12px;">
 					[#if CLEAR_FIRST!="1"#]
-					<a href="?mode=iframe&mode2=update_new" style="margin-bottom: 10px;" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-success"><i class="glyphicon glyphicon-download-alt"></i> <#LANG_UPDATE_NEW_EXTENSIONS#></a>
-					<a href="?mode=iframe&mode2=update_all" style="margin-bottom: 10px;" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-danger"><i class="glyphicon glyphicon-download-alt"></i> <#LANG_UPDATE_ALL_EXTENSIONS#></a>
-					<a href="#manualUpload" style="margin-bottom: 10px;" class="btn btn-default popup"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_UPDATE_MANUALLY#></a>
+					<div class="btn-toolbar" style="margin-bottom: 10px;">
+					<a href="?mode=iframe&mode2=update_new" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-primary"><i class="glyphicon glyphicon-download-alt"></i> <#LANG_UPDATE_NEW_EXTENSIONS#></a>
+					<a href="?mode=iframe&mode2=update_all" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><i class="glyphicon glyphicon-download-alt"></i> <#LANG_UPDATE_ALL_EXTENSIONS#></a>
+					<a href="#manualUpload" class="btn btn-default popup"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_UPDATE_MANUALLY#></a>
+					</div>
 					<div style="display:none" id="manualUpload">
 						<h2><#LANG_ADD_UPDATE_MANUALLY#></h2>
 						<form class="form" method="post" enctype="multipart/form-data">
@@ -74,11 +74,10 @@
 					</div>
 					[#else CLEAR_FIRST#]
 					<form action="?" method="post" enctype="multipart/form-data">
-						<input type="submit" name="submit" value="<#LANG_CLEAR_TEMPORARY_FOLDER#>" class="btn btn-default btn-warning">
+						<input type="submit" name="submit" value="<#LANG_CLEAR_TEMPORARY_FOLDER#>" class="btn btn-default">
 						<input type="hidden" name="mode" value="clear">
 					</form>
 					[#endif CLEAR_FIRST#]
-				</div>
 			</div>
 		</div>
 	</div>
@@ -172,7 +171,7 @@
 					<h4 class="modal-title"><#LANG_NEWSAVERESTORE_CONSOLE#></h4>
 				</div>
 				<div class="modal-body" style="background-image: url(<#ROOTHTML#>img/system/loading.gif);background-repeat: no-repeat;background-position: center center;">
-					<div class="alert" style="background: radial-gradient(circle farthest-corner at 450px 10px, #b8862b, #b03a30);color: white;text-align: center;border: 0px;"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i><#LANG_LONG_OPERATION_WARNING#></div>
+					<div class="alert alert-warning"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i><#LANG_LONG_OPERATION_WARNING#></div>
 						<iframe id="processUpdateFrame" style="border-radius: 5px;height: 400px;" src="<#ROOTHTML#>modules/market/update_iframe.php?mode2=<#MODE2#>&name=[#NAME#]&names=[#NAMES#]&link=[#LINK_URL#]" width="100%" frameborder="0"></iframe>
 				</div>
 			</form>
