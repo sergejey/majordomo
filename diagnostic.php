@@ -322,7 +322,7 @@ if ($_GET['ajax'] == 1) {
     <!-- Optional theme -->
     <link rel="stylesheet" href="<?php echo ROOTHTML; ?>3rdparty/bootstrap/css/bootstrap-theme.min.css">
     <!-- Latest compiled and minified JavaScript -->
-    <script src="<?php echo ROOTHTML; ?>3rdparty/jquery/jquery-3.3.1.min.js" type="text/javascript"></script>
+    <script src="<?php echo ROOTHTML; ?>3rdparty/jquery/jquery-3.7.1.min.js" type="text/javascript"></script>
     <script src="<?php echo ROOTHTML; ?>3rdparty/bootstrap/js/bootstrap.min.js"
             integrity="sha512-oBTprMeNEKCnqfuqKd6sbvFzmFQtlXS3e0C/RGFV0hD6QzhHV+ODfaQbAlmY6/q0ubbwlAM/nCJjkrgA3waLzg=="
             crossorigin="anonymous"></script>

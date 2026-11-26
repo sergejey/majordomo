@@ -6,11 +6,11 @@
 
 | Что | Состояние | Рекомендация |
 |---|---|---|
-| jQuery в `diagnostic.php` и `load_settings.php` | подключался с `code.jquery.com` | **исправлено в этом PR**: локальный `3rdparty/jquery/jquery-3.3.1.min.js` |
-| jQuery 3.3.1 | CVE-2019-11358 (prototype pollution), CVE-2020-11022/11023 (DOM XSS) | обновить до **3.7.1** отдельным PR; jQuery 4 ломает legacy-плагины |
+| jQuery в `diagnostic.php` и `load_settings.php` | подключался с `code.jquery.com` | **исправлено в этом PR**: локальный `3rdparty/jquery/jquery-3.7.1.min.js` |
+| jQuery 3.7.1 | CVE-2019-11358 закрыт (prototype pollution), CVE-2020-11022/11023 (DOM XSS) | обновление выполнено в этом PR; jQuery 4 ломает legacy-плагины |
 | jQuery Migrate 3.0.0 | шум в консоли, совместимость с 1.x/2.x не нужна | удалить после проверки `.live/.bind/.size/$.browser` |
 | Bootstrap 3.0.0 JS и локальный CSS | CVE-2019-8331; локальный CSS пропатчен | обновить до **3.4.1**, перенеся локальные 패тчи и `!important`-правила тёмной темы |
-| PHPMailer 6.0.1 | CVE-2018-19296 (phar object injection → RCE) | обновить до актуальной 6.x |
+| PHPMailer 6.12.0 | CVE-2018-19296 закрыт | обновлено в этом PR |
 | elFinder 2.1.61 | CVE-2023-35840 (path traversal), коннектор без авторизации | обновить до 2.1.70+, добавить проверку сессии админки |
 | three.js для 3D-сцен | каталог `3rdparty/threejs/` отсутствует, шаблон даёт 404 | добавить локальную сборку или убрать 3D-ветку из `templates/scenes/action_usual.html` |
 
@@ -19,7 +19,7 @@
 | Библиотека | Сейчас | Рекомендация |
 |---|---|---|
 | Moment.js | 2.20.1 | 2.31.0 (datetimepicker 4.17.47 совместим) |
-| Select2 | 4.0.6-rc.1 | 4.0.13; оставить только min-сборку и нужные локали |
+| Select2 | 4.0.13 | обновлено в этом PR |
 | fancyBox | 3.5.7, но cache-buster `?v=3.3.5` | **исправлено в этом PR**: `?v=3.5.7` |
 | CodeMirror | 5.46.0 ядро + 4.1.1 во freeboard | обновление до 5.65.16 и отказ от CM4 сделаны в отдельном PR (#1422) |
 | Bootstrap dark | Bootswatch 3.3.2 | привести к 3.4.1 вместе с основной веткой |
