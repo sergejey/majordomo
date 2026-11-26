@@ -11,7 +11,7 @@ function markErrorsRead(id, element) {
 	}).then(function (result) {
 		if (!result || result.status !== 'ok') return;
 		if (!id) {
-			$('#errors-alert').html('<h2><#LANG_NEWSYSTEM_ERROR_NOT_ERROR#></h2><p style="font-size:11pt;"><#LANG_NEWSYSTEM_ERROR_NOT_ERROR_TEXT#></p>');
+			$('#errors-alert').html('<div class="panel-body"><h2 style="margin-top:0;"><#LANG_NEWSYSTEM_ERROR_NOT_ERROR#></h2><p class="text-muted"><#LANG_NEWSYSTEM_ERROR_NOT_ERROR_TEXT#></p></div>');
 			if ($.toast) $.toast({ text: '<#LANG_DATA_SAVED#>', showHideTransition: 'fade', allowToastClose: true, hideAfter: 2500, stack: 1, position: 'top-right', bgColor: '#3c763d', textColor: '#fff' });
 		} else if (element) {
 			var modal = $(element).closest('.modal');
@@ -35,7 +35,7 @@ function markErrorsRead(id, element) {
 		<div class="form-group">
 			<div class="col-lg-5">&nbsp;</div>
 			<div class="col-lg-4">
-				<input type="submit" value="<#LANG_SUBMIT#>" class="btn btn-default btn-primary">
+				<input type="submit" value="<#LANG_SUBMIT#>" class="btn btn-primary">
 				<a href="#" class="btn btn-default" onclick="$('#settings_form').toggle();return false;"><#LANG_CANCEL#></a>
 			</div>
 		</div>
@@ -48,17 +48,21 @@ function markErrorsRead(id, element) {
 <div class="row">
 	<div class="col-md-6">
 		[#if ERRORS_FOUND!=0#]
-		<div id="errors-alert" class="jumbotron" style="margin-bottom: 10px;background-image: radial-gradient(circle farthest-corner at 10px 10px, #ffffff, #ec1b2e);">
-			<h2><#LANG_NEWSYSTEM_ERROR_FIND_ERROR#></h2>
-			<p><#LANG_NEWSYSTEM_ERROR_FIND_ERROR_TEXT#></p>
-			<p class="text-right">
-				<a onclick="return markErrorsRead(0, this);" class="btn btn-default btn-md" role="button"><#LANG_NEWSYSTEM_ERROR_CHECK_ALL_READ#></a>
-			</p>
+		<div id="errors-alert" class="panel panel-default" style="margin-bottom: 10px;">
+			<div class="panel-body">
+				<h2 style="margin-top: 0;"><#LANG_NEWSYSTEM_ERROR_FIND_ERROR#></h2>
+				<p class="text-muted"><#LANG_NEWSYSTEM_ERROR_FIND_ERROR_TEXT#></p>
+				<p class="text-right" style="margin-bottom: 0;">
+					<a onclick="return markErrorsRead(0, this);" class="btn btn-primary btn-md" role="button"><#LANG_NEWSYSTEM_ERROR_CHECK_ALL_READ#></a>
+				</p>
+			</div>
 		</div>
 		[#else#]
-		<div class="jumbotron" style="min-height: 230px;margin-bottom: 10px;background-image: radial-gradient(circle farthest-corner at 100px 50px, #9efac3, #4792d1);">
-			<h2><#LANG_NEWSYSTEM_ERROR_NOT_ERROR#></h2>
-			<p><#LANG_NEWSYSTEM_ERROR_NOT_ERROR_TEXT#></p>
+		<div class="panel panel-default" style="margin-bottom: 10px;">
+			<div class="panel-body">
+				<h2 style="margin-top: 0;"><#LANG_NEWSYSTEM_ERROR_NOT_ERROR#></h2>
+				<p class="text-muted"><#LANG_NEWSYSTEM_ERROR_NOT_ERROR_TEXT#></p>
+			</div>
 		</div>
 		[#endif#]
 	</div>
@@ -69,8 +73,8 @@ function markErrorsRead(id, element) {
 				<p><#LANG_NEWSYSTEM_ERROR_FULL_DESC#></p>
 				<div class="text-right">
 					<div class="btn-group">
-						<button type="button" onclick="location.href='/diagnostic.php'" class="btn btn-success"><#LANG_SUBMIT_DIAGNOSTIC#></button>
-						<button type="button" onclick="location.href='?action=system_errors&md=system_errors&view_mode=addtesterror'" class="btn btn-warning"><#LANG_NEWSYSTEM_ERROR_GET_ERROR#></button>
+						<button type="button" onclick="location.href='/diagnostic.php'" class="btn btn-primary"><#LANG_SUBMIT_DIAGNOSTIC#></button>
+						<button type="button" onclick="location.href='?action=system_errors&md=system_errors&view_mode=addtesterror'" class="btn btn-default"><#LANG_NEWSYSTEM_ERROR_GET_ERROR#></button>
 						<a href="#" id="settings_button" class="btn btn-default" onclick="$('#settings_form').toggle();return false;"><#LANG_SECTION_SETTINGS#></a>
 					</div>
 				</div>
@@ -99,7 +103,7 @@ $(document).ready(function() {
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal"><#LANG_CODEEDITOR_CLOSE_BTN#></button>
 				[#if ACTIVE!="0"#]
-					<a href="#" onclick="return markErrorsRead([#ID#], this);" class="btn btn-success" title=""><i class="glyphicon glyphicon-ok"></i> <#LANG_NEWSYSTEM_ERROR_READ_BTN#></a>
+					<a href="#" onclick="return markErrorsRead([#ID#], this);" class="btn btn-primary" title=""><i class="glyphicon glyphicon-ok"></i> <#LANG_NEWSYSTEM_ERROR_READ_BTN#></a>
 				[#endif#]
 			</div>
 		</div>
