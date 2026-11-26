@@ -66,7 +66,7 @@ function connectDiagnose() {
       <#LANG_PASSWORD#>:
      </label>
      <div class="col-md-7">
-      <input type="password" name="connect_password" id="password" value="<#CONNECT_PASSWORD#>" class="form-control">
+      <input type="password" name="connect_password" id="password" value="" placeholder="<#LANG_CONNECT_PASSWORD_KEEP#>" class="form-control">
      </div>
     </div>
 
@@ -86,13 +86,6 @@ function connectDiagnose() {
      </div>
     </div>
 
-    <div class="form-group">
-     <label class="control-label">&nbsp;</label>
-     <div class="col-md-7">
-      <input type="checkbox" name="connect_insecure" value="1"[#if CONNECT_INSECURE="1"#] checked[#endif#]>
-      <#LANG_CONNECT_DISABLE_SECURE_CONNECTION#>
-     </div>
-    </div>
 
     <div class="form-actions">
      <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_UPDATE#></button>

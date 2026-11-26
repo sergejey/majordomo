@@ -246,7 +246,7 @@ class market extends module
             if ($data['BODY']) {
                 echo nl2br(htmlspecialchars($data['BODY']));
                 if ($data['LINK'] != '') {
-                    echo "<br/><a href='" . $data['LINK'] . "' target='_blank'>" . LANG_DETAILS . "</a>";
+                    echo "<br/><a href='" . htmlspecialchars($data['LINK'], ENT_QUOTES, 'UTF-8') . "' target='_blank'>" . LANG_DETAILS . "</a>";
                 }
             }
             exit;
@@ -287,12 +287,12 @@ class market extends module
                     }
 
                     if ($data[$i]['LINK'] != '') {
-                        $linkDetail = "<a href='" . $data[$i]['LINK'] . "' target='_blank'>Читать полностью...</a>";
+                        $linkDetail = "<a href='" . htmlspecialchars($data[$i]['LINK'], ENT_QUOTES, 'UTF-8') . "' target='_blank'>Читать полностью...</a>";
                     } else {
                         $linkDetail = '';
                     }
 
-                    $addLinks = preg_replace('/(https?:\/\/[\w\d\-\/\.\?&=#]+)/', '<a href="$1" target=_blank>$1</a>', $data[$i]['BODY']);
+                    $addLinks = preg_replace('/(https?:\/\/[\w\d\-\/\.\?&=#]+)/', '<a href="$1" target=_blank>$1</a>', htmlspecialchars($data[$i]['BODY'], ENT_QUOTES, 'UTF-8'));
                     if ($addLinks) {
                         $body = $addLinks;
                     } else {
@@ -599,6 +599,11 @@ class market extends module
 
                     chdir(ROOT . 'cms/saverestore/temp');
 
+                    if (!$this->isSafeArchive('../' . $file)) {
+                        $this->echonow("Unsafe archive rejected<br/>", 'red');
+                        continue;
+                    }
+
                     if ($frame) {
                         $this->echonow("Unpacking '$file' ...");
                     }
@@ -835,8 +840,46 @@ class market extends module
         }
     }
 
+    /** Only trusted HTTPS hosts may serve plugin archives. */
+    function isAllowedPluginUrl($url)
+    {
+        $parts = parse_url($url);
+        if (!$parts || !isset($parts['scheme'], $parts['host'])) {
+            return false;
+        }
+        if (strtolower($parts['scheme']) !== 'https') {
+            return false;
+        }
+        $host = strtolower($parts['host']);
+        return in_array($host, array('github.com', 'codeload.github.com', 'api.github.com', 'raw.githubusercontent.com', 'connect.majordomohome.com'), true);
+    }
+
+    /** Reject archives with absolute/traversal member paths before extraction. */
+    function isSafeArchive($filename)
+    {
+        $output = array();
+        $result = 0;
+        exec('tar tzf ' . escapeshellarg($filename), $output, $result);
+        if ($result !== 0) {
+            return false;
+        }
+        foreach ($output as $entry) {
+            $entry = trim($entry);
+            if ($entry === '' || $entry[0] === '/' || preg_match('#(^|/)\.\.(/|$)#', $entry) || strpos($entry, '\\') !== false) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     function downloadPlugin($url, $filename, $frame = 0)
     {
+        if (!$this->isAllowedPluginUrl($url)) {
+            if ($frame) {
+                $this->echonow("Unsafe plugin URL rejected<br/>", 'red');
+            }
+            return '';
+        }
         if (file_exists($filename)) {
             unlink($filename);
         }
@@ -978,6 +1021,11 @@ class market extends module
 
         if ($file != '') { // && mkdir(ROOT.'cms/saverestore/temp', 0777)
             chdir(ROOT . 'cms/saverestore/temp');
+
+            if (!$this->isSafeArchive('../' . $file)) {
+                $this->echonow("Unsafe archive rejected<br/>", 'red');
+                return 0;
+            }
 
             if ($frame) {
                 $this->echonow("Unpacking '$file' ... ");

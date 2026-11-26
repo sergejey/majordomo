@@ -736,7 +736,6 @@ if (gr('performance') || (isset($result['passed'])) && $result['passed']>=5) {
 }
 
 if (!headers_sent()) {
-    header("Access-Control-Allow-Origin: *");
     //header("Access-Control-Allow-Methods: \"GET, HEAD\"");
     header("Content-type:application/json");
 }

@@ -162,10 +162,6 @@ class connect extends module
         $url = 'https://connect.majordomohome.com/sync_device_data.php';
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
-        if ($this->config['CONNECT_INSECURE']) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        }
         curl_setopt($ch, CURLOPT_HEADER, array("Content-Type:multipart/form-data"));
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
@@ -221,10 +217,6 @@ class connect extends module
             DebMes("Cloudbackup file $dest_file to $url", 'cloudbackup');
 
             curl_setopt($ch, CURLOPT_URL, $url);
-            if ($this->config['CONNECT_INSECURE']) {
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-            }
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -279,10 +271,8 @@ class connect extends module
         $this->getConfig();
 
         $out['CONNECT_USERNAME'] = $this->config['CONNECT_USERNAME'];
-        $out['CONNECT_PASSWORD'] = $this->config['CONNECT_PASSWORD'];
         $out['CONNECT_SYNC'] = $this->config['CONNECT_SYNC'];
         $out['CONNECT_BACKUP'] = $this->config['CONNECT_BACKUP'];
-        $out['CONNECT_INSECURE'] = $this->config['CONNECT_INSECURE'];
 
         $out['SEND_MENU'] = $this->config['SEND_MENU'];
         $out['SEND_CLASSES'] = $this->config['SEND_CLASSES'];
@@ -297,10 +287,11 @@ class connect extends module
             global $connect_backup;
 
             $this->config['CONNECT_USERNAME'] = $connect_username;
-            $this->config['CONNECT_PASSWORD'] = $connect_password;
+            if ($connect_password !== '') {
+                $this->config['CONNECT_PASSWORD'] = $connect_password;
+            }
             $this->config['CONNECT_SYNC'] = (int)$connect_sync;
             $this->config['CONNECT_BACKUP'] = (int)$connect_backup;
-            $this->config['CONNECT_INSECURE'] = gr('connect_insecure', 'int');
             $this->config['CONNECT_BACKUP_HOUR'] = (int)rand(0, 6);
             if ($this->config['CONNECT_BACKUP']) {
                 subscribeToEvent($this->name, 'HOURLY');
@@ -423,10 +414,6 @@ class connect extends module
         $url .= "&local_url=" . urlencode(getLocalIp());
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
-        if ($this->config['CONNECT_INSECURE']) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        }
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
@@ -449,10 +436,6 @@ class connect extends module
         $url = 'https://connect.majordomohome.com/sync_mqtt_queue.php';
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
-        if ($this->config['CONNECT_INSECURE']) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        }
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
@@ -483,7 +466,7 @@ class connect extends module
         $url = $data['url'];
         $method = $data['method'];
         if ($data['params']) {
-            $params = unserialize($data['params']);
+            $params = unserialize($data['params'], array('allowed_classes' => false));
         } else {
             $params = array();
         }
@@ -501,10 +484,6 @@ class connect extends module
         for ($attempt = 1; $attempt <= 2; $attempt++) {
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
-            if ($this->config['CONNECT_INSECURE']) {
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-            }
             if ($method != 'GET') {
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
@@ -605,10 +584,6 @@ class connect extends module
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
-        if ($this->config['CONNECT_INSECURE']) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        }
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
@@ -670,10 +645,6 @@ class connect extends module
         //DebMes($fields['devices_data'],'device_sync');
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
-        if ($this->config['CONNECT_INSECURE']) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        }
         curl_setopt($ch, CURLOPT_POST, count($fields));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -719,10 +690,6 @@ class connect extends module
         //DebMes("Posting $property = $value to $url",'device_sync');
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
-        if ($this->config['CONNECT_INSECURE']) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        }
         curl_setopt($ch, CURLOPT_POST, count($fields));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -764,10 +731,6 @@ class connect extends module
         $ch = curl_init();
         //set the url, number of POST vars, POST data
         curl_setopt($ch, CURLOPT_URL, $url);
-        if ($this->config['CONNECT_INSECURE']) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        }
         curl_setopt($ch, CURLOPT_POST, count($fields));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -840,10 +803,6 @@ class connect extends module
         //open connection
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
-        if ($this->config['CONNECT_INSECURE']) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        }
         curl_setopt($ch, CURLOPT_POST, count($fields));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -916,10 +875,6 @@ class connect extends module
         $ch = curl_init();
         //set the url, number of POST vars, POST data
         curl_setopt($ch, CURLOPT_URL, $url);
-        if ($this->config['CONNECT_INSECURE']) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        }
         curl_setopt($ch, CURLOPT_POST, count($fields));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -941,7 +896,7 @@ class connect extends module
         if (is_array($tmp['PUBLIC_CALLS'])) {
             $total = count($tmp['PUBLIC_CALLS']);
             for ($i = 0; $i < $total; $i++) {
-                SQLExec("UPDATE public_calls SET PUBLIC_KEY='" . $tmp['PUBLIC_CALLS'][$i]['PUBLIC_KEY'] . "' WHERE ID='" . $tmp['PUBLIC_CALLS'][$i]['INTERNAL_ID'] . "'");
+                SQLExec("UPDATE public_calls SET PUBLIC_KEY='" . DBSafe($tmp['PUBLIC_CALLS'][$i]['PUBLIC_KEY']) . "' WHERE ID=" . (int)$tmp['PUBLIC_CALLS'][$i]['INTERNAL_ID']);
             }
         }
 
@@ -1055,10 +1010,6 @@ class connect extends module
         $ch = curl_init();
         //set the url, number of POST vars, POST data
         curl_setopt($ch, CURLOPT_URL, $url);
-        if ($this->config['CONNECT_INSECURE']) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        }
         curl_setopt($ch, CURLOPT_POST, count($fields));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

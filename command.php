@@ -8,9 +8,12 @@
  * @version 1.2
  */
 if (isset($_SERVER['HTTP_ORIGIN'])) {
-    header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
-    header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Max-Age: 86400');    // cache for 1 day
+    $origin_host = parse_url($_SERVER['HTTP_ORIGIN'], PHP_URL_HOST);
+    $self_host = isset($_SERVER['HTTP_HOST']) ? parse_url('http://' . $_SERVER['HTTP_HOST'], PHP_URL_HOST) : '';
+    if ($origin_host && $origin_host === $self_host) {
+        header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
+        header('Access-Control-Max-Age: 86400');
+    }
 }
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
@@ -158,7 +161,6 @@ if ($qry != '') { // && $qry != $lastest_word
 if (!headers_sent()) {
     header("HTTP/1.0: 200 OK\n");
     header('Content-Type: text/html; charset=utf-8');
-    header('Access-Control-Allow-Origin: *');
 }
 ?>
 
