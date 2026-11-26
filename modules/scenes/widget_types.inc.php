@@ -153,3 +153,5 @@ if (is_dir($addons_dir)) {
         }
     }
 }
+
+require_once(DIR_MODULES . 'scenes/widget_types_modern.inc.php');

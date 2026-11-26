@@ -1026,6 +1026,12 @@ class scenes extends module
             $widget_type = $this->widget_types[$data['WIDGET_TYPE']];
             $widgetData['TYPE'] = $data['WIDGET_TYPE'];
             $widgetData['TYPE_DETAILS'] = $widget_type;
+            if (!empty($widget_type['RENDER_FUNCTION']) && is_callable($widget_type['RENDER_FUNCTION'])) {
+                $rendered = $widget_type['RENDER_FUNCTION']($data);
+                if (is_array($rendered)) {
+                    $data = array_merge($data, $rendered);
+                }
+            }
             if (preg_match('/file:(.+)/', $widget_type['TEMPLATE'], $m)) {
                 $filename = DIR_TEMPLATES . 'scenes/widgets/' . $m[1];
                 if (file_exists($filename)) {
