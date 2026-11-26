@@ -14,7 +14,12 @@ function markErrorsRead(id, element) {
 			$('#errors-alert').html('<h2><#LANG_NEWSYSTEM_ERROR_NOT_ERROR#></h2><p style="font-size:11pt;"><#LANG_NEWSYSTEM_ERROR_NOT_ERROR_TEXT#></p>');
 			if ($.toast) $.toast({ text: '<#LANG_DATA_SAVED#>', showHideTransition: 'fade', allowToastClose: true, hideAfter: 2500, stack: 1, position: 'top-right', bgColor: '#3c763d', textColor: '#fff' });
 		} else if (element) {
-			$(element).closest('tr').fadeOut(200, function () { $(this).remove(); });
+			var modal = $(element).closest('.modal');
+			if (modal.length) {
+				modal.modal('hide');
+			} else {
+				$(element).closest('tr').fadeOut(200, function () { $(this).remove(); });
+			}
 		}
 	});
 	return false;
@@ -40,27 +45,28 @@ function markErrorsRead(id, element) {
 
 <div style="clear:both"></div>
 
-<div class="row" style="margin-right: -15px;margin-left: -15px;display: flex;flex-wrap: wrap;">
-	<div class="col-md-6" style="display: flex;flex-wrap: wrap;">
+<link rel="stylesheet" href="<#ROOTHTML#>css/system-errors.css?v=26-11-26" type="text/css">
+<div class="system-errors-grid">
+	<div class="system-errors-col">
 		[#if ERRORS_FOUND!=0#]
-		<div id="errors-alert" class="jumbotron" style="margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background-image: radial-gradient(circle farthest-corner at 10px 10px, #ffffff, #ec1b2e);">
+		<div id="errors-alert" class="jumbotron system-errors-card system-errors-alert">
 			<h2><#LANG_NEWSYSTEM_ERROR_FIND_ERROR#></h2>
-			<p style="font-size: 11pt;"><#LANG_NEWSYSTEM_ERROR_FIND_ERROR_TEXT#></p>
+			<p><#LANG_NEWSYSTEM_ERROR_FIND_ERROR_TEXT#></p>
 			<p class="text-right">
-				<a style="border-color: #ffffff;" onclick="return markErrorsRead(0, this);" class="btn btn-default btn-md" role="button"><#LANG_NEWSYSTEM_ERROR_CHECK_ALL_READ#></a>
+				<a onclick="return markErrorsRead(0, this);" class="btn btn-default btn-md" role="button"><#LANG_NEWSYSTEM_ERROR_CHECK_ALL_READ#></a>
 			</p>
 		</div>
 		[#else#]
-		<div class="jumbotron" style="min-height: 230px;margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background-image: radial-gradient(circle farthest-corner at 100px 50px, #9efac3, #4792d1);">
+		<div class="jumbotron system-errors-card system-errors-ok">
 			<h2><#LANG_NEWSYSTEM_ERROR_NOT_ERROR#></h2>
-			<p style="font-size: 11pt;"><#LANG_NEWSYSTEM_ERROR_NOT_ERROR_TEXT#></p>
+			<p><#LANG_NEWSYSTEM_ERROR_NOT_ERROR_TEXT#></p>
 		</div>
 		[#endif#]
 	</div>
-	<div class="col-md-6" style="display: flex;flex-wrap: wrap;">
-		<div class="jumbotron" style="margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background: #f5f5f5;">
+	<div class="system-errors-col">
+		<div class="jumbotron system-errors-card system-errors-desc">
 			<h2><#LANG_DESCRIPTION#></h2>
-			<p style="font-size: 11pt;"><#LANG_NEWSYSTEM_ERROR_FULL_DESC#></p>
+			<p><#LANG_NEWSYSTEM_ERROR_FULL_DESC#></p>
 			<div class="text-right">
 				<div class="btn-group">
 					<button type="button" onclick="location.href='/diagnostic.php'" class="btn btn-success"><#LANG_SUBMIT_DIAGNOSTIC#></button>
@@ -69,9 +75,7 @@ function markErrorsRead(id, element) {
 				</div>
 			</div>
 		</div>
-
 	</div>
-
 </div>
 
 
