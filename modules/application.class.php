@@ -47,7 +47,7 @@ class application extends module
 
         $out = array();
 
-        $theme = SETTINGS_THEME;
+        $theme = defined('MJ_THEME') ? MJ_THEME : SETTINGS_THEME;
         if ($this->action == 'layouts' && $this->id) {
             $layout_rec = SQLSelectOne("SELECT * FROM layouts WHERE ID=" . (int)$this->id);
             if ($layout_rec['THEME']) {

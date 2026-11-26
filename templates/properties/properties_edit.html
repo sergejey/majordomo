@@ -123,12 +123,12 @@
 				<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
 					 <div class="col-md-12 text-center">
 						[#if ID!=""#]
-						<button class="btn btn-default btn-success" type="submit" name="subm"><i class="glyphicon glyphicon-floppy-saved"></i> <#LANG_SUBMIT#></button>
+						<button class="btn btn-primary" type="submit" name="subm"><i class="glyphicon glyphicon-floppy-saved"></i> <#LANG_SUBMIT#></button>
 						[#else ID#]
-						<button class="btn btn-default btn-success" type="submit" name="subm"><i class="glyphicon glyphicon-floppy-saved"></i> <#LANG_ADD#></button>
+						<button class="btn btn-primary" type="submit" name="subm"><i class="glyphicon glyphicon-floppy-saved"></i> <#LANG_ADD#></button>
 						[#endif ID#]
 						&nbsp;
-						<a href="?data_source=<#DATA_SOURCE#>" class="btn btn-warning"><i class="glyphicon glyphicon-floppy-remove"></i> <#LANG_CANCEL#></a>
+						<a href="?data_source=<#DATA_SOURCE#>" class="btn btn-default"><i class="glyphicon glyphicon-floppy-remove"></i> <#LANG_CANCEL#></a>
 					</div>
 				</div>
 				<input type="hidden" name="id" value="<#ID#>">

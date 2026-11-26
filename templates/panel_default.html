@@ -50,7 +50,7 @@
 						<h4 class="modal-title" id="myModalLabel"><#LANG_NEWDASH_DMB_TITLE_MODAL#></h4>
 					</div>
 					<div class="modal-body">
-						<div class="alert" style="font-size: 8pt;background: radial-gradient(circle farthest-corner at 450px 10px, #146b19, #2e7d5b);color: white;padding: 5px;text-align: center;">
+						<div class="alert alert-success">
 							<i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;margin-right: 5px;"></i>
 							<#LANG_NEWDASH_DMB_TITLE_MODAL_HINT#> <a href="https://forum.majordomohome.com/viewtopic.php?f=6&t=7303#p124597" style="color: white" target="_blank"><#LANG_NEWDASH_DMB_TITLE_MODAL_HINT_FORUM#></a>
 						</div>
@@ -124,7 +124,7 @@
 							<#LANG_NEWDASH_DB_CONNECTIONS#>
 							<span id="dashInfoDBConnections" onmouseover="$('#dbreqdiscus').show('slow');" class="badge"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
 						</li>
-						<li class="list-group-item text-center" id="dbreqdiscus" style="display:none;background: radial-gradient(circle farthest-corner at 100px 50px, #daffe5, #d6ecff);">
+						<li class="list-group-item list-group-item-info text-center" id="dbreqdiscus" style="display:none;">
 							<a href="https://forum.majordomohome.com/viewtopic.php?f=6&t=7301" style="text-decoration:none;color: #333;" target="_blank"><i style="margin-right: 10px;vertical-align: top;" class="glyphicon glyphicon-send"></i><#LANG_NEWDASH_FORUM_DISCUSSION#></a>
 						</li>
 						<!--#
@@ -145,13 +145,13 @@
 							<#LANG_THEME#>
 							<span class="badge" style="background:transparent;">
 								<div class="btn-group" data-toggle="buttons">
-									<label class="btn btn-sm btn-default" style="padding: 0px 5px;font-size: 1.1rem;background: #6a6969;border: 0px;">
+									<label class="btn btn-sm btn-default" style="padding: 1px 6px;font-size: 11px;">
 										<input type="radio" onChange="if($(this).is(':checked')) MJDTheme.set('auto');"> <#LANG_THEME_AUTO#>
 									</label>
-									<label class="btn btn-sm btn-primary" style="padding: 0px 5px;font-size: 1.1rem;background: #474747;border: 0px;">
+									<label class="btn btn-sm btn-primary" style="padding: 1px 6px;font-size: 11px;">
 										<input type="radio" onChange="if($(this).is(':checked')) MJDTheme.set('dark');"> <#LANG_THEME_DARK#>
 									</label>
-									<label class="btn btn-sm btn-default" style="padding: 0px 5px;font-size: 1.1rem;background: #939191;border: 0px;">
+									<label class="btn btn-sm btn-default" style="padding: 1px 6px;font-size: 11px;">
 										<input type="radio" onChange="if($(this).is(':checked')) MJDTheme.set('light');"> <#LANG_THEME_LIGHT#>
 									</label>
 								</div>
@@ -316,7 +316,7 @@
 			</div>
 			<div class="panel-collapse collapse out" id="row_scriptBlockDiv">
 				<div class="panel-body">
-					<div class="alert" style="background: radial-gradient(circle farthest-corner at 450px 10px, #2f7f6a, #0b4f69);color: white;text-align: center;border: 0px;"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i><#LANG_NEWDASH_SHOW_LAST_SCRIPTS#></div>
+					<div class="alert alert-info"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i><#LANG_NEWDASH_SHOW_LAST_SCRIPTS#></div>
 					<ul class="list-group" id="scriptLast">
 						<center><img src="<#ROOTHTML#>img/ajax-loader.gif"/> <#LANG_NEWDASH_LOADING#></center>
 					</ul>
@@ -326,12 +326,12 @@
 
 
 		<!--#
-		<div id="getConnect" class="jumbotron hidden-xs" style="display:none!important;margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background-image: url(/img/connect_back_block.png), radial-gradient(circle farthest-corner at 100px 50px, #ffffff, #d6df4a);background-size: contain;background-repeat: no-repeat;background-position: right center;">
+		<div id="getConnect" class="panel panel-default hidden-xs" style="display:none!important;margin-bottom: 10px;">
 			<h2 id="titleConnect"><#LANG_NEWDASH_CONNECT_ADS#></h2>
-			<p style="font-size: 11pt;" id="textConnect"><#LANG_NEWDASH_CONNECT_ADS_TEXT#></p>
+			<p class="text-muted" id="textConnect"><#LANG_NEWDASH_CONNECT_ADS_TEXT#></p>
 			<p class="text-right">
-				<a style="border-color: #ffffff;" onclick="$('#btnConnect').hide();$('#titleConnect').text('<#LANG_NEWDASH_CONNECT_ADS_DONATE#>');$('#textConnect').html('<#LANG_NEWDASH_CONNECT_ADS_DONATE_TEXT#>');" class="btn btn-default btn-md" role="button"><#LANG_NEWDASH_CONNECT_ADS_DONATE_BTN#></a>
-				<a style="border-color: #ffffff;" id="btnConnect" href="https://connect.majordomohome.com/services/s2.html" target="_blank" class="btn btn-success btn-md" role="button"><#LANG_NEWDASH_CONNECT_ADS_BTN#></a>
+				<a onclick="$('#btnConnect').hide();$('#titleConnect').text('<#LANG_NEWDASH_CONNECT_ADS_DONATE#>');$('#textConnect').html('<#LANG_NEWDASH_CONNECT_ADS_DONATE_TEXT#>');" class="btn btn-default btn-md" role="button"><#LANG_NEWDASH_CONNECT_ADS_DONATE_BTN#></a>
+				<a id="btnConnect" href="https://connect.majordomohome.com/services/s2.html" target="_blank" class="btn btn-primary btn-md" role="button"><#LANG_NEWDASH_CONNECT_ADS_BTN#></a>
 			</p>
 		</div>
 		<div id="hint_blockdidyouknow" style="display:none;">

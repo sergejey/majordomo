@@ -77,7 +77,7 @@ $(document).ready(function() {
 					<div class="input-group">
 						<input type="text" name="filter" id="filter" value="<#FILTER#>" placeholder="<#LANG_XRAY_LINE_FILTER#>" style="padding: 3px;" class="form-control">
 						<span class="input-group-btn">
-							<button type="submit" value="<#LANG_SUBMIT#>" class="btn btn-default btn-success" type="button"><#LANG_SUBMIT#></button>
+							<button type="submit" value="<#LANG_SUBMIT#>" class="btn btn-primary" type="button"><#LANG_SUBMIT#></button>
 							<a href="#" class="btn btn-primary" onClick="return playPauseXRay();" id="playpausebtn"><i class="glyphicon glyphicon-pause"></i> <#LANG_XRAY_PAUSE#></a>
 						</span>
 					</div>
@@ -250,11 +250,11 @@ $(document).ready(function() {
 								cycleUpdate = '<span class="label label-info"><#LANG_XRAY_NO_RESPONSE_SINCE#> '+dataJSON.LIST[i].UPDATE+'</span>';
 							}
 							tr_style = '';
-							btn_group = '<div class="btn-group btn-group-xs"><button type="button" onClick="location.href=\''+dataJSON.LIST[i].CNT_RESTART+'\'" class="btn btn-info"><#LANG_XRAY_RESTART#></button><button type="button" onClick="location.href=\''+dataJSON.LIST[i].CNT_STOP+'\'" class="btn btn-danger"><#LANG_XRAY_STOP#></button></div>';
+							btn_group = '<div class="btn-group btn-group-xs"><button type="button" onClick="location.href=\''+dataJSON.LIST[i].CNT_RESTART+'\'" class="btn btn-default"><#LANG_XRAY_RESTART#></button><button type="button" onClick="location.href=\''+dataJSON.LIST[i].CNT_STOP+'\'" class="btn btn-danger"><#LANG_XRAY_STOP#></button></div>';
 						} else {
 							cycleUpdate = '<span class="label label-danger"><#LANG_XRAY_STOPPED#></span>';
-							tr_style = 'background: linear-gradient(to right, lightcoral, white);';
-							btn_group = '<div class="btn-group btn-group-xs"><button type="button" onClick="location.href=\''+dataJSON.LIST[i].CNT_START+'\'" class="btn btn-success"><#LANG_XRAY_START#></button></div>';
+							tr_style = 'background: #f9f2f4;';
+							btn_group = '<div class="btn-group btn-group-xs"><button type="button" onClick="location.href=\''+dataJSON.LIST[i].CNT_START+'\'" class="btn btn-primary"><#LANG_XRAY_START#></button></div>';
 						}
 						
 						$("#propContent").prepend('<tr style="'+tr_style+'"><td>'+dataJSON.LIST[i].TITLE+'</td><td style="vertical-align: middle;text-align: center;">'+cycleUpdate+'</td><td style="vertical-align: middle;text-align: right;">'+btn_group+'</td></tr>');

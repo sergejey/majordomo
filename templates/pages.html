@@ -9,6 +9,20 @@
 <link rel="stylesheet" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap[#if "<#MJ_THEME#>"=="dark"#]_dark[#endif#].min.css" type="text/css">
 <script language="javascript" type="text/javascript" src="<#ROOTHTML#>js/jquery-ui-1.9.1.custom.min.js"></script>
 <style>
+.ui-tabs .ui-tabs-nav li.ui-tabs-active,
+.ui-tabs .ui-tabs-nav li.ui-tabs-active a,
+.ui-state-active,
+.ui-widget-header .ui-state-active {
+    background: var(--mj-color-accent, #26648f) !important;
+    border-color: var(--mj-color-accent, #26648f) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+    color: #ffffff !important;
+}
+</style>
+<style>
 #body_background {
 position: absolute;
 background-color:[#if "<#MJ_THEME#>"=="dark"#]black[#else#]transparent[#endif#];

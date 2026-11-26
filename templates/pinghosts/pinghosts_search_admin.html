@@ -2,14 +2,14 @@
     <div class="col-md-6 col-sm-6 col-xs-7" style="margin-bottom: 15px;">
 		<div class="visible-sm visible-xs" style="margin-top: 5px;"></div>
         <div class="btn-group">
-		  <button type="button" onclick="$('.status_1').show();$('.status_2').show();" class="btn btn-info"><#LANG_ANY#></button>
-		  <button type="button" onclick="$('.status_1').show();$('.status_2').hide();" class="btn btn-success"><#LANG_ONLINE#></button>
+		  <button type="button" onclick="$('.status_1').show();$('.status_2').show();" class="btn btn-default"><#LANG_ANY#></button>
+		  <button type="button" onclick="$('.status_1').show();$('.status_2').hide();" class="btn btn-primary"><#LANG_ONLINE#></button>
 		  <button type="button" onclick="$('.status_2').show();$('.status_1').hide();" class="btn btn-danger"><#LANG_OFFLINE#></button>
 		</div>
     </div>
 	<div class="col-md-6 col-sm-6 col-xs-5 text-right" style="margin-bottom: 15px;">
         <div class="visible-sm visible-xs" style="margin-top: 5px;"></div>
-        <a href="?view_mode=edit_pinghosts" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>
+        <a href="?view_mode=edit_pinghosts" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>
             <#LANG_ADD#>
         </a>
     </div>
@@ -48,7 +48,7 @@
 					
 					
 					<span class="badge" id="btnAction" style="background: transparent;margin-top: -4px;">
-						<a href="?view_mode=edit_pinghosts&id=[#ID#]" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-pencil"></i></a>
+						<a href="?view_mode=edit_pinghosts&id=[#ID#]" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-pencil"></i></a>
 						<a href="?view_mode=delete_pinghosts&id=[#ID#]" class="btn btn-danger btn-xs" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-remove"></i></a>
 					</span>
 				</li>
