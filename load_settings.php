@@ -48,9 +48,21 @@ for ($i = 0; $i < $total; $i++) {
 // overriding a theme that was just changed in settings. `auto` is resolved by
 // server time (07:00-19:00 = light).
 if (!defined('MJ_THEME')) {
+    // User theme comes from settings only; the control panel may have its own
+    // theme in the `panel_theme` cookie and must not affect the user theme.
     $mj_theme_value = defined('SETTINGS_THEME') ? SETTINGS_THEME : 'light';
-    if (!empty($_COOKIE['theme_manual']) && !empty($_COOKIE['theme'])) {
-        $mj_theme_value = $_COOKIE['theme'];
+    $mj_is_panel = isset($_SERVER['SCRIPT_NAME']) && preg_match('#/(admin|print_all)\.php$#', $_SERVER['SCRIPT_NAME']);
+    $mj_panel_theme = '';
+    if ($mj_is_panel) {
+        if (!empty($_COOKIE['panel_theme'])) {
+            $mj_panel_theme = $_COOKIE['panel_theme'];
+        } elseif (!empty($_COOKIE['theme_manual']) && !empty($_COOKIE['theme'])) {
+            // cookie made by older versions from the panel switch
+            $mj_panel_theme = $_COOKIE['theme'];
+        }
+        if (in_array($mj_panel_theme, array('dark', 'light'), true)) {
+            $mj_theme_value = $mj_panel_theme;
+        }
     }
     if ($mj_theme_value === 'auto') {
         $mj_hour = (int) date('H');

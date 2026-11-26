@@ -14,10 +14,7 @@
 			return choice === 'dark' ? 'dark' : 'light';
 		}
 
-		var manual = document.cookie.match(/(?:^|;\s*)theme_manual=1(?:;|$)/);
-		var match = manual ? document.cookie.match(/(?:^|;\s*)theme=([^;]+)/) : null;
-		var choice = match ? match[1] : '<#MJ_THEME#>';
-		try { choice = decodeURIComponent(choice); } catch (e) { /* keep raw value */ }
+		var choice = '<#MJ_THEME#>';
 		if (choice !== 'auto' && choice !== 'dark' && choice !== 'light') {
 			choice = '<#MJ_THEME#>';
 		}
@@ -30,8 +27,8 @@
 				var theme = resolve(choice);
 				document.documentElement.setAttribute('data-theme', theme);
 				var themeMaxAge = 180 * 24 * 60 * 60;
-				document.cookie = 'theme=' + choice + '; path=/; max-age=' + themeMaxAge;
-				document.cookie = 'theme_manual=1; path=/; max-age=' + themeMaxAge;
+				// panel switch keeps its own theme and never changes the user theme
+				document.cookie = 'panel_theme=' + choice + '; path=/; max-age=' + themeMaxAge;
 				var link = document.getElementById('theme');
 				if (link) {
 					link.href = '<#ROOTHTML#>3rdparty/bootstrap/css/' +
