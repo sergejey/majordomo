@@ -88,8 +88,8 @@ if ($_GET['theme']) {
 
 
 
-    <link rel="stylesheet" type="text/css" href="<?php echo ROOTHTML;?>3rdparty/fancybox/jquery.fancybox.min.css?v=3.3.5" media="screen" />
-    <script type="text/javascript" src="<?php echo ROOTHTML;?>3rdparty/fancybox/jquery.fancybox.min.js?v=3.3.5"></script>
+    <link rel="stylesheet" type="text/css" href="<?php echo ROOTHTML;?>3rdparty/fancybox/jquery.fancybox.min.css?v=3.5.7" media="screen" />
+    <script type="text/javascript" src="<?php echo ROOTHTML;?>3rdparty/fancybox/jquery.fancybox.min.js?v=3.5.7"></script>
 
 
     <?php
