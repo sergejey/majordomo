@@ -27,6 +27,12 @@ function mjApplyWidgetHTML(container, html) {
     if (typeof $new.attr('data-state') !== 'undefined') {
         $old.attr('data-state', $new.attr('data-state'));
     }
+    var $newIcon = $new.find('.device-icon').first();
+    var $oldIcon = $old.find('.device-icon').first();
+    if ($newIcon.length && $oldIcon.length) {
+        $oldIcon.attr('class', $newIcon.attr('class') || '');
+        $oldIcon.attr('style', $newIcon.attr('style') || '');
+    }
     $('.device-header, .device-details', $new).each(function() {
         var $source = $(this);
         var selector = '.' + $source.attr('class').split(/\s+/).join('.');
