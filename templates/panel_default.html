@@ -98,13 +98,13 @@
 							<#LANG_DEVICES_STATUS#> WebSocket
 							<span id="wsStatus" class="badge"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
 						</li>
-						<li class="list-group-item">
+						<li class="list-group-item" id="health_mqtt_row">
 							<#LANG_HEALTH_MQTT#> <span id="health_mqtt" class="badge"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
 						</li>
-						<li class="list-group-item">
+						<li class="list-group-item" id="health_connect_row">
 							<#LANG_HEALTH_CONNECT#> <span id="health_connect" class="badge"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
 						</li>
-						<li class="list-group-item">
+						<li class="list-group-item" id="health_errors_row">
 							<#LANG_HEALTH_ERRORS#> <span id="health_errors" class="badge"><img src="<#ROOTHTML#>img/ajax-loader.gif"/></span>
 						</li>
 						
@@ -403,13 +403,23 @@ function loadHealth() {
  .then(function(r){return r.json();})
  .then(function(d){
   if (!d || d.status !== 'ok') return;
-  function label(value) {
+  function label(value, text) {
    var cls = value === 'ok' ? 'label-success' : (value === 'stale' ? 'label-danger' : 'label-default');
-   return '<span class="label ' + cls + '">' + value + '</span>';
+   return '<span class="label ' + cls + '">' + text + '</span>';
   }
-  $('#health_mqtt').html(label(d.mqtt));
-  $('#health_connect').html(label(d.connect));
-  $('#health_errors').html('<span class="label ' + (d.errors ? 'label-danger' : 'label-success') + '">' + d.errors + '</span>');
+  if (d.mqtt_available) {
+   $('#health_mqtt_row').show();
+   $('#health_mqtt').html(label(d.mqtt, d.mqtt_label));
+  } else {
+   $('#health_mqtt_row').hide();
+  }
+  if (d.connect_available) {
+   $('#health_connect_row').show();
+   $('#health_connect').html(label(d.connect, d.connect_label));
+  } else {
+   $('#health_connect_row').hide();
+  }
+  $('#health_errors').html('<span class="label ' + (d.errors ? 'label-danger' : 'label-success') + '">' + d.errors_label + '</span>');
  });
 }
 $(document).ready(function(){ loadHealth(); setInterval(loadHealth, 30000); });
