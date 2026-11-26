@@ -14,7 +14,8 @@
 			return choice === 'dark' ? 'dark' : 'light';
 		}
 
-		var match = document.cookie.match(/(?:^|;\s*)theme=([^;]+)/);
+		var manual = document.cookie.match(/(?:^|;\s*)theme_manual=1(?:;|$)/);
+		var match = manual ? document.cookie.match(/(?:^|;\s*)theme=([^;]+)/) : null;
 		var choice = match ? match[1] : '<#MJ_THEME#>';
 		try { choice = decodeURIComponent(choice); } catch (e) { /* keep raw value */ }
 		if (choice !== 'auto' && choice !== 'dark' && choice !== 'light') {
@@ -28,7 +29,9 @@
 				choice = value === 'auto' ? 'auto' : (value === 'dark' ? 'dark' : 'light');
 				var theme = resolve(choice);
 				document.documentElement.setAttribute('data-theme', theme);
-				document.cookie = 'theme=' + choice + '; path=/; max-age=' + (180 * 24 * 60 * 60);
+				var themeMaxAge = 180 * 24 * 60 * 60;
+				document.cookie = 'theme=' + choice + '; path=/; max-age=' + themeMaxAge;
+				document.cookie = 'theme_manual=1; path=/; max-age=' + themeMaxAge;
 				var link = document.getElementById('theme');
 				if (link) {
 					link.href = '<#ROOTHTML#>3rdparty/bootstrap/css/' +
