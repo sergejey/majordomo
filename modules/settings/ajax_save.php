@@ -72,4 +72,10 @@ if ($name === 'SITE_LANGUAGE' || $name === 'VOICE_LANGUAGE') {
 
 $rec['VALUE'] = $value;
 SQLUpdate('settings', $rec);
+if ($name === 'THEME') {
+    $theme_cookie_path = defined('ROOTHTML') && ROOTHTML !== '' ? ROOTHTML : '/';
+    setcookie('theme', '', time() - 3600, $theme_cookie_path);
+    setcookie('theme_manual', '', time() - 3600, $theme_cookie_path);
+                setcookie('panel_theme', '', time() - 3600, $theme_cookie_path);
+}
 echo json_encode(array('status' => 'ok', 'name' => $name, 'value' => $value));

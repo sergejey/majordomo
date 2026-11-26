@@ -14,9 +14,7 @@
 			return choice === 'dark' ? 'dark' : 'light';
 		}
 
-		var match = document.cookie.match(/(?:^|;\s*)theme=([^;]+)/);
-		var choice = match ? match[1] : '<#MJ_THEME#>';
-		try { choice = decodeURIComponent(choice); } catch (e) { /* keep raw value */ }
+		var choice = '<#MJ_THEME#>';
 		if (choice !== 'auto' && choice !== 'dark' && choice !== 'light') {
 			choice = '<#MJ_THEME#>';
 		}
@@ -28,7 +26,9 @@
 				choice = value === 'auto' ? 'auto' : (value === 'dark' ? 'dark' : 'light');
 				var theme = resolve(choice);
 				document.documentElement.setAttribute('data-theme', theme);
-				document.cookie = 'theme=' + choice + '; path=/; max-age=' + (180 * 24 * 60 * 60);
+				var themeMaxAge = 180 * 24 * 60 * 60;
+				// panel switch keeps its own theme and never changes the user theme
+				document.cookie = 'panel_theme=' + choice + '; path=/; max-age=' + themeMaxAge;
 				var link = document.getElementById('theme');
 				if (link) {
 					link.href = '<#ROOTHTML#>3rdparty/bootstrap/css/' +
@@ -40,12 +40,12 @@
 </script>
 
 <link rel="shortcut icon" href="<#ROOTHTML#>favicon.ico" type="image/x-icon"/>
-<link href="<#ROOTHTML#>css/devices.css?v=26-11-24"  rel="stylesheet" type="text/css"/>
+<link href="<#ROOTHTML#>css/devices.css?v=26-11-27"  rel="stylesheet" type="text/css"/>
 
 <script type="text/javascript"  src="<#ROOTHTML#>3rdparty/jquery/jquery-3.3.1.min.js"></script>
 <script type="text/javascript"  src="<#ROOTHTML#>3rdparty/jquery/jquery-migrate-3.0.0.min.js"></script>
 
-[#if "<#MJ_THEME#>"!="dark" || PANEL_THEME!="dark"#]
+[#if "<#MJ_THEME#>"!="dark"#]
 <link rel="stylesheet" id="theme" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap.min.css" type="text/css">
 [#else#]
 <link rel="stylesheet" id="theme" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap_dark_admin.css" type="text/css">

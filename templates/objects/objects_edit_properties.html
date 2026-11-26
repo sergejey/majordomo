@@ -40,7 +40,7 @@
 		</div>
 		<div class="col-md-6 text-right">
 			<div class="visible-sm visible-xs" style="margin-top: 5px;"></div>
-			<a href="javascript://" onclick="$('#addnewprop').show('slow');$('#proplist>li').css('opacity', '0.2');$('#addnewprop>li').css('opacity', '1');" class="btn btn-success" style="margin-bottom: 5px;"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_PROPERTY#></a>
+			<a href="javascript://" onclick="$('#addnewprop').show('slow');$('#proplist>li').css('opacity', '0.2');$('#addnewprop>li').css('opacity', '1');" class="btn btn-primary" style="margin-bottom: 5px;"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_PROPERTY#></a>
 		</div>
 	</div>
 
@@ -72,8 +72,8 @@
 				</div>
 				<div class="row" style="margin-right: -15px;margin-left: -15px;">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
-						<input type="submit" name="submit" value="<#LANG_ADD#>" class="btn btn-success">
-						<input type="button" value="<#LANG_CANCEL#>" class="btn btn-warning" onclick="$('#addnewprop').hide('slow');$('#proplist>li').css('opacity', '1');">
+						<input type="submit" name="submit" value="<#LANG_ADD#>" class="btn btn-primary">
+						<input type="button" value="<#LANG_CANCEL#>" class="btn btn-default" onclick="$('#addnewprop').hide('slow');$('#proplist>li').css('opacity', '1');">
 						<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
 						<input type="hidden" name="id" value="<#ID#>">
 						<input type="hidden" name="tab" value="<#TAB#>">
@@ -118,7 +118,7 @@
 			    			<form action="?" method="post">
 			    				<textarea name="value[#ID#]" rows=2 cols="50" class="span5" style="overflow:auto;width: 100%;resize: vertical;min-height: 40px;max-height: 300px;border-radius: 3px;margin-bottom: 5px;border: 1px solid #ccc;padding: 10px;">[#VALUE_HTML#]</textarea>
 			    				<br/>
-			    				<input type="submit" name="submit" value="<#LANG_UPDATE#>" class="btn btn-success">
+			    				<input type="submit" name="submit" value="<#LANG_UPDATE#>" class="btn btn-primary">
 			    				<a href="#" class="btn btn-danger" onclick="$('#prop[#ID#]_edit').hide();$('#prop[#ID#]_current').show();return false;"><#LANG_CANCEL#></a>
 			    				<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
 			    				<input type="hidden" name="id" value="<#ID#>">
@@ -130,7 +130,7 @@
 			    	
 			    	[#if CLASS_ID="0"#]
 			    	<div class="col-md-1" style="display: flex;align-items: center;justify-content: center;">
-			    	   <a href="javascript://" onclick="$('#edit_prop[#ID#]').show('fast');$('#prop[#ID#]').hide('fast')" title="<#LANG_EDIT>" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-pencil"></i></a>
+			    	   <a href="javascript://" onclick="$('#edit_prop[#ID#]').show('fast');$('#prop[#ID#]').hide('fast')" title="<#LANG_EDIT>" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-pencil"></i></a>
 			    	   <a href="?view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=<#TAB#>&delete_prop=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" title="<#LANG_DELETE#>" class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-remove"></i></a>
 			    	</div>
 				</div>
@@ -168,8 +168,8 @@
 		                	</div>
 		                	<div class="row" style="margin-right: -15px;margin-left: -15px;">
 		                		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
-		                			<input type="submit" name="submit" value="<#LANG_EDIT#>" class="btn btn-success">
-		                			<input type="button" value="<#LANG_CANCEL#>" class="btn btn-warning" onclick="$('#edit_prop[#ID#]').hide('fast');$('#prop[#ID#]').show('fast')">
+		                			<input type="submit" name="submit" value="<#LANG_EDIT#>" class="btn btn-primary">
+		                			<input type="button" value="<#LANG_CANCEL#>" class="btn btn-default" onclick="$('#edit_prop[#ID#]').hide('fast');$('#prop[#ID#]').show('fast')">
 		                			<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
 		                			<input type="hidden" name="id" value="<#ID#>">
 		                			<input type="hidden" name="tab" value="<#TAB#>">

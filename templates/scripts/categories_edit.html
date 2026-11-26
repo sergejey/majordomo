@@ -31,12 +31,12 @@ $(window).load(function() {
 		<div class="form-group" style="margin-right: 0px;margin-left: 0px;">
 			<div class="col-lg-offset-1 col-lg-5">
 			[#if ID!=""#]
-			<input class="btn btn-default btn-success" type="submit" name="subm" value="<#LANG_SUBMIT#>">
+			<input class="btn btn-primary" type="submit" name="subm" value="<#LANG_SUBMIT#>">
 			[#else ID#]
-			<input class="btn btn-default btn-success" type="submit" name="subm" value="<#LANG_ADD#>">
+			<input class="btn btn-primary" type="submit" name="subm" value="<#LANG_ADD#>">
 			[#endif ID#]
 
-			<a href="?data_source=<#DATA_SOURCE#>" class="btn btn-warning"><#LANG_CANCEL#></a>
+			<a href="?data_source=<#DATA_SOURCE#>" class="btn btn-default"><#LANG_CANCEL#></a>
 			</div>
 		</div>
 

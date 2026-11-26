@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <script type="text/javascript">
 function saveSaverestoreSettings(form) {
 	var data = new FormData(form);
@@ -10,8 +11,9 @@ function saveSaverestoreSettings(form) {
 	});
 	return false;
 }
-</script>[#if CLEAR_FIRST!="1"#]
-<div class="row" style="margin-right: -15px;margin-left: -15px;">
+</script>
+[#if CLEAR_FIRST!="1"#]
+<div class="row">
 	[#if ERR_MSG!=""#]
 		<div class="col-md-12"><div class="alert alert-danger">[#ERR_MSG#]</div></div>
 	[#endif ERR_MSG#]
@@ -21,22 +23,26 @@ function saveSaverestoreSettings(form) {
 
 	<div class="col-md-6">
 		[#if NO_NEED_TO_UPDATE#]
-		<div class="jumbotron" style="margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;background-image: radial-gradient(circle farthest-corner at 100px 50px, #9efac3, #4792d1);">
-			<h2><#LANG_NEWSAVERESTORE_NONE_UPDATE_HEADER#></h2>
-			<p style="font-size: 11pt;"><#LANG_NEWSAVERESTORE_NONE_UPDATE_TEXT#></p>
-			<p class="text-right">
-				<a class="link" href="[#UPDATE_URL#]" style="text-decoration: none;color: #123f5e;background: rgba(255,255,255,.8);padding: 4px 10px;border-radius: 4px;font-size: 10pt;margin-right: 20px;" role="button"><#LANG_NEWSAVERESTORE_DOWNLOAD_GIT_ARHIVE#></a>
-				<a style="border-color: #ffffff;" data-toggle="modal" data-target="#myModal" class="btn btn-default btn-md" role="button"><#LANG_NEWSAVERESTORE_NONE_UPDATE_BTN#></a>
-			</p>
+		<div class="panel panel-default" style="margin-bottom: 10px;">
+			<div class="panel-body">
+				<h2 style="margin-top: 0;"><#LANG_NEWSAVERESTORE_NONE_UPDATE_HEADER#></h2>
+				<p class="text-muted"><#LANG_NEWSAVERESTORE_NONE_UPDATE_TEXT#></p>
+				<p class="text-right" style="margin-bottom: 0;">
+					<a class="btn btn-default" href="[#UPDATE_URL#]" role="button"><#LANG_NEWSAVERESTORE_DOWNLOAD_GIT_ARHIVE#></a>
+					<a data-toggle="modal" data-target="#myModal" class="btn btn-primary btn-md" role="button"><#LANG_NEWSAVERESTORE_NONE_UPDATE_BTN#></a>
+				</p>
+			</div>
 		</div>
 		[#else#]
-		<div class="jumbotron" style="margin-bottom: 10px;padding-top: 20px;padding-bottom: 10px;border-radius: 5px;    background-image: radial-gradient(circle farthest-corner at 100px 50px, #fae29e, #d53972);">
-			<h2><#LANG_NEWSAVERESTORE_UPDATE_HEADER#></h2>
-			<p style="font-size: 11pt;"><#LANG_NEWSAVERESTORE_UPDATE_TEXT#></p>
-			<p class="text-right">
-				<a class="link" href="[#UPDATE_URL#]" style="text-decoration: none;color: #123f5e;background: rgba(255,255,255,.8);padding: 4px 10px;border-radius: 4px;font-size: 10pt;margin-right: 20px;" role="button"><#LANG_NEWSAVERESTORE_DOWNLOAD_GIT_ARHIVE#></a>
-				<a style="border-color: #ffffff;" class="btn btn-success btn-md" data-toggle="modal" data-target="#myModal" role="button"><#LANG_NEWSAVERESTORE_UPDATE_BTN#></a>
-			</p>
+		<div class="panel panel-default" style="margin-bottom: 10px;">
+			<div class="panel-body">
+				<h2 style="margin-top: 0;"><#LANG_NEWSAVERESTORE_UPDATE_HEADER#></h2>
+				<p class="text-muted"><#LANG_NEWSAVERESTORE_UPDATE_TEXT#></p>
+				<p class="text-right" style="margin-bottom: 0;">
+					<a class="btn btn-default" href="[#UPDATE_URL#]" role="button"><#LANG_NEWSAVERESTORE_DOWNLOAD_GIT_ARHIVE#></a>
+					<a class="btn btn-primary btn-md" data-toggle="modal" data-target="#myModal" role="button"><#LANG_NEWSAVERESTORE_UPDATE_BTN#></a>
+				</p>
+			</div>
 		</div>
 		[#endif#]
 		
@@ -59,7 +65,7 @@ function saveSaverestoreSettings(form) {
 							<h4 class="modal-title"><#LANG_NEWSAVERESTORE_CONSOLE#></h4>
 						</div>
 						<div class="modal-body">
-							<div class="alert" style="background: radial-gradient(circle farthest-corner at 450px 10px, #b8862b, #b03a30);color: white;text-align: center;border: 0px;"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i><#LANG_LONG_OPERATION_WARNING#></div>
+							<div class="alert alert-warning"><i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i><#LANG_LONG_OPERATION_WARNING#></div>
 							[#if MODE="getlatest_iframe"#]
 								<iframe id="processUpdateFrame" style="border-radius: 5px;height: 400px;" src="<#ROOTHTML#>modules/saverestore/update_iframe.php?with_extensions=[#WITH_EXTENSIONS#]&with_backup=[#WITH_BACKUP#]&backup=<#BACKUP#>&design=<#DESIGN#>&code=<#CODE#>&data=<#DATA#>&save_files=<#SAVE_FILES#>&link=<#LINK_URL#>" width="100%" frameborder="0"></iframe>
 							[#else#]
@@ -76,7 +82,7 @@ function saveSaverestoreSettings(form) {
 							<input type="hidden" name="mode" value="getlatest_iframe">
 							
 							<button type="button" class="btn btn-default" data-dismiss="modal"><#LANG_CLOSE#></button>
-							<input style="border-color: #ffffff;" type="submit" name="submit" value="<#LANG_NEWSAVERESTORE_UPDATE_BTN#>" onClick="" class="btn btn-danger btn-md">
+							<input type="submit" name="submit" value="<#LANG_NEWSAVERESTORE_UPDATE_BTN#>" onClick="" class="btn btn-danger btn-md">
 						</div>
 						[#endif#]
 					</form>
@@ -91,7 +97,7 @@ function saveSaverestoreSettings(form) {
 			<div class="panel-body" id="changelogUpdate">
 				<ul class="list-group">
 					[#begin UPDATES#]
-					<li class="list-group-item [#if MYVERSION == 1#]panel-success[#endif#]" [#if MYVERSION == 1#]style="background: #d6e9c6;"[#endif#]>
+					<li class="list-group-item [#if MYVERSION == 1#]list-group-item-info[#endif#]">
 						<span class="badge">
 							[#UPDATE_TEXT#]
 						</span>
@@ -200,19 +206,19 @@ function saveSaverestoreSettings(form) {
 						</li>
 					</div>
 				</ul>
-				<center><input type="submit" name="submit" value="<#LANG_SUBMIT#>" class="btn btn-default btn-primary"></center>
+				<center><input type="submit" name="submit" value="<#LANG_SUBMIT#>" class="btn btn-primary"></center>
 				<input type="hidden" name="mode" value="auto_update_settings">
 				</form>
 			</div>
 		</div>
 	</div>
 	<div class="col-md-6">
-		<div class="panel panel-success">
+		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title"><#LANG_NEWSAVERESTORE_RESTORE_ARHIVE#></h3>
 			</div>
 			<div class="panel-body">
-				<div class="row" style="margin-right: -15px;margin-left: -15px;">
+				<div class="row">
 					<div class="col-md-4" onclick="$('.restoreMainBlock').show();$('.restoreBlock').hide();$('#uploadBackup').show('slow');">
 						<div class="thumbnail text-center" style="margin-bottom: 10px;">
 							<i style="font-size: 5rem;" class="glyphicon glyphicon-floppy-open"></i>
@@ -255,7 +261,7 @@ function saveSaverestoreSettings(form) {
 						}
 					}
 					</script>
-					<div class="alert" style="background: radial-gradient(circle farthest-corner at 450px 10px, #146b19, #2e7d5b);color: white;text-align: center;border: 0px;">
+					<div class="alert alert-success">
 						<#LANG_NEWSAVERESTORE_BACKUP_HINT#>
 					</div>
 					<form action="?" method="post" enctype="multipart/form-data">
@@ -291,7 +297,7 @@ function saveSaverestoreSettings(form) {
 						<input type="hidden" name="mode" value="getlatest_iframe">
 						
 						<div class="text-center" style="margin-top: 15px">
-							<input type="submit" name="submit" value="<#LANG_CREATE_BACKUP#>" class="btn btn-success">
+							<input type="submit" name="submit" value="<#LANG_CREATE_BACKUP#>" class="btn btn-primary">
 						</div>
 					</form>
 				</div>
@@ -363,7 +369,7 @@ function saveSaverestoreSettings(form) {
 						</div>
 						
 						<div class="text-center" style="margin-top: 15px">
-							<input type="submit" name="submit" value="<#LANG_CONTINUE#>" class="btn btn-success">
+							<input type="submit" name="submit" value="<#LANG_CONTINUE#>" class="btn btn-primary">
 						</div>
 						<input type="hidden" name="mode" value="upload">
 					</form>
@@ -401,9 +407,9 @@ function saveSaverestoreSettings(form) {
 									</a>
 								[#endif#]
 								[#if FILESIZE!=""#]
-									<a href="<#ROOTHTML#>cms/saverestore/[#FILENAME#]" class="btn btn-success"><#LANG_DOWNLOAD#></a>
+									<a href="<#ROOTHTML#>cms/saverestore/[#FILENAME#]" class="btn btn-primary"><#LANG_DOWNLOAD#></a>
 								[#endif#]
-								<a href="?mode=delete&file=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i></a>
+								<a href="?mode=delete&file=[#FILENAME#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i></a>
 							</div>
 						</li>
 						[#end FILES#]

@@ -12,23 +12,6 @@ if (isset($_GET['theme']) && !defined('SETTINGS_THEME')) {
     Define('SETTINGS_THEME', $_GET['theme']);
 }
 
-// Effective colour theme for templates. The `theme` cookie wins over the
-// server setting; `auto` is resolved by local time (07:00-19:00 = light).
-if (!defined('MJ_THEME')) {
-    $mj_theme_cookie = isset($_COOKIE['theme']) ? $_COOKIE['theme'] : '';
-    if ($mj_theme_cookie === 'auto') {
-        $mj_hour = (int) date('H');
-        $mj_theme_cookie = ($mj_hour >= 7 && $mj_hour < 19) ? 'light' : 'dark';
-    }
-    if (!in_array($mj_theme_cookie, array('dark', 'light'), true)) {
-        $mj_theme_cookie = defined('SETTINGS_THEME') ? SETTINGS_THEME : 'light';
-    }
-    if (!in_array($mj_theme_cookie, array('dark', 'light'), true)) {
-        $mj_theme_cookie = 'light';
-    }
-    Define('MJ_THEME', $mj_theme_cookie);
-}
-
 if (isset($_GET['disable_websockets'])) {
     Define('DISABLE_WEBSOCKETS', 1);
 }
@@ -58,6 +41,38 @@ for ($i = 0; $i < $total; $i++) {
     }
 }
 
+
+// Effective colour theme for templates. The saved SETTINGS_THEME is the source
+// of truth; a cookie is respected only after an explicit manual switch in the
+// admin UI (theme_manual=1). This prevents a stale `theme` cookie from
+// overriding a theme that was just changed in settings. `auto` is resolved by
+// server time (07:00-19:00 = light).
+if (!defined('MJ_THEME')) {
+    // User theme comes from settings only; the control panel may have its own
+    // theme in the `panel_theme` cookie and must not affect the user theme.
+    $mj_theme_value = defined('SETTINGS_THEME') ? SETTINGS_THEME : 'light';
+    $mj_is_panel = isset($_SERVER['SCRIPT_NAME']) && preg_match('#/(admin|print_all)\.php$#', $_SERVER['SCRIPT_NAME']);
+    $mj_panel_theme = '';
+    if ($mj_is_panel) {
+        if (!empty($_COOKIE['panel_theme'])) {
+            $mj_panel_theme = $_COOKIE['panel_theme'];
+        } elseif (!empty($_COOKIE['theme_manual']) && !empty($_COOKIE['theme'])) {
+            // cookie made by older versions from the panel switch
+            $mj_panel_theme = $_COOKIE['theme'];
+        }
+        if (in_array($mj_panel_theme, array('dark', 'light'), true)) {
+            $mj_theme_value = $mj_panel_theme;
+        }
+    }
+    if ($mj_theme_value === 'auto') {
+        $mj_hour = (int) date('H');
+        $mj_theme_value = ($mj_hour >= 7 && $mj_hour < 19) ? 'light' : 'dark';
+    }
+    if (!in_array($mj_theme_value, array('dark', 'light'), true)) {
+        $mj_theme_value = 'light';
+    }
+    Define('MJ_THEME', $mj_theme_value);
+}
 
 if (!defined('SETTINGS_SITE_LANGUAGE')) {
     Define('SETTINGS_SITE_LANGUAGE', 'en');

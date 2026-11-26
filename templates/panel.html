@@ -126,7 +126,7 @@
 			<div id="searchbtnhide">
 				<ul class="nav navbar-nav navbar-right">
 					<li>
-						<a href="javascript://" data-toggle="modal" data-target="#mdmGlobalSearchModal" data-backdrop="static"><span style="border: 1px solid;border-radius: 4px;background: #f0ad4e;color: #2b2b2b;padding: 1rem 2rem;"><i class="glyphicon glyphicon-search"></i> <#LANG_SEARCH#></span></a>
+						<a href="javascript://" data-toggle="modal" data-target="#mdmGlobalSearchModal" data-backdrop="static"><span class="btn btn-primary"><i class="glyphicon glyphicon-search"></i> <#LANG_SEARCH#></span></a>
 					</li>
 				</ul>
 			</div>
@@ -137,7 +137,7 @@
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-body">
-					<div class="alert searchNoty" style="background: radial-gradient(circle farthest-corner at 450px 10px, #5994be, #17b9ca);color: white;text-align: center;border: 0px;">
+					<div class="alert alert-info searchNoty">
 						<i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i>
 						<#LANG_NEWDASH_SEARCH_HINT#>
 					</div>
@@ -170,9 +170,9 @@
 					<input type="text" name="command" value="" id="command" class="form-control" placeholder="<#LANG_NEWDASH_CONSOLE_PLACEHOLDER#>">
 					
 					<span class="input-group-btn">
-						<input type="submit" name="submit" value="<#LANG_SEND#>" class="btn btn-success ">
-						<input type="button" id="btnConsoleToggleModule" value="<#LANG_NEWDASH_CONSOLE_CONNECT_MODULE#>" class="btn btn-info ">
-						<input type="button" id="btnConsoleClose" value="<#LANG_CLOSE#>" class="btn btn-warning ">
+						<input type="submit" name="submit" value="<#LANG_SEND#>" class="btn btn-primary ">
+						<input type="button" id="btnConsoleToggleModule" value="<#LANG_NEWDASH_CONSOLE_CONNECT_MODULE#>" class="btn btn-default ">
+						<input type="button" id="btnConsoleClose" value="<#LANG_CLOSE#>" class="btn btn-default ">
 					</span>
 				</div>
 				<select class="form-control" id="currModuleName" style="display:none;margin-top: 10px;" onchange="insertModuleInConsole($(this).val());">
@@ -212,7 +212,7 @@
 		<img src="<#ROOTHTML#>img/system/loading.gif" style="max-width: 200px">
 		<p><#LANG_NEWDASH_PRELOAD_TEXT#></p>
 		
-		<a id="stopLoadBtnPreloader" href="" class="btn btn-success btn-md" role="button"><#LANG_NEWDASH_PRELOAD_BTN#></a>
+		<a id="stopLoadBtnPreloader" href="" class="btn btn-primary btn-md" role="button"><#LANG_NEWDASH_PRELOAD_BTN#></a>
 	</div>
 
 	<div class="mj-holiday" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>

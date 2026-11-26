@@ -12,8 +12,8 @@
 			<div class="panel-heading">
 				<div style="float: left"><h3 class="panel-title"><a href="?action=<#ACTION#>&mode=edit&name=[#FILENAME#]">[#TITLE#]</a></h3></div>
 				<div style="float: right">
-					<a href="?action=<#ACTION#>&mode=edit&name=[#FILENAME#]" class="btn btn-success btn-xs" onclick="return partLoad(this.href);"><i class="glyphicon glyphicon-pencil"></i></a>
-					<a href="?mode=edit&mode2=show&name=[#FILENAME#]" class="btn btn-[#if HIDDEN!="1"#]danger[#else#]warning[#endif#] btn-xs" onclick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-eye-close"></i> [#if HIDDEN="1"#]<#LANG_SHOW#>[#else#]<#LANG_HIDE#>[#endif#]</a>
+					<a href="?action=<#ACTION#>&mode=edit&name=[#FILENAME#]" class="btn btn-primary btn-xs" onclick="return partLoad(this.href);"><i class="glyphicon glyphicon-pencil"></i></a>
+					<a href="?mode=edit&mode2=show&name=[#FILENAME#]" class="btn btn-default btn-xs" onclick="return confirm('<#LANG_ARE_YOU_SURE#>')"><i class="glyphicon glyphicon-eye-close"></i> [#if HIDDEN="1"#]<#LANG_SHOW#>[#else#]<#LANG_HIDE#>[#endif#]</a>
 				</div>
 				<div class="clearfix"></div>
 			</div>
