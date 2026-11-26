@@ -1481,6 +1481,8 @@ class saverestore extends module
                 }
             }
 
+            include_once(DIR_MODULES . 'market/stats.php');
+            mksStatsAdd('core', 'core');
             $this->config['LATEST_UPDATED_ID'] = $out['LATEST_ID'];
             $this->config['LATEST_CURR_BRANCH'] = $out['UPDATE_CURR_BRANCH'];
 
