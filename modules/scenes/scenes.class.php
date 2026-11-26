@@ -262,10 +262,17 @@ class scenes extends module
 
             if ($this->view_mode == 'multiple_elements') {
                 global $selected;
-                if ($selected[0]) {
+                if (is_array($selected) && !empty($selected[0])) {
 
                     $res = array();
-                    $elements = SQLSelect("SELECT * FROM elements WHERE ID IN (" . implode(',', $selected) . ") ORDER BY LINKED_ELEMENT_ID, CONTAINER_ID, ID");
+                    $selected_ids = array();
+                    foreach ((array)$selected as $selected_id) {
+                        $selected_id = (int)$selected_id;
+                        if ($selected_id) {
+                            $selected_ids[] = $selected_id;
+                        }
+                    }
+                    $elements = $selected_ids ? SQLSelect("SELECT * FROM elements WHERE ID IN (" . implode(',', $selected_ids) . ") ORDER BY LINKED_ELEMENT_ID, CONTAINER_ID, ID") : array();
                     $total = count($elements);
                     for ($i = 0; $i < $total; $i++) {
                         $elm_id = $elements[$i]['ID'];
@@ -406,11 +413,11 @@ class scenes extends module
         $filename = urlencode($rec['TITLE']);
 
         $ext = "scene";   // file extension
-        $mime_type = (PMA_USR_BROWSER_AGENT == 'IE' || PMA_USR_BROWSER_AGENT == 'OPERA')
-            ? 'application/octetstream'
-            : 'application/octet-stream';
+        $browser_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+        $is_legacy_browser = (stripos($browser_agent, 'MSIE') !== false || stripos($browser_agent, 'Opera') !== false);
+        $mime_type = $is_legacy_browser ? 'application/octetstream' : 'application/octet-stream';
         header('Content-Type: ' . $mime_type);
-        if (PMA_USR_BROWSER_AGENT == 'IE') {
+        if ($is_legacy_browser) {
             header('Content-Disposition: inline; filename="' . $filename . '.' . $ext . '"');
             header("Content-Transfer-Encoding: binary");
             header('Expires: 0');
@@ -440,10 +447,10 @@ class scenes extends module
     function import_scene($file, $system = '')
     {
         $text_data = LoadFile($file);
-        $data = unserialize($text_data);
+        $data = unserialize($text_data, array('allowed_classes' => false));
         if (!is_array($data)) {
             $text_data = str_replace("\n", "\r\n", $text_data);
-            $data = unserialize($text_data);
+            $data = unserialize($text_data, array('allowed_classes' => false));
         }
         if ($data['SCENE_DATA']) {
             if ($system != '') {
@@ -569,7 +576,7 @@ class scenes extends module
         }
         if ($ajax) {
             global $op;
-            header("HTTP/1.0: 200 OK\n");
+            http_response_code(200);
             header('Content-Type: text/html; charset=utf-8');
 
             if ($op == 'resized' || $op == 'dragged') {
@@ -652,7 +659,7 @@ class scenes extends module
                     if (is_array($elements[$i]['STATES'])) {
                         foreach ($elements[$i]['STATES'] as $st) {
                             if ($elements[$i]['TYPE'] == 'container') unset($st['HTML']);
-                            if ($elements[$i]['TYPE'] == 'widget' && preg_match('/<script/', $st['HTML'])) unset($st['HTML']);
+                            if ($elements[$i]['TYPE'] == 'widget' && preg_match('/<script/i', $st['HTML'])) unset($st['HTML']);
                             $states[] = $st;
                         }
                     }
@@ -755,7 +762,7 @@ class scenes extends module
                 global $width;
                 global $height;
                 if ($id && $posx && $posy && $width && $height) {
-                    $state = SQLSelectOne("SELECT * FROM elm_states WHERE ID='" . $id . "'");
+                    $state = SQLSelectOne("SELECT * FROM elm_states WHERE ID='" . (int)$id . "'");
                     $state['WINDOW_POSX'] = $posx;
                     $state['WINDOW_POSY'] = $posy;
                     $state['WINDOW_WIDTH'] = $width;
@@ -827,7 +834,7 @@ class scenes extends module
 
 
         foreach ($settings as $k => $v) {
-            $rec = SQLSelectOne("SELECT ID FROM settings WHERE NAME='" . $v['NAME'] . "'");
+            $rec = SQLSelectOne("SELECT ID FROM settings WHERE NAME='" . DBSafe($v['NAME']) . "'");
             if (!$rec['ID']) {
                 $rec['NAME'] = $v['NAME'];
                 $rec['VALUE'] = $v['DEFAULT'];
@@ -868,7 +875,7 @@ class scenes extends module
      */
     function delete_scenes($id)
     {
-        $rec = SQLSelectOne("SELECT * FROM scenes WHERE ID='$id'");
+        $rec = SQLSelectOne("SELECT * FROM scenes WHERE ID='" . (int)$id . "'");
         // some action for related tables
         $elements = SQLSelect("SELECT ID FROM elements WHERE SCENE_ID='" . (int)$rec['ID'] . "'");
         $total = count($elements);
@@ -876,7 +883,7 @@ class scenes extends module
             $this->delete_elements($elements[$i]['ID']);
         }
 
-        SQLExec("DELETE FROM scenes WHERE ID='" . $rec['ID'] . "'");
+        SQLExec("DELETE FROM scenes WHERE ID=" . (int)$rec['ID']);
     }
 
     /**
@@ -886,14 +893,14 @@ class scenes extends module
      */
     function delete_elements($id)
     {
-        $rec = SQLSelectOne("SELECT * FROM elements WHERE ID='$id'");
+        $rec = SQLSelectOne("SELECT * FROM elements WHERE ID='" . (int)$id . "'");
         // some action for related tables
         $states = SQLSelect("SELECT ID FROM elm_states WHERE ELEMENT_ID='" . (int)$rec['ID'] . "'");
         $total = count($states);
         for ($i = 0; $i < $total; $i++) {
             $this->delete_elm_states($states[$i]['ID']);
         }
-        SQLExec("DELETE FROM elements WHERE ID='" . $rec['ID'] . "' OR (CONTAINER_ID>0 AND CONTAINER_ID='" . $rec['ID'] . "')");
+        SQLExec("DELETE FROM elements WHERE ID=" . (int)$rec['ID'] . " OR (CONTAINER_ID>0 AND CONTAINER_ID=" . (int)$rec['ID'] . ")");
     }
 
     /**
@@ -907,9 +914,9 @@ class scenes extends module
     {
         $element = SQLSelectOne("SELECT * FROM elements WHERE ID='" . (int)$id . "'");
         if ($element['CONTAINER_ID']) {
-            $all_elements = SQLSelect("SELECT * FROM elements WHERE CONTAINER_ID=" . $element['CONTAINER_ID'] . " ORDER BY PRIORITY DESC, TITLE");
+            $all_elements = SQLSelect("SELECT * FROM elements WHERE CONTAINER_ID=" . (int)$element['CONTAINER_ID'] . " ORDER BY PRIORITY DESC, TITLE");
         } else {
-            $all_elements = SQLSelect("SELECT * FROM elements WHERE SCENE_ID=" . $element['SCENE_ID'] . " AND CONTAINER_ID=0 ORDER BY PRIORITY DESC, TITLE");
+            $all_elements = SQLSelect("SELECT * FROM elements WHERE SCENE_ID=" . (int)$element['SCENE_ID'] . " AND CONTAINER_ID=0 ORDER BY PRIORITY DESC, TITLE");
         }
 
         $total = count($all_elements);
@@ -1000,9 +1007,9 @@ class scenes extends module
      */
     function delete_elm_states($id)
     {
-        $rec = SQLSelectOne("SELECT * FROM elm_states WHERE ID='$id'");
+        $rec = SQLSelectOne("SELECT * FROM elm_states WHERE ID='" . (int)$id . "'");
         // some action for related tables
-        SQLExec("DELETE FROM elm_states WHERE ID='" . $rec['ID'] . "'");
+        SQLExec("DELETE FROM elm_states WHERE ID=" . (int)$rec['ID']);
     }
 
 
@@ -1021,7 +1028,7 @@ class scenes extends module
         $element = SQLSelectOne("SELECT * FROM elements WHERE ID=" . (int)$element_id);
         if (!$element['ID']) return '';
 
-        $data = json_decode($element['WIZARD_DATA'], true);
+        $data = json_decode($element['WIZARD_DATA'], true); if (!is_array($data)) { return ''; }
         if (isset($this->widget_types[$data['WIDGET_TYPE']])) {
             $widget_type = $this->widget_types[$data['WIDGET_TYPE']];
             $widgetData['TYPE'] = $data['WIDGET_TYPE'];
@@ -1038,7 +1045,7 @@ class scenes extends module
             }
             $data['element_id'] = $element_id;
             foreach ($data as $k => $v) {
-                $template = str_replace('%' . $k . '%', $v, $template);
+                $template = str_replace('%' . $k . '%', (string)$v, $template);
             }
             $html = $template;
 
@@ -1080,7 +1087,7 @@ class scenes extends module
         }
 
 
-        $rec = SQLSelectOne("SELECT * FROM elm_states WHERE ID='" . $real_part . "'");
+        $rec = SQLSelectOne("SELECT * FROM elm_states WHERE ID='" . (int)$real_part . "'");
 
         $original_linked_object = $rec['LINKED_OBJECT'];
 
