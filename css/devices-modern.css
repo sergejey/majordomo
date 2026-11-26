@@ -430,3 +430,30 @@
 @media (prefers-reduced-motion: reduce) {
  .device-widget, .device-icon, .device-icon.on::before { transition: none !important; }
 }
+
+/* MJ Modern polish: colour and depth only, geometry stays compatible. */
+.device-widget {
+    border-radius: 8px;
+    background-image: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,0) 62%);
+    box-shadow: 0 1px 2px var(--mj-color-shadow-subtle, rgba(0,0,0,.08));
+}
+:root[data-theme="dark"] .device-widget {
+    background-image: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0) 62%);
+    box-shadow: 0 1px 3px rgba(0,0,0,.32);
+}
+.device-widget:hover {
+    border-color: var(--mj-color-link, #26648f);
+    box-shadow: 0 2px 8px var(--mj-color-shadow-subtle, rgba(0,0,0,.12));
+}
+.device-widget.on {
+    border-color: rgba(38,100,143,.45);
+}
+:root[data-theme="dark"] .device-widget.on {
+    border-color: rgba(141,201,242,.40);
+}
+.device-details .glyphicon-flash {
+    color: var(--mj-widget-icon-on, #26648f);
+}
+.device-icon.off {
+    color: var(--mj-color-muted, #6a6a6a);
+}
