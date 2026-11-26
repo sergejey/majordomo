@@ -58,7 +58,7 @@ if ($_GET['theme']) {
             }
         </style>
     <?php }?>
-    <link href="/css/devices-<?php echo (defined('SETTINGS_DEVICE_WIDGET_STYLE') && SETTINGS_DEVICE_WIDGET_STYLE === 'modern') ? 'modern' : 'legacy'; ?>.css?v=26-11-28" rel="stylesheet" type="text/css"/>
+    <link href="/css/devices-<?php echo (defined('SETTINGS_DEVICE_WIDGET_STYLE') && SETTINGS_DEVICE_WIDGET_STYLE === 'modern') ? 'modern' : 'legacy'; ?>.css?v=26-11-29" rel="stylesheet" type="text/css"/>
 
     <?php
 

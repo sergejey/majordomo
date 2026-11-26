@@ -373,3 +373,10 @@
 :root[data-theme="dark"] .opentype_window .device-icon.off {
     filter: invert(0.88) grayscale(1);
 }
+
+/* Fast state transitions. */
+.device-widget { transition: background-color .16s ease, border-color .16s ease; }
+.device-icon { transition: filter .14s ease; }
+@media (prefers-reduced-motion: reduce) {
+ .device-widget, .device-icon { transition: none !important; }
+}
