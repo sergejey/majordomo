@@ -366,9 +366,9 @@
         <label class="col-lg-4 control-label" for="inputTitle">&nbsp;</label>
         <div class="col-lg-5">
  [#if ID!=""#]
- <input type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn btn-default btn-primary">
+ <input type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn btn-primary">
  [#else ID#]
- <input type="submit" name="subm" value="<#LANG_ADD#>" class="btn btn-default btn-primary">
+ <input type="submit" name="subm" value="<#LANG_ADD#>" class="btn btn-primary">
  [#endif ID#]
 
  &nbsp;
@@ -376,7 +376,7 @@
 
  [#if ID!=""#]
  &nbsp;
- <a class="btn btn-default btn-primary" href="?id=<#ID#>&view_mode=clone" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
+ <a class="btn btn-primary" href="?id=<#ID#>&view_mode=clone" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><#LANG_MAKE_COPY#></a>
  [#endif ID#]
 
  </div>

@@ -1,7 +1,7 @@
 <div style="padding: 10px;border: 1px solid #dddddd;border-top: 0px;">
 	<div class="row" style="margin-right: -15px;margin-left: -15px;">
 		<div class="col-md-12 text-right" style="margin-bottom: 15px;">
-			<a href="?view_mode=edit_properties" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_PROPERTY#></a>
+			<a href="?view_mode=edit_properties" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_PROPERTY#></a>
 		</div>
 	</div>
 	
@@ -25,7 +25,7 @@
 								<pre style="margin: 0px;" [#if DESCRIPTION==""#]class="text-muted"[#endif#]>[#if DESCRIPTION!=""#][#DESCRIPTION#][#else#]<#LANG_DESCRIPTION_IS_EMPTY#>[#endif#]</pre>
 							</div>
 							<div class="col-lg-2 col-md-2 text-center"  style="margin-top: 5px;">
-								<a href="?view_mode=edit_properties&id=[#ID#]" title="<#LANG_EDIT#>" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-pencil"></i></a> 
+								<a href="?view_mode=edit_properties&id=[#ID#]" title="<#LANG_EDIT#>" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-pencil"></i></a> 
 								<a href="?view_mode=delete_properties&id=[#ID#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" title="<#LANG_DELETE#>" class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-remove"></i></a>
 								<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
 								<input type="hidden" name="view_mode" value="multiple_properties">

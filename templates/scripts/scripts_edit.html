@@ -155,11 +155,11 @@ $(window).load(function() {
 		<div class="form-group" style="margin-right: 0px;margin-left: 0px;">
 			<div class="col-lg-offset-2 col-lg-10">
 			[#if ID!=""#]
-				<button class="btn btn-success" type="submit" name="subm" value="<#LANG_SUBMIT#>"><i class="glyphicon glyphicon-ok" aria-hidden="true"></i> <#LANG_SUBMIT#></button>
+				<button class="btn btn-primary" type="submit" name="subm" value="<#LANG_SUBMIT#>"><i class="glyphicon glyphicon-ok" aria-hidden="true"></i> <#LANG_SUBMIT#></button>
 			[#else ID#]
-				<button class="btn btn-success" type="submit" name="subm" value="<#LANG_ADD#>"><i class="glyphicon glyphicon-ok" aria-hidden="true"></i> <#LANG_ADD#></button>
+				<button class="btn btn-primary" type="submit" name="subm" value="<#LANG_ADD#>"><i class="glyphicon glyphicon-ok" aria-hidden="true"></i> <#LANG_ADD#></button>
 			[#endif ID#]
-			<a href="javascript://" onclick="ajaxAutosave('checkcode');" id="checkCodeBtn" class="btn btn-info"><i class="glyphicon glyphicon-share" aria-hidden="true"></i> <#LANG_CODEEDITOR_CHECK_ON_ERROR_BTN#></a>
+			<a href="javascript://" onclick="ajaxAutosave('checkcode');" id="checkCodeBtn" class="btn btn-default"><i class="glyphicon glyphicon-share" aria-hidden="true"></i> <#LANG_CODEEDITOR_CHECK_ON_ERROR_BTN#></a>
 			<a href="?data_source=<#DATA_SOURCE#>" class="btn btn-default"><i class="glyphicon glyphicon-remove" aria-hidden="true"></i> <#LANG_CANCEL#></a>
 			[#if ID!=""#]
 			<a href="javascript://" class="btn btn-default" onClick="$('#moreAction').toggle();$(this).hide();"><i class="glyphicon glyphicon-align-justify" aria-hidden="true"></i> <#LANG_ACTIONS#>...</a>

@@ -55,9 +55,9 @@
     </div>
     <div class="col-lg-6 col-md-7 col-sm-12 col-xs-12 text-right" style="margin-bottom: 15px;">
         <div class="visible-sm visible-xs" style="margin-top: 5px;"></div>
-        <a href="?view_mode=edit_classes" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> {$smarty.const.LANG_ADD_NEW_CLASS}</a>
+        <a href="?view_mode=edit_classes" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> {$smarty.const.LANG_ADD_NEW_CLASS}</a>
         <div class="visible-sm visible-xs" style="margin-top: 5px;"></div>
-        <a href="{$smarty.const.ROOTHTML}panel/class/0/object/0.html?md=objects&view_mode=edit_objects&id=" class="btn btn-success" title="{$smarty.const.LANG_EDIT}"><i class="glyphicon glyphicon-plus"></i> {$smarty.const.LANG_ADD_NEW_OBJECT}</a>
+        <a href="{$smarty.const.ROOTHTML}panel/class/0/object/0.html?md=objects&view_mode=edit_objects&id=" class="btn btn-primary" title="{$smarty.const.LANG_EDIT}"><i class="glyphicon glyphicon-plus"></i> {$smarty.const.LANG_ADD_NEW_OBJECT}</a>
     </div>
 </div>
 
@@ -84,7 +84,7 @@
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-5 col-xs-3 text-right">
                         <div class="btn-group btn-group-xs">
-                            <a href="?view_mode=edit_classes&id={$item.ID}" class="btn btn-success btn-sm" title="{$smarty.const.LANG_EDIT}"><i class="glyphicon glyphicon-pencil"></i></a>
+                            <a href="?view_mode=edit_classes&id={$item.ID}" class="btn btn-primary btn-sm" title="{$smarty.const.LANG_EDIT}"><i class="glyphicon glyphicon-pencil"></i></a>
                             <a href="?view_mode=edit_classes&id={$item.ID}&tab=properties" class="btn btn-default btn-sm" title="{$smarty.const.LANG_PROPERTIES}"><i class="glyphicon glyphicon-th"></i></a>
                             <a href="?view_mode=edit_classes&id={$item.ID}&tab=methods" class="btn btn-default btn-sm hidden-xs" title="{$smarty.const.LANG_METHODS}"><i class="glyphicon glyphicon-th-list"></i></a>
                             <a href="?view_mode=edit_classes&id={$item.ID}&tab=objects" class="btn btn-default btn-sm hidden-xs" title="{$smarty.const.LANG_OBJECTS}"><i class="glyphicon glyphicon-th-large"></i></a>

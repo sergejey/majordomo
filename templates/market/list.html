@@ -21,7 +21,7 @@ if($('#tab>li.active').text() == '<#LANG_UPDATES#>') {
 	$('#tab>li.active>a').append('<span class="badge" style="margin-left: 5px;color: #fff;background-color: #47a447;border-color: #398439;vertical-align: text-top;">'+$('#market_application>.media').length+'</span>')
 }
 </script>
-<div id="connect_sync_note" class="alert" style="display:none;background: radial-gradient(circle farthest-corner at 450px 10px, #2f7f6a, #0b4f69);color: white;text-align: center;border: 0px;">
+<div id="connect_sync_note" class="alert alert-info" style="display:none;">
 	<i class="glyphicon glyphicon-exclamation-sign" style="font-weight: normal;font-size: 13pt;vertical-align: sub;margin-right: 10px;"></i> <#LANG_MARKET_CONNECT_NOTE#>
 </div>
 [#if PLUGINS#]
@@ -40,13 +40,13 @@ if($('#tab>li.active').text() == '<#LANG_UPDATES#>') {
 				[#if URL!=""#]<a href="[#URL#]" target="_blank">[#endif#]<b id="row[#ID#]_title">[#TITLE#]</b>[#if URL!=""#]</a>[#endif#]
 				[#if EXISTS#]
 					[#if INSTALLED_VERSION!="<#PLUGINS.LATEST_VERSION#>"#]
-						<span class="label label-success"><#LANG_NEWMARKET_UPDATE_ALAIL#></span>
+						<span class="label label-info"><#LANG_NEWMARKET_UPDATE_ALAIL#></span>
 					[#endif#]
 				[#endif EXISTS#]
 			</h4>
 			[#if "<#SETTINGS_SITE_LANGUAGE#>"=="ru"#]
 				[#if DESCRIPTION_RU!=""#]
-					<blockquote class="hidden-xs" style="max-height: 100px;overflow: auto;font-size: 10pt;overflow-wrap: break-word;border-left: 5px solid #4d96d3;margin-bottom: 0px;" id="row[#ID#]_description">
+					<blockquote class="hidden-xs" style="max-height: 100px;overflow: auto;font-size: 10pt;overflow-wrap: break-word;border-left: 3px solid #4792d1;margin-bottom: 0px;" id="row[#ID#]_description">
 					[#DESCRIPTION_RU#]
 					[#if LATEST_VERSION!=""#]
 						<small><#LANG_LATEST_UPDATES#>: <a href="[#LATEST_VERSION_URL#]" target=_blank>[#LATEST_VERSION#]</a> [#if LATEST_VERSION_COMMENT!=""#]([#LATEST_VERSION_COMMENT#])[#endif#]</small>
@@ -55,7 +55,7 @@ if($('#tab>li.active').text() == '<#LANG_UPDATES#>') {
 				[#endif#]
 			[#else#]
 				[#if DESCRIPTION_EN!=""#]
-					<blockquote style="max-height: 100px;overflow: auto;font-size: 10pt;overflow-wrap: break-word;border-left: 5px solid #4d96d3;margin-bottom: 0px;" id="row[#ID#]_description">
+					<blockquote style="max-height: 100px;overflow: auto;font-size: 10pt;overflow-wrap: break-word;border-left: 3px solid #4792d1;margin-bottom: 0px;" id="row[#ID#]_description">
 					[#DESCRIPTION_EN#]
 					</blockquote>
 					[#DESCRIPTION_RU#]
@@ -69,13 +69,13 @@ if($('#tab>li.active').text() == '<#LANG_UPDATES#>') {
 				<div class="btn-group">
 				[#if CAN_DOWNLOAD="1"#]
 					[#if SUPPORT_URL !="" AND PRICE != ""#]<a class="btn btn-default" target="_blank" href="[#SUPPORT_URL#]"><i class="glyphicon glyphicon-bullhorn"></i> <#LANG_NEWMARKET_MODULE_DISCUSS#></a>[#endif#]
-					<a class="btn btn-[#if INSTALLED_VERSION!="<#PLUGINS.LATEST_VERSION#>"#]success[#else#]warning[#endif#]" href="<#ROOTHTML#>panel/market.html?mode=iframe&mode2=install&name=[#MODULE_NAME#]">[#if EXISTS#]<i class="glyphicon glyphicon-refresh"></i> [#if INSTALLED_VERSION!="<#PLUGINS.LATEST_VERSION#>"#]<#LANG_UPDATE#>[#else#]<#LANG_MARKET_REDOWNLOAD#>[#endif#][#else#]<i class="glyphicon glyphicon-download"></i> <#LANG_ADD#>[#endif#]</a>
+					<a class="btn btn-primary" href="<#ROOTHTML#>panel/market.html?mode=iframe&mode2=install&name=[#MODULE_NAME#]">[#if EXISTS#]<i class="glyphicon glyphicon-refresh"></i> [#if INSTALLED_VERSION!="<#PLUGINS.LATEST_VERSION#>"#]<#LANG_UPDATE#>[#else#]<#LANG_MARKET_REDOWNLOAD#>[#endif#][#else#]<i class="glyphicon glyphicon-download"></i> <#LANG_ADD#>[#endif#]</a>
 
-					[#if INSTALLED_VERSION!="<#PLUGINS.LATEST_VERSION#>" AND INSTALLED_VERSION != ''#]<a class="btn btn-danger" style="background: #aa22a6;border-color: #8d0789;"  onclick="return marketDontUpdate('[#MODULE_NAME#]','[#LATEST_VERSION#]');" href="#"><i class="glyphicon glyphicon-minus-sign"></i> <#LANG_MARKET_DONT_UPDATE#></a>[#endif#]
+					[#if INSTALLED_VERSION!="<#PLUGINS.LATEST_VERSION#>" AND INSTALLED_VERSION != ''#]<a class="btn btn-default" onclick="return marketDontUpdate('[#MODULE_NAME#]','[#LATEST_VERSION#]');" href="#"><i class="glyphicon glyphicon-minus-sign"></i> <#LANG_MARKET_DONT_UPDATE#></a>[#endif#]
 				[#else#]
 					[#if PRICE != ""#]
 						[#if SUPPORT_URL !="" AND PRICE != ""#]<a class="btn btn-default" target="_blank" href="[#SUPPORT_URL#]"><i class="glyphicon glyphicon-bullhorn"></i> <#LANG_NEWMARKET_MODULE_DISCUSS#></a>[#endif#]
-						<a class="btn btn-info" href="[#URL#]" target="_blank"><i class="glyphicon glyphicon-usd"></i> <#LANG_NEWMARKET_BUY_FOR#> [#PRICE#]</a>
+						<a class="btn btn-default" href="[#URL#]" target="_blank"><i class="glyphicon glyphicon-usd"></i> <#LANG_NEWMARKET_BUY_FOR#> [#PRICE#]</a>
 					[#endif PRICE#]
 				[#endif#]
 				
