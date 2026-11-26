@@ -468,32 +468,15 @@ class module
     {
         $name = DBSafe($this->name);
 
-        if ($this->tableExists('commands')) {
+        if (SQLTableExists('commands')) {
             SQLExec("DELETE FROM commands WHERE CODE LIKE '%name=\"" . $name . "\"%' OR URL LIKE '%md=" . $name . "%'");
         }
-        if ($this->tableExists('plugins')) {
+        if (SQLTableExists('plugins')) {
             SQLExec("DELETE FROM plugins WHERE MODULE_NAME='" . $name . "'");
         }
-        if ($this->tableExists('ignore_updates')) {
+        if (SQLTableExists('ignore_updates')) {
             SQLExec("DELETE FROM ignore_updates WHERE NAME='" . $name . "'");
         }
-    }
-
-    /**
-     * Check that an optional table exists before querying it.
-     *
-     * @access private
-     * @param string $table_name
-     * @return bool
-     */
-    private function tableExists($table_name)
-    {
-        $table_name = preg_replace('/[^a-zA-Z0-9_]/', '', $table_name);
-        if ($table_name === '') {
-            return false;
-        }
-        $rec = SQLSelectOne("SHOW TABLES LIKE '" . $table_name . "'");
-        return !empty($rec);
     }
 
 

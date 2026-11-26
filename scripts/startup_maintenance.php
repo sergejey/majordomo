@@ -23,7 +23,7 @@ echo "<pre>\n";
 DebMes("Running maintenance script", 'maintenance');
 
 // CLEAN STALE MODULE REFERENCES
-if (SQLSelectOne("SHOW TABLES LIKE 'project_modules'")) {
+if (SQLTableExists('project_modules')) {
     $stale_modules = SQLSelect("SELECT NAME FROM project_modules");
     foreach ($stale_modules as $stale_module) {
         $stale_name = preg_replace('/[^a-zA-Z0-9_]/', '', $stale_module['NAME']);
@@ -31,10 +31,10 @@ if (SQLSelectOne("SHOW TABLES LIKE 'project_modules'")) {
             continue;
         }
         SQLExec("DELETE FROM project_modules WHERE NAME='" . $stale_name . "'");
-        if (SQLSelectOne("SHOW TABLES LIKE 'commands'")) {
+        if (SQLTableExists('commands')) {
             SQLExec("DELETE FROM commands WHERE CODE LIKE '%name=\"" . $stale_name . "\"%' OR URL LIKE '%md=" . $stale_name . "%'");
         }
-        if (SQLSelectOne("SHOW TABLES LIKE 'plugins'")) {
+        if (SQLTableExists('plugins')) {
             SQLExec("DELETE FROM plugins WHERE MODULE_NAME='" . $stale_name . "'");
         }
         DebMes("Removed stale module references: " . $stale_name, 'maintenance');
