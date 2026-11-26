@@ -197,6 +197,7 @@ if ($res[0]['ID']) {
                 $theme_cookie_path = defined('ROOTHTML') && ROOTHTML !== '' ? ROOTHTML : '/';
                 setcookie('theme', '', time() - 3600, $theme_cookie_path);
                 setcookie('theme_manual', '', time() - 3600, $theme_cookie_path);
+                setcookie('panel_theme', '', time() - 3600, $theme_cookie_path);
             }
         }
         if ($this->mode == 'reset') {
@@ -206,6 +207,7 @@ if ($res[0]['ID']) {
                 $theme_cookie_path = defined('ROOTHTML') && ROOTHTML !== '' ? ROOTHTML : '/';
                 setcookie('theme', '', time() - 3600, $theme_cookie_path);
                 setcookie('theme_manual', '', time() - 3600, $theme_cookie_path);
+                setcookie('panel_theme', '', time() - 3600, $theme_cookie_path);
             }
         }
 
