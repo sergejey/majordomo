@@ -8,83 +8,144 @@
 
 /* Font Awesome Free 7.3.1: local copy, no external requests (CC BY 4.0 / SIL OFL 1.1 / MIT). */
 
-.glyphicon,
-.glyphicon::before {
+/* Mapped icons are drawn with Font Awesome; all other glyphicons keep
+   the bundled Glyphicons font, so no icon turns into a missing glyph. */
+.glyphicon-align-justify, .glyphicon-align-justify::before,
+.glyphicon-arrow-down, .glyphicon-arrow-down::before,
+.glyphicon-arrow-right, .glyphicon-arrow-right::before,
+.glyphicon-arrow-up, .glyphicon-arrow-up::before,
+.glyphicon-book, .glyphicon-book::before,
+.glyphicon-bullhorn, .glyphicon-bullhorn::before,
+.glyphicon-chevron-right, .glyphicon-chevron-right::before,
+.glyphicon-cloud-download, .glyphicon-cloud-download::before,
+.glyphicon-cog, .glyphicon-cog::before,
+.glyphicon-copy, .glyphicon-copy::before,
+.glyphicon-dashboard, .glyphicon-dashboard::before,
+.glyphicon-download, .glyphicon-download::before,
+.glyphicon-download-alt, .glyphicon-download-alt::before,
+.glyphicon-edit, .glyphicon-edit::before,
+.glyphicon-exclamation-sign, .glyphicon-exclamation-sign::before,
+.glyphicon-export, .glyphicon-export::before,
+.glyphicon-eye-close, .glyphicon-eye-close::before,
+.glyphicon-eye-open, .glyphicon-eye-open::before,
+.glyphicon-filter, .glyphicon-filter::before,
+.glyphicon-flash, .glyphicon-flash::before,
+.glyphicon-floppy-disk, .glyphicon-floppy-disk::before,
+.glyphicon-floppy-open, .glyphicon-floppy-open::before,
+.glyphicon-floppy-remove, .glyphicon-floppy-remove::before,
+.glyphicon-floppy-saved, .glyphicon-floppy-saved::before,
+.glyphicon-folder-open, .glyphicon-folder-open::before,
+.glyphicon-globe, .glyphicon-globe::before,
+.glyphicon-hdd, .glyphicon-hdd::before,
+.glyphicon-home, .glyphicon-home::before,
+.glyphicon-info-sign, .glyphicon-info-sign::before,
+.glyphicon-link, .glyphicon-link::before,
+.glyphicon-lock, .glyphicon-lock::before,
+.glyphicon-log-in, .glyphicon-log-in::before,
+.glyphicon-log-out, .glyphicon-log-out::before,
+.glyphicon-minus-sign, .glyphicon-minus-sign::before,
+.glyphicon-ok, .glyphicon-ok::before,
+.glyphicon-ok-sign, .glyphicon-ok-sign::before,
+.glyphicon-pause, .glyphicon-pause::before,
+.glyphicon-pencil, .glyphicon-pencil::before,
+.glyphicon-play, .glyphicon-play::before,
+.glyphicon-play-circle, .glyphicon-play-circle::before,
+.glyphicon-plus, .glyphicon-plus::before,
+.glyphicon-question-sign, .glyphicon-question-sign::before,
+.glyphicon-refresh, .glyphicon-refresh::before,
+.glyphicon-remove, .glyphicon-remove::before,
+.glyphicon-remove-circle, .glyphicon-remove-circle::before,
+.glyphicon-resize-horizontal, .glyphicon-resize-horizontal::before,
+.glyphicon-screenshot, .glyphicon-screenshot::before,
+.glyphicon-search, .glyphicon-search::before,
+.glyphicon-send, .glyphicon-send::before,
+.glyphicon-share, .glyphicon-share::before,
+.glyphicon-star, .glyphicon-star::before,
+.glyphicon-stats, .glyphicon-stats::before,
+.glyphicon-stop, .glyphicon-stop::before,
+.glyphicon-th, .glyphicon-th::before,
+.glyphicon-th-large, .glyphicon-th-large::before,
+.glyphicon-th-list, .glyphicon-th-list::before,
+.glyphicon-trash, .glyphicon-trash::before,
+.glyphicon-usd, .glyphicon-usd::before,
+.glyphicon-user-plus, .glyphicon-user-plus::before,
+.glyphicon-wrench, .glyphicon-wrench::before,
+.glyphicon-floppy-save, .glyphicon-floppy-save::before,
+.glyphicon-off, .glyphicon-off::before,
+.glyphicon-menu-hamburger, .glyphicon-menu-hamburger::before,
+.glyphicon-bell, .glyphicon-bell::before,
+.glyphicon-print, .glyphicon-print::before {
     font-family: "Font Awesome 7 Free" !important;
     font-weight: 900 !important;
     font-style: normal;
 }
 
-.glyphicon::before {
-    content: "\f015";
-}
-
-.glyphicon-align-justify::before { content: "\f0c9"; }
-.glyphicon-arrow-down::before { content: "\f063"; }
-.glyphicon-arrow-right::before { content: "\f061"; }
-.glyphicon-arrow-up::before { content: "\f062"; }
-.glyphicon-book::before { content: "\f02d"; }
-.glyphicon-bullhorn::before { content: "\f0a1"; }
-.glyphicon-chevron-right::before { content: "\f054"; }
-.glyphicon-cloud-download::before { content: "\f0ed"; }
-.glyphicon-cog::before { content: "\f013"; }
-.glyphicon-copy::before { content: "\f0c5"; }
-.glyphicon-dashboard::before { content: "\f625"; }
-.glyphicon-download::before { content: "\f019"; }
-.glyphicon-download-alt::before { content: "\f019"; }
-.glyphicon-edit::before { content: "\f303"; }
-.glyphicon-exclamation-sign::before { content: "\f06a"; }
-.glyphicon-export::before { content: "\f08b"; }
-.glyphicon-eye-close::before { content: "\f070"; }
-.glyphicon-eye-open::before { content: "\f06e"; }
-.glyphicon-filter::before { content: "\f0b0"; }
-.glyphicon-flash::before { content: "\e0b7"; }
-.glyphicon-floppy-disk::before { content: "\f0c7"; }
-.glyphicon-floppy-open::before { content: "\f07c"; }
-.glyphicon-floppy-remove::before { content: "\f1f8"; }
-.glyphicon-floppy-saved::before { content: "\f0c7"; }
-.glyphicon-folder-open::before { content: "\f07c"; }
-.glyphicon-globe::before { content: "\f0ac"; }
-.glyphicon-hdd::before { content: "\f0a0"; }
-.glyphicon-home::before { content: "\f015"; }
-.glyphicon-info-sign::before { content: "\f05a"; }
-.glyphicon-link::before { content: "\f0c1"; }
-.glyphicon-lock::before { content: "\f023"; }
-.glyphicon-log-in::before { content: "\f2f6"; }
-.glyphicon-log-out::before { content: "\f2f5"; }
-.glyphicon-minus-sign::before { content: "\f056"; }
-.glyphicon-ok::before { content: "\f00c"; }
-.glyphicon-ok-sign::before { content: "\f058"; }
-.glyphicon-pause::before { content: "\f04c"; }
-.glyphicon-pencil::before { content: "\f303"; }
-.glyphicon-play::before { content: "\f04b"; }
-.glyphicon-play-circle::before { content: "\f144"; }
-.glyphicon-plus::before { content: "\2b"; }
-.glyphicon-question-sign::before { content: "\f059"; }
-.glyphicon-refresh::before { content: "\f2f9"; }
-.glyphicon-remove::before { content: "\f00d"; }
-.glyphicon-remove-circle::before { content: "\f057"; }
-.glyphicon-resize-horizontal::before { content: "\f07e"; }
-.glyphicon-screenshot::before { content: "\f05b"; }
-.glyphicon-search::before { content: "\f002"; }
-.glyphicon-send::before { content: "\f1d8"; }
-.glyphicon-share::before { content: "\f1e0"; }
-.glyphicon-star::before { content: "\f005"; }
-.glyphicon-stats::before { content: "\f080"; }
-.glyphicon-stop::before { content: "\f04d"; }
-.glyphicon-th::before { content: "\f0ce"; }
-.glyphicon-th-large::before { content: "\f0ce"; }
-.glyphicon-th-list::before { content: "\f00b"; }
-.glyphicon-trash::before { content: "\f1f8"; }
-.glyphicon-usd::before { content: "\24"; }
-.glyphicon-user-plus::before { content: "\f234"; }
-.glyphicon-wrench::before { content: "\f0ad"; }
+.glyphicon-align-justify::before { content: "\f0c9" !important; }
+.glyphicon-arrow-down::before { content: "\f063" !important; }
+.glyphicon-arrow-right::before { content: "\f061" !important; }
+.glyphicon-arrow-up::before { content: "\f062" !important; }
+.glyphicon-book::before { content: "\f02d" !important; }
+.glyphicon-bullhorn::before { content: "\f0a1" !important; }
+.glyphicon-chevron-right::before { content: "\f054" !important; }
+.glyphicon-cloud-download::before { content: "\f0ed" !important; }
+.glyphicon-cog::before { content: "\f013" !important; }
+.glyphicon-copy::before { content: "\f0c5" !important; }
+.glyphicon-dashboard::before { content: "\f625" !important; }
+.glyphicon-download::before { content: "\f019" !important; }
+.glyphicon-download-alt::before { content: "\f019" !important; }
+.glyphicon-edit::before { content: "\f303" !important; }
+.glyphicon-exclamation-sign::before { content: "\f06a" !important; }
+.glyphicon-export::before { content: "\f08b" !important; }
+.glyphicon-eye-close::before { content: "\f070" !important; }
+.glyphicon-eye-open::before { content: "\f06e" !important; }
+.glyphicon-filter::before { content: "\f0b0" !important; }
+.glyphicon-flash::before { content: "\e0b7" !important; }
+.glyphicon-floppy-disk::before { content: "\f0c7" !important; }
+.glyphicon-floppy-open::before { content: "\f07c" !important; }
+.glyphicon-floppy-remove::before { content: "\f1f8" !important; }
+.glyphicon-floppy-saved::before { content: "\f0c7" !important; }
+.glyphicon-folder-open::before { content: "\f07c" !important; }
+.glyphicon-globe::before { content: "\f0ac" !important; }
+.glyphicon-hdd::before { content: "\f0a0" !important; }
+.glyphicon-home::before { content: "\f015" !important; }
+.glyphicon-info-sign::before { content: "\f05a" !important; }
+.glyphicon-link::before { content: "\f0c1" !important; }
+.glyphicon-lock::before { content: "\f023" !important; }
+.glyphicon-log-in::before { content: "\f2f6" !important; }
+.glyphicon-log-out::before { content: "\f2f5" !important; }
+.glyphicon-minus-sign::before { content: "\f056" !important; }
+.glyphicon-ok::before { content: "\f00c" !important; }
+.glyphicon-ok-sign::before { content: "\f058" !important; }
+.glyphicon-pause::before { content: "\f04c" !important; }
+.glyphicon-pencil::before { content: "\f303" !important; }
+.glyphicon-play::before { content: "\f04b" !important; }
+.glyphicon-play-circle::before { content: "\f144" !important; }
+.glyphicon-plus::before { content: "\2b" !important; }
+.glyphicon-question-sign::before { content: "\f059" !important; }
+.glyphicon-refresh::before { content: "\f2f9" !important; }
+.glyphicon-remove::before { content: "\f00d" !important; }
+.glyphicon-remove-circle::before { content: "\f057" !important; }
+.glyphicon-resize-horizontal::before { content: "\f07e" !important; }
+.glyphicon-screenshot::before { content: "\f05b" !important; }
+.glyphicon-search::before { content: "\f002" !important; }
+.glyphicon-send::before { content: "\f1d8" !important; }
+.glyphicon-share::before { content: "\f1e0" !important; }
+.glyphicon-star::before { content: "\f005" !important; }
+.glyphicon-stats::before { content: "\f080" !important; }
+.glyphicon-stop::before { content: "\f04d" !important; }
+.glyphicon-th::before { content: "\f0ce" !important; }
+.glyphicon-th-large::before { content: "\f0ce" !important; }
+.glyphicon-th-list::before { content: "\f00b" !important; }
+.glyphicon-trash::before { content: "\f1f8" !important; }
+.glyphicon-usd::before { content: "\24" !important; }
+.glyphicon-user-plus::before { content: "\f234" !important; }
+.glyphicon-wrench::before { content: "\f0ad" !important; }
 
 /* Glyphicons still used by third-party modules and Bootstrap admin themes. */
 .glyphicon-save::before,
 .glyphicon-saved::before,
-.glyphicon-floppy-save::before { content: "\f0c7"; }
-.glyphicon-off::before { content: "\f011"; }
-.glyphicon-menu-hamburger::before { content: "\f0c9"; }
-.glyphicon-bell::before { content: "\f0f3"; }
-.glyphicon-print::before { content: "\f02f"; }
+.glyphicon-floppy-save::before { content: "\f0c7" !important; }
+.glyphicon-off::before { content: "\f011" !important; }
+.glyphicon-menu-hamburger::before { content: "\f0c9" !important; }
+.glyphicon-bell::before { content: "\f0f3" !important; }
+.glyphicon-print::before { content: "\f02f" !important; }
