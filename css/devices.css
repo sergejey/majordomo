@@ -367,6 +367,47 @@
 .device-icon.media { --mj-icon: "\f04b"; }
 .device-icon.on { color: var(--mj-widget-icon-on, var(--mj-color-accent, #4a7c0f)); }
 .device-icon.off { color: var(--mj-widget-icon-off, var(--mj-color-muted, #6a6a6a)); }
+/* Local icon overrides: keep user images alone and respect device type. */
+.device-icon {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+.device-icon[style*="background-image"]::before {
+    content: none;
+}
+.controller .device-icon,
+.device-icon.dimmer,
+.device-icon.rgb,
+.loadtype_light .device-icon {
+    --mj-icon: "\f0eb";
+}
+.controller.loadtype_ac .device-icon { --mj-icon: "\f2dc"; }
+.controller.loadtype_power .device-icon { --mj-icon: "\f1e6"; }
+.controller.loadtype_heating .device-icon { --mj-icon: "\f06d"; }
+.controller.loadtype_curtains .device-icon { --mj-icon: "\f2d0"; }
+.controller.loadtype_gates .device-icon { --mj-icon: "\f52b"; }
+.controller.loadtype_vent .device-icon { --mj-icon: "\f863"; }
+.device-icon.openclose.on { --mj-icon: "\f52b"; }
+.device-icon.openclose.off { --mj-icon: "\f52a"; }
+.opentype_curtains .device-icon { --mj-icon: "\f2d0"; }
+.opentype_curtains .device-icon.openclose { --mj-icon: "\f2d0"; }
+.opentype_window .device-icon { --mj-icon: "\f410"; }
+.opentype_window .device-icon.openclose { --mj-icon: "\f2d0"; }
+.opentype_window .device-icon.openclose.off { --mj-icon: "\f410"; }
+.opentype_door .device-icon { --mj-icon: "\f52b"; }
+.opentype_door .device-icon.openclose { --mj-icon: "\f52b"; }
+.opentype_door .device-icon.openclose.off { --mj-icon: "\f52a"; }
+.opentype_shutters .device-icon { --mj-icon: "\f2d0"; }
+.opentype_shutters .device-icon.openclose { --mj-icon: "\f2d0"; }
+.opentype_gates .device-icon { --mj-icon: "\f52b"; }
+.opentype_gates .device-icon.openclose { --mj-icon: "\f52b"; }
+.opentype_gates .device-icon.openclose.off { --mj-icon: "\f52a"; }
+.opentype_valve .device-icon { --mj-icon: "\f043"; }
+.opentype_valve .device-icon.openclose { --mj-icon: "\f043"; }
+.device-details .glyphicon-flash {
+    margin-right: 4px;
+}
 @keyframes mj-widget-flash {
     from { box-shadow: 0 0 0 0 var(--mj-color-link, #26648f); }
     to   { box-shadow: 0 0 0 8px transparent; }

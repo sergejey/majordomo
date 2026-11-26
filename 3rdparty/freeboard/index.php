@@ -58,7 +58,7 @@ if ($_GET['theme']) {
             }
         </style>
     <?php }?>
-    <link href="/css/devices.css?v=26-11-24" rel="stylesheet" type="text/css"/>
+    <link href="/css/devices.css?v=26-11-26" rel="stylesheet" type="text/css"/>
 
     <?php
 
