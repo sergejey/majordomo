@@ -1,8 +1,8 @@
 [#if TYPE=="php"#]
 <script language="javascript">
  function [#CODE_FIELD#]_editBlocklyUpdated() {
-     if (typeof editor!=="undefined") {
-         editor.toTextArea();
+     if (window.mjEditor_[#CODE_FIELD#]) {
+         window.mjEditor_[#CODE_FIELD#].toTextArea();
      }
   var blockly = window.open('<#ROOTHTML#>3rdparty/googleblockly/?code_field=[#CODE_FIELD#]','BlocklyUpdated','scrollbars=no,width='+(screen.width-100)+',height='+(screen.height-200)+',left=50,top=100');
   blockly.creator=self;
@@ -27,8 +27,8 @@
 	 var code_type = $('.[#CODE_FIELD#]_code_type:checked').val();
 
 	 $('#[#CODE_FIELD#]').val(history_code);
-	 if (typeof editor !== 'undefined') {
-		 editor.setValue(history_code);
+	 if (window.mjEditor_[#CODE_FIELD#]) {
+		 window.mjEditor_[#CODE_FIELD#].setValue(history_code);
 	 }
 	 $('#xml_code').val(history_code_xml);
 	 if (code_type == 2) {
@@ -106,12 +106,12 @@ $(function() {
 </script>
 
 [#if CODE_TYPE="0"#]
-<script src="<#ROOTHTML#>3rdparty/codemirror/lib/codemirror.js"></script>
-<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/lib/codemirror.css">
-<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/display/fullscreen.css">
-<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/fold/foldgutter.css">
-<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/hint/show-hint.css">
-[#if SETTINGS_CODEEDITOR_THEME != 'codemirror' && SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]<link rel="stylesheet" href="<#ROOTHTML#>css/theme-tokens.css"><link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/lib/[#SETTINGS_CODEEDITOR_THEME#].css"><link rel="stylesheet" href="<#ROOTHTML#>css/editor_contrast.css">[#endif#]
+<script src="<#ROOTHTML#>3rdparty/codemirror/lib/codemirror.js?v=5.65.16"></script>
+<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/lib/codemirror.css?v=5.65.16">
+<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/display/fullscreen.css?v=5.65.16">
+<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/fold/foldgutter.css?v=5.65.16">
+<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/hint/show-hint.css?v=5.65.16"><link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/addon/dialog/dialog.css?v=5.65.16">
+<link rel="stylesheet" href="<#ROOTHTML#>css/theme-tokens.css"><link rel="stylesheet" href="<#ROOTHTML#>css/editor_contrast.css">[#if SETTINGS_CODEEDITOR_THEME != 'codemirror' && SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]<link rel="stylesheet" href="<#ROOTHTML#>3rdparty/codemirror/lib/[#SETTINGS_CODEEDITOR_THEME#].css?v=5.65.16">[#endif#]
 
 <style>
 	.cm_panel {
@@ -167,31 +167,31 @@ $(function() {
 	@media (max-width: 767px) { #mj-run-fab { display: block; } #mj-audit-fab { display: block; } }
 </style>
 
-<script src="<#ROOTHTML#>3rdparty/codemirror/addon/edit/matchbrackets.js"></script>
-<script src="<#ROOTHTML#>3rdparty/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-<script src="<#ROOTHTML#>3rdparty/codemirror/mode/xml/xml.js"></script>
-<script src="<#ROOTHTML#>3rdparty/codemirror/mode/javascript/javascript.js"></script>
-<script src="<#ROOTHTML#>3rdparty/codemirror/mode/css/css.js"></script>
-<script src="<#ROOTHTML#>3rdparty/codemirror/mode/clike/clike.js"></script>
-<script src="<#ROOTHTML#>3rdparty/codemirror/mode/php/php.js"></script>
-<script src="<#ROOTHTML#>3rdparty/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-<script src="<#ROOTHTML#>3rdparty/codemirror/addon/display/fullscreen.js"></script>
-<script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/foldcode.js"></script>
-<script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/foldgutter.js"></script>
-<script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/brace-fold.js"></script>
-<script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/comment-fold.js"></script>
-<script src="<#ROOTHTML#>3rdparty/codemirror/addon/hint/show-hint.js"></script>
-<script src="<#ROOTHTML#>3rdparty/codemirror/addon/edit/closebrackets.js"></script>
-<script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/match-highlighter.js"></script>
-<script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/search.js"></script>
-<script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/dialog.js"></script>
-<script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/searchcursor.js"></script>
-<script src="<#ROOTHTML#>3rdparty/codemirror/addon/display/panel.js"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/edit/matchbrackets.js?v=5.65.16"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/htmlmixed/htmlmixed.js?v=5.65.16"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/xml/xml.js?v=5.65.16"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/javascript/javascript.js?v=5.65.16"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/css/css.js?v=5.65.16"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/clike/clike.js?v=5.65.16"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/mode/php/php.js?v=5.65.16"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/display/fullscreen.js?v=5.65.16"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/foldcode.js?v=5.65.16"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/foldgutter.js?v=5.65.16"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/brace-fold.js?v=5.65.16"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/fold/comment-fold.js?v=5.65.16"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/hint/show-hint.js?v=5.65.16"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/edit/closebrackets.js?v=5.65.16"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/match-highlighter.js?v=5.65.16"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/search.js?v=5.65.16"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/dialog.js?v=5.65.16"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/searchcursor.js?v=5.65.16"></script>
+<script src="<#ROOTHTML#>3rdparty/codemirror/addon/display/panel.js?v=5.65.16"></script>
 
 <a href="#" id="mj-audit-fab" onclick="return auditCodeAjax();">✦ <#LANG_CODEEDITOR_AUDIT#></a>
 <a href="#" id="mj-run-fab" onclick="return runCodeQuick();">▶ <#LANG_CODEEDITOR_RUN#></a>
 
 <script language="javascript">
+(function(){
 var editor;
 var myTextArea[#CODE_FIELD#];
 
@@ -645,10 +645,10 @@ $(document).ready(function(){
 			
 			classList = $('.CodeMirror').attr("class").split(' ');
 			if(!actualLineNumber) {
-				if(totalLine < (Number('[#SETTINGS_CODEEDITOR_MIXLINE#]') || 1) && classList.indexOf('CodeMirror-fullscreen') == '-1') {
+				if(totalLine < (Number('[#SETTINGS_CODEEDITOR_MIXLINE#]') || 1) && classList.indexOf('CodeMirror-fullscreen') === -1) {
 					setHeight = Number('[#SETTINGS_CODEEDITOR_MIXLINE#]')*20;
 					$('.CodeMirror').attr('style', 'height: '+setHeight+'px;');
-				} else if(classList[4] != 'CodeMirror-fullscreen') {
+				} else if(classList.indexOf('CodeMirror-fullscreen') === -1) {
 					if(totalLine >= (Number('[#SETTINGS_CODEEDITOR_SHOWLINE#]') || 99999)) {
 						setHeightMax = Number('[#SETTINGS_CODEEDITOR_SHOWLINE#]')*20;
 						$('.CodeMirror').attr('style', 'height: '+setHeightMax+'px;');
@@ -817,6 +817,12 @@ function modalRestoreCode() {
 	ajaxAutosave('restore');
 	$('#showAutosaveModal').modal('show')
 }
+window.mjEditor_[#CODE_FIELD#] = editor;
+window.ajaxAutosave = ajaxAutosave;
+window.setValueEditor = setValueEditor;
+window.seeCodeFunc = seeCodeFunc;
+window.modalRestoreCode = modalRestoreCode;
+})();
 </script>
 [#endif CODE_TYPE#]
 

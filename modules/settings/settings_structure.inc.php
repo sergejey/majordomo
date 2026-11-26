@@ -197,7 +197,7 @@ $settings_structure = array(
             'title' => LANG_CODEEDITOR_AUTOCOMPLETE_TYPE,
             'type' => 'select',
             'data' => 'none=' . LANG_DEFAULT . '|php=' . LANG_CODEEDITOR_AUTOCOMPLETE_TYPE_ONLYPHP . '|phpmjdm=' . LANG_CODEEDITOR_AUTOCOMPLETE_TYPE_PHPMJDM . '|mjdmuser=' . LANG_CODEEDITOR_AUTOCOMPLETE_TYPE_MJDMUSER . '|user=' . LANG_CODEEDITOR_AUTOCOMPLETE_TYPE_USER . '|all=' . LANG_CODEEDITOR_AUTOCOMPLETE_TYPE_PHPMJDMUSER . '',
-            'default' => 'codemirror'
+            'default' => 'none'
         ),
         'CODEEDITOR_THEME' => array(
             'title' => LANG_CODEEDITOR_THEME,

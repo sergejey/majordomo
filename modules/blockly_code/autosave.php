@@ -6,11 +6,10 @@ include_once ('./lib/loader.php');
 
 $dir = DOC_ROOT . '/cms/cached/codemirror';
 
-$action = $_POST['action'];
-$id = $_POST['id'];
-$md = $_POST['md'];
-	
-$code = $_POST['code'];
+$action = isset($_POST['action']) ? $_POST['action'] : '';
+$id = isset($_POST['id']) ? $_POST['id'] : '';
+$md = isset($_POST['md']) ? $_POST['md'] : '';
+$code = isset($_POST['code']) ? $_POST['code'] : '';
 	
 //$code = str_replace("!amp;", "&", $code);
 //$code = str_replace("!lt;", "<", $code);

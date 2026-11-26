@@ -1,5 +1,5 @@
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: https://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/5/LICENSE
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -82,14 +82,14 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
       state.tokenize = tokenString(ch);
       return state.tokenize(stream, state);
     }
-    if (isPunctuationChar.test(ch)) {
-      curPunc = ch;
-      return null;
-    }
     if (numberStart.test(ch)) {
       stream.backUp(1)
       if (stream.match(number)) return "number"
       stream.next()
+    }
+    if (isPunctuationChar.test(ch)) {
+      curPunc = ch;
+      return null;
     }
     if (ch == "/") {
       if (stream.eat("*")) {
@@ -218,7 +218,8 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
     },
 
     indent: function(state, textAfter) {
-      if (state.tokenize != tokenBase && state.tokenize != null || state.typeAtEndOfLine) return CodeMirror.Pass;
+      if (state.tokenize != tokenBase && state.tokenize != null || state.typeAtEndOfLine && isTopScope(state.context))
+        return CodeMirror.Pass;
       var ctx = state.context, firstChar = textAfter && textAfter.charAt(0);
       var closing = firstChar == ctx.type;
       if (ctx.type == "statement" && firstChar == "}") ctx = ctx.prev;
@@ -269,6 +270,25 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
   var cKeywords = "auto if break case register continue return default do sizeof " +
     "static else struct switch extern typedef union for goto while enum const " +
     "volatile inline restrict asm fortran";
+
+  // Keywords from https://en.cppreference.com/w/cpp/keyword includes C++20.
+  var cppKeywords = "alignas alignof and and_eq audit axiom bitand bitor catch " +
+  "class compl concept constexpr const_cast decltype delete dynamic_cast " +
+  "explicit export final friend import module mutable namespace new noexcept " +
+  "not not_eq operator or or_eq override private protected public " +
+  "reinterpret_cast requires static_assert static_cast template this " +
+  "thread_local throw try typeid typename using virtual xor xor_eq";
+
+  var objCKeywords = "bycopy byref in inout oneway out self super atomic nonatomic retain copy " +
+  "readwrite readonly strong weak assign typeof nullable nonnull null_resettable _cmd " +
+  "@interface @implementation @end @protocol @encode @property @synthesize @dynamic @class " +
+  "@public @package @private @protected @required @optional @try @catch @finally @import " +
+  "@selector @encode @defs @synchronized @autoreleasepool @compatibility_alias @available";
+
+  var objCBuiltins = "FOUNDATION_EXPORT FOUNDATION_EXTERN NS_INLINE NS_FORMAT_FUNCTION " +
+  " NS_RETURNS_RETAINEDNS_ERROR_ENUM NS_RETURNS_NOT_RETAINED NS_RETURNS_INNER_POINTER " +
+  "NS_DESIGNATED_INITIALIZER NS_ENUM NS_OPTIONS NS_REQUIRES_NIL_TERMINATION " +
+  "NS_ASSUME_NONNULL_BEGIN NS_ASSUME_NONNULL_END NS_SWIFT_NAME NS_REFINED_FOR_SWIFT"
 
   // Do not use this. Use the cTypes function below. This is global just to avoid
   // excessive calls when cTypes is being called multiple times during a parse.
@@ -331,8 +351,8 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
   function cpp11StringHook(stream, state) {
     stream.backUp(1);
     // Raw strings.
-    if (stream.match(/(R|u8R|uR|UR|LR)/)) {
-      var match = stream.match(/"([^\s\\()]{0,16})\(/);
+    if (stream.match(/^(?:R|u8R|uR|UR|LR)/)) {
+      var match = stream.match(/^"([^\s\\()]{0,16})\(/);
       if (!match) {
         return false;
       }
@@ -341,8 +361,8 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
       return tokenRawString(stream, state);
     }
     // Unicode strings/chars.
-    if (stream.match(/(u8|u|U|L)/)) {
-      if (stream.match(/["']/, /* eat */ false)) {
+    if (stream.match(/^(?:u8|u|U|L)/)) {
+      if (stream.match(/^["']/, /* eat */ false)) {
         return "string";
       }
       return false;
@@ -420,13 +440,7 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
 
   def(["text/x-c++src", "text/x-c++hdr"], {
     name: "clike",
-    // Keywords from https://en.cppreference.com/w/cpp/keyword includes C++20.
-    keywords: words(cKeywords + "alignas alignof and and_eq audit axiom bitand bitor catch " +
-                    "class compl concept constexpr const_cast decltype delete dynamic_cast " +
-                    "explicit export final friend import module mutable namespace new noexcept " +
-                    "not not_eq operator or or_eq override private protected public " +
-                    "reinterpret_cast requires static_assert static_cast template this " +
-                    "thread_local throw try typeid typename using virtual xor xor_eq"),
+    keywords: words(cKeywords + " " + cppKeywords),
     types: cTypes,
     blockKeywords: words(cBlockKeywords + " class try catch"),
     defKeywords: words(cDefKeywords + " class namespace"),
@@ -467,11 +481,11 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
   def("text/x-java", {
     name: "clike",
     keywords: words("abstract assert break case catch class const continue default " +
-                    "do else enum extends final finally float for goto if implements import " +
+                    "do else enum extends final finally for goto if implements import " +
                     "instanceof interface native new package private protected public " +
                     "return static strictfp super switch synchronized this throw throws transient " +
                     "try volatile while @interface"),
-    types: words("byte short int long float double boolean char void Boolean Byte Character Double Float " +
+    types: words("var byte short int long float double boolean char void Boolean Byte Character Double Float " +
                  "Integer Long Number Object Short String StringBuffer StringBuilder Void"),
     blockKeywords: words("catch class do else finally for if switch try while"),
     defKeywords: words("class interface enum @interface"),
@@ -485,6 +499,11 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
 
         stream.eatWhile(/[\w\$_]/);
         return "meta";
+      },
+      '"': function(stream, state) {
+        if (!stream.match(/""$/)) return false;
+        state.tokenize = tokenTripleString;
+        return state.tokenize(stream, state);
       }
     },
     modeProps: {fold: ["brace", "import"]}
@@ -494,8 +513,8 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
     name: "clike",
     keywords: words("abstract as async await base break case catch checked class const continue" +
                     " default delegate do else enum event explicit extern finally fixed for" +
-                    " foreach goto if implicit in interface internal is lock namespace new" +
-                    " operator out override params private protected public readonly ref return sealed" +
+                    " foreach goto if implicit in init interface internal is lock namespace new" +
+                    " operator out override params private protected public readonly record ref required return sealed" +
                     " sizeof stackalloc static struct switch this throw try typeof unchecked" +
                     " unsafe using virtual void volatile while add alias ascending descending dynamic from get" +
                     " global group into join let orderby partial remove select set value var yield"),
@@ -504,7 +523,7 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
                  " UInt64 bool byte char decimal double short int long object"  +
                  " sbyte float string ushort uint ulong"),
     blockKeywords: words("catch class do else finally for foreach if struct switch try while"),
-    defKeywords: words("class interface namespace struct var"),
+    defKeywords: words("class interface namespace record struct var"),
     typeFirstDefinitions: true,
     atoms: words("true false null"),
     hooks: {
@@ -595,6 +614,7 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
         return state.tokenize(stream, state);
       },
       "'": function(stream) {
+        if (stream.match(/^(\\[^'\s]+|[^\\'])'/)) return "string-2"
         stream.eatWhile(/[\w\$_\xa1-\uffff]/);
         return "atom";
       },
@@ -646,7 +666,7 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
       "file import where by get set abstract enum open inner override private public internal " +
       "protected catch finally out final vararg reified dynamic companion constructor init " +
       "sealed field property receiver param sparam lateinit data inline noinline tailrec " +
-      "external annotation crossinline const operator infix suspend actual expect setparam"
+      "external annotation crossinline const operator infix suspend actual expect setparam value"
     ),
     types: words(
       /* package java.lang */
@@ -676,11 +696,16 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
         state.tokenize = tokenKotlinString(stream.match('""'));
         return state.tokenize(stream, state);
       },
+      "/": function(stream, state) {
+        if (!stream.eat("*")) return false;
+        state.tokenize = tokenNestedComment(1);
+        return state.tokenize(stream, state)
+      },
       indent: function(state, ctx, textAfter, indentUnit) {
         var firstChar = textAfter && textAfter.charAt(0);
         if ((state.prevToken == "}" || state.prevToken == ")") && textAfter == "")
           return state.indented;
-        if (state.prevToken == "operator" && textAfter != "}" ||
+        if ((state.prevToken == "operator" && textAfter != "}" && state.context.type != "}") ||
           state.prevToken == "variable" && firstChar == "." ||
           (state.prevToken == "}" || state.prevToken == ")") && firstChar == ".")
           return indentUnit * 2 + ctx.indented;
@@ -731,7 +756,7 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
                 "gl_ModelViewMatrix gl_ProjectionMatrix gl_ModelViewProjectionMatrix " +
                 "gl_TextureMatrix gl_NormalMatrix gl_ModelViewMatrixInverse " +
                 "gl_ProjectionMatrixInverse gl_ModelViewProjectionMatrixInverse " +
-                "gl_TexureMatrixTranspose gl_ModelViewMatrixInverseTranspose " +
+                "gl_TextureMatrixTranspose gl_ModelViewMatrixInverseTranspose " +
                 "gl_ProjectionMatrixInverseTranspose " +
                 "gl_ModelViewProjectionMatrixInverseTranspose " +
                 "gl_TextureMatrixInverseTranspose " +
@@ -764,16 +789,9 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
 
   def("text/x-objectivec", {
     name: "clike",
-    keywords: words(cKeywords + " bycopy byref in inout oneway out self super atomic nonatomic retain copy " +
-                    "readwrite readonly strong weak assign typeof nullable nonnull null_resettable _cmd " +
-                    "@interface @implementation @end @protocol @encode @property @synthesize @dynamic @class " +
-                    "@public @package @private @protected @required @optional @try @catch @finally @import " +
-                    "@selector @encode @defs @synchronized @autoreleasepool @compatibility_alias @available"),
+    keywords: words(cKeywords + " " + objCKeywords),
     types: objCTypes,
-    builtin: words("FOUNDATION_EXPORT FOUNDATION_EXTERN NS_INLINE NS_FORMAT_FUNCTION NS_RETURNS_RETAINED " +
-                   "NS_ERROR_ENUM NS_RETURNS_NOT_RETAINED NS_RETURNS_INNER_POINTER NS_DESIGNATED_INITIALIZER " +
-                   "NS_ENUM NS_OPTIONS NS_REQUIRES_NIL_TERMINATION NS_ASSUME_NONNULL_BEGIN " +
-                   "NS_ASSUME_NONNULL_END NS_SWIFT_NAME NS_REFINED_FOR_SWIFT"),
+    builtin: words(objCBuiltins),
     blockKeywords: words(cBlockKeywords + " @synthesize @try @catch @finally @autoreleasepool @synchronized"),
     defKeywords: words(cDefKeywords + " @interface @implementation @protocol @class"),
     dontIndentStatements: /^@.*$/,
@@ -784,6 +802,46 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
       "#": cppHook,
       "*": pointerHook,
     },
+    modeProps: {fold: ["brace", "include"]}
+  });
+
+  def("text/x-objectivec++", {
+    name: "clike",
+    keywords: words(cKeywords + " " + objCKeywords + " " + cppKeywords),
+    types: objCTypes,
+    builtin: words(objCBuiltins),
+    blockKeywords: words(cBlockKeywords + " @synthesize @try @catch @finally @autoreleasepool @synchronized class try catch"),
+    defKeywords: words(cDefKeywords + " @interface @implementation @protocol @class class namespace"),
+    dontIndentStatements: /^@.*$|^template$/,
+    typeFirstDefinitions: true,
+    atoms: words("YES NO NULL Nil nil true false nullptr"),
+    isReservedIdentifier: cIsReservedIdentifier,
+    hooks: {
+      "#": cppHook,
+      "*": pointerHook,
+      "u": cpp11StringHook,
+      "U": cpp11StringHook,
+      "L": cpp11StringHook,
+      "R": cpp11StringHook,
+      "0": cpp14Literal,
+      "1": cpp14Literal,
+      "2": cpp14Literal,
+      "3": cpp14Literal,
+      "4": cpp14Literal,
+      "5": cpp14Literal,
+      "6": cpp14Literal,
+      "7": cpp14Literal,
+      "8": cpp14Literal,
+      "9": cpp14Literal,
+      token: function(stream, state, style) {
+        if (style == "variable" && stream.peek() == "(" &&
+            (state.prevToken == ";" || state.prevToken == null ||
+             state.prevToken == "}") &&
+            cppLooksLikeConstructor(stream.current()))
+          return "def";
+      }
+    },
+    namespaceSeparator: "::",
     modeProps: {fold: ["brace", "include"]}
   });
 
