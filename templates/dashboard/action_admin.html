@@ -49,7 +49,7 @@
 [#endif#]
 
 [#if VIEW_MODE=""#]
-<style>.td_sm {background-color: #FFF;  padding: 1px; text-align: center}
+<style>.td_sm {background-color: var(--mj-color-bg, #FFF); color: var(--mj-color-fg, #333); padding: 1px; text-align: center}
 .currentday {font-weight: bold}</style>
 
 <table width="100%" border="0" cellpadding="7">
@@ -63,9 +63,9 @@
   <td valign="top" width="30%">
 
   [#if CPANEL_STATS="1"#]
-   <table width="100%" border="0" bgcolor="#666666" cellspacing="1" cellpadding="5">
+   <table width="100%" border="0" style="background-color: var(--mj-color-border, #666666)" cellspacing="1" cellpadding="5">
     <tr>
-     <td valign="top" colspan="4" bgcolor="#EEEEEE" align="center"><b><#LANG_VISITS_CPANEL#></b></td>
+     <td valign="top" colspan="4" style="background-color: var(--mj-color-surface, #EEEEEE)" align="center"><b><#LANG_VISITS_CPANEL#></b></td>
     </tr>
     <tr><td class="td_sm"><#LANG_DATE#></td><td class="td_sm"><#LANG_VISITS#></td><td class="td_sm"><#LANG_PAGES#></td><td class="td_sm"><#LANG_HITS#></td></tr>
     [#begin MONTH_STATS#]
