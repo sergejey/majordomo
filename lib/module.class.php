@@ -451,6 +451,49 @@ class module
 
         $flag_filename = ROOT . 'cms/modules_installed/' . $this->name . '.installed';
         if (file_exists($flag_filename)) unlink($flag_filename);
+
+        $this->cleanupModuleReferences();
+    }
+
+    /**
+     * Remove stale references created by the module itself.
+     *
+     * Some modules add menu/command items but do not clean them up in their
+     * own uninstall(). The core must guarantee that no dead links remain.
+     *
+     * @access private
+     * @return void
+     */
+    private function cleanupModuleReferences()
+    {
+        $name = DBSafe($this->name);
+
+        if ($this->tableExists('commands')) {
+            SQLExec("DELETE FROM commands WHERE CODE LIKE '%name=\"" . $name . "\"%' OR URL LIKE '%md=" . $name . "%'");
+        }
+        if ($this->tableExists('plugins')) {
+            SQLExec("DELETE FROM plugins WHERE MODULE_NAME='" . $name . "'");
+        }
+        if ($this->tableExists('ignore_updates')) {
+            SQLExec("DELETE FROM ignore_updates WHERE NAME='" . $name . "'");
+        }
+    }
+
+    /**
+     * Check that an optional table exists before querying it.
+     *
+     * @access private
+     * @param string $table_name
+     * @return bool
+     */
+    private function tableExists($table_name)
+    {
+        $table_name = preg_replace('/[^a-zA-Z0-9_]/', '', $table_name);
+        if ($table_name === '') {
+            return false;
+        }
+        $rec = SQLSelectOne("SHOW TABLES LIKE '" . $table_name . "'");
+        return !empty($rec);
     }
 
 

@@ -22,6 +22,25 @@ echo "<pre>\n";
 
 DebMes("Running maintenance script", 'maintenance');
 
+// CLEAN STALE MODULE REFERENCES
+if (SQLSelectOne("SHOW TABLES LIKE 'project_modules'")) {
+    $stale_modules = SQLSelect("SELECT NAME FROM project_modules");
+    foreach ($stale_modules as $stale_module) {
+        $stale_name = preg_replace('/[^a-zA-Z0-9_]/', '', $stale_module['NAME']);
+        if ($stale_name === '' || is_dir(DIR_MODULES . $stale_name)) {
+            continue;
+        }
+        SQLExec("DELETE FROM project_modules WHERE NAME='" . $stale_name . "'");
+        if (SQLSelectOne("SHOW TABLES LIKE 'commands'")) {
+            SQLExec("DELETE FROM commands WHERE CODE LIKE '%name=\"" . $stale_name . "\"%' OR URL LIKE '%md=" . $stale_name . "%'");
+        }
+        if (SQLSelectOne("SHOW TABLES LIKE 'plugins'")) {
+            SQLExec("DELETE FROM plugins WHERE MODULE_NAME='" . $stale_name . "'");
+        }
+        DebMes("Removed stale module references: " . $stale_name, 'maintenance');
+    }
+}
+
 // BACKUP DATABASE AND FILES
 
 if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '' && is_dir(SETTINGS_BACKUP_PATH)) {
