@@ -42,6 +42,39 @@
 		#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel { position: fixed; }
 		#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel { position: absolute; margin: auto; width: 270px; left: 50%; margin-left: -135px; height: 50px; top: 50%; margin-top: -35px; padding: 10px 0px; border-style: none; }
 	[#endif#]
+
+	/* Sharp vector controls: raster <img> stays clickable but is drawn by the local icon font. */
+	#[#APP_PLAYER_ID#] { width: 435px; max-width: 100vw; min-width: 0; box-sizing: border-box; border-radius: 6px; background-color: var(--mj-widget-surface, var(--mj-color-surface, #fff)); color: var(--mj-color-fg, #333); border-color: var(--mj-color-border, #ccc); }
+	#[#APP_PLAYER_ID#] .content .controls { flex-wrap: wrap; min-height: 44px; }
+	#[#APP_PLAYER_ID#] .content .controls .line_container { flex-wrap: wrap; min-height: 44px; }
+	#[#APP_PLAYER_ID#] .content .controls .column.button,
+	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal { position: relative; display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; box-sizing: border-box; margin: 0 4px; }
+	#[#APP_PLAYER_ID#] .content .controls .column.button img,
+	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container img { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+	#[#APP_PLAYER_ID#] .content .controls .column.button::before,
+	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container::before {
+		font-family: "Font Awesome 7 Free"; font-weight: 900; font-size: 18px; line-height: 1;
+		color: var(--mj-color-fg, #333); pointer-events: none; text-align: center;
+	}
+	#[#APP_PLAYER_ID#] .content .controls .column.button.previous::before { content: "\f04a"; }
+	#[#APP_PLAYER_ID#] .content .controls .column.button.pause::before { content: "\f04c"; }
+	#[#APP_PLAYER_ID#] .content .controls .column.button.play::before { content: "\f04b"; }
+	#[#APP_PLAYER_ID#] .content .controls .column.button.next::before { content: "\f04e"; }
+	#[#APP_PLAYER_ID#] .content .controls .column.button.stop::before { content: "\f04d"; }
+	#[#APP_PLAYER_ID#] .content .controls .column.button.volume::before { content: "\f028"; }
+	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container { width: min(150px, 100%); padding-left: 30px; position: relative; min-height: 36px; }
+	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container::before { content: "\f120"; position: absolute; left: 8px; top: 8px; }
+	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .container .label { padding: 6px 4px 6px 0; font-size: 13px; }
+	#[#APP_PLAYER_ID#] .content .controls .column.select.terminal .slide_panel { width: min(150px, 100%); max-width: 100%; position: absolute; }
+	#[#APP_PLAYER_ID#] .content .controls .column.button.volume .slide_panel { width: min(270px, 90vw); max-width: 100%; height: auto; min-height: 70px; }
+	#[#APP_PLAYER_ID#] .content .controls .column.button img { filter: none !important; }
+	[#if MODE="header"#]
+	#[#APP_PLAYER_ID#] { width: auto; max-width: 435px; min-width: 0; }
+	#[#APP_PLAYER_ID#] .content .controls { height: auto; padding: 4px; }
+	[#endif MODE#]@media (max-width: 767px) {
+	#[#APP_PLAYER_ID#] { width: calc(100vw - 24px) !important; max-width: calc(100vw - 24px) !important; }
+	#[#APP_PLAYER_ID#] .content .controls .column.button { margin: 0 2px; }
+}
 </style>
 <div id="[#APP_PLAYER_ID#]">
 	<div id="html5audio"></div>
