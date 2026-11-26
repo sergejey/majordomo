@@ -28,6 +28,12 @@ $settings_structure = array(
             'title' => LANG_COLOR_THEME,
             'notes' => LANG_COLOR_THEME_NOTE,
         ),
+        'DEVICE_WIDGET_STYLE' => array(
+            'title' => LANG_DEVICE_WIDGET_STYLE,
+            'type' => 'select',
+            'data' => 'legacy=' . LANG_DEVICE_WIDGET_STYLE_LEGACY . '|modern=' . LANG_DEVICE_WIDGET_STYLE_MODERN,
+            'default' => 'legacy'
+        ),
         'SPEAK_SIGNAL' => array(
             'title' => LANG_SPEAK_SIGNAL,
             'notes' => LANG_SPEAK_SIGNAL_NOTE,

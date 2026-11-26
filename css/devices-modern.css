@@ -1,0 +1,420 @@
+.device-widget {
+    box-sizing: border-box;
+    min-width: 0;
+    width: 100%;
+    max-width: var(--mj-widget-max-width, 350px);
+    min-height: var(--mj-widget-touch, 44px);
+    padding: var(--mj-widget-padding, 10px);
+    border: 1px solid var(--mj-widget-border, #dddddd);
+    border-radius: var(--mj-widget-radius, 6px);
+    background-color: var(--mj-widget-surface, #f5f5f5);
+    color: var(--mj-widget-fg, #333333);
+
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+.device-widget::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.device-widget.controller:focus,
+.device-widget.sensor:focus,
+.device-widget.button:focus {
+    outline: 2px solid var(--mj-color-link, #26648f);
+    outline-offset: 2px;
+}
+
+.device-widget.mini {
+    box-sizing: border-box;
+    width: auto;
+    padding: var(--mj-widget-mini-padding, 5px);
+    min-width: var(--mj-widget-mini-width, 150px);
+    max-width: 100%;
+    border: 1px solid var(--mj-widget-border, #dddddd);
+}
+
+.device-widget.mini.icon-only {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--mj-widget-compact-width, 75px);
+    min-height: var(--mj-widget-touch, 44px);
+}
+
+.device-widget.mini.controller,
+.device-widget.mini.sensor,
+.device-widget.mini.openable,
+.device-widget.mini.camera,
+.device-widget.mini.motion {
+    min-width: var(--mj-widget-compact-width, 75px);
+    max-width: 100%;
+}
+
+.device-widget.offline {
+    background-color: var(--mj-widget-offline-bg, #eeeeee);
+    border-color: var(--mj-widget-offline-border, #cccccc);
+    color: var(--mj-widget-offline-fg, #555555);
+}
+
+.device-widget.offline .device-header,
+.device-widget.offline .device-details {
+    color: inherit;
+}
+
+/* Front-end dark bootstrap still ships !important offline rules. */
+:root[data-theme="dark"] .device-widget.offline,
+:root[data-theme="dark"] .device-widget.offline .device-header,
+:root[data-theme="dark"] .device-widget.offline .device-details {
+    background-color: var(--mj-widget-offline-bg, #3a3a3a) !important;
+    border-color: var(--mj-widget-offline-border, #555555) !important;
+    color: var(--mj-widget-offline-fg, #d0d0d0) !important;
+}
+
+.device-widget.warning {
+    border: 1px solid var(--mj-widget-alert-bg, #c62828);
+}
+
+.device-icon {
+    box-sizing: border-box;
+    background-repeat: no-repeat;
+    background-position: center 4px;
+    margin-right: 5px;
+    min-width: var(--mj-widget-touch, 44px);
+    min-height: var(--mj-widget-touch, 44px);
+    width: var(--mj-widget-icon-size, 40px);
+    height: var(--mj-widget-icon-size, 40px);
+    float: left;
+}
+
+.mini .device-icon {
+    margin-right:3px;
+}
+
+.mini .device-header {
+    margin-top:8px;
+}
+
+.device-header {
+    font-size: var(--mj-widget-header-size, 18px);
+    min-width: 0;
+    overflow-wrap: break-word;
+}
+
+.device-widget.controller, .device-widget.sensor, .device-widget.button {
+    cursor:pointer;
+}
+
+.controller .device-header {
+    /*height:40px;*/
+    position: relative;
+    padding-top:10px;
+}
+
+.thermostat .device-header {
+    height:40px;
+    position: relative;
+    padding-top:10px;
+}
+
+.button .device-header {
+    height:40px;
+    position: relative;
+    padding-top:10px;
+}
+
+.device-details {
+    font-size: var(--mj-widget-details-size, 11px);
+    color: var(--mj-widget-muted, #6a6a6a);
+    min-width: 0;
+    overflow-wrap: break-word;
+}
+
+.device-icon.thermostat {
+}
+.device-icon.thermostat.on {
+}
+
+.thermostat .status_text {
+    color: var(--mj-widget-status-text, #dddddd);
+}
+
+.thermostat .status_disabled {
+    color: var(--mj-widget-status-muted, #666666);
+    font-weight:bold;
+}
+.thermostat .status_eco_off_enabled {
+    color: var(--mj-widget-status-ok, #2e7d32);
+    font-weight:bold;
+}
+.thermostat .status_normal_on_enabled {
+    color: var(--mj-widget-status-info, #1565c0);
+    font-weight:bold;
+}
+
+.device-icon.ac {
+}
+
+.device-icon.camera {
+}
+
+.device-icon.motion {
+}
+
+.device-icon.smoke {
+}
+
+.device-icon.leak {
+}
+
+.device-icon.button {
+}
+
+.device-icon.group_state {
+}
+
+.device-icon.group_state.on {
+}
+
+.device-icon.button.on {
+}
+
+.device-icon.ac.on {
+}
+
+.device-icon.motion.on {
+}
+
+.device-icon.smoke.on {
+    background-color: var(--mj-widget-alert-bg, #c62828);
+}
+
+.device-icon.leak.on {
+    background-color: var(--mj-widget-alert-bg, #c62828);
+}
+
+.device-icon.openclose {
+}
+
+.device-icon.openclose.on {
+}
+
+.opentype_curtains .device-icon {
+}
+.opentype_curtains .device-icon.on {
+}
+
+.opentype_window .device-icon {
+}
+.opentype_window .device-icon.on {
+}
+
+.opentype_door .device-icon {
+}
+.opentype_door .device-icon.on {
+}
+
+.opentype_shutters .device-icon {
+}
+.opentype_shutters .device-icon.on {
+}
+
+.opentype_gates .device-icon {
+}
+.opentype_gates .device-icon.on {
+}
+
+.opentype_valve .device-icon {
+}
+.opentype_valve .device-icon.on {
+}
+
+
+.device-icon.temperature {
+}
+.device-icon.humidity {
+}
+
+.device-icon.moisture {
+}
+
+
+.device-icon.pressure {
+}
+
+.device-icon.general-sensor {
+}
+
+.device-icon.light-sensor {
+}
+
+.device-icon.current-sensor {
+}
+
+.device-icon.voltage-sensor {
+}
+
+.device-icon.power-sensor {
+}
+
+.device-icon.power-sensor.on {
+}
+
+.controller .device-icon {
+}
+
+.controller.loadtype_ac .device-icon {
+}
+
+.controller.loadtype_power .device-icon {
+}
+
+.controller.loadtype_heating .device-icon {
+}
+
+.controller.loadtype_heating .device-icon.on {
+}
+
+.controller.loadtype_curtains .device-icon {
+}
+.controller.loadtype_curtains .device-icon.on {
+}
+
+.controller.loadtype_gates .device-icon {
+}
+.controller.loadtype_gates .device-icon.on {
+}
+
+.controller.loadtype_vent .device-icon {
+}
+
+.controller.loadtype_vent .device-icon.on {
+}
+
+.controller.loadtype_power .device-icon.on {
+}
+
+.controller .device-icon.on {
+}
+
+.device-icon.pressed {
+    background-color: var(--mj-widget-pressed-bg, #c6ef4a) !important;;
+}
+
+.camera-widget {
+}
+.camera-text {
+    padding-top:10px;
+    vertical-align:middle;
+    white-space: nowrap;
+}
+
+.noselect {
+
+}
+
+.device-icon.tv {
+}
+
+.device-icon.vacuum {
+}
+
+.device-icon.media {
+}
+
+/* Local Font Awesome glyphs replace the legacy raster sprite. */
+.device-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: none;
+    color: var(--mj-widget-icon-fg, inherit);
+}
+.device-icon::before {
+    font-family: "Font Awesome 7 Free";
+    font-weight: 900;
+    font-style: normal;
+    content: var(--mj-icon, "\f2db");
+    font-size: 20px;
+    line-height: 1;
+}
+.device-icon.temperature { --mj-icon: "\f2c9"; }
+.device-icon.thermostat { --mj-icon: "\f769"; }
+.device-icon.ac { --mj-icon: "\f2dc"; }
+.device-icon.camera { --mj-icon: "\f03d"; }
+.device-icon.motion { --mj-icon: "\f554"; }
+.device-icon.smoke { --mj-icon: "\f46a"; }
+.device-icon.leak { --mj-icon: "\f043"; }
+.device-icon.button { --mj-icon: "\f205"; }
+.device-icon.group_state { --mj-icon: "\f5fd"; }
+.device-icon.openclose { --mj-icon: "\f52b"; }
+.device-icon.humidity,
+.device-icon.moisture { --mj-icon: "\f043"; }
+.device-icon.pressure { --mj-icon: "\f624"; }
+.device-icon.general-sensor { --mj-icon: "\f2db"; }
+.device-icon.light-sensor { --mj-icon: "\f185"; }
+.device-icon.current-sensor,
+.device-icon.voltage-sensor { --mj-icon: "\f0e7"; }
+.device-icon.power-sensor { --mj-icon: "\f1e6"; }
+.device-icon.tv { --mj-icon: "\f26c"; }
+.device-icon.vacuum { --mj-icon: "\f544"; }
+.device-icon.media { --mj-icon: "\f04b"; }
+.device-icon.on { color: var(--mj-widget-icon-on, var(--mj-color-accent, #4a7c0f)); }
+.device-icon.off { color: var(--mj-widget-icon-off, var(--mj-color-muted, #6a6a6a)); }
+/* Local icon overrides: keep user images alone and respect device type. */
+.device-icon {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+.device-icon[style*="background-image"]::before {
+    content: none;
+}
+.controller .device-icon,
+.device-icon.dimmer,
+.device-icon.rgb,
+.loadtype_light .device-icon {
+    --mj-icon: "\f0eb";
+}
+.controller.loadtype_ac .device-icon { --mj-icon: "\f2dc"; }
+.controller.loadtype_power .device-icon { --mj-icon: "\f1e6"; }
+.controller.loadtype_heating .device-icon { --mj-icon: "\f06d"; }
+.controller.loadtype_curtains .device-icon { --mj-icon: "\f2d0"; }
+.controller.loadtype_gates .device-icon { --mj-icon: "\f52b"; }
+.controller.loadtype_vent .device-icon { --mj-icon: "\f863"; }
+.device-icon.openclose.on { --mj-icon: "\f52b"; }
+.device-icon.openclose.off { --mj-icon: "\f52a"; }
+.opentype_curtains .device-icon { --mj-icon: "\f2d0"; }
+.opentype_curtains .device-icon.openclose { --mj-icon: "\f2d0"; }
+.opentype_window .device-icon { --mj-icon: "\f410"; }
+.opentype_window .device-icon.openclose { --mj-icon: "\f2d0"; }
+.opentype_window .device-icon.openclose.off { --mj-icon: "\f410"; }
+.opentype_door .device-icon { --mj-icon: "\f52b"; }
+.opentype_door .device-icon.openclose { --mj-icon: "\f52b"; }
+.opentype_door .device-icon.openclose.off { --mj-icon: "\f52a"; }
+.opentype_shutters .device-icon { --mj-icon: "\f2d0"; }
+.opentype_shutters .device-icon.openclose { --mj-icon: "\f2d0"; }
+.opentype_gates .device-icon { --mj-icon: "\f52b"; }
+.opentype_gates .device-icon.openclose { --mj-icon: "\f52b"; }
+.opentype_gates .device-icon.openclose.off { --mj-icon: "\f52a"; }
+.opentype_valve .device-icon { --mj-icon: "\f043"; }
+.opentype_valve .device-icon.openclose { --mj-icon: "\f043"; }
+.device-details .glyphicon-flash {
+    margin-right: 4px;
+}
+@keyframes mj-widget-flash {
+    from { box-shadow: 0 0 0 0 var(--mj-color-link, #26648f); }
+    to   { box-shadow: 0 0 0 8px transparent; }
+}
+.device-widget.updated {
+    animation: mj-widget-flash .5s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+    .device-widget.updated { animation: none; }
+}

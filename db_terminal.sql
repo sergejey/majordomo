@@ -1909,6 +1909,7 @@ INSERT INTO `settings` (`ID`, `PRIORITY`, `HR`, `TITLE`, `NAME`, `TYPE`, `NOTES`
 (86, 0, 0, 'HOOK_EVENT_ASK', 'HOOK_EVENT_ASK', 'json', '', '{\"terminals\":{\"filter\":\"\"}}', '', '', '', ''),
 (61, 0, 0, 'Voice notifications language', 'VOICE_LANGUAGE', 'text', '', 'ru', 'en', '', '', ''),
 (62, 0, 0, 'Color theme', 'THEME', 'text', '', 'light', 'dark', '', '', ''),
+(101, 0, 0, 'Device widget style', 'DEVICE_WIDGET_STYLE', 'select', '', 'legacy', 'legacy', '', '', 'legacy=Legacy (classic)|modern=MJ Modern'),
 (44, 0, 0, 'Play sound signal before speaking', 'SPEAK_SIGNAL', 'onoff', '', '1', '1', '', '', ''),
 (100, 0, 0, 'Sound file before speaking', 'SPEAK_SIGNAL_FILE', 'path', '', '', '', '', '', ''),
 (85, 0, 0, 'HOOK_EVENT_SAYTO', 'HOOK_EVENT_SAYTO', 'json', '', '{\"terminals\":{\"filter\":\"\"}}', '', '', '', ''),

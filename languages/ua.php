@@ -283,6 +283,9 @@ $dictionary = array (
 
 
     'SETTINGS_UPDATED' => 'Налаштування збережені!',
+'DEVICE_WIDGET_STYLE' => 'Стиль віджетів пристроїв',
+'DEVICE_WIDGET_STYLE_LEGACY' => 'Класичний',
+'DEVICE_WIDGET_STYLE_MODERN' => 'MJ Modern',
     'SETTINGS_ERROR' => 'Не вдалося зберегти налаштування',
 
 

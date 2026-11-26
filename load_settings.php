@@ -40,6 +40,9 @@ for ($i = 0; $i < $total; $i++) {
         Define('SETTINGS_' . $settings[$i]['NAME'], $settings[$i]['VALUE']);
     }
 }
+if (!defined('SETTINGS_DEVICE_WIDGET_STYLE')) {
+    Define('SETTINGS_DEVICE_WIDGET_STYLE', 'legacy');
+}
 
 
 // Effective colour theme for templates. The saved SETTINGS_THEME is the source
