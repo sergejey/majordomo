@@ -193,10 +193,20 @@ if ($res[0]['ID']) {
                 $res[$i]['NOTES'] = htmlspecialchars(${'notes_' . $res[$i]['ID']});
             }
             SQLUpdate('settings', $res[$i]);
+            if ($res[$i]['NAME'] === 'THEME') {
+                $theme_cookie_path = defined('ROOTHTML') && ROOTHTML !== '' ? ROOTHTML : '/';
+                setcookie('theme', '', time() - 3600, $theme_cookie_path);
+                setcookie('theme_manual', '', time() - 3600, $theme_cookie_path);
+            }
         }
         if ($this->mode == 'reset') {
             $res[$i]['VALUE'] = $res[$i]['DEFAULTVALUE'];
             SQLUpdate('settings', $res[$i]);
+            if ($res[$i]['NAME'] === 'THEME') {
+                $theme_cookie_path = defined('ROOTHTML') && ROOTHTML !== '' ? ROOTHTML : '/';
+                setcookie('theme', '', time() - 3600, $theme_cookie_path);
+                setcookie('theme_manual', '', time() - 3600, $theme_cookie_path);
+            }
         }
 
         if (in_array($res[$i]['NAME'], array('SITE_LANGUAGE', 'VOICE_LANGUAGE'), true)) {
