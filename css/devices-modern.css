@@ -418,3 +418,7 @@
 @media (prefers-reduced-motion: reduce) {
     .device-widget.updated { animation: none; }
 }
+/* Brand-blue state colour instead of the previous green. */
+:root { --mj-widget-icon-on: #26648f; --mj-widget-icon-glow: rgba(38,100,143,.35); }
+:root[data-theme="dark"] { --mj-widget-icon-on: #8dc9f2; --mj-widget-icon-glow: rgba(141,201,242,.45); }
+.device-icon.on::before { filter: drop-shadow(0 0 4px var(--mj-widget-icon-glow)); }

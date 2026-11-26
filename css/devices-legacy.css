@@ -366,3 +366,10 @@
 
 /* Battery indicator: keep lightning visually separated from percent. */
 .device-details .glyphicon-flash { margin-right: 4px; }
+
+/* Dark theme: old sprite PNGs have a white backdrop for off states. */
+:root[data-theme="dark"] .device-icon.off,
+:root[data-theme="dark"] .opentype_door .device-icon.off,
+:root[data-theme="dark"] .opentype_window .device-icon.off {
+    filter: invert(0.88) grayscale(1);
+}
