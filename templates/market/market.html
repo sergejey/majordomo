@@ -119,7 +119,7 @@
 								url: url
 							}).done(function(data) {
 								$('#search_result').html(data);
-								if (category_id=='owned') {
+								if (category_id=='owned' || category_id=='my_connect') {
 									$('#connect_sync_note').show();
 								} else {
 									$('#connect_sync_note').hide();

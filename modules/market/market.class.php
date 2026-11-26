@@ -339,6 +339,7 @@ class market extends module
             array_unshift($out['CATEGORIES'], array('ID' => 'owned', 'TITLE' => LANG_MARKET_CATEGORY_OWNED));
             array_unshift($out['CATEGORIES'], array('ID' => 'updates', 'TITLE' => LANG_MARKET_CATEGORY_HAVE_UPDATES));
             array_unshift($out['CATEGORIES'], array('ID' => 'installed', 'TITLE' => LANG_MARKET_CATEGORY_INSTALLED));
+            array_splice($out['CATEGORIES'], 3, 0, array(array('ID' => 'my_connect', 'TITLE' => LANG_MARKET_CATEGORY_MY_CONNECT)));
             $out['CATEGORIES'][] = array('ID' => 'custom', 'TITLE' => LANG_CUSTOM);
             return;
         }
@@ -356,6 +357,8 @@ class market extends module
         $data = new stdClass();
         if ($category_id == 'owned') {
             $params = 'own=1';
+        } elseif ($category_id == 'my_connect') {
+            $params = 'own=1&unapproved=1';
         } elseif ($category_id == 'all') {
             $params = 'all=1';
         } elseif ($category_id == 'custom') {
@@ -410,6 +413,9 @@ class market extends module
             $total = count($data->PLUGINS);
             for ($i = 0; $i < $total; $i++) {
                 $rec = (array)$data->PLUGINS[$i];
+                if ($category_id == 'my_connect' && !$this->isUnapprovedConnectPlugin($rec)) {
+                    continue;
+                }
                 $plugin_rec = SQLSelectOne("SELECT * FROM plugins WHERE MODULE_NAME LIKE '" . DBSafe($rec['MODULE_NAME']) . "'");
                 if (is_dir(ROOT . 'modules/' . $rec['MODULE_NAME']) || isset($plugin_rec['ID'])) {
                     $rec['EXISTS'] = 1;
@@ -503,6 +509,24 @@ class market extends module
             exit;
         }
 
+    }
+
+    /**
+     * Determine whether a Connect addon belongs to the current account
+     * and does not require maintainer approval. If Connect does not expose
+     * a moderation field, all owned addons are shown.
+     */
+    function isUnapprovedConnectPlugin($rec)
+    {
+        $keys = array('MODERATED', 'APPROVED', 'IS_APPROVED', 'IS_MODERATED', 'STATUS');
+        foreach ($keys as $key) {
+            if (!isset($rec[$key])) {
+                continue;
+            }
+            $value = strtoupper(trim((string)$rec[$key]));
+            return in_array($value, array('', '0', 'NO', 'FALSE', 'NEW', 'PENDING'), true);
+        }
+        return true;
     }
 
     function marketRequest($details = '', $cache_timeout = 0)

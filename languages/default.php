@@ -1109,6 +1109,7 @@ $dictionary = array(
     'UPDATE_NEW_EXTENSIONS' => 'Install updates',
     'MARKET_CATEGORY_INSTALLED' => 'Installed',
     'MARKET_CATEGORY_OWNED' => 'Owned',
+    'MARKET_CATEGORY_MY_CONNECT' => 'My Connect addons',
     'MARKET_CATEGORY_HAVE_UPDATES' => 'Updates',
     'MARKET_CATEGORY_HARDWARE' => 'Hardware',
     'MARKET_CATEGORY_MULTIMEDIA' => 'Multimedia',
