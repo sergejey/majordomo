@@ -91,7 +91,7 @@
 }
 
 {foreach $ALL_TYPES as $TYPE}
- {if isset($TYPE.HAS_STYLE) && $TYPE.HAS_STYLE!=""}{include file="../../cms/scenes/styles/{$TYPE.TITLE}/style.css.tpl"}{/if}
+ {if isset($TYPE.HAS_STYLE) && $TYPE.HAS_STYLE!=""}{include file="../../cms/scenes/styles/{$TYPE.TITLE}/style.css"}{/if}
 {/foreach}
 </style>
 

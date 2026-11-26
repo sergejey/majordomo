@@ -451,6 +451,32 @@ class module
 
         $flag_filename = ROOT . 'cms/modules_installed/' . $this->name . '.installed';
         if (file_exists($flag_filename)) unlink($flag_filename);
+
+        $this->cleanupModuleReferences();
+    }
+
+    /**
+     * Remove stale references created by the module itself.
+     *
+     * Some modules add menu/command items but do not clean them up in their
+     * own uninstall(). The core must guarantee that no dead links remain.
+     *
+     * @access private
+     * @return void
+     */
+    private function cleanupModuleReferences()
+    {
+        $name = DBSafe($this->name);
+
+        if (SQLTableExists('commands')) {
+            SQLExec("DELETE FROM commands WHERE CODE LIKE '%name=\"" . $name . "\"%' OR URL LIKE '%md=" . $name . "%'");
+        }
+        if (SQLTableExists('plugins')) {
+            SQLExec("DELETE FROM plugins WHERE MODULE_NAME='" . $name . "'");
+        }
+        if (SQLTableExists('ignore_updates')) {
+            SQLExec("DELETE FROM ignore_updates WHERE NAME='" . $name . "'");
+        }
     }
 
 
