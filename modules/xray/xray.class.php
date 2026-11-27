@@ -466,21 +466,35 @@ class xray extends module
             }
         }
         if ($this->view_mode == 'database') {
-            $analyze = gr('analyze');
+            $allowedTables = array();
+            foreach (SQLSelect("SHOW TABLES") as $row) {
+                $allowedTables[] = reset($row);
+            }
+            $safeTables = function ($value) use ($allowedTables) {
+                $names = array();
+                foreach (explode(',', (string)$value) as $name) {
+                    $name = trim($name);
+                    if (in_array($name, $allowedTables, true)) {
+                        $names[] = '`' . str_replace('`', '``', $name) . '`';
+                    }
+                }
+                return implode(', ', $names);
+            };
+            $analyze = $safeTables(gr('analyze'));
             if ($analyze != '') {
                 $result = SQLSelectOne("ANALYZE TABLE " . $analyze . ";");
                 foreach ($result as $k => $v) {
                     $out['RESULT'] .= $k . ': ' . $v . "\n";
                 }
             }
-            $repair = gr('repair');
+            $repair = $safeTables(gr('repair'));
             if ($repair != '') {
                 $result = SQLSelectOne("REPAIR TABLE " . $repair . ";");
                 foreach ($result as $k => $v) {
                     $out['RESULT'] .= $k . ': ' . $v . "\n";
                 }
             }
-            $optimize = gr('optimize');
+            $optimize = $safeTables(gr('optimize'));
             if ($optimize != '') {
                 $result = SQLSelectOne("OPTIMIZE TABLE " . $optimize . ";");
                 foreach ($result as $k => $v) {
