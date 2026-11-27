@@ -125,8 +125,32 @@ $(function() {
 			font-size: 16px;
 			line-height: 1.45;
 		}
-		.cm_panel {
+		/* phones: the hint panel turns into a search field */
+		.cm_panel.top > span {
 			display: none;
+		}
+	}
+	.cm_panel > .cm_search {
+		display: none;
+	}
+	@media (max-width: 767px) {
+		.cm_panel.cm_panel_fullscreen {
+			display: none;
+		}
+		.cm_panel.top {
+			padding: 0;
+			/* search field stays on screen while the page scrolls to a match; 50px = fixed navbar */
+			position: sticky;
+			top: 50px;
+			z-index: 7;
+		}
+		.cm_panel > .cm_search {
+			display: block;
+			width: 100%;
+			height: 30px;
+			padding: 2px 6px;
+			border-radius: 0;
+			font-size: 16px;
 		}
 	}
 	.cm_panel.top, .cm_panel.after-top {
@@ -134,6 +158,38 @@ $(function() {
 	}
 	.cm_panel.bottom, .cm_panel.before-bottom {
 		border-top: 1px solid #ddd;
+	}
+	@media (max-width: 767px) {
+		.cm_panel.top {
+			border-bottom: 0;
+		}
+	}
+
+	/* Search dialog covers the hint panel instead of the first lines */
+	.cm_panel.top {
+		box-sizing: border-box;
+		min-height: 30px;
+	}
+	.CodeMirror-dialog-top {
+		box-sizing: border-box;
+		height: 30px;
+		padding: 4px .8em;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+	.cm_panel.top:has(+ .CodeMirror.dialog-opened) {
+		visibility: hidden;
+	}
+	.cm_panel.top + .CodeMirror.dialog-opened:not(.CodeMirror-fullscreen) {
+		z-index: 3;
+		margin-top: -30px;
+	}
+	.cm_panel.top + .CodeMirror.dialog-opened:not(.CodeMirror-fullscreen) .CodeMirror-lines {
+		padding-top: 34px;
+	}
+	.cm_panel.top + .CodeMirror.dialog-opened[style*="px"]:not(.CodeMirror-fullscreen) {
+		margin-bottom: 30px;
 	}
 
 	.cm_panel.top.cm_panel_fullscreen {
@@ -143,15 +199,12 @@ $(function() {
 		width: 50%;
 	}
 
-	.remove-panel {
-		cursor: pointer;
-	}
-	.remove-panel {
-		float: right;
-	}
 [#if TYPE!="php"#]
 	.CodeMirror {
 		height: auto !important;
+	}
+	.cm_panel.top + .CodeMirror.dialog-opened:not(.CodeMirror-fullscreen) {
+		margin-bottom: 0 !important;
 	}
 [#endif#]
 	.mj-run-btn { color: #26648f; text-decoration: none; font-weight: bold; margin-right: 8px; }
@@ -188,7 +241,9 @@ $(function() {
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/searchcursor.js"></script>
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/display/panel.js"></script>
 
+[#if CODE_AUDIT="1"#]
 <a href="#" id="mj-audit-fab" onclick="return auditCodeAjax();">✦ <#LANG_CODEEDITOR_AUDIT#></a>
+[#endif#]
 <a href="#" id="mj-run-fab" onclick="return runCodeQuick();">▶ <#LANG_CODEEDITOR_RUN#></a>
 
 <script language="javascript">
@@ -201,21 +256,66 @@ var panels = {};
 function makePanel(where) {
 	var node = document.createElement("div");
 	var id = ++numPanels;
-	var close, label;
+	var label, search;
 
 	node.id = "panel-" + id;
 	node.className = "cm_panel " + where;
-	close = node.appendChild(document.createElement("a"));
-	close.setAttribute("title", "<#LANG_CODEEDITOR_REMOVE_ME#>");
-	close.setAttribute("class", "remove-panel");
-	close.textContent = "✖";
-	CodeMirror.on(close, "mousedown", function(e) {
-		e.preventDefault()
-		panels[node.id].clear();
-	});
 	label = node.appendChild(document.createElement("span"));
-	label.innerHTML = "<a href='#' id='mj-audit-link' class='mj-audit-btn' onclick='return auditCodeAjax();'>✦ <#LANG_CODEEDITOR_AUDIT#></a> <a href='#' id='mj-run-link' class='mj-run-btn' onclick='return runCodeQuick();'>▶ <#LANG_CODEEDITOR_RUN#></a> <#LANG_CODEEDITOR_TIPS#>";
+	label.innerHTML = "[#if CODE_AUDIT="1"#]<a href='#' id='mj-audit-link' class='mj-audit-btn' onclick='return auditCodeAjax();'>✦ <#LANG_CODEEDITOR_AUDIT#></a> [#endif#]<a href='#' id='mj-run-link' class='mj-run-btn' onclick='return runCodeQuick();'>▶ <#LANG_CODEEDITOR_RUN#></a> <#LANG_CODEEDITOR_TIPS#>";
+	if (where == "top") {
+		search = node.appendChild(document.createElement("input"));
+		search.type = "search";
+		search.className = "form-control cm_search";
+		search.placeholder = "<#LANG_SEARCH#>";
+		search.addEventListener("keydown", function(e) {
+			if (e.key == "Enter" || e.keyCode == 13) {
+				e.preventDefault();
+				panelSearch(search.value, e.shiftKey);
+			}
+		});
+		// phone keyboards do not always report Enter: search while typing
+		search.addEventListener("input", function() {
+			panelSearch(search.value, false, true);
+		});
+	}
 	return node;
+}
+function dialogSearch(cm) {
+	var search = document.querySelector(".cm_panel > .cm_search");
+	cm.execCommand("findPersistent");
+	var field = cm.getWrapperElement().querySelector(".CodeMirror-search-field");
+	if (field && search && search.value) {
+		field.value = search.value;
+		field.select();
+	}
+}
+var panelSearchMark = null;
+function panelSearch(query, rev, again) {
+	if (panelSearchMark) {
+		panelSearchMark.clear();
+		panelSearchMark = null;
+	}
+	if (!query) return;
+	var opts = {caseFold: query == query.toLowerCase()};
+	var cur = editor.getSearchCursor(query, rev || again ? editor.getCursor("from") : editor.getCursor("to"), opts);
+	if (!(rev ? cur.findPrevious() : cur.findNext())) {
+		cur = editor.getSearchCursor(query, rev ? CodeMirror.Pos(editor.lastLine()) : CodeMirror.Pos(editor.firstLine(), 0), opts);
+		if (!(rev ? cur.findPrevious() : cur.findNext())) return;
+	}
+	editor.setSelection(cur.from(), cur.to());
+	// the editor is not focused while typing in the field: mark the match so it is visible
+	panelSearchMark = editor.markText(cur.from(), cur.to(), {className: "cm-searching"});
+	editor.scrollIntoView({from: cur.from(), to: cur.to()}, 40);
+	// auto-height editor scrolls with the page; keep the match above the on-screen keyboard
+	var vv = window.visualViewport;
+	var viewTop = vv ? vv.offsetTop : 0;
+	var viewHeight = vv ? vv.height : window.innerHeight;
+	var panelNode = document.querySelector(".cm_panel.top");
+	var minTop = Math.max(viewTop, panelNode ? panelNode.getBoundingClientRect().bottom : 0) + 10;
+	var coords = editor.charCoords(cur.from(), "window");
+	if (coords.top < minTop || coords.bottom > viewTop + viewHeight - 20) {
+		window.scrollBy(0, coords.top - Math.max(minTop + 20, viewTop + viewHeight / 3));
+	}
 }
 function addPanel(where) {
 	var node = makePanel(where);
@@ -488,7 +588,9 @@ $(document).ready(function(){
 			"F11": function(cm) {
 				switchFullscreen();
 			},
+[#if CODE_AUDIT="1"#]
 			"Ctrl-Shift-A": function(cm) { auditCodeAjax(); },
+[#endif#]
 "Ctrl-Enter": function(cm) { runCodeQuick(); },
 "Ctrl-S": function(instance) {
 				CtrlSSave();
@@ -514,7 +616,15 @@ $(document).ready(function(){
 				cm.doc.replaceSelection(line_content);
 				cm.doc.setCursor(current_cursor.line + 1, current_cursor.ch);
 			},
-			"Ctrl-F": "findPersistent",
+			"Ctrl-F": function(cm) {
+				var search = document.querySelector(".cm_panel > .cm_search");
+				if (search && search.offsetParent !== null) {
+					search.focus();
+					search.select();
+				} else {
+					dialogSearch(cm);
+				}
+			},
 			"Esc": function(cm) {
 				if (cm.getOption("fullScreen")) {
 					cm.setOption("fullScreen", false);
@@ -534,10 +644,44 @@ $(document).ready(function(){
 	addPanel("top");
 	restoreEditorState();
 
+	[#if TYPE=="php" || TYPE=="html" || TYPE=="javascript"#]
 	if (wrapSetting !== '0' && wrapSetting !== '1') {
 		window.addEventListener('resize', function () {
 			editor.setOption('lineWrapping', window.innerWidth < 768);
 		});
+	}
+	[#endif#]
+
+	// one query for both search fields: CodeMirror dialog (desktop) and panel field (phones)
+	editor.getWrapperElement().addEventListener("input", function(e) {
+		var search = document.querySelector(".cm_panel > .cm_search");
+		if (search && e.target.classList.contains("CodeMirror-search-field")) {
+			search.value = e.target.value;
+		}
+	});
+
+	// hint panel turns into a search field on phones: keep editor height in sync when the width crosses 768px
+	if (window.matchMedia) {
+		var mobileQuery = window.matchMedia('(max-width: 767px)');
+		var refreshPanels = function () {
+			for (var id in panels) {
+				if (!panels[id].cleared) {
+					panels[id].changed();
+				}
+			}
+			// font size differs on phones: drop cached line measurements
+			editor.refresh();
+			// panel field is hidden on desktop: keep an unfinished search open in the dialog
+			var search = document.querySelector(".cm_panel > .cm_search");
+			if (!mobileQuery.matches && search && search.value && !editor.getWrapperElement().querySelector(".CodeMirror-search-field")) {
+				dialogSearch(editor);
+			}
+		};
+		if (mobileQuery.addEventListener) {
+			mobileQuery.addEventListener('change', refreshPanels);
+		} else if (mobileQuery.addListener) {
+			mobileQuery.addListener(refreshPanels);
+		}
 	}
 
 	[#if TYPE=="php"#]
@@ -644,13 +788,16 @@ $(document).ready(function(){
 			totalLine = editor.lineCount();
 			
 			classList = $('.CodeMirror').attr("class").split(' ');
+			// defaultTextHeight() measures a bare <pre> styled by Bootstrap, take the real line
+			var codeLine = editor.display.lineDiv.querySelector('.CodeMirror-line');
+			var lineHeight = (codeLine && parseFloat(getComputedStyle(codeLine).lineHeight)) || editor.defaultTextHeight();
 			if(!actualLineNumber) {
 				if(totalLine < (Number('[#SETTINGS_CODEEDITOR_MIXLINE#]') || 1) && classList.indexOf('CodeMirror-fullscreen') == '-1') {
-					setHeight = Number('[#SETTINGS_CODEEDITOR_MIXLINE#]')*20;
+					setHeight = Math.round(Number('[#SETTINGS_CODEEDITOR_MIXLINE#]') * lineHeight) + Math.max(0, editor.display.lineSpace.offsetTop - 4);
 					$('.CodeMirror').attr('style', 'height: '+setHeight+'px;');
 				} else if(classList[4] != 'CodeMirror-fullscreen') {
 					if(totalLine >= (Number('[#SETTINGS_CODEEDITOR_SHOWLINE#]') || 99999)) {
-						setHeightMax = Number('[#SETTINGS_CODEEDITOR_SHOWLINE#]')*20;
+						setHeightMax = Math.round(Number('[#SETTINGS_CODEEDITOR_SHOWLINE#]') * lineHeight) + Math.max(0, editor.display.lineSpace.offsetTop - 4);
 						$('.CodeMirror').attr('style', 'height: '+setHeightMax+'px;');
 					} else {
 						$('.CodeMirror').attr('style', 'height: auto;');
@@ -663,6 +810,8 @@ $(document).ready(function(){
 				$('.CodeMirror').attr('style', 'height: auto;');
 			}
 		});
+		// apply the height rule now, not on the first edit or resize
+		editor.refresh();
 		
 		[#if SETTINGS_CODEEDITOR_SHOWERROR == '1' AND SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]
 		//editor.on('focus', editor => {
