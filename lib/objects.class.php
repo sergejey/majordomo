@@ -1295,6 +1295,9 @@ function callAPI($api_url, $method = 'GET', $params = 0, $wait_response = false)
         $params = array();
     }
     $params['no_session'] = 1;
+    $params['_ts'] = time();
+    $api_path = '/api.php/' . ltrim(preg_replace('/^\/api\//', '', $api_url), '/');
+    $params['_sig'] = function_exists('mjInternalSign') ? mjInternalSign($api_path, $params) : '';
 
     $url = preg_replace('/^\/api\//', BASE_URL . '/api.php/', $api_url);
     $url = preg_replace('/([^:])\/\//', '\1/', $url);

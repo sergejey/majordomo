@@ -39,7 +39,7 @@ class session
    {
       $this->name = $name;
 
-      if (isset($_GET['no_session'])) return false;
+      if (isset($_GET['no_session'])) { $path = isset($_SERVER['REQUEST_URI']) ? parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) : ''; if (!function_exists('mjInternalVerify') || !mjInternalVerify($path, $_GET)) { http_response_code(403); exit('Forbidden'); } return false; }
 
       ini_set('session.use_only_cookies', '0'); //not only cookies
 

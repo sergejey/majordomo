@@ -13,6 +13,42 @@ function setRebootRequired($reason = '')
     @SaveFile($path_to_flag, $reason);
 }
 
+function mjInternalSecret()
+{
+    static $secret = null;
+    if ($secret !== null) return $secret;
+    $file = ROOT . 'cms/cached/internal_secret';
+    if (file_exists($file)) {
+        $stored = trim((string)@file_get_contents($file));
+        if ($stored !== '') return $secret = $stored;
+    }
+    $secret = function_exists('random_bytes') ? bin2hex(random_bytes(32)) : md5(uniqid('', true) . microtime(true));
+    if (!@file_put_contents($file, $secret)) {
+        $secret = hash('sha256', DB_NAME . '|' . BASE_URL);
+    } else {
+        @chmod($file, 0600);
+    }
+    return $secret;
+}
+
+function mjInternalSign($path, $params)
+{
+    $params = is_array($params) ? $params : array();
+    ksort($params);
+    return hash_hmac('sha256', $path . '|' . http_build_query($params), mjInternalSecret());
+}
+
+function mjInternalVerify($path, $params)
+{
+    $params = is_array($params) ? $params : array();
+    $sig = isset($params['_sig']) ? (string)$params['_sig'] : '';
+    $ts = isset($params['_ts']) ? (int)$params['_ts'] : 0;
+    if ($sig === '' || $ts <= 0 || abs(time() - $ts) > 300) return false;
+    unset($params['_sig'], $params['_ts']);
+    $expected = mjInternalSign($path, $params);
+    return $expected !== '' && hash_equals($expected, $sig);
+}
+
 function resetRebootRequired()
 {
     $path_to_flag = ROOT . 'reboot';

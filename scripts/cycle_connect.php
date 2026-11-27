@@ -261,15 +261,12 @@ function procmsg($topic, $msg)
         getURLBackground($url, 0);
     } elseif (preg_match('/reverse_urls/is', $topic) || preg_match('/reverse_requests/is', $topic)) {
         //DebMes("Reverse URL: $msg",'connect');
-        if (preg_match('/reverse_urls/is', $topic)) {
-            $url = BASE_URL . '/ajax/connect.html?no_session=1&op=reverse_request&msg=' . urlencode($msg);
-            echo date("Y-m-d H:i:s") . " Incoming reverse url: $msg\n";
-            getURLBackground($url, 0);
-        } else {
-            $url = BASE_URL . '/ajax/connect.html?no_session=1&op=reverse_request_full&msg=' . urlencode($msg);
-            echo date("Y-m-d H:i:s") . " Incoming reverse request: $msg\n";
-            getURLBackground($url, 0);
-        }
+        $op = preg_match('/reverse_urls/is', $topic) ? 'reverse_request' : 'reverse_request_full';
+        $params = array('no_session' => 1, 'op' => $op, 'msg' => $msg, '_ts' => time());
+        $params['_sig'] = function_exists('mjInternalSign') ? mjInternalSign('/ajax/connect.html', $params) : '';
+        $url = BASE_URL . '/ajax/connect.html?' . http_build_query($params);
+        echo date("Y-m-d H:i:s") . " Incoming reverse ($op): $msg\n";
+        getURLBackground($url, 0);
     } elseif (preg_match('/\/forward\/(.+)/is', $topic, $m)) {
         $forward_topic = $m[1];
         //DebMes("Forward $forward_topic: $msg",'connect');

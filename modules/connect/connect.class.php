@@ -472,12 +472,14 @@ class connect extends module
         }
         ignore_user_abort(1);
 
-        $url = BASE_URL . $url;
-        if (preg_match('/\?/', $url)) {
-            $url .= '&no_session=1';
-        } else {
-            $url .= '?no_session=1';
+        $rel = isset($data['url']) ? $data['url'] : '';
+        if (!is_string($rel) || substr($rel, 0, 1) !== '/' || strpos($rel, '..') !== false) {
+            return false;
         }
+        $url = BASE_URL . $rel;
+        $query = array('no_session' => 1, '_ts' => time());
+        $query['_sig'] = function_exists('mjInternalSign') ? mjInternalSign(parse_url($url, PHP_URL_PATH), $query) : '';
+        $url .= (strpos($url, '?') !== false ? '&' : '?') . http_build_query($query);
         //DebMes("$method request to $url: ".$msg,'connect_post');
         $cookie_file = ROOT . 'cms/cached/cookie_' . getmypid() . '_' . str_replace('.', '', microtime(true)) . '.txt';
         $result = '';
@@ -527,12 +529,13 @@ class connect extends module
     function requestReverseURL($msg)
     {
         ignore_user_abort(1);
-        $url = BASE_URL . $msg;
-        if (preg_match('/\?/', $url)) {
-            $url .= '&no_session=1';
-        } else {
-            $url .= '?no_session=1';
+        if (!is_string($msg) || substr($msg, 0, 1) !== '/' || strpos($msg, '..') !== false) {
+            return false;
         }
+        $url = BASE_URL . $msg;
+        $query = array('no_session' => 1, '_ts' => time());
+        $query['_sig'] = function_exists('mjInternalSign') ? mjInternalSign(parse_url($url, PHP_URL_PATH), $query) : '';
+        $url .= (strpos($url, '?') !== false ? '&' : '?') . http_build_query($query);
         $data = array();
         $data['url'] = $msg;
         $result = getURL($url);
@@ -1047,6 +1050,10 @@ class connect extends module
         if ($this->ajax) {
             $op = gr('op');
             $msg = gr('msg');
+            if (($op == 'reverse_request' || $op == 'reverse_request_full') && !mjInternalVerify('/ajax/connect.html', $_GET)) {
+                http_response_code(403);
+                exit('Forbidden');
+            }
             if ($op == 'reverse_request') {
                 $this->requestReverseURL($msg);
             }
