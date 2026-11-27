@@ -130,6 +130,10 @@ class textfiles extends module
 
         global $file;
 
+        if ($file != '' && !preg_match('/^[A-Za-z0-9_-]+$/', (string)$file)) {
+            $file = '';
+        }
+
         if ($this->view_mode == '') {
 
             $files = array();
