@@ -153,8 +153,9 @@ if ($res[0]['ID']) {
             $res[$i]['NAME'] = $comp_name;
         }
         $stl = '';
-        if (isset($res[$i]['COLOR']) && trim($res[$i]['COLOR'])) {
-            $stl = ' style="color:' . $res[$i]['COLOR'] . '"';
+        $color = isset($res[$i]['COLOR']) ? trim((string)$res[$i]['COLOR']) : '';
+        if (preg_match('/^(?:#[0-9a-fA-F]{3,8}|[a-zA-Z]{3,20})$/', $color)) {
+            $stl = ' style="color:' . $color . '"';
         }
         $txtdata .= "<span$stl>" . $res[$i]['DAT'] . " <b>" . htmlspecialchars($res[$i]['NAME']) . "</b>: " . nl2br(htmlspecialchars($res[$i]['MESSAGE'])) . "</span><br>";
         if ($res[$i]['IMAGE'] != '' && file_exists($res[$i]['IMAGE'])) {
