@@ -177,21 +177,13 @@ class users extends module
 
         if ($username != '' && $password != '') {
             $user = SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '" . DBSafe($username) . "'");
-            if (hash('sha512', $password) == $user['PASSWORD'] || $user['PASSWORD'] == '') {
+            if (hash_equals((string)$user['PASSWORD'], hash('sha512', $password))) {
                 $session->data['SITE_USERNAME'] = $user['USERNAME'];
                 $session->data['SITE_USER_ID'] = $user['ID'];
                 $this->redirect(ROOTHTML);
             } else {
                 $out['INCORRECT'] = 1;
             }
-        } elseif ($username != '') {
-            $user = SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '" . DBSafe($username) . "'");
-            if ($user['PASSWORD'] == '' || hash('sha512', '') == $user['PASSWORD']) {
-                $session->data['SITE_USERNAME'] = $user['USERNAME'];
-                $session->data['SITE_USER_ID'] = $user['ID'];
-                $this->redirect(ROOTHTML);
-            }
-
         }
 
         $out['USERNAME'] = $username;

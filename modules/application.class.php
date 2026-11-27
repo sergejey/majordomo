@@ -205,16 +205,6 @@ class application extends module
 
         $site_username = isset($session->data['SITE_USERNAME']) ? $session->data['SITE_USERNAME'] : '';
 
-        $username = gr('username');
-        if ($username) {
-            $user = SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '" . DBSafe($username) . "'");
-            if (hash('sha512', '') == $user['PASSWORD'] || $user['PASSWORD'] == '') {
-                $session->data['SITE_USERNAME'] = $user['USERNAME'];
-                $session->data['SITE_USER_ID'] = $user['ID'];
-                $site_username = $session->data['SITE_USERNAME'];
-            }
-        }
-
         $all_users = SQLSelect("SELECT * FROM users ORDER BY USERNAME");
         if (count($all_users) == 1) {
             $out['HIDE_USERS'] = 1;
