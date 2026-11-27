@@ -1141,8 +1141,6 @@ class http_class {
             curl_setopt($this->connection, CURLOPT_RETURNTRANSFER, 1);
             if ($this->timeout)
                 curl_setopt($this->connection, CURLOPT_TIMEOUT, $this->timeout);
-            curl_setopt($this->connection, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($this->connection, CURLOPT_SSL_VERIFYHOST, 0);
             $request = $this->request . "\r\n" . implode("\r\n", $headers) . "\r\n\r\n" . $request_body;
             curl_setopt($this->connection, CURLOPT_CUSTOMREQUEST, $request);
             if ($this->debug)
