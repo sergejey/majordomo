@@ -324,8 +324,10 @@ function getParams() {
          $this->redirect("?");
       }
 
-      if ($action != "") 
-         $user=SQLSelectOne("SELECT ID FROM admin_users WHERE LOGIN='".$session->data['USER_NAME']."' AND (ACCESS LIKE '$action' OR ACCESS LIKE '$action,%' OR ACCESS LIKE '%,$action' OR ACCESS LIKE '%,$action,%')");
+      if ($action != "") {
+         $action = DBSafe($action);
+         $user=SQLSelectOne("SELECT ID FROM admin_users WHERE LOGIN='".DBSafe($session->data['USER_NAME'])."' AND (ACCESS LIKE '$action' OR ACCESS LIKE '$action,%' OR ACCESS LIKE '%,$action' OR ACCESS LIKE '%,$action,%')");
+      }
     
       if (isset($user['ID']))
          return 1;
