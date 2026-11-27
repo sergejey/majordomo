@@ -603,7 +603,7 @@ class http_class {
         }
         if (strlen($error))
             return($this->SetError($error));
-        $this->session = md5(uniqid(""));
+        $this->session = bin2hex(random_bytes(16));
         return("");
     }
 

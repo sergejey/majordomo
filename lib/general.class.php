@@ -382,11 +382,13 @@ function SendMail_HTML($from, $to, $subj, $body = "", $attach = "")
  */
 function genPassword($len = 5)
 {
-    // make password
-    $str = crypt(rand());
-    $str = preg_replace("/\W/", "", $str);
-    $str = strtolower($str);
-    $str = substr($str, 0, $len);
+    $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    $len = max(1, (int)$len);
+    $bytes = random_bytes($len);
+    $str = '';
+    for ($i = 0; $i < $len; $i++) {
+        $str .= $alphabet[ord($bytes[$i]) % strlen($alphabet)];
+    }
 
     return $str;
 }
