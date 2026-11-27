@@ -60,6 +60,11 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
         ${$k} = $v;
     }
 
+    // Record identifiers are numeric; keep them as integers before they reach SQL.
+    if (isset($id)) {
+        $id = (int)$id;
+    }
+
     if (isset($_FILES) && count($_FILES) > 0) {
         $ks = array_keys($_FILES);
         $ksCnt = count($ks);
