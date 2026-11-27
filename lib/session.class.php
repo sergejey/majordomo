@@ -41,15 +41,21 @@ class session
 
       if (isset($_GET['no_session'])) return false;
 
-      ini_set('session.use_only_cookies', '0'); //not only cookies
+      ini_set('session.use_only_cookies', '1');
+      ini_set('session.use_strict_mode', '1');
 
       if (!isset($_SERVER['HTTP_USER_AGENT']) || $this->checkBot($_SERVER['HTTP_USER_AGENT']))
       {
-         session_set_cookie_params(0); // current browser session only
+         $secure = !empty($_SERVER['HTTPS']) && strtolower((string)$_SERVER['HTTPS']) !== 'off';
+         session_set_cookie_params(array(
+            'lifetime' => 0,
+            'path' => '/',
+            'domain' => '',
+            'secure' => $secure,
+            'httponly' => true,
+            'samesite' => 'Lax'
+         ));
          session_name($name);
-         if (gr($name)) {
-            session_id(gr($name));
-         }
          @session_start();
 
          // setting expiration time for session (the easiest way)
