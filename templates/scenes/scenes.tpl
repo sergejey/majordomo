@@ -236,7 +236,7 @@
           window_url='{$smarty.const.ROOTHTML}popup/scenes/{$STATE.OPEN_SCENE_ID}.html';
           {/if}
           {if $STATE.EXT_URL!=""}
-          window_url='{$STATE.EXT_URL}';
+          window_url='{$STATE.EXT_URL|escape:'javascript'}';
           {/if}
          {/if}
 
@@ -270,7 +270,7 @@
 
           var jWindowObj{$STATE.ID} = $.jWindow({ 
            id: 'state{$STATE.ID}', 
-           title: '{$ELEMENT.TITLE}', 
+           title: '{$ELEMENT.TITLE|escape:'javascript'}', 
            posx: x, 
            posy: y, 
            width: wdth, 
