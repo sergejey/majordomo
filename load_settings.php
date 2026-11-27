@@ -215,12 +215,19 @@ if ($home_network != ''
         $local_ip = '127.0.0.1';
     }
 
-    if (getenv('HTTP_X_FORWARDED_FOR') != '') {
-        $remoteAddr = getenv('HTTP_X_FORWARDED_FOR');
+    $trustedProxies = array();
+    if (defined('TRUSTED_PROXIES') && TRUSTED_PROXIES != '') {
+        $trustedProxies = array_map('trim', explode(',', TRUSTED_PROXIES));
+    }
+    if (in_array($_SERVER['REMOTE_ADDR'], $trustedProxies, true) && getenv('HTTP_X_FORWARDED_FOR') != '') {
+        $parts = explode(',', getenv('HTTP_X_FORWARDED_FOR'));
+        $remoteAddr = trim($parts[0]);
     }
 
-    if (!preg_match('/' . $home_network_pattern . '/is', $remoteAddr) && $remoteAddr != $local_ip && trim($remoteAddr) != '::1') {
-        if ($ext_access_username && $ext_access_password && $_SERVER['PHP_AUTH_USER'] == $ext_access_username && $_SERVER['PHP_AUTH_PW'] == $ext_access_password) {
+    if (!preg_match('/^(?:' . $home_network_pattern . ')$/is', $remoteAddr) && $remoteAddr != $local_ip && trim($remoteAddr) != '::1') {
+        if ($ext_access_username && $ext_access_password
+            && hash_equals($ext_access_username, isset($_SERVER['PHP_AUTH_USER']) ? (string)$_SERVER['PHP_AUTH_USER'] : '')
+            && hash_equals($ext_access_password, isset($_SERVER['PHP_AUTH_PW']) ? (string)$_SERVER['PHP_AUTH_PW'] : '')) {
             $data_message = $remoteAddr . " " . date("[d/m/Y:H:i:s]") . " Username and/or password valid. Login: " . $_SERVER['PHP_AUTH_USER'] . "\n";
             //DebMes($data_message, 'auth');
         } elseif (!$ext_access_username && !$ext_access_password) {
