@@ -462,6 +462,16 @@ class Connection {
          * so if websocket-frame is > 1024 bytes we have to wait until whole
          * data is transferd.
          */
+        $maxFrameSize = defined('WEBSOCKETS_MAX_FRAME_SIZE') ? (int)WEBSOCKETS_MAX_FRAME_SIZE : 1048576;
+        if ($maxFrameSize > 0 && $dataLength > $maxFrameSize) {
+            $this->sendHttpResponse(413);
+            if (is_resource($this->socket)) {
+                stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR);
+            }
+            $this->server->removeClientOnError($this);
+            return false;
+        }
+
         if (strlen($data) < $dataLength) {
             return false;
         }
