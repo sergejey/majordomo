@@ -477,13 +477,13 @@ function DebMes($errorMessage, $logLevel = "debug")
     // DEBUG MESSAGE LOG
     if (!is_dir($path)) {
         umask(0);
-        mkdir($path, 0777);
+        mkdir($path, 0770);
     }
 
     $today_path = $path . '/' . date('Y-m-d');
     if (!is_dir($today_path)) {
         umask(0);
-        mkdir($today_path, 0777);
+        mkdir($today_path, 0770);
     }
 
     $tmp = explode('/', $logLevel);
@@ -492,7 +492,7 @@ function DebMes($errorMessage, $logLevel = "debug")
         $today_path .= '/' . $tmp[$i];
         if (!is_dir($today_path) && ($i < $total - 1)) {
             umask(0);
-            mkdir($today_path, 0777);
+            mkdir($today_path, 0770);
         }
     }
     $today_file = $today_path . '.log';
@@ -516,7 +516,7 @@ function DebMes($errorMessage, $logLevel = "debug")
         fputs($f, date("H:i:s") . ' ' . $tmp[0]);
         fputs($f, " " . $errorMessage . "\n");
         fclose($f);
-        @chmod($today_file, 0666);
+        @chmod($today_file, 0660);
     }
 }
 
@@ -758,7 +758,7 @@ function transliterate($string)
 function CreateDir($dirPath)
 {
     if (!is_dir($dirPath))
-        @mkdir($dirPath, 0777);
+        @mkdir($dirPath, 0770);
 }
 
 function isModuleInstalled($module_name)

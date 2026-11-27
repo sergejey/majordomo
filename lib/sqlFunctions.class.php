@@ -292,7 +292,7 @@ function SQLBackupIgnoreTables($extra = 0)
 function SQLMakeDBDump($dump_file, $ignore_tables = 0)
 {
     $dir = dirname($dump_file);
-    if (!file_exists($dir)) mkdir($dir, 0777, true);
+    if (!file_exists($dir)) mkdir($dir, 0770, true);
     if (defined('PATH_TO_MYSQLDUMP')) {
         $mysqlDumpPath = PATH_TO_MYSQLDUMP;
     } else {
@@ -320,7 +320,7 @@ function SQLMakeDBDump($dump_file, $ignore_tables = 0)
 function SQLMakeTableDump($dump_file, $table_name)
 {
     $dir = dirname($dump_file);
-    if (!file_exists($dir)) mkdir($dir, 0777, true);
+    if (!file_exists($dir)) mkdir($dir, 0770, true);
     if (defined('PATH_TO_MYSQLDUMP')) {
         $mysqlDumpPath = PATH_TO_MYSQLDUMP;
     } else {

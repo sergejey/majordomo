@@ -57,7 +57,7 @@ if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '' && is_dir(SETT
 $full_backup = 0;
 
 if (!is_dir($target_dir)) {
-    mkdir($target_dir, 0777);
+    mkdir($target_dir, 0770);
     $full_backup = 1;
 }
 
@@ -109,7 +109,7 @@ if ($full_backup) {
     echo "Backing up files...";
 
     if (!is_dir($target_dir . '/cms')) {
-        mkdir($target_dir . '/cms', 0777);
+        mkdir($target_dir . '/cms', 0770);
     }
     $cms_dirs = scandir(ROOT . 'cms');
     foreach ($cms_dirs as $d) {

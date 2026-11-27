@@ -276,9 +276,9 @@ if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '') {
 foreach ($dirs_to_check as $d) {
     if (!is_dir($d)) {
         DebMes("Creating dir " . $d, 'boot');
-        mkdir($d, 0777);
+        mkdir($d, 0770);
     } else {
-        chmod($d, 0777);
+        chmod($d, 0770);
     }
 }
 
