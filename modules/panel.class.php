@@ -40,6 +40,11 @@ class panel extends module
     function run()
     {
         global $session;
+        if (!empty($session->data['FORCE_PASSWORD_CHANGE']) && $this->action != 'control_access') {
+            $selfId = (int)(isset($session->data['USER_ID']) ? $session->data['USER_ID'] : 0);
+            $this->redirect(ROOTHTML . 'admin.php?action=control_access&mode=edit&id=' . $selfId);
+            exit;
+        }
         Define('ALTERNATIVE_TEMPLATES', 'templates_alt');
 
         if (isset($_COOKIE['theme'])) {
