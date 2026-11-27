@@ -11,6 +11,15 @@ Define('WAIT_FOR_MAIN_CYCLE', 0);
 set_time_limit(0);
 
 include_once("./load_settings.php");
+
+$session = new session('prj');
+include_once(DIR_MODULES . 'control_access/control_access.class.php');
+$access = new control_access();
+if (empty($session->data['AUTHORIZED']) || !$access->checkAccess('market')) {
+    http_response_code(403);
+    exit('Forbidden');
+}
+
 include_once(DIR_MODULES . "market/market.class.php");
 
 $mkt = new market();
