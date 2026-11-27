@@ -69,10 +69,11 @@ if ($search) {
     $out['SEARCH_URL'] = urlencode($search);
 }
 if ($type) {
-    $qry .= " AND devices.TYPE='" . $type . "'";
+    $qry .= " AND devices.TYPE='" . DBSafe($type) . "'";
     $out['TYPE'] = $type;
 }
 if ($location_id) {
+    $location_id = (int)$location_id;
     $qry .= " AND devices.LOCATION_ID='" . $location_id . "'";
     $out['LOCATION_ID'] = $location_id;
 }
