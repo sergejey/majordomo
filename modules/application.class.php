@@ -355,6 +355,16 @@ class application extends module
 
         if ($this->ajax && $this->action) {
             global $ajax;
+            if (empty($session->data['AUTHORIZED'])) {
+                $requestPath = isset($_SERVER['REQUEST_URI']) ? parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) : '';
+                $internal = !empty($_GET['no_session'])
+                    && ((isset($_SERVER['REMOTE_ADDR']) && in_array($_SERVER['REMOTE_ADDR'], array('127.0.0.1', '::1'), true))
+                        || (function_exists('mjInternalVerify') && mjInternalVerify($requestPath, $_GET)));
+                if (!$internal) {
+                    http_response_code(403);
+                    exit('Forbidden');
+                }
+            }
             $ajax = 1;
             if (file_exists(DIR_MODULES . $this->action)) {
                 ignore_user_abort(1);
