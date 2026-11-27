@@ -78,6 +78,12 @@ if (isset($request[0])) {
     if (gr('prj')) {
         $session = new session("prj");
     }
+
+    if (!mjRequestAuthorized($url)) {
+        http_response_code(401);
+        echo json_encode(array('error' => 'Unauthorized'));
+        exit;
+    }
 }
 
 if (!isset($request[0])) {

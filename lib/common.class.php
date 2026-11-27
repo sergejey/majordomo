@@ -38,6 +38,25 @@ function mjInternalSign($path, $params)
     return hash_hmac('sha256', $path . '|' . http_build_query($params), mjInternalSecret());
 }
 
+function mjRequestAuthorized($path)
+{
+    if (isset($_GET['no_session'])) {
+        return function_exists('mjInternalVerify') && mjInternalVerify($path, $_GET);
+    }
+    global $session;
+    if (isset($session) && is_object($session) && !empty($session->data['AUTHORIZED'])) {
+        return true;
+    }
+    $key = '';
+    if (isset($_SERVER['HTTP_X_API_KEY'])) {
+        $key = (string)$_SERVER['HTTP_X_API_KEY'];
+    } elseif (isset($_GET['api_key'])) {
+        $key = (string)$_GET['api_key'];
+    }
+    if ($key === '') return false;
+    return hash_equals(mjInternalSecret(), $key);
+}
+
 function mjInternalVerify($path, $params)
 {
     $params = is_array($params) ? $params : array();
