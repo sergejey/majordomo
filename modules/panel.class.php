@@ -75,7 +75,7 @@ class panel extends module
         if ($this->action) {
             $out['TITLE'] = $this->action . ' (' . LANG_CONTROL_PANEL . ')';
             //Узнаем название модуля
-            $result = SQLSelectOne("SELECT * FROM `project_modules` WHERE NAME = '" . $this->action . "'");
+            $result = SQLSelectOne("SELECT * FROM `project_modules` WHERE NAME = '" . DBSafe($this->action) . "'");
             if ($result) {
                 $out['NAV_MODULE_NAME'] = $result["TITLE"];
                 $out['NAV_MODULE_CAT'] = $result["CATEGORY"];
