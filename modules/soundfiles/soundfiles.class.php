@@ -125,8 +125,10 @@ function admin(&$out) {
    global $file;
    global $file_name;
    if ($file!='' && preg_match('/\.mp3/is', $file_name)) {
-    copy($file, ROOT.'cms/sounds/'.strtolower($file_name));
-    $out['OK']=1;
+    $name = basename($file_name);
+    if (preg_match('/^[A-Za-z0-9_-]+\.mp3$/i', $name) && move_uploaded_file($file, ROOT.'cms/sounds/'.strtolower($name))) {
+     $out['OK']=1;
+    }
    }
   
  }
@@ -149,7 +151,9 @@ function admin(&$out) {
   $out['FILES']=$files;
 
  } elseif ($this->view_mode=='delete_file' && $file!='') {
-  @unlink(ROOT.'cms/sounds/'.$file.".mp3");
+  if (preg_match('/^[A-Za-z0-9_-]+$/', $file)) {
+   @unlink(ROOT.'cms/sounds/'.$file.".mp3");
+  }
   $this->redirect("?");
 
  } elseif ($this->view_mode=='edit_file') {
