@@ -86,7 +86,7 @@ class application extends module
 
             $msg = SQLSelectOne("SELECT * FROM shouts WHERE MEMBER_ID=0 ORDER BY ID DESC LIMIT 1");
             $res = array();
-            $res['DATA'] = $msg['MESSAGE'];
+            $res['DATA'] = htmlspecialchars((string)$msg['MESSAGE'], ENT_QUOTES, 'UTF-8');
             echo json_encode($res);
             exit;
         }

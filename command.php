@@ -223,7 +223,8 @@ for ($i = 0; $i < $total; $i++) {
     if ($res[$i]['MEMBER_ID'] == 0)
         $res[$i]['NAME'] = 'Alice';
 
-    echo date('H:i', $res[$i]['TM']) . ' <b>' . $res[$i]['NAME'] . '</b>: ' . $res[$i]['MESSAGE'] . "<br />";
+    echo date('H:i', $res[$i]['TM']) . ' <b>' . htmlspecialchars((string)$res[$i]['NAME'], ENT_QUOTES, 'UTF-8') . '</b>: '
+        . htmlspecialchars((string)$res[$i]['MESSAGE'], ENT_QUOTES, 'UTF-8') . "<br />";
 }
 
 ?>
