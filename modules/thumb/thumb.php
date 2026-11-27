@@ -6,6 +6,28 @@ chdir('../../');
 include_once("./config.php");
 include_once("./lib/loader.php");
 
+function thumbEgressAllowed($url)
+{
+    $parts = parse_url($url);
+    if (!$parts || !isset($parts['scheme'], $parts['host'])) {
+        return false;
+    }
+    $scheme = strtolower($parts['scheme']);
+    if ($scheme !== 'http' && $scheme !== 'https') {
+        return false;
+    }
+    $host = strtolower($parts['host']);
+    $ip = filter_var($host, FILTER_VALIDATE_IP) ? $host : gethostbyname($host);
+    if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+        return false;
+    }
+    if ($ip === '0.0.0.0' || $ip === '::1'
+        || preg_match('/^(?:127\.|169\.254\.|10\.|192\.168\.|172\.(?:1[6-9]|2\d|3[01])\.)/', $ip)) {
+        return false;
+    }
+    return true;
+}
+
 if (!defined('PATH_TO_FFMPEG')) {
     if (IsWindowsOS()) {
         define("PATH_TO_FFMPEG", SERVER_ROOT . '/apps/ffmpeg/ffmpeg.exe');
@@ -130,9 +152,15 @@ if (isset($url) && $url != '') {
         $dc = 1;
     } elseif (preg_match('#^https?://#i', $url)) {
 
+        if (!thumbEgressAllowed($url)) {
+            http_response_code(403);
+            exit('Forbidden');
+        }
+
         function mjpeg_grab_frame($url)
         {
-            $f = fopen($url, 'r');
+            $context = stream_context_create(array('http' => array('follow_location' => 0)));
+            $f = @fopen($url, 'r', false, $context);
             if ($f) {
                 $r = null;
                 $lines = 0;
@@ -155,7 +183,7 @@ if (isset($url) && $url != '') {
 
         if (!$result) {
             $url = preg_replace('/\/\/(.+?)@/', '//', $url);
-            $result = getURL($url, 0, $username, $password, false, array(CURLOPT_HTTPAUTH => CURLAUTH_ANY));
+            $result = getURL($url, 0, $username, $password, false, array(CURLOPT_HTTPAUTH => CURLAUTH_ANY, CURLOPT_FOLLOWLOCATION => false));
         }
 
 
