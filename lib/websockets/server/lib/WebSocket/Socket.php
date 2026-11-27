@@ -61,7 +61,7 @@ class Socket
 	private function applySSLContext()
 	{		
 		$pem_file = defined('WEBSOCKETS_TLS_PEM_FILE') ? (string)WEBSOCKETS_TLS_PEM_FILE : './server.pem';
-		$pem_passphrase = defined('WEBSOCKETS_TLS_PEM_PASSPHRASE') ? (string)WEBSOCKETS_TLS_PEM_PASSPHRASE : 'shinywss';
+		$pem_passphrase = defined('WEBSOCKETS_TLS_PEM_PASSPHRASE') ? (string)WEBSOCKETS_TLS_PEM_PASSPHRASE : bin2hex(random_bytes(16));
 		$allow_self_signed = defined('WEBSOCKETS_TLS_ALLOW_SELF_SIGNED') ? (bool)WEBSOCKETS_TLS_ALLOW_SELF_SIGNED : true;
 		$verify_peer = defined('WEBSOCKETS_TLS_VERIFY_PEER') ? (bool)WEBSOCKETS_TLS_VERIFY_PEER : false;
 		$verify_peer_name = defined('WEBSOCKETS_TLS_VERIFY_PEER_NAME') ? (bool)WEBSOCKETS_TLS_VERIFY_PEER_NAME : false;
