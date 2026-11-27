@@ -149,10 +149,11 @@ class blockly_code extends module
 
         $out['CODE_FIELD'] = $this->code_field;
         $out['ONLYCODE'] = $this->onlycode;
+        $out['CODE_AUDIT'] = $this->codeAuditAvailable() ? 1 : 0;
         //Code editor settings
         $settings = array(
             'AUTOCLOSEQUOTES' => 1,
-            'WRAPLINES' => 0,
+            'WRAPLINES' => '',
             'SHOWERROR' => 0,
             'UPTOLINE' => 0,
             'THEME' => 'codemirror',
@@ -366,6 +367,26 @@ class blockly_code extends module
      *
      * @access public
      */
+    // AI audit runs through the optional gptchat module: offer it only when an audit chat is set up there
+    function codeAuditAvailable()
+    {
+        $file = DIR_MODULES . 'gptchat/gptchat.class.php';
+        if (!is_file($file) || !SQLTableExists('gptchats')) {
+            return false;
+        }
+        include_once($file);
+        if (!class_exists('gptchat', false) || !method_exists('gptchat', 'auditCode')) {
+            return false;
+        }
+        $chatId = defined('SETTINGS_CODEEDITOR_GPTCHAT_ID') ? (int)SETTINGS_CODEEDITOR_GPTCHAT_ID : 0;
+        if ($chatId) {
+            $chat = SQLSelectOne("SELECT ID FROM gptchats WHERE ID=" . $chatId);
+        } else {
+            $chat = SQLSelectOne("SELECT ID FROM gptchats WHERE TITLE LIKE '%audit%' OR TITLE LIKE '%аудит%' LIMIT 1");
+        }
+        return !empty($chat['ID']);
+    }
+
     function usual(&$out)
     {
         $this->admin($out);
