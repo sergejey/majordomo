@@ -296,7 +296,7 @@ function panelSearch(query, rev, again) {
 		panelSearchMark = null;
 	}
 	if (!query) return;
-	var opts = {caseFold: query == query.toLowerCase()};
+	var opts = {caseFold: true};
 	var cur = editor.getSearchCursor(query, rev || again ? editor.getCursor("from") : editor.getCursor("to"), opts);
 	if (!(rev ? cur.findPrevious() : cur.findNext())) {
 		cur = editor.getSearchCursor(query, rev ? CodeMirror.Pos(editor.lastLine()) : CodeMirror.Pos(editor.firstLine(), 0), opts);
@@ -311,10 +311,10 @@ function panelSearch(query, rev, again) {
 	var viewTop = vv ? vv.offsetTop : 0;
 	var viewHeight = vv ? vv.height : window.innerHeight;
 	var panelNode = document.querySelector(".cm_panel.top");
-	var minTop = Math.max(viewTop, panelNode ? panelNode.getBoundingClientRect().bottom : 0) + 10;
+	var coveredTop = Math.max(viewTop, panelNode ? panelNode.getBoundingClientRect().bottom : 0);
 	var coords = editor.charCoords(cur.from(), "window");
-	if (coords.top < minTop || coords.bottom > viewTop + viewHeight - 20) {
-		window.scrollBy(0, coords.top - Math.max(minTop + 20, viewTop + viewHeight / 3));
+	if (coords.top < coveredTop || coords.bottom > viewTop + viewHeight - 20) {
+		window.scrollBy(0, coords.top - Math.max(coveredTop + 30, viewTop + viewHeight / 3));
 	}
 }
 function addPanel(where) {
