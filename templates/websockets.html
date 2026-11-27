@@ -23,7 +23,7 @@
 		} else {
 				serverUrl = "ws:";
 		}
-		serverUrl += "//" + loc.hostname + ':<#WEBSOCKETS_PORT#>/majordomo';
+		serverUrl += "//" + loc.hostname + ':<#WEBSOCKETS_PORT#>/majordomo?token=<#WS_TOKEN#>';
 		try {
 			console.log('%c%s', 'color: gray;', '... Подключение к серверу '+serverUrl);
 			$('#wsStatus').html('<#LANG_NEWDASH_DISCONNECTED#>');

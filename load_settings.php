@@ -175,6 +175,11 @@ if (isset($_SERVER['SERVER_ADDR']) && isset($_SERVER['SERVER_PORT'])) {
 if (!defined('WEBSOCKETS_PORT'))
     Define('WEBSOCKETS_PORT', 8001);
 
+if (!defined('WS_TOKEN')) {
+    $ws_secret = function_exists('mjWsToken') ? mjWsToken() : hash_hmac('sha256', 'majordomo-websocket', hash('sha256', DB_NAME . '|' . BASE_URL));
+    Define('WS_TOKEN', $ws_secret);
+}
+
 // check external access
 $home_network = '';
 if (defined('SETTINGS_REMOTE_HOME_NETWORK') && SETTINGS_REMOTE_HOME_NETWORK != '') {

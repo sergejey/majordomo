@@ -8,16 +8,20 @@
 //ini_set('display_errors', 1);
 //error_reporting(E_ALL);
 
+$rootDir = dirname(__DIR__, 3);
+require_once($rootDir . '/config.php');
+require_once($rootDir . '/lib/common.class.php');
+
 require(__DIR__ . '/lib/SplClassLoader.php');
 
 $classLoader = new SplClassLoader('WebSocket', __DIR__ . '/lib');
 $classLoader->register();
 
 if (!defined('WEBSOCKETS_PORT')) define('WEBSOCKETS_PORT',8002);
-if (!defined('WEBSOCKETS_HOST')) define('WEBSOCKETS_HOST', '0.0.0.0');
+if (!defined('WEBSOCKETS_HOST')) define('WEBSOCKETS_HOST', '127.0.0.1');
 if (!defined('WEBSOCKETS_TLS')) define('WEBSOCKETS_TLS', 0);
 if (!defined('WEBSOCKETS_MAX_CLIENTS')) define('WEBSOCKETS_MAX_CLIENTS', 100);
-if (!defined('WEBSOCKETS_CHECK_ORIGIN')) define('WEBSOCKETS_CHECK_ORIGIN', 0);
+if (!defined('WEBSOCKETS_CHECK_ORIGIN')) define('WEBSOCKETS_CHECK_ORIGIN', 1);
 if (!defined('WEBSOCKETS_MAX_CONNECTIONS_PER_IP')) define('WEBSOCKETS_MAX_CONNECTIONS_PER_IP', 100);
 if (!defined('WEBSOCKETS_MAX_REQUESTS_PER_MINUTE')) define('WEBSOCKETS_MAX_REQUESTS_PER_MINUTE', 20000);
 // 0 means "no inactivity timeout". This avoids forced reconnect loops
@@ -37,6 +41,12 @@ function majordomoCreateWebSocketServer()
 	$server->setClientTimeout((int)WEBSOCKETS_CLIENT_TIMEOUT);
 
 	$allowedOrigins = trim((string)WEBSOCKETS_ALLOWED_ORIGINS);
+	if ($allowedOrigins === '' && defined('BASE_URL')) {
+		$baseParts = parse_url(BASE_URL);
+		if (!empty($baseParts['scheme']) && !empty($baseParts['host'])) {
+			$allowedOrigins = $baseParts['scheme'] . '://' . $baseParts['host'] . (isset($baseParts['port']) ? ':' . $baseParts['port'] : '');
+		}
+	}
 	if ($allowedOrigins !== '') {
 		$origins = explode(',', $allowedOrigins);
 		foreach ($origins as $origin) {

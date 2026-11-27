@@ -55,10 +55,25 @@ class Connection {
 
         // check for valid application:
         $path = $matches[1];
-        $this->application = $this->server->getApplication(substr($path, 1));
+        $pathParts = parse_url($path);
+        $appPath = !empty($pathParts['path']) ? $pathParts['path'] : $path;
+        $this->application = $this->server->getApplication(substr($appPath, 1));
         if (!$this->application) {
             $this->log('Invalid application: ' . $path);
             $this->sendHttpResponse(404);
+            if (is_resource($this->socket)) { stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR); }
+            $this->server->removeClientOnError($this);
+            return false;
+        }
+
+        // require per-install handshake token:
+        $query = array();
+        if (!empty($pathParts['query'])) parse_str($pathParts['query'], $query);
+        $token = isset($query['token']) ? (string)$query['token'] : '';
+        $expectedToken = function_exists('mjWsToken') ? mjWsToken() : (defined('WS_TOKEN') ? (string)WS_TOKEN : '');
+        if ($expectedToken === '' || $token === '' || !hash_equals($expectedToken, $token)) {
+            $this->log('Invalid websocket token.');
+            $this->sendHttpResponse(401);
             if (is_resource($this->socket)) { stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR); }
             $this->server->removeClientOnError($this);
             return false;

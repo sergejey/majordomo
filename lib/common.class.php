@@ -38,6 +38,11 @@ function mjInternalSign($path, $params)
     return hash_hmac('sha256', $path . '|' . http_build_query($params), mjInternalSecret());
 }
 
+function mjWsToken()
+{
+    return hash_hmac('sha256', 'majordomo-websocket', mjInternalSecret());
+}
+
 function mjEgressAllowed($url)
 {
     $parts = parse_url($url);
