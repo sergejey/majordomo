@@ -45,10 +45,13 @@
 <script type="text/javascript"  src="<#ROOTHTML#>3rdparty/jquery/jquery-3.3.1.min.js"></script>
 <script type="text/javascript"  src="<#ROOTHTML#>3rdparty/jquery/jquery-migrate-3.0.0.min.js"></script>
 
+<!--# home pages load their own Bootstrap theme: admin rules must not leak there #-->
+[#if "<#MJ_PANEL#>"=="1"#]
 [#if "<#MJ_THEME#>"!="dark"#]
 <link rel="stylesheet" id="theme" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap.min.css" type="text/css">
 [#else#]
 <link rel="stylesheet" id="theme" href="<#ROOTHTML#>3rdparty/bootstrap/css/bootstrap_dark_admin.css" type="text/css">
+[#endif#]
 [#endif#]
 <link rel="stylesheet" href="<#ROOTHTML#>css/theme-tokens.css" type="text/css">
 
