@@ -38,6 +38,20 @@ function mjInternalSign($path, $params)
     return hash_hmac('sha256', $path . '|' . http_build_query($params), mjInternalSecret());
 }
 
+function mjMediaPathAllowed($file)
+{
+    $real = realpath($file);
+    if ($real === false) return false;
+    $collections = SQLSelect('SELECT PATH FROM collections');
+    if (!is_array($collections)) return false;
+    foreach ($collections as $collection) {
+        $root = realpath($collection['PATH']);
+        if ($root === false) continue;
+        if ($real === $root || strpos($real, $root . DIRECTORY_SEPARATOR) === 0) return true;
+    }
+    return false;
+}
+
 function mjWsToken()
 {
     return hash_hmac('sha256', 'majordomo-websocket', mjInternalSecret());
