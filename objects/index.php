@@ -152,6 +152,7 @@ if ($object != '') {
 
     if ($job['ID']) {
         define('CALL_SOURCE', 'Job: ' . $job['TITLE']);
+        $jobFailed = false;
         try {
             verbose_log("Scheduled job [" . $job['TITLE'] . "]");
             $code = $job['COMMANDS'];
@@ -162,14 +163,16 @@ if ($object != '') {
                 $success = true;
             }
             if ($success === false) {
+                $jobFailed = true;
                 DebMes("Error in scheduled job code: " . $code);
                 registerError('scheduled_jobs', "Error in scheduled job code: " . $code);
             }
         } catch (Throwable $e) {
+            $jobFailed = true;
             DebMes('Error: exception ' . get_class($e) . ', ' . $e->getMessage() . '.');
             registerError('scheduled_jobs', get_class($e) . ', ' . $e->getMessage());
         }
-        echo "OK";
+        echo $jobFailed ? 'ERROR' : 'OK';
     } else {
         //DebMes("Job not found: ".$_SERVER['REQUEST_URI']);
         echo "OK";
