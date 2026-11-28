@@ -23,3 +23,6 @@
 	color: var(--mj-editor-dialog-fg);
 	border-bottom-color: var(--mj-editor-dialog-border);
 }
+
+/* Theme-aware editor border: replaces hardcoded light borders in older templates. */
+.CodeMirror { border-color: var(--mj-color-border, #dddddd) !important; }

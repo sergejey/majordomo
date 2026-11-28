@@ -27,8 +27,8 @@ if ($_GET['theme']) {
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="viewport" content = "width = device-width, initial-scale = 1, user-scalable = no" />
     <link href="lib/css/thirdparty/jquery.gridster.min.css" rel="stylesheet" />
-        <link href="lib/css/thirdparty/codemirror.css" rel="stylesheet" />
-        <link href="lib/css/thirdparty/codemirror-ambiance.css" rel="stylesheet" />
+        <link href="../codemirror/lib/codemirror.css?v=5.65.16" rel="stylesheet" />
+        <link href="../codemirror/lib/ambiance.css?v=5.65.16" rel="stylesheet" />
     <link href="lib/css/freeboard/styles.css" rel="stylesheet" />
     <?php if ($theme=='light') {?>
     <style>
@@ -88,8 +88,8 @@ if ($_GET['theme']) {
 
 
 
-    <link rel="stylesheet" type="text/css" href="<?php echo ROOTHTML;?>3rdparty/fancybox/jquery.fancybox.min.css?v=3.3.5" media="screen" />
-    <script type="text/javascript" src="<?php echo ROOTHTML;?>3rdparty/fancybox/jquery.fancybox.min.js?v=3.3.5"></script>
+    <link rel="stylesheet" type="text/css" href="<?php echo ROOTHTML;?>3rdparty/fancybox/jquery.fancybox.min.css?v=3.5.7" media="screen" />
+    <script type="text/javascript" src="<?php echo ROOTHTML;?>3rdparty/fancybox/jquery.fancybox.min.js?v=3.5.7"></script>
 
 
     <?php
@@ -121,7 +121,10 @@ if ($_GET['theme']) {
                 "lib/js/thirdparty/underscore.js",
                 "lib/js/thirdparty/jquery.gridster.js",
                 "lib/js/thirdparty/jquery.caret.js",
-                                "lib/js/thirdparty/codemirror.js",
+                                "../codemirror/lib/codemirror.js?v=5.65.16",
+                                "../codemirror/mode/javascript/javascript.js?v=5.65.16",
+                                "../codemirror/addon/edit/matchbrackets.js?v=5.65.16",
+                                "../codemirror/addon/edit/closebrackets.js?v=5.65.16",
                                 "lib/js/thirdparty/jquery.xdomainrequest.js",
 
                 "lib/js/freeboard/FreeboardModel.js",

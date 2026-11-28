@@ -1,5 +1,5 @@
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: https://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/5/LICENSE
 
 // declare global: diff_match_patch, DIFF_INSERT, DIFF_DELETE, DIFF_EQUAL
 
@@ -44,6 +44,7 @@
         this.orig.state.trackAlignable = new TrackAlignable(this.orig)
       }
       this.lockButton.title = this.edit.phrase("Toggle locked scrolling");
+      this.lockButton.setAttribute("aria-label", this.lockButton.title);
 
       this.orig.state.diffViews = [this];
       var classLocation = options.chunkClassLocation || "background";
@@ -443,22 +444,26 @@
       aligners[i].clear();
     aligners.length = 0;
 
-    var cm = [dv.edit, dv.orig], scroll = [];
+    var cm = [dv.edit, dv.orig], scroll = [], offset = []
     if (other) cm.push(other.orig);
-    for (var i = 0; i < cm.length; i++)
+    for (var i = 0; i < cm.length; i++) {
       scroll.push(cm[i].getScrollInfo().top);
+      offset.push(-cm[i].getScrollerElement().getBoundingClientRect().top)
+    }
 
+    if (offset[0] != offset[1] || cm.length == 3 && offset[1] != offset[2])
+      alignLines(cm, offset, [0, 0, 0], aligners)
     for (var ln = 0; ln < linesToAlign.length; ln++)
-      alignLines(cm, linesToAlign[ln], aligners);
+      alignLines(cm, offset, linesToAlign[ln], aligners);
 
     for (var i = 0; i < cm.length; i++)
       cm[i].scrollTo(null, scroll[i]);
   }
 
-  function alignLines(cm, lines, aligners) {
-    var maxOffset = 0, offset = [];
+  function alignLines(cm, cmOffset, lines, aligners) {
+    var maxOffset = -1e8, offset = [];
     for (var i = 0; i < cm.length; i++) if (lines[i] != null) {
-      var off = cm[i].heightAtLine(lines[i], "local");
+      var off = cm[i].heightAtLine(lines[i], "local") - cmOffset[i];
       offset[i] = off;
       maxOffset = Math.max(maxOffset, off);
     }
@@ -504,6 +509,9 @@
       copy.title = dv.edit.phrase(editOriginals ? "Push to left" : "Revert chunk");
       copy.chunk = chunk;
       copy.style.top = (chunk.origTo > chunk.origFrom ? top : dv.edit.heightAtLine(chunk.editFrom, "local") - sTopEdit) + "px";
+      copy.setAttribute("role", "button");
+      copy.setAttribute("tabindex", "0");
+      copy.setAttribute("aria-label", copy.title);
 
       if (editOriginals) {
         var topReverse = dv.edit.heightAtLine(chunk.editFrom, "local") - sTopEdit;
@@ -514,6 +522,9 @@
                              origFrom: chunk.editFrom, origTo: chunk.editTo};
         copyReverse.style.top = topReverse + "px";
         dv.type == "right" ? copyReverse.style.left = "2px" : copyReverse.style.right = "2px";
+        copyReverse.setAttribute("role", "button");
+        copyReverse.setAttribute("tabindex", "0");
+        copyReverse.setAttribute("aria-label", copyReverse.title);
       }
     }
   }
@@ -595,12 +606,15 @@
 
   function buildGap(dv) {
     var lock = dv.lockButton = elt("div", null, "CodeMirror-merge-scrolllock");
+    lock.setAttribute("role", "button");
+    lock.setAttribute("tabindex", "0");
     var lockWrap = elt("div", [lock], "CodeMirror-merge-scrolllock-wrap");
     CodeMirror.on(lock, "click", function() { setScrollLock(dv, !dv.lockScroll); });
+    CodeMirror.on(lock, "keyup", function(e) { (e.key === "Enter" || e.code === "Space") && setScrollLock(dv, !dv.lockScroll); });
     var gapElts = [lockWrap];
     if (dv.mv.options.revertButtons !== false) {
       dv.copyButtons = elt("div", null, "CodeMirror-merge-copybuttons-" + dv.type);
-      CodeMirror.on(dv.copyButtons, "click", function(e) {
+      var copyButtons = function(e) {
         var node = e.target || e.srcElement;
         if (!node.chunk) return;
         if (node.className == "CodeMirror-merge-copy-reverse") {
@@ -608,7 +622,9 @@
           return;
         }
         copyChunk(dv, dv.edit, dv.orig, node.chunk);
-      });
+      }
+      CodeMirror.on(dv.copyButtons, "click", copyButtons);
+      CodeMirror.on(dv.copyButtons, "keyup", function(e) { (e.key === "Enter" || e.code === "Space") && copyButtons(e); });
       gapElts.unshift(dv.copyButtons);
     }
     if (dv.mv.options.connect != "align") {
@@ -918,7 +934,7 @@
     hasMarker: function(n) {
       var handle = this.cm.getLineHandle(n)
       if (handle.markedSpans) for (var i = 0; i < handle.markedSpans.length; i++)
-        if (handle.markedSpans[i].mark.collapsed && handle.markedSpans[i].to != null)
+        if (handle.markedSpans[i].marker.collapsed && handle.markedSpans[i].to != null)
           return true
       return false
     },

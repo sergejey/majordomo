@@ -173,19 +173,6 @@ class blockly_code extends module
         }
 
 
-        /*
-		(defined('SETTINGS_CODEEDITOR_AUTOCLOSEQUOTES')) ? $out['SETTINGS_CODEEDITOR_AUTOCLOSEQUOTES'] = SETTINGS_CODEEDITOR_AUTOCLOSEQUOTES : $out['SETTINGS_CODEEDITOR_AUTOCLOSEQUOTES'] = 1;
-		(defined('SETTINGS_CODEEDITOR_AUTOCLOSEQUOTES')) ? $out['SETTINGS_CODEEDITOR_AUTOCLOSEQUOTES'] = SETTINGS_CODEEDITOR_AUTOCLOSEQUOTES : $out['SETTINGS_CODEEDITOR_AUTOCLOSEQUOTES'] = 1;
-		(defined('SETTINGS_CODEEDITOR_WRAPLINES')) ? $out['SETTINGS_CODEEDITOR_WRAPLINES'] = SETTINGS_CODEEDITOR_WRAPLINES : $out['SETTINGS_CODEEDITOR_WRAPLINES'] = 0;
-		(defined('SETTINGS_CODEEDITOR_SHOWERROR')) ? $out['SETTINGS_CODEEDITOR_SHOWERROR'] = SETTINGS_CODEEDITOR_SHOWERROR : $out['SETTINGS_CODEEDITOR_SHOWERROR'] = 0;
-		(defined('SETTINGS_CODEEDITOR_UPTOLINE')) ? $out['SETTINGS_CODEEDITOR_UPTOLINE'] = SETTINGS_CODEEDITOR_UPTOLINE : $out['SETTINGS_CODEEDITOR_UPTOLINE'] = 0;
-		(defined('SETTINGS_CODEEDITOR_THEME')) ? $out['SETTINGS_CODEEDITOR_THEME'] = SETTINGS_CODEEDITOR_THEME : $out['SETTINGS_CODEEDITOR_THEME'] = 'codemirror';
-		(defined('SETTINGS_CODEEDITOR_MIXLINE')) ? $out['SETTINGS_CODEEDITOR_MIXLINE'] = SETTINGS_CODEEDITOR_MIXLINE : $out['SETTINGS_CODEEDITOR_MIXLINE'] = '20';
-		(defined('SETTINGS_CODEEDITOR_SHOWLINE')) ? $out['SETTINGS_CODEEDITOR_SHOWLINE'] = SETTINGS_CODEEDITOR_SHOWLINE : $out['SETTINGS_CODEEDITOR_SHOWLINE'] = '20';
-		(defined('SETTINGS_CODEEDITOR_TURNONSETTINGS')) ? $out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = SETTINGS_CODEEDITOR_TURNONSETTINGS : $out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = '0';
-		(defined('SETTINGS_CODEEDITOR_AUTOCOMPLETE')) ? $out['SETTINGS_CODEEDITOR_AUTOCOMPLETE'] = SETTINGS_CODEEDITOR_AUTOCOMPLETE : $out['SETTINGS_CODEEDITOR_AUTOCOMPLETE'] = '0';
-		(defined('SETTINGS_CODEEDITOR_AUTOSAVE')) ? $out['SETTINGS_CODEEDITOR_AUTOSAVE'] = SETTINGS_CODEEDITOR_AUTOSAVE : $out['SETTINGS_CODEEDITOR_AUTOSAVE'] = '0';
-        */
         if (defined('SETTINGS_CODEEDITOR_AUTOCOMPLETE')) {
             $typeAutocomplete = SETTINGS_CODEEDITOR_AUTOCOMPLETE_TYPE;
             $wordsMJDM = "'SQLSelect(', 'SQLSelectOne(', 'SQLExec(', 'SQLInsert(', 'SQLUpdate(', ' gg(', 'getGlobal(', 'sg(', 'setGlobal(', 'setTimeOut(', 'DebMes(', 'clearTimeOut(', 'say(', 'sayTo(', 'sayReply(', 'processCommand(', ' processLine(', 'getRandomLine(', 'playSound(', 'playMedia(', 'runScript(', 'runScriptSafe(', 'isOnLine(', 'addClass(', 'addClassObject(', 'description', 'callMethod(', 'getObjectsByClass(', ' getObjectsByProperty(', 'getHistoryMin(', 'getHistoryMax(', 'getHistoryCount(', 'getHistorySum(', 'getHistoryAvg(', 'getHistory(', ' getHistoryValue(', 'timeConvert(', 'timeNow(', 'isWeekEnd()', 'isWeekDay()', 'timeIs(', 'timeBefore(', 'timeAfter(', 'timeBetween(', 'recognizeTime(', ' addPattern(', 'context_activate(', 'AddScheduledJob(', 'ClearScheduledJob(', 'timeOutExists(', 'registerEvent(', 'registeredEventTime(', ' SendMail(', 'SendMail_html(', '->setProperty(', '->getProperty(', ";
@@ -204,26 +191,26 @@ class blockly_code extends module
 
                 $allPropObjScrMet = SQLExec('select distinct t.title from (SELECT o.title FROM `objects` o union SELECT p.title FROM properties p union SELECT  m.title FROM methods m union SELECT  s.title FROM scripts s) t order by t.title');
                 foreach ($allPropObjScrMet as $value) {
-                    $words .= "'" . $value['title'] . "', ";
+                    $words .= "'" . addslashes($value['title']) . "', ";
                 }
 
                 $allScripts = SQLExec('SELECT  distinct s.title FROM scripts s order by s.title');
                 foreach ($allScripts as $value) {
-                    $words .= "'runScript(\"" . $value['title'] . "\");', ";
-                    $words .= "'runScriptSafe(\"" . $value['title'] . "\");', ";
+                    $words .= "'runScript(\"" . addslashes($value['title']) . "\");', ";
+                    $words .= "'runScriptSafe(\"" . addslashes($value['title']) . "\");', ";
                 }
 
                 $objMeth = SQLExec("SELECT CONCAT( o.title, '.', m.title ) title FROM methods m JOIN objects o ON m.object_id = o.id ORDER BY 1");
                 foreach ($objMeth as $value) {
-                    $words .= "'callMethod(\"" . $value['title'] . "\");', ";
-                    $words .= "'callMethodSafe(\"" . $value['title'] . "\");', ";
+                    $words .= "'callMethod(\"" . addslashes($value['title']) . "\");', ";
+                    $words .= "'callMethodSafe(\"" . addslashes($value['title']) . "\");', ";
                 }
 
                 $objMethProp = SQLExec("SELECT concat(o.title,'.',m.title) title FROM properties m join objects o on m.object_id = o.id order by 1");
                 foreach ($objMethProp as $value) {
-                    $words .= "'setGlobal(\"" . $value['title'] . "\", val);', ";
+                    $words .= "'setGlobal(\"" . addslashes($value['title']) . "\", val);', ";
                     $words .= "'getGlobal(\"" . $value['title'] . "\")', ";
-                    $words .= "'" . $value['title'] . "', ";
+                    $words .= "'" . addslashes($value['title']) . "', ";
                 }
 
                 $objThisObj = SQLExec("SELECT distinct m.title title FROM properties m order by 1");
