@@ -125,6 +125,11 @@ class app_mediabrowser extends module
         if ($this->single_rec) {
             $out['SINGLE_REC'] = 1;
         }
+        foreach (array('CURRENT_DIR_TITLE', 'CURRENT_DIR', 'FILE', 'BASEFILE') as $outKey) {
+            if (isset($out[$outKey])) {
+                $out[$outKey] = htmlspecialchars((string)$out[$outKey], ENT_QUOTES, 'UTF-8');
+            }
+        }
         $this->data = $out;
         $p = new parser(DIR_TEMPLATES . $this->name . "/" . $this->name . ".html", $this->data, $this);
 
