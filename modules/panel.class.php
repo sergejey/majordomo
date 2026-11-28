@@ -118,17 +118,8 @@ class panel extends module
         }
 
 
-        if (!isset($session->data["AUTHORIZED"]) && isset($session->data['SITE_USERNAME'])) {
-            $user = SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '" . DBSafe($session->data['SITE_USERNAME']) . "'");
-            if ($user['IS_ADMIN']) {
-                $user = SQLSelectOne("SELECT * FROM admin_users WHERE LOGIN='admin'");
-                $session->data['USER_NAME'] = $user['LOGIN'];
-                $session->data['USER_LEVEL'] = $user['PRIVATE'];
-                $session->data['USER_ID'] = $user['ID'];
-                $session->data["AUTHORIZED"] = 1;
-                logAction('control_panel_enter', $session->data['USER_NAME']);
-            }
-        }
+        // Panel access is granted only by control_access after checking admin_users credentials.
+        // A site user flag (users.IS_ADMIN) must not grant control panel access.
 
         if (isset($session->data["AUTHORIZED"]) || defined('NO_DATABASE_CONNECTION')) {
             $this->authorized = 1;
