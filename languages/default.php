@@ -296,6 +296,15 @@ $dictionary = array(
 
 
     'SETTINGS_UPDATED' => 'Settings updated!',
+'SYSTEM_HEALTH' => 'System health',
+'HEALTH_MQTT' => 'MQTT',
+'HEALTH_CONNECT' => 'Connect',
+'HEALTH_ERRORS' => 'Active errors',
+'HEALTH_ONLINE' => 'Online',
+'HEALTH_NO_DATA' => 'No data',
+'HEALTH_UNKNOWN' => 'Unknown',
+'HEALTH_NOT_INSTALLED' => 'Not installed',
+'HEALTH_NO_ERRORS' => 'No errors',
     'SETTINGS_ERROR' => 'Settings save failed',
 
 

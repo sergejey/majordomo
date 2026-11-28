@@ -294,6 +294,15 @@ $dictionary = array(
 
 
     'SETTINGS_UPDATED' => 'Настройки сохранены!',
+'SYSTEM_HEALTH' => 'Состояние системы',
+'HEALTH_MQTT' => 'MQTT',
+'HEALTH_CONNECT' => 'Connect',
+'HEALTH_ERRORS' => 'Активные ошибки',
+'HEALTH_ONLINE' => 'В сети',
+'HEALTH_NO_DATA' => 'Нет данных',
+'HEALTH_UNKNOWN' => 'Неизвестно',
+'HEALTH_NOT_INSTALLED' => 'Не установлен',
+'HEALTH_NO_ERRORS' => 'Нет ошибок',
     'SETTINGS_ERROR' => 'Не удалось сохранить настройку',
 
 
