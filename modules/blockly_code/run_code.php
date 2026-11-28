@@ -34,11 +34,13 @@ if (strlen($code) > 200000) {
 }
 
 @set_time_limit(10);
+$startsWithPhpTag = (bool)preg_match('/^\s*<\?(?:php)?/i', $code);
 $hasPhpTag = (bool)preg_match('/<\?/', $code);
 $code = preg_replace('/^\s*<\?php/i', '', $code);
 $code = preg_replace('/^\s*<\?/', '', $code);
 $code = preg_replace('/\?>\s*$/', '', $code);
-$evalCode = $hasPhpTag ? '?>' . $code : $code;
+// A leading tag was removed, so the rest is already PHP; prefix ?> only for mixed HTML/PHP code.
+$evalCode = ($hasPhpTag && !$startsWithPhpTag) ? '?>' . $code : $code;
 
 $output = '';
 $error = '';
