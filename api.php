@@ -2,6 +2,26 @@
 
 include_once("./config.php");
 
+function apiMaskSecrets($value)
+{
+    if (is_array($value)) {
+        $secretKeys = array('password', 'passwd', 'psw', 'secret', 'token', 'api_key', 'authorization');
+        foreach ($value as $key => $item) {
+            if (in_array(strtolower((string)$key), $secretKeys, true)) {
+                $value[$key] = '***';
+            } else {
+                $value[$key] = apiMaskSecrets($item);
+            }
+        }
+    }
+    return $value;
+}
+
+function apiMaskUri($uri)
+{
+    return preg_replace('/([?&](?:password|passwd|psw|secret|token|api_key)=)[^&]*/i', '$1***', (string)$uri);
+}
+
 // callAPI() in fire-and-forget mode disconnects before the response is ready.
 // Without this, Apache mod_php and nginx (fastcgi_ignore_client_abort off)
 // terminate the method/script at its first output after the client has gone.
@@ -714,7 +734,7 @@ if (!isset($request[0])) {
 }
 
 if (isset($result['error'])) {
-    DebMes("Incorrect request (" . $method . "): " . json_encode($request) . "\nInput: " . json_encode($input) . "\nResult: " . json_encode($result), 'api');
+    DebMes("Incorrect request (" . $method . "): " . json_encode(apiMaskSecrets($request)) . "\nInput: " . json_encode(apiMaskSecrets($input)) . "\nResult: " . json_encode(apiMaskSecrets($result)), 'api');
     http_response_code(400);
 } else {
     http_response_code(200);
@@ -747,9 +767,9 @@ function apiShutdown()
     global $result;
     $a = error_get_last();
     if (isset($a['type']) && ($a['type'] === E_ERROR)) {
-        DebMes("Result " . $_SERVER['REQUEST_URI'] . ' ' . json_encode($a), 'api_error');
+        DebMes("Result " . apiMaskUri($_SERVER['REQUEST_URI']) . ' ' . json_encode(apiMaskSecrets($a)), 'api_error');
     } elseif (isset($result['passed']) && $result['passed'] > 5) {
-        DebMes("Result [" . $result['passed'] . "] of : " . $_SERVER['REQUEST_URI'] . "\n" . json_encode($result, JSON_PRETTY_PRINT), 'api_slow');
+        DebMes("Result [" . $result['passed'] . "] of : " . apiMaskUri($_SERVER['REQUEST_URI']) . "\n" . json_encode(apiMaskSecrets($result), JSON_PRETTY_PRINT), 'api_slow');
     }
 }
 
