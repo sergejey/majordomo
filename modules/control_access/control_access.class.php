@@ -66,6 +66,8 @@ function getParams() {
    UnSet($session->data['USERNAME']);
    UnSet($session->data['SITE_USERNAME']);
    UnSet($session->data['SITE_USER_ID']);
+   UnSet($session->data['USER_ID']);
+   UnSet($session->data['USER_LEVEL']);
    Unset($session->data["cp_requested_url"]);
    $this->redirect(ROOTHTML);
   }
@@ -200,6 +202,8 @@ function getParams() {
    UnSet($session->data['AUTHORIZED']);
    UnSet($session->data['USER_NAME']);
    UnSet($session->data['USERNAME']);
+   UnSet($session->data['USER_ID']);
+   UnSet($session->data['USER_LEVEL']);
    $this->redirect("/");
   } elseif ($this->action=="admin") {
    global $mode;
@@ -312,6 +316,10 @@ function getParams() {
        return 1;
       }
       global $session;
+
+      if (empty($session->data['AUTHORIZED'])) {
+         return 0;
+      }
 
       if ($session->data['USER_ID'] == 1) 
          return 1;
