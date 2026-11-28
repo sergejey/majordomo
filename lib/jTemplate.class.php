@@ -672,6 +672,33 @@ class jTemplate
      * @param string $dir Current template directory (for correct [#inc ...#] tags parsing)
      * @return void
      */
+    protected function renderIncludedFile($file_name, $hash, $dir)
+    {
+        if (preg_match('/\.tpl$/', $file_name)) {
+            require_once ROOT . '3rdparty/smarty3/Smarty.class.php';
+            $smarty = new Smarty;
+            $smarty->setCacheDir(ROOT . 'cms/cached/template_c');
+            $smarty->setTemplateDir(ROOT . './templates')
+                ->setCompileDir(ROOT . './cms/cached/templates_c')
+                ->setCacheDir(ROOT . './cms/cached');
+            $smarty->debugging = false;
+            $smarty->caching = true;
+            $smarty->setCaching(120);
+            foreach ($hash as $k => $v) {
+                $smarty->assign($k, $v);
+            }
+            return (string)$smarty->fetch($file_name);
+        }
+        return (string)$this->parse($this->loadfile($file_name), $hash, $dir);
+    }
+
+    /**
+     * @access private
+     * @param string $res Template strings
+     * @param array $hash Data params
+     * @param string $dir Current template directory (for correct [#inc ...#] tags parsing)
+     * @return void
+     */
     public
     function parseIncludes(&$res, &$hash, $dir)
     {
@@ -722,29 +749,9 @@ class jTemplate
                         $replaceStr .= $this->parse($this->loadfile($file_name) . "<!-- end of file $file_name -->", $new_hash, $new_root);
                         $res = str_replace($matches[0][$i], $replaceStr, $res);
                         */
-                        if (preg_match('/\.tpl$/', $file_name)) {
-                            require_once ROOT . '3rdparty/smarty3/Smarty.class.php';
-                            $smarty = new Smarty;
-                            $smarty->setCacheDir(ROOT . 'cms/cached/template_c');
-                            $smarty->setTemplateDir(ROOT . './templates')
-                                ->setCompileDir(ROOT . './cms/cached/templates_c')
-                                ->setCacheDir(ROOT . './cms/cached');
-                            $smarty->debugging = false;
-                            $smarty->caching = true;
-                            $smarty->setCaching(120);
-                            foreach ($new_hash as $k => $v) {
-                                $smarty->assign($k, $v);
-                            }
-                            $res = str_replace($matches[0][$i], "" . $smarty->fetch($file_name), $res);
-                        } else {
-                            $res = str_replace($matches[0][$i], "" . $this->parse($this->loadfile($file_name) . "", $new_hash, $new_root), $res);
-                        }
+                        $res = str_replace($matches[0][$i], $this->renderIncludedFile($file_name, $new_hash, $new_root), $res);
                     } else {
-                        if (preg_match('/\.tpl$/', $file_name)) {
-                            dprint($new_hash);
-                        } else {
-                            $res = str_replace($matches[0][$i], $this->parse($this->loadfile($file_name), $new_hash, $new_root), $res);
-                        }
+                        $res = str_replace($matches[0][$i], $this->renderIncludedFile($file_name, $new_hash, $new_root), $res);
                     }
                     $this->template = $old_template;
                     endMeasure('including ' . $file_name);
