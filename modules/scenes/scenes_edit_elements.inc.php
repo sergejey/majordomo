@@ -14,7 +14,7 @@ if (!$element['SCENE_ID']) {
     $out['ELEMENT_SCENE_ID'] = $rec['ID'];
 }
 
-$state_id = gr('state_id');
+$state_id = gr('state_id', 'int');
 
 if ($state_id) {
     $state_rec = SQLSelectOne("SELECT * FROM elm_states WHERE ID='" . (int)$state_id . "'");
