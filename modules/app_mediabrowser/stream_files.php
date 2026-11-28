@@ -75,10 +75,10 @@ function rangeDownload($file)
         // If the range starts with an '-' we start from the beginning
         // If not, we forward the file pointer
         // And make sure to get the end byte if spesified
-        if ($range0 == '-') {
+        if (substr($range, 0, 1) === '-') {
 
             // The n-number of the last bytes is requested
-            $c_start = $size - substr($range, 1);
+            $c_start = $size - (int)substr($range, 1);
         } else {
 
             $range = explode('-', $range);
