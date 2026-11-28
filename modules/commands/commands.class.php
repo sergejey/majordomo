@@ -858,8 +858,6 @@ class commands extends module
 
             if (isset($res[$i]['DATA']) && (preg_match('/<script/is', $res[$i]['DATA']) || preg_match('/\[#module/is', $res[$i]['DATA']))) {
                 $res[$i]['AUTO_UPDATE'] = 0;
-            } elseif (!$res[$i]['AUTO_UPDATE'] && $res[$i]['TYPE'] != 'object' && (!defined('DISABLE_WEBSOCKETS') || DISABLE_WEBSOCKETS == 0)) {
-                $res[$i]['AUTO_UPDATE'] = 10;
             }
 
             $res[$i]['TITLE_SAFE'] = htmlspecialchars($res[$i]['TITLE']);
