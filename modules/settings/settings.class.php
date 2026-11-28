@@ -85,6 +85,7 @@ class settings extends module {
 */
  function run() {
  global $session;
+ $out = array();
   if ($this->action=='admin') {
    $this->admin($out);
   } else {
