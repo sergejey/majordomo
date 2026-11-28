@@ -254,7 +254,7 @@ class jTemplate
      * @param mixed $hash Hash (not used)
      * @return void
      */
-    public function parseBlocks(&$res, &$hash)
+    public function parseBlocks(&$res, &$hash, $dir)
     {
         if (preg_match_all('/\[#block (.*?)#\]/', $res, $matches, PREG_PATTERN_ORDER)) {
             $count_matches_0 = count($matches[0]);
