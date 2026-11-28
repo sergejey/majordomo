@@ -278,7 +278,6 @@ function runCodeQuick() {
 	closeRunPopup(true);
 	showRunPopup('<#LANG_CODEEDITOR_RUNNING#>', false, true);
 	var idField = $('input[name*="id"]').first();
-	var mdField = $('input[name*="md"]').eq(2);
 	$.ajax({
 		url: ROOTHTML + 'modules/blockly_code/run_code.php',
 		type: 'POST',
@@ -286,7 +285,7 @@ function runCodeQuick() {
 		data: {
 			code: editor.getValue(),
 			type: '[#TYPE#]',
-			md: mdField.length ? mdField.val() : 'scripts',
+			md: '<#PARENT_NAME#>' || 'scripts',
 			id: idField.length ? idField.val() : ''
 		}
 	}).done(function (response) {
@@ -363,7 +362,7 @@ function showSaveToast(text, isError) {
 function checkCodeAjax() {
 	var data = new FormData();
 	data.append('id', $('input[name*="id"]').first().val() || '');
-	data.append('md', $('input[name*="md"]:eq(2)').val() || 'scripts');
+	data.append('md', '<#PARENT_NAME#>' || 'scripts');
 	data.append('code', editor.getValue());
 	data.append('action', 'checkcode');
 	return fetch('/modules/blockly_code/autosave.php', {
@@ -428,7 +427,7 @@ function auditCodeAjax() {
 	var data = new FormData();
 	data.append('code', editor.getValue());
 	data.append('language', '[#TYPE#]');
-	data.append('md', $('input[name*="md"]:eq(2)').val() || 'scripts');
+	data.append('md', '<#PARENT_NAME#>' || 'scripts');
 	fetch('/modules/blockly_code/audit_code.php', {
 		method: 'POST',
 		body: data,
@@ -761,7 +760,7 @@ function escapeHtml(text, type='scape') {
 function ajaxAutosave(action) {
 	//Отправляем код POST
 	id = $('input[name*="id"]').val();
-	md = $('input[name*="md"]:eq(2)').val();
+	md = '<#PARENT_NAME#>' || 'scripts';
 	code = editor.getValue();
 	code = escapeHtml(code);
 	
