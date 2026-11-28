@@ -3,14 +3,23 @@ chdir (dirname (__FILE__) . '/../../');
 
 include_once ('./config.php');
 include_once ('./lib/loader.php');
+include_once ('./load_settings.php');
+
+$session = new session('prj');
+include_once(DIR_MODULES . 'control_access/control_access.class.php');
+$access = new control_access();
+if (empty($session->data['AUTHORIZED']) || !$access->checkAccess('blockly_code')) {
+    http_response_code(403);
+    exit('Forbidden');
+}
 
 $dir = DOC_ROOT . '/cms/cached/codemirror';
 
-$action = $_POST['action'];
-$id = $_POST['id'];
-$md = $_POST['md'];
-	
-$code = $_POST['code'];
+$action = isset($_POST['action']) ? (string)$_POST['action'] : '';
+$id = isset($_POST['id']) ? (string)$_POST['id'] : '';
+$md = isset($_POST['md']) ? (string)$_POST['md'] : '';
+
+$code = isset($_POST['code']) ? (string)$_POST['code'] : '';
 	
 //$code = str_replace("!amp;", "&", $code);
 //$code = str_replace("!lt;", "<", $code);
@@ -18,7 +27,8 @@ $code = $_POST['code'];
 //$code = str_replace("!quot;", '"', $code);
 //$code = str_replace("!#039;", "'", $code);
 	
-if($action == 'save' && !empty($id) && !empty($md)) {
+if($action == 'save' && !empty($id) && !empty($md)
+    && preg_match('/^[A-Za-z0-9_-]+$/', $md) && preg_match('/^[A-Za-z0-9_-]+$/', $id)) {
 	if(!is_dir($dir)) {
 		mkdir($dir, 0777, true);
 	}
