@@ -17,12 +17,17 @@
 
  function [#CODE_FIELD#]_showCode(history_id) {
 	 var history_code = $('#history_'+history_id).html();
-	 alert(history_code);
+	 var show = window['<#CODE_FIELD#>_showResult']; 
+
+
+if (show) show(history_code, false, false); else alert(history_code);
 	 return false;
  }
 
  function [#CODE_FIELD#]_useCode(history_id) {
 	 var history_code = $('#history_'+history_id).html();
+
+	 if (!confirm('<#LANG_CODEEDITOR_RESTORE#> ' + history_id + '?')) return false;
 	 var history_code_xml = $('#history_'+history_id+'_xml').text();
 	 var code_type = $('.[#CODE_FIELD#]_code_type:checked').val();
 
@@ -202,6 +207,8 @@ var editor;
 var popupId = 'mj-run-popup-<#CODE_FIELD#>';
 window['<#CODE_FIELD#>_runCodeQuick'] = function () { return runCodeQuick(); };
 window['<#CODE_FIELD#>_auditCodeAjax'] = function () { return auditCodeAjax(); };
+window['<#CODE_FIELD#>_showResult'] = showRunPopup;
+window['<#CODE_FIELD#>_toast'] = showSaveToast;
 var myTextArea[#CODE_FIELD#];
 
 var numPanels = 0;
@@ -389,7 +396,7 @@ function checkCodeAjax() {
 	var data = new FormData();
 	data.append('id', $('input[name*="id"]').first().val() || '');
 	data.append('md', $('input[name*="md"]:eq(2)').val() || 'scripts');
-	data.append('code', editor.getValue());
+	data.append('code', escapeHtml(editor.getValue()));
 	data.append('action', 'checkcode');
 	return fetch('/modules/blockly_code/autosave.php', {
 		method: 'POST',
@@ -736,13 +743,13 @@ $(document).ready(function(){
 		editor.on('dblclick', editor => {
 			editor.setOption('highlightSelectionMatches', {showToken: false, wordsOnly: false, annotateScrollbar: false});
 		});
-		[#if SETTINGS_CODEEDITOR_AUTOSAVE != '0'#]
-		editor.on('change', editor => {
-			clearInterval(getCookie('autosavetimerid'));
-			document.cookie = 'autosavetimerid='+setTimeout(function() { ajaxAutosave('save'); }, [#SETTINGS_CODEEDITOR_AUTOSAVE#]000);
-		});
-		[#endif#]
 		[#endif#]	
+	[#endif#]
+	[#if SETTINGS_CODEEDITOR_AUTOSAVE != '0'#]
+	editor.on('change', editor => {
+		clearTimeout(getCookie('autosavetimerid'));
+		document.cookie = 'autosavetimerid='+setTimeout(function() { ajaxAutosave('save'); }, [#SETTINGS_CODEEDITOR_AUTOSAVE#]000);
+	});
 	[#endif#]
 });
 
@@ -794,7 +801,7 @@ function escapeHtml(text, type='scape') {
 	}
 }
 
-function ajaxAutosave(action) {
+function ajaxAutosave(action, onSuccess) {
 	//Отправляем код POST
 	id = $('input[name*="id"]').val();
 	md = $('input[name*="md"]:eq(2)').val();
@@ -807,15 +814,13 @@ function ajaxAutosave(action) {
 		data: "id="+id+"&md="+md+"&code="+code+"&action="+action,
 		success: function(responce){
 			responce = JSON.parse(responce);
+			if (typeof onSuccess === 'function') onSuccess(responce);
 			if(responce.status != 'ok') return;
 			
 			if(action == 'checkcode') {
-				$('#autosave_check_code_div').show('slow');
-				if(responce.msg) {
-					alert('<#LANG_CODEEDITOR_ERROR_IN_CODE#>: '+responce.msg);
-				} else {
-					alert('<#LANG_CODEEDITOR_NO_ERRORS#>');
-				}
+				showRunPopup(responce.msg
+					? '<#LANG_CODEEDITOR_ERROR_IN_CODE#>: ' + responce.msg
+					: '<#LANG_CODEEDITOR_NO_ERRORS#>', Boolean(responce.msg), false);
 			}
 			if(action == 'save') {
 				$('#autosave_code_in_time_div').show('slow');
@@ -826,8 +831,8 @@ function ajaxAutosave(action) {
 				responseArray = responce.msg;
 				
 				$("#restoreCodeList").html('');
-				while (i <= responseArray.length) {
-					$("#restoreCodeList").append('<tr><th scope="row" style="vertical-align: middle;">'+responseArray[i].name+'</th><td style="vertical-align: middle;">'+responseArray[i].create+'</td><td style="cursor:pointer;vertical-align: middle;"><a href="javascript://" title="<#LANG_PREVIEW#>" aria-label="<#LANG_PREVIEW#>" onclick="seeCodeFunc(\''+responseArray[i].code+'\')"><i class="glyphicon glyphicon-eye-open" style="font-size: 1.5rem;"></i></a></td><td style="vertical-align: middle;"><button type="button" class="btn btn-default btn-xs" onclick="if(confirm(\'<#LANG_ARE_YOU_SURE#>\')) setValueEditor(\''+responseArray[i].code+'\');"><#LANG_CODEEDITOR_RESTORE#></button></td></tr>');
+				while (i < responseArray.length) {
+					$("#restoreCodeList").append('<tr><th scope="row" style="vertical-align: middle;">'+responseArray[i].name+'</th><td style="vertical-align: middle;">'+responseArray[i].create+'</td><td style="cursor:pointer;vertical-align: middle;"><a href="javascript://" title="<#LANG_PREVIEW#>" aria-label="<#LANG_PREVIEW#>" onclick="seeCodeFunc(\''+responseArray[i].code+'\')"><i class="glyphicon glyphicon-eye-open" style="font-size: 1.5rem;"></i></a></td><td style="vertical-align: middle;"><button type="button" class="btn btn-default btn-xs" onclick="if(confirm(\'<#LANG_CODEEDITOR_RESTORE#> \'+responseArray[i].create+\'?\')) setValueEditor(\''+responseArray[i].code+'\');"><#LANG_CODEEDITOR_RESTORE#></button></td></tr>');
 					i++;
 				}
 			}
@@ -850,8 +855,13 @@ function seeCodeFunc(code) {
 }
 
 function modalRestoreCode() {
-	ajaxAutosave('restore');
-	$('#showAutosaveModal').modal('show')
+	ajaxAutosave('restore', function (responce) {
+		if (responce.status !== 'ok') {
+			showSaveToast(responce.msg || '<#LANG_CODEEDITOR_SAVE_ERROR#>', true);
+			return;
+		}
+		$('#showAutosaveModal').modal('show');
+	});
 }
 })();
 </script>
