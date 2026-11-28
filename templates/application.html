@@ -204,8 +204,9 @@ $(document).ready(function() {
   iFrameHeight=$(window).height()-110;
   $("#tabs-last").show();
   $('.ui-tabs-anchor').show();
-  $("#tablast_title").html(winTitle);
-  $("#tabs-last").html('<iframe src="'+pageURL+'" width=100% height="'+iFrameHeight+'" border="0" frameborder="0"></iframe>');
+  $("#tablast_title").text(winTitle);
+  var safeUrl = /^(https?:\/\/|\/)/i.test(String(pageURL)) ? pageURL : 'about:blank';
+  $("#tabs-last").html($('<iframe>').attr({src:safeUrl, width:'100%', height:iFrameHeight, border:'0', frameborder:'0'}));
   $("#tabs").tabs("select", totalLayouts);
   return false;
  }

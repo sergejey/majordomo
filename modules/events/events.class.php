@@ -274,7 +274,9 @@ class events extends module
             $qry .= " AND (USER_TO='*' OR USER_TO='" . DBSafe(isset($session->data['USERNAME'])?$session->data['USERNAME']:'') . "')";
             $event = SQLSelectOne("SELECT * FROM events WHERE $qry ORDER BY ADDED");
             if (isset($event['ID'])) {
-                $res = $event['ID'] . '|' . $event['EVENT_TYPE'] . '|' . $event['WINDOW'] . '|' . str_replace("\n", '\n', $event['DETAILS']);
+                $res = $event['ID'] . '|' . htmlspecialchars((string)$event['EVENT_TYPE'], ENT_QUOTES, 'UTF-8')
+                    . '|' . htmlspecialchars((string)$event['WINDOW'], ENT_QUOTES, 'UTF-8')
+                    . '|' . htmlspecialchars(str_replace("\n", '\n', (string)$event['DETAILS']), ENT_QUOTES, 'UTF-8');
                 echo $res;
                 $event['PROCESSED'] = 1;
                 SQLUpdate('events', $event);
