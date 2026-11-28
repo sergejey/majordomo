@@ -1108,6 +1108,7 @@ $dictionary = array(
     'UPDATE_NEW_EXTENSIONS' => 'Установить обновления',
     'MARKET_CATEGORY_INSTALLED' => 'Установлено',
     'MARKET_CATEGORY_OWNED' => 'Приобретено',
+    'MARKET_CATEGORY_MY_CONNECT' => 'Мои дополнения',
     'MARKET_CATEGORY_HAVE_UPDATES' => 'Обновления',
     'MARKET_CATEGORY_HARDWARE' => 'Оборудование',
     'MARKET_CATEGORY_MULTIMEDIA' => 'Мультимедиа',
