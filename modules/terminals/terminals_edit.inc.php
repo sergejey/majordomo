@@ -43,7 +43,7 @@ if ($this->mode == 'update') {
 
     //$rec['MAJORDROID_API'] = gr('majordroid_api', 'int');
 	
-    if ($location_id = SQLSelectOne("SELECT * FROM locations WHERE TITLE = '" . gr('location') . "'")) {
+    if ($location_id = SQLSelectOne("SELECT * FROM locations WHERE TITLE = '" . DBSafe(gr('location')) . "'")) {
         $rec['LOCATION_ID'] = $location_id['ID'];
         $out['LOCATION_TITLE'] = gr('location');
     } else {
