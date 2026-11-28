@@ -1090,7 +1090,7 @@ function getHistoryValue($varname, $time, $nerest = false)
         if ((int)$val2['ADDED'] - (int)$val1['ADDED'] == 0)
             return $val1['VALUE'];
         else
-            return (int)$val1['VALUE'] + ((int)$val2['VALUE'] - (int)$val1['VALUE']) * ($time - (int)$val1['ADDED']) / ((int)$val2['ADDED'] - (int)$val1['ADDED']);
+            return (float)$val1['VALUE'] + ((float)$val2['VALUE'] - (float)$val1['VALUE']) * ($time - (int)$val1['ADDED']) / ((int)$val2['ADDED'] - (int)$val1['ADDED']);
     }
 }
 
