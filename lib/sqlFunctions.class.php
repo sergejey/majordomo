@@ -301,12 +301,14 @@ function SQLMakeDBDump($dump_file, $ignore_tables = 0)
         else
             $mysqlDumpPath = "/usr/bin/mysqldump";
     }
-    $mysqlDumpParam = " -h " . DB_HOST . " --user=\"" . DB_USER . "\" --password=\"" . DB_PASSWORD . "\"";
+    $mysqlDumpParam = " -h " . DB_HOST . " --user=\"" . DB_USER . "\"";
     $mysqlDumpParam .= " --no-create-db --add-drop-table " . DB_NAME;
     foreach (SQLBackupIgnoreTables($ignore_tables) as $table) {
         $mysqlDumpParam .= " --ignore-table=" . DB_NAME . "." . $table;
     }
+    if (DB_PASSWORD != '') putenv('MYSQL_PWD=' . DB_PASSWORD);
     exec($mysqlDumpPath . $mysqlDumpParam . "> " . $dump_file . '.tmp', $output);
+    putenv('MYSQL_PWD');
     if (file_exists($dump_file . '.tmp') && filesize($dump_file . '.tmp') > 0) {
         rename($dump_file . '.tmp', $dump_file);
         debmes('DB Backup to ' . $dump_file . ' OK.', 'db_backup');
@@ -329,10 +331,12 @@ function SQLMakeTableDump($dump_file, $table_name)
         else
             $mysqlDumpPath = "/usr/bin/mysqldump";
     }
-    $mysqlDumpParam = " -h " . DB_HOST . " --user=\"" . DB_USER . "\" --password=\"" . DB_PASSWORD . "\"";
+    $mysqlDumpParam = " -h " . DB_HOST . " --user=\"" . DB_USER . "\"";
     $mysqlDumpParam .= " " . DB_NAME;
     $mysqlDumpParam .= " " . $table_name;
+    if (DB_PASSWORD != '') putenv('MYSQL_PWD=' . DB_PASSWORD);
     exec($mysqlDumpPath . $mysqlDumpParam . "> " . $dump_file . '.tmp', $output);
+    putenv('MYSQL_PWD');
     if (file_exists($dump_file . '.tmp') && filesize($dump_file . '.tmp') > 0) {
         rename($dump_file . '.tmp', $dump_file);
         debmes('Table ' . $table_name . ' backup to ' . $dump_file . ' OK.', 'db_backup');
@@ -360,10 +364,12 @@ function SQLRestoreDBDump($dump_file)
         SaveFile($dump_file, $data_new);
     }
 
-    $mysqlCmdParam = " -h " . DB_HOST . " --user=\"" . DB_USER . "\" --password=\"" . DB_PASSWORD . "\"";
+    $mysqlCmdParam = " -h " . DB_HOST . " --user=\"" . DB_USER . "\"";
     $mysqlCmdParam .= " " . DB_NAME . " <" . $dump_file;
     $cmd = $mysqlCmdPath . $mysqlCmdParam;
+    if (DB_PASSWORD != '') putenv('MYSQL_PWD=' . DB_PASSWORD);
     $result = exec($cmd, $output);
+    putenv('MYSQL_PWD');
     if ($result !== false) {
         debmes("DB restored from " . $dump_file . " OK.", 'db_backup');
         return true;

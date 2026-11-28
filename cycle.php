@@ -103,9 +103,10 @@ if (file_exists(ROOT . 'scripts/cycle_db_save.php') && $restored_this_boot) {
         $mysql_path = defined('PATH_TO_MYSQL') ? PATH_TO_MYSQL : ((substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql');
         $mysqlParam = " -h " . DB_HOST;
         $mysqlParam .= " -u " . DB_USER;
-        if (DB_PASSWORD != '') $mysqlParam .= " --password=\"" . DB_PASSWORD . "\"";
         $mysqlParam .= " " . DB_NAME . " <" . $db_filename;
+        if (DB_PASSWORD != '') putenv('MYSQL_PWD=' . DB_PASSWORD);
         exec($mysql_path . $mysqlParam, $output);
+        putenv('MYSQL_PWD');
         echo "Output: " . implode("\n", $output) . PHP_EOL;
         DebMes("Main DB restore output: " . implode("\n", $output), 'boot');
         if ($boot_id != '') {
@@ -118,9 +119,10 @@ if (file_exists(ROOT . 'scripts/cycle_db_save.php') && $restored_this_boot) {
             $mysql_path = defined('PATH_TO_MYSQL') ? PATH_TO_MYSQL : ((substr(php_uname(), 0, 7) == "Windows") ? SERVER_ROOT . "/server/mysql/bin/mysql" : 'mysql');
             $mysqlParam = " -h " . DB_HOST;
             $mysqlParam .= " -u " . DB_USER;
-            if (DB_PASSWORD != '') $mysqlParam .= " --password=\"" . DB_PASSWORD . "\"";
             $mysqlParam .= " " . DB_NAME . " <" . $db_history_filename;
+            if (DB_PASSWORD != '') putenv('MYSQL_PWD=' . DB_PASSWORD);
             exec($mysql_path . $mysqlParam);
+            putenv('MYSQL_PWD');
         } else {
             echo "History backup file not found or invalid: " . $db_history_filename . PHP_EOL;
             DebMes("History backup file not found or invalid: " . $db_history_filename, 'boot');
