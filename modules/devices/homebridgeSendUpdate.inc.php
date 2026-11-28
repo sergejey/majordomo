@@ -200,6 +200,7 @@ switch ($device1['TYPE']) {
         } else {
             $payload['value'] = 0;
         }
+        sg('HomeBridge.to_set', json_encode($payload));
         break;
     /*
     case 'sensor_battery':
