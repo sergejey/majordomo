@@ -46,6 +46,20 @@ if (!$sortby_scenes && isset($session->data['scenes_sort']) && $session->data['s
 }
 
 if (!$sortby_scenes) $sortby_scenes = "PRIORITY DESC, TITLE";
+$allowedSortFields = array('ID', 'TITLE', 'PRIORITY', 'HIDDEN', 'SYSTEM');
+$sortParts = array();
+foreach (explode(',', $sortby_scenes) as $part) {
+    $part = trim($part);
+    $direction = '';
+    if (preg_match('/^(\w+)\s+(ASC|DESC)$/i', $part, $m)) {
+        $part = $m[1];
+        $direction = ' ' . strtoupper($m[2]);
+    }
+    if (in_array($part, $allowedSortFields, true)) {
+        $sortParts[] = $part . $direction;
+    }
+}
+$sortby_scenes = $sortParts ? implode(', ', $sortParts) : 'PRIORITY DESC, TITLE';
 $out['SORTBY'] = $sortby_scenes;
 // SEARCH RESULTS
 $res = SQLSelect("SELECT * FROM scenes WHERE $qry ORDER BY " . $sortby_scenes);
