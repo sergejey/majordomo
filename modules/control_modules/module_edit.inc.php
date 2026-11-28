@@ -2,6 +2,12 @@
 
 $mode2 = gr('mode2');
 
+$name = isset($name) ? (string)$name : '';
+if (!preg_match('/^[A-Za-z0-9_-]+$/', $name)) {
+    $this->redirect("?");
+    exit;
+}
+
 $rec = SQLSelectOne("SELECT * FROM project_modules WHERE NAME='" . DBSafe($name) . "'");
 $rec['NAME'] = $name;
 
@@ -51,7 +57,7 @@ if ($mode2 == 'download') {
         }
     } else {
         chdir(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp');
-        exec('tar cvzf ../' . $tar_name . ' .');
+        exec('tar cvzf ' . escapeshellarg('../' . $tar_name) . ' .');
         chdir('../../../');
     }
 
