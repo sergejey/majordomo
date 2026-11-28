@@ -93,6 +93,35 @@ $mjBlocklyTheme = defined('MJ_THEME') ? MJ_THEME : (defined('SETTINGS_THEME') ? 
         overflow: hidden;
         height: 100%;
       }
+      /* Панель управления не перекрывает блоки: она занимает отдельную строку. */
+      #custom_controls {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 10px;
+        box-sizing: border-box;
+        background: var(--mj-color-surface, #f5f5f5);
+        border-bottom: 1px solid var(--mj-color-border, #ddd);
+      }
+      #custom_controls .btn {
+        margin: 0;
+        white-space: nowrap;
+      }
+      /* Высота обновляется из JS: на телефоне панель может занять две строки. */
+      #blocklyDiv {
+        position: absolute;
+        top: 52px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
+      }
       .blocklySvg {
         height: 100%;
         width: 100%;
@@ -140,17 +169,31 @@ $mjBlocklyTheme = defined('MJ_THEME') ? MJ_THEME : (defined('SETTINGS_THEME') ? 
 
 
 
+      /* Рабочая область занимает место под панелью; при повороте телефона
+         высота пересчитывается заново. */
+      function layoutBlockly() {
+        var bar = document.getElementById('custom_controls');
+        var area = document.getElementById('blocklyDiv');
+        if (!bar || !area) return;
+        area.style.top = bar.offsetHeight + 'px';
+        if (Blockly.mainWorkspace && typeof Blockly.svgResize === 'function') {
+          Blockly.svgResize(Blockly.mainWorkspace);
+        }
+      }
+      window.addEventListener('resize', layoutBlockly);
+
       function init() {
-        Blockly.inject(document.body,
+        Blockly.inject(document.getElementById('blocklyDiv'),
             {path: './', toolbox: document.getElementById('toolbox'),
               move: {scrollbars: true, wheel: true, drag: true},
               zoom:
               {controls: true,
                 wheel: false,
-                startScale: 1.0,
+                startScale: window.innerWidth < 700 ? 0.75 : 1.0,
                 maxScale: 3,
-                minScale: 0.3,
+                minScale: 0.2,
                 scaleSpeed: 1.2}});
+        layoutBlockly();
         // Let the top-level application know that Blockly is ready.
     //    window.parent.blocklyLoaded(Blockly);
 
@@ -205,9 +248,9 @@ $mjBlocklyTheme = defined('MJ_THEME') ? MJ_THEME : (defined('SETTINGS_THEME') ? 
   </head>
   <body onload="init()">
 
-  <div id="custom_controls" style="position:absolute;top:10px;right:10px;z-index:1000;">
-    <a href="#" onClick="Blockly.mainWorkspace.undo(false);return false;" class="btn btn-default" title="<?php echo defined('LANG_UNDO') ? LANG_UNDO : 'Undo'; ?>" aria-label="<?php echo defined('LANG_UNDO') ? LANG_UNDO : 'Undo'; ?>"><i class="glyphicon glyphicon-undo"></i></a>
-    <a href="#" onClick="Blockly.mainWorkspace.undo(true);return false;" class="btn btn-default" title="<?php echo defined('LANG_REDO') ? LANG_REDO : 'Redo'; ?>" aria-label="<?php echo defined('LANG_REDO') ? LANG_REDO : 'Redo'; ?>"><i class="glyphicon glyphicon-repeat"></i></a>
+  <div id="custom_controls">
+    <a href="#" onClick="Blockly.mainWorkspace.undo(false);return false;" class="btn btn-default" title="<?php echo defined('LANG_UNDO') ? LANG_UNDO : 'Undo'; ?>" aria-label="<?php echo defined('LANG_UNDO') ? LANG_UNDO : 'Undo'; ?>"><i class="glyphicon glyphicon-undo"></i> <?php echo defined('LANG_UNDO') ? LANG_UNDO : 'Undo'; ?></a>
+    <a href="#" onClick="Blockly.mainWorkspace.undo(true);return false;" class="btn btn-default" title="<?php echo defined('LANG_REDO') ? LANG_REDO : 'Redo'; ?>" aria-label="<?php echo defined('LANG_REDO') ? LANG_REDO : 'Redo'; ?>"><i class="glyphicon glyphicon-repeat"></i> <?php echo defined('LANG_REDO') ? LANG_REDO : 'Redo'; ?></a>
     <a href="#"  onClick="return SaveAndClose();" class="btn btn-default btn-primary">
       <i class="glyphicon glyphicon-floppy-disk"></i>
       <?php echo LANG_SUBMIT;?></a>
@@ -216,6 +259,8 @@ $mjBlocklyTheme = defined('MJ_THEME') ? MJ_THEME : (defined('SETTINGS_THEME') ? 
       <?php echo LANG_RUN_SCRIPT;?></a>
     <a href="#"  onClick="return window.close();" class="btn btn-default"><?php echo LANG_CANCEL;?></a>
   </div>
+
+  <div id="blocklyDiv"></div>
 
 
 
