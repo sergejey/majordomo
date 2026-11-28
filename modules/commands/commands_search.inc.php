@@ -64,10 +64,6 @@ if ($this->action != 'admin') {
             $parent_rec['ID'] = $parent_rec['PARENT_ID'];
         }
 
-        if (!$parent_rec['AUTO_UPDATE'] && (!defined('DISABLE_WEBSOCKETS') || DISABLE_WEBSOCKETS == 0)) {
-            $parent_rec['AUTO_UPDATE'] = 10;
-        }
-
         foreach ($parent_rec as $k => $v) {
             $out['PARENT_' . $k] = $v;
         }
