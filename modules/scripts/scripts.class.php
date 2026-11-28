@@ -328,7 +328,7 @@ class scripts extends module
                         $script_rec['AUTO_LINK'] = 1;
                         $script_rec['LINKED_OBJECT'] = $scripts[$i]['LINKED_OBJECT'];
                         $script_rec['LINKED_PROPERTY'] = $scripts[$i]['LINKED_PROPERTY'];
-                    } else {
+                    } elseif (array_key_exists('AUTO_LINK', $scripts[$i])) {
                         $script_rec['AUTO_LINK'] = 0;
                         $script_rec['LINKED_OBJECT'] = '';
                         $script_rec['LINKED_PROPERTY'] = '';
