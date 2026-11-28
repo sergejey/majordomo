@@ -27,8 +27,8 @@ if (isset($rec['LINKED_OBJECT']) && $rec['LINKED_OBJECT'] != '') {
                 foreach ($linked_modules as $module) {
                     $properties[$i]['LINKED_MODULES'][] = array('MODULE' => $module, 'PROPERTY' => $properties[$i]['PROPERTY'], 'OBJECT' => $rec['LINKED_OBJECT']);
                 }
-                $out['LINKED_PROPERTIES'] = $properties;
             }
+            $out['LINKED_PROPERTIES'] = $properties;
         }
     }
 }
