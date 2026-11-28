@@ -151,6 +151,12 @@ if ($this->mode == 'update') {
         } else {
             $new_rec = 1;
             $rec['ID'] = SQLInsert($table_name, $rec); // adding new record
+            if ($new_rec && $icon != '') {
+                @unlink(ROOT . 'cms/icons/_' . $icon_name);
+                $rec['ICON'] = $rec['ID'] . '_' . $icon_name;
+                copy($icon, ROOT . 'cms/icons/' . $rec['ICON']);
+                SQLUpdate($table_name, $rec);
+            }
         }
         $this->updateTree_commands();
         $out['OK'] = 1;

@@ -60,6 +60,12 @@ if ($this->mode == 'update') {
         } else {
             $new_rec = 1;
             $rec['ID'] = SQLInsert($table_name, $rec); // adding new record
+            if ($new_rec && $avatar != '') {
+                @unlink(ROOT . 'cms/avatars/_' . $avatar_name);
+                $rec['AVATAR'] = $rec['ID'] . '_' . $avatar_name;
+                copy($avatar, ROOT . 'cms/avatars/' . $rec['AVATAR']);
+                SQLUpdate($table_name, $rec);
+            }
         }
         if ($rec['IS_DEFAULT']) {
             SQLExec("UPDATE users SET IS_DEFAULT=0 WHERE ID!=" . $rec['ID']);
