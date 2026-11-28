@@ -78,7 +78,7 @@
                     <div class="row">
                         <div class="col-lg-8 col-md-8 col-sm-7 col-xs-9" onclick="toggleClass('{if $item.SUB_LIST!=$item.ID}{$item.ID},{/if}{$item.SUB_LIST}');" style="cursor: pointer;{if isset($item.CAN_DELETE)}opacity: 0.3;{/if}">
                         <h3 class="panel-title">
-                            <i class="glyphicon glyphicon-search" style="margin-right: 10px;vertical-align: text-top;cursor: pointer;" onclick="$('#filter_modules').val('{$item.TITLE}');filterSearch();$('#mdmGlobalSearchModal').modal('show');"></i> {$item.TITLE}
+                            <i class="glyphicon glyphicon-search" style="margin-right: 10px;vertical-align: text-top;cursor: pointer;" onclick="$('#filter_modules').val('{$item.TITLE}');filterSearch();$('#mdmGlobalSearchModal').modal('show');"></i> {$item.TITLE} {if $item.TITLE == 'SDevices'}<i class="glyphicon glyphicon-question-sign" style="font-size:12px;color:#ffffff;cursor:help;" title="{$smarty.const.LANG_CLASS_HINT_SDEVICES}"></i>{else}{if $item.TITLE == 'Computer' OR $item.TITLE == 'systemStates' OR $item.TITLE == 'OperationalModes' OR $item.TITLE == 'Timer'}<i class="glyphicon glyphicon-question-sign" style="font-size:12px;color:#ffffff;cursor:help;" title="{$smarty.const.LANG_CLASS_HINT_SYSTEM}"></i>{/if}{/if}
                         </h3>
                         {if $item.DESCRIPTION!=''}<div style="font-size: 1rem;padding-left: 30px;">{$item.DESCRIPTION}</div>{/if}
                     </div>
