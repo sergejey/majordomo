@@ -42,6 +42,12 @@ for ($i = 0; $i < $total; $i++) {
 }
 
 
+// Control panel pages, including its update consoles: they use the panel theme and the admin Bootstrap.
+$mj_is_panel = isset($_SERVER['SCRIPT_NAME']) && preg_match('#/(admin|print_all|modules/(market|saverestore)/update_iframe)\.php$#', $_SERVER['SCRIPT_NAME']);
+if (!defined('MJ_PANEL')) {
+    Define('MJ_PANEL', $mj_is_panel ? 1 : 0);
+}
+
 // Effective colour theme for templates. The saved SETTINGS_THEME is the source
 // of truth; a cookie is respected only after an explicit manual switch in the
 // admin UI (theme_manual=1). This prevents a stale `theme` cookie from
@@ -51,7 +57,6 @@ if (!defined('MJ_THEME')) {
     // User theme comes from settings only; the control panel may have its own
     // theme in the `panel_theme` cookie and must not affect the user theme.
     $mj_theme_value = defined('SETTINGS_THEME') ? SETTINGS_THEME : 'light';
-    $mj_is_panel = isset($_SERVER['SCRIPT_NAME']) && preg_match('#/(admin|print_all)\.php$#', $_SERVER['SCRIPT_NAME']);
     $mj_panel_theme = '';
     if ($mj_is_panel) {
         if (!empty($_COOKIE['panel_theme'])) {
