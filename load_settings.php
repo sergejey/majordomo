@@ -31,7 +31,7 @@ for ($i = 0; $i < $total; $i++) {
     if ($settings[$i]['NAME'] == 'SITE_LANGUAGE') {
         $normalized = ($settings[$i]['VALUE'] === 'ua' ? 'uk' : $settings[$i]['VALUE']);
         if ($normalized !== $settings[$i]['VALUE']) {
-            SQLExec("UPDATE settings SET VALUE='uk' WHERE NAME='SITE_LANGUAGE");
+            SQLExec("UPDATE settings SET VALUE='uk' WHERE NAME='SITE_LANGUAGE'");
             $settings[$i]['VALUE'] = $normalized;
             $_SESSION['lang'] = $normalized;
         }
