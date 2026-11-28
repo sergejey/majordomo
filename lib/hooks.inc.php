@@ -46,7 +46,7 @@ function unsubscribeFromEvent($module_name, $event_name = '')
 {
     $sqlQuery = "SELECT *
                   FROM settings
-                 WHERE NAME LIKE 'HOOK_EVENT_" . DBSafe(strtoupper($event_name)) . "'
+                 WHERE NAME = 'HOOK_EVENT_" . DBSafe(strtoupper($event_name)) . "'
                    AND TYPE = 'json'";
 
     $rec = SQLSelectOne($sqlQuery);
