@@ -75,6 +75,7 @@ if (isset($_ENV["S2G_BASE_URL"]) && $_ENV["S2G_BASE_URL"]) {
 //Define('HOME_NETWORK', '192.168.0.*');       // Домашняя сеть для упрощенного доступа | Home network for simplified access
 //Define('EXT_ACCESS_USERNAME', 'user');       // Логин для внешнего доступа | External access login
 //Define('EXT_ACCESS_PASSWORD', 'password');   // Пароль для внешнего доступа | External access password
+//Define('TRUSTED_PROXIES', '');              // Comma-separated proxy IPs allowed to set X-Forwarded-For | IP доверенных прокси, которым разрешено задавать X-Forwarded-For
 //Define('USE_PROXY', '127.0.0.1:8888');       // Прокси-сервер для исходящих HTTP-запросов | Proxy server for outgoing HTTP requests
 // Тип прокси задаётся схемой (без схемы = HTTP) | Proxy type is set by URL scheme (no scheme = HTTP):
 //Define('USE_PROXY', 'socks5h://127.0.0.1:1080'); // SOCKS5, DNS через прокси | SOCKS5, DNS resolved by proxy
