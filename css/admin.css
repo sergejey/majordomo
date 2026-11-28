@@ -431,6 +431,7 @@ label.checkbox {
 @media (max-width: 767px) {
         #linkToggleLeftPanel {
                 display: inline-block;
+                margin: -6px;
                 padding: 6px;
         }
 }
