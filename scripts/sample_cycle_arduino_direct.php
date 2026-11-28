@@ -89,7 +89,7 @@ try
          
          usleep($uSleep);
       }
-      while(!file_exists('./reboot') || IsSet($_GET['onetime']));
+      while(!file_exists('./reboot') && !IsSet($_GET['onetime']));
    }
    else
    {
