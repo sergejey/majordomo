@@ -21,6 +21,10 @@ function markErrorsRead(id, element) {
 				$(element).closest('tr').fadeOut(200, function () { $(this).remove(); });
 			}
 		}
+		$('#errors-saved').empty();
+		if (typeof checkUpdatesAvailable === 'function') {
+			checkUpdatesAvailable();
+		}
 	});
 	return false;
 }
