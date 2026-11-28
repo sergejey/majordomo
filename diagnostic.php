@@ -3,6 +3,12 @@
 include_once("./config.php");
 include_once("./lib/loader.php");
 
+$session = new session('prj');
+if (empty($session->data['AUTHORIZED'])) {
+    http_response_code(403);
+    exit('Forbidden');
+}
+
 $sent_ok = 0;
 
 if (preg_match('/ru/is', $_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
