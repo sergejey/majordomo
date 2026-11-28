@@ -185,11 +185,9 @@ if ($op == 'filter') {
     for ($i = 0; $i < $total; $i++) {
         $res .= '<div class="searchHover"><span class="label label-success">Свойство</span> '; //<a href="/panel/object/'.'">
         if ($properties[$i]['OBJECT']) {
-            $res .= '<a target="_blank" href="/panel/class/' . $properties[$i]['OBJECT_CLASS_ID'] . '/object/' . $properties[$i]['OBJECT_ID'] . '/properties.html">' . $methods[$i]['OBJECT'];
-            $res .= $properties[$i]['OBJECT'];
+            $res .= '<a target="_blank" href="/panel/class/' . $properties[$i]['OBJECT_CLASS_ID'] . '/object/' . $properties[$i]['OBJECT_ID'] . '/properties.html">' . $properties[$i]['OBJECT'];
         } else {
-            $res .= '<a target="_blank" href="/panel/class/' . $properties[$i]['CLASS_ID'] . '/properties.html">' . $methods[$i]['OBJECT'];
-            $res .= $properties[$i]['CLASS'];
+            $res .= '<a target="_blank" href="/panel/class/' . $properties[$i]['CLASS_ID'] . '/properties.html">' . $properties[$i]['CLASS'];
         }
         $res .= '.' . $properties[$i]['TITLE'] . (($properties[$i]['DESCRIPTION']) ? '<small style="color: gray;padding-left: 5px;"><i class="glyphicon glyphicon-arrow-right" style="font-size: .8rem;vertical-align: text-top;color: lightgray;"></i> ' . $properties[$i]['DESCRIPTION'] . '</small>' : '') . '</a></div>';
     }
