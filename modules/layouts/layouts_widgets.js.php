@@ -57,9 +57,8 @@ include_once("./load_settings.php");
                     $("#clock_min").html(( minutes < 10 ? "0" : "" ) + minutes);
                     //var seconds = new Date().getSeconds();
                     //$("#clock_sec").html(( seconds < 10 ? "0" : "" ) + seconds);
+                    var newDate = new Date();
                     if (currentSettings.show_date) {
-                        var newDate = new Date();
-                        newDate.setDate(newDate.getDate());
                         $('#clock_date').show();
                     } else {
                         $('#clock_date').hide();
