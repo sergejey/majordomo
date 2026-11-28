@@ -229,12 +229,15 @@ if ($this->tab == 'properties') {
             $props[$i]['METHODS'] = $methods;
             if(!empty($props[$i]['ONCHANGE'])){
                 $counter = count($methods);
+                $delete_method = null;
                 for($m=0; $m < $counter; $m++){
                     if($props[$i]['METHODS'][$m]['TITLE'] == $props[$i]['ONCHANGE']){
                         $delete_method = $m;
                     }
                 }
-                array_splice($props[$i]['METHODS'], $delete_method, true);
+                if ($delete_method !== null) {
+                    array_splice($props[$i]['METHODS'], $delete_method, 1);
+                }
             }
         }
     }
