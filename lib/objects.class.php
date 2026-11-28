@@ -1460,7 +1460,7 @@ function processTitle($title, $object = 0)
                 $total = count($m[0]);
 
                 for ($i = 0; $i < $total; $i++) {
-                    $title = str_replace($m[0][$i], getGlobal($m[1][$i] . '.' . $m[2][$i]), $title);
+                    $title = str_replace($m[0][$i], htmlspecialchars((string)getGlobal($m[1][$i] . '.' . $m[2][$i]), ENT_QUOTES, 'UTF-8'), $title);
                 }
 
                 endMeasure('processTitleProperties');

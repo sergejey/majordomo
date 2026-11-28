@@ -35,7 +35,7 @@ if (preg_match_all('/%(\w{2,}?)\.(\w{2,}?)%/isu', $result, $m))
    
    for ($i = 0; $i < $total; $i++)
    {
-      $result = str_replace($m[0][$i], getGlobal($m[1][$i] . '.' . $m[2][$i]), $result);
+      $result = str_replace($m[0][$i], htmlspecialchars((string)getGlobal($m[1][$i] . '.' . $m[2][$i]), ENT_QUOTES, 'UTF-8'), $result);
    }
 }
 
