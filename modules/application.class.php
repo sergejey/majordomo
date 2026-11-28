@@ -102,6 +102,7 @@ class application extends module
                     }
                     if (preg_match('/\.wav$/', $file)) {
                         $mtime = filemtime(ROOT . "cms/cached/voice/" . $file);
+                        $files[] = array('FILENAME' => $file, 'MTIME' => $mtime);
                     }
 
                 }
