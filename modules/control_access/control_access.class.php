@@ -94,6 +94,9 @@ function getParams() {
      $session->data['USER_NAME']=$user['LOGIN'];
      $session->data['USER_LEVEL']=$user['PRIVATE'];
      $session->data['USER_ID']=$user['ID'];
+     if ($user['LOGIN'] === 'admin' && $user['PASSWORD'] === md5('admin')) {
+      $session->data['FORCE_PASSWORD_CHANGE'] = 1;
+     }
 
      
 
@@ -208,6 +211,14 @@ function getParams() {
 
    if (!$session->data['AUTHORIZED']) exit;
 
+   if (!empty($session->data['FORCE_PASSWORD_CHANGE'])) {
+    $selfId = (int)(isset($session->data['USER_ID']) ? $session->data['USER_ID'] : 0);
+    if ($mode != 'edit' || (int)$id !== $selfId) {
+     $this->redirect(ROOTHTML . 'admin.php?action=control_access&mode=edit&id=' . $selfId);
+     exit;
+    }
+   }
+
    if ($mode == "delete") {
     SQLExec("DELETE FROM admin_users WHERE ID='".$id."'");
     $this->redirect("?");
@@ -265,6 +276,9 @@ function getParams() {
 
      if ($ok) {
       SQLUpdateInsert("admin_users", $user);
+      if ($user['PASSWORD'] != md5('admin')) {
+       UnSet($session->data['FORCE_PASSWORD_CHANGE']);
+      }
       $out["OK"]=1;
      }
     }
