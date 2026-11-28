@@ -1324,3 +1324,65 @@ function echonow($msg, $color = '')
     flush();
     ob_flush();
 }
+
+/**
+ * Determine whether a script returns a value, ignoring returns inside functions and comments.
+ * Uses PHP tokenization instead of inspecting the last line of the source.
+ */
+function script_returns_value($code)
+{
+    $tokens = token_get_all('<?php ' . $code);
+    $total = count($tokens);
+    $depth = 0;
+    $scopes = array();
+    $pendingScope = false;
+
+    for ($i = 0; $i < $total; $i++) {
+        $token = $tokens[$i];
+
+        if (is_array($token)) {
+            $id = $token[0];
+            if ($id === T_CURLY_OPEN || $id === T_DOLLAR_OPEN_CURLY_BRACES) {
+                $depth++;
+                continue;
+            }
+            if ($id === T_FUNCTION) {
+                $pendingScope = true;
+                continue;
+            }
+            if ($id === T_RETURN && !$scopes) {
+                for ($j = $i + 1; $j < $total; $j++) {
+                    $next = $tokens[$j];
+                    if (is_array($next)) {
+                        if ($next[0] === T_WHITESPACE
+                            || $next[0] === T_COMMENT
+                            || $next[0] === T_DOC_COMMENT) {
+                            continue;
+                        }
+                        return true;
+                    }
+                    if ($next === ';') {
+                        break;
+                    }
+                    return true;
+                }
+            }
+            continue;
+        }
+
+        if ($token === '{') {
+            $depth++;
+            if ($pendingScope) {
+                $scopes[] = $depth;
+                $pendingScope = false;
+            }
+        } elseif ($token === '}') {
+            if ($scopes && end($scopes) === $depth) {
+                array_pop($scopes);
+            }
+            $depth--;
+        }
+    }
+
+    return false;
+}
