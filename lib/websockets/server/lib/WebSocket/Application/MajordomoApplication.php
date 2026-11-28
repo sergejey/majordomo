@@ -66,6 +66,11 @@ class MajordomoApplication extends Application
         $this->_filename = '';
     }
 
+    public function tick()
+    {
+        $this->cycleAlive();
+    }
+
     private function cycleAlive()
     {
         if ((time() - $this->_latestAlive) < 3) {

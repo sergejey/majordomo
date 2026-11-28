@@ -64,6 +64,13 @@ class Server extends Socket
         public function run()
         {
                 while (true) {
+                        // keep application heartbeats alive even with no client traffic
+                        foreach ($this->applications as $application) {
+                                if (method_exists($application, 'tick')) {
+                                        $application->tick();
+                                }
+                        }
+
                         // periodically check for timed-out clients
                         $now = time();
                         foreach ($this->clientActivity as $sockId => $ts) {
