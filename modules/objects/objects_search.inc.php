@@ -42,9 +42,18 @@
    $session->data['objects_sort']=$sortby;
   }
   if (!$sortby) $sortby="TITLE";
-  $out['SORTBY']=$sortby;
+  $sortField = $sortby;
+  $sortDirection = '';
+  if (preg_match('/^([A-Z_]+)(?:\s+(ASC|DESC))?$/i', $sortby, $m)) {
+      $sortField = $m[1];
+      $sortDirection = isset($m[2]) ? ' ' . strtoupper($m[2]) : '';
+  }
+  if (!in_array($sortField, array('ID', 'TITLE', 'PRIORITY', 'CLASS_ID', 'LOCATION_ID'), true)) {
+      $sortField = 'TITLE';
+  }
+  $out['SORTBY']=$sortField . $sortDirection;
   // SEARCH RESULTS
-  $res=SQLSelect("SELECT objects.*, classes.TITLE as CLASS_TITLE, locations.TITLE as LOCATION_TITLE FROM objects LEFT JOIN locations ON locations.ID=objects.LOCATION_ID LEFT JOIN classes ON classes.ID=objects.CLASS_ID WHERE $qry ORDER BY objects.TITLE");
+  $res=SQLSelect("SELECT objects.*, classes.TITLE as CLASS_TITLE, locations.TITLE as LOCATION_TITLE FROM objects LEFT JOIN locations ON locations.ID=objects.LOCATION_ID LEFT JOIN classes ON classes.ID=objects.CLASS_ID WHERE $qry ORDER BY objects." . $sortField . $sortDirection);
   if ($res[0]['ID']) {
    paging($res, 50, $out); // search result paging
    colorizeArray($res);
