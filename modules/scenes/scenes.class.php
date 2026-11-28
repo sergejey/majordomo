@@ -900,6 +900,13 @@ class scenes extends module
         for ($i = 0; $i < $total; $i++) {
             $this->delete_elm_states($states[$i]['ID']);
         }
+        $children = SQLSelect("SELECT ID FROM elements WHERE CONTAINER_ID=" . (int)$rec['ID']);
+        foreach ($children as $child) {
+            $childStates = SQLSelect("SELECT ID FROM elm_states WHERE ELEMENT_ID=" . (int)$child['ID']);
+            foreach ($childStates as $state) {
+                $this->delete_elm_states($state['ID']);
+            }
+        }
         SQLExec("DELETE FROM elements WHERE ID=" . (int)$rec['ID'] . " OR (CONTAINER_ID>0 AND CONTAINER_ID=" . (int)$rec['ID'] . ")");
     }
 
