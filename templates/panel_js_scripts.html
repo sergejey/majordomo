@@ -480,7 +480,11 @@
                 window.history.pushState('', window.title, link);
                 if (cachedContent!=obj.CONTENT) {
                     $('#partLoadContent').html(obj.CONTENT);
-                    localStorage.setItem(cachedKey,obj.CONTENT);
+                    try {
+                        localStorage.setItem(cachedKey,obj.CONTENT);
+                    } catch (e) {
+                        localStorage.clear();
+                    }
                 }
                 if (("undefined" !== typeof obj.TITLE) && obj.TITLE != '') {
                     window.document.title = obj.TITLE;
