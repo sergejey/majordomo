@@ -44,7 +44,7 @@ $settings_structure = array(
             'title' => LANG_DISABLE_LOGGING,
             'notes' => LANG_DISABLE_LOGGING_NOTE,
             'type' => 'onoff',
-            'DEFAULTVALUE' => '0'
+            'default' => '0'
         ),
         'SYSTEM_DEBMES_PATH' => array(
             'title' => LANG_DEBMES_LOGS_PATH,
