@@ -328,6 +328,10 @@ class scripts extends module
                         $script_rec['AUTO_LINK'] = 1;
                         $script_rec['LINKED_OBJECT'] = $scripts[$i]['LINKED_OBJECT'];
                         $script_rec['LINKED_PROPERTY'] = $scripts[$i]['LINKED_PROPERTY'];
+                    } else {
+                        $script_rec['AUTO_LINK'] = 0;
+                        $script_rec['LINKED_OBJECT'] = '';
+                        $script_rec['LINKED_PROPERTY'] = '';
                     }
                     SQLUpdate('scripts', $script_rec);
 
