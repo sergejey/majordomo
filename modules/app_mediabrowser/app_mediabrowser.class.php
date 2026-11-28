@@ -213,6 +213,10 @@ class app_mediabrowser extends module
         $play = urlsafe_b64decode($play);
         if ($play != '') {
             $play = str_replace('//', '/', $play);
+            if (!mjMediaPathAllowed($play)) {
+                http_response_code(403);
+                exit('Forbidden');
+            }
             require(DIR_MODULES . $this->name . '/stream_files.php');
         }
 

@@ -1,5 +1,10 @@
 <?php
 
+if (!isset($play) || $play === '' || !function_exists('mjMediaPathAllowed') || !mjMediaPathAllowed($play)) {
+    http_response_code(403);
+    exit('Forbidden');
+}
+
 if (is_file($play)) {
     $mime_type = get_mime_type($play);
     header("Content-type: $mime_type");

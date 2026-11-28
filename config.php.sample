@@ -178,14 +178,14 @@ Define('GETURL_WARNING_TIMEOUT', 5);        // Порог (сек.) для warni
  */
 //define('DISABLE_WEBSOCKETS', 1);             // Полностью отключить websocket-цикл | Fully disable websocket cycle
 //define('SETTINGS_SYSTEM_WEBSOCKETS_RESTART_TIMEOUT', 300); // Watchdog websocket (сек), 0 - отключить | Websocket watchdog (sec), 0 disables
-define('WEBSOCKETS_HOST', '0.0.0.0');          // Адрес bind для websocket-сервера | Bind address for websocket server
+define('WEBSOCKETS_HOST', '127.0.0.1');          // Адрес bind для websocket-сервера | Bind address for websocket server
 define('WEBSOCKETS_PORT', 8002);               // Порт websocket-сервера | Websocket server port
 define('WEBSOCKETS_TLS', 0);                   // Использовать TLS: 0 — нет, 1 — да | Use TLS: 0 = no, 1 = yes
 define('WEBSOCKETS_MAX_CLIENTS', 100);         // Общий лимит одновременных websocket-клиентов | Total concurrent websocket clients limit
 define('WEBSOCKETS_MAX_CONNECTIONS_PER_IP', 100); // Лимит подключений с одного IP | Connection limit per IP
 define('WEBSOCKETS_MAX_REQUESTS_PER_MINUTE', 20000); // Лимит сообщений/запросов в минуту на клиента | Message/request limit per minute per client
 define('WEBSOCKETS_CLIENT_TIMEOUT', 30);       // Таймаут неактивного клиента в секундах | Inactive client timeout in seconds
-define('WEBSOCKETS_CHECK_ORIGIN', 0);          // Проверять Origin в handshake: 0/1 | Check Origin in handshake: 0/1
+define('WEBSOCKETS_CHECK_ORIGIN', 1);          // Проверять Origin в handshake: 0/1 | Check Origin in handshake: 0/1
 define('WEBSOCKETS_ALLOWED_ORIGINS', '');      // Белый список Origin (через запятую), если CHECK_ORIGIN=1 | Allowed Origin list (comma-separated) when CHECK_ORIGIN=1
 
 // TLS-параметры (используются только если WEBSOCKETS_TLS=1) | TLS parameters (used only when WEBSOCKETS_TLS=1)

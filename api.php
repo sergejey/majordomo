@@ -78,6 +78,12 @@ if (isset($request[0])) {
     if (gr('prj')) {
         $session = new session("prj");
     }
+
+    if (!mjRequestAuthorized($url)) {
+        http_response_code(401);
+        echo json_encode(array('error' => 'Unauthorized'));
+        exit;
+    }
 }
 
 if (!isset($request[0])) {
@@ -736,7 +742,6 @@ if (gr('performance') || (isset($result['passed'])) && $result['passed']>=5) {
 }
 
 if (!headers_sent()) {
-    header("Access-Control-Allow-Origin: *");
     //header("Access-Control-Allow-Methods: \"GET, HEAD\"");
     header("Content-type:application/json");
 }

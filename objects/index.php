@@ -102,6 +102,24 @@ if (!$commandLine) {
     header('Content-Type: text/html; charset=utf-8');
 }
 
+if (!$commandLine) {
+    $requestPath = isset($_SERVER['REQUEST_URI']) ? parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) : '';
+    $opCheck = strtolower((string)gr('op'));
+    $dangerous = gr('module') !== ''
+        || in_array($opCheck, array('set', 'm', 'delete', 'job', 'method', 'script'), true)
+        || gr('job') !== '' || gr('method') !== '' || gr('script') !== ''
+        || gr('say') !== '' || gr('sayto') !== '' || gr('sayreply') !== ''
+        || gr('processSubscriptions') !== '';
+    if ($dangerous && !function_exists('mjRequestAuthorized')) {
+        http_response_code(403);
+        exit('Forbidden');
+    }
+    if ($dangerous && !mjRequestAuthorized($requestPath)) {
+        http_response_code(401);
+        exit('Unauthorized');
+    }
+}
+
 $module = gr('module');
 if ($module != '') {
     include_once(DIR_MODULES . $module . '/' . $module . '.class.php');

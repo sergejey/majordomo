@@ -13,6 +13,112 @@ function setRebootRequired($reason = '')
     @SaveFile($path_to_flag, $reason);
 }
 
+function mjInternalSecret()
+{
+    static $secret = null;
+    if ($secret !== null) return $secret;
+    $file = ROOT . 'cms/cached/internal_secret';
+    if (file_exists($file)) {
+        $stored = trim((string)@file_get_contents($file));
+        if ($stored !== '') return $secret = $stored;
+    }
+    $secret = function_exists('random_bytes') ? bin2hex(random_bytes(32)) : md5(uniqid('', true) . microtime(true));
+    if (!@file_put_contents($file, $secret)) {
+        $secret = hash('sha256', DB_NAME . '|' . BASE_URL);
+    } else {
+        @chmod($file, 0600);
+    }
+    return $secret;
+}
+
+function mjInternalSign($path, $params)
+{
+    $params = is_array($params) ? $params : array();
+    ksort($params);
+    return hash_hmac('sha256', $path . '|' . http_build_query($params), mjInternalSecret());
+}
+
+function mjMediaPathAllowed($file)
+{
+    $real = realpath($file);
+    if ($real === false) return false;
+    $collections = SQLSelect('SELECT PATH FROM collections');
+    if (!is_array($collections)) return false;
+    foreach ($collections as $collection) {
+        $root = realpath($collection['PATH']);
+        if ($root === false) continue;
+        if ($real === $root || strpos($real, $root . DIRECTORY_SEPARATOR) === 0) return true;
+    }
+    return false;
+}
+
+function mjWsToken()
+{
+    return hash_hmac('sha256', 'majordomo-websocket', mjInternalSecret());
+}
+
+function mjEgressAllowed($url)
+{
+    $parts = parse_url($url);
+    if (!$parts || !isset($parts['scheme'], $parts['host'])) {
+        return false;
+    }
+    $scheme = strtolower($parts['scheme']);
+    if ($scheme !== 'http' && $scheme !== 'https') {
+        return false;
+    }
+    $host = strtolower($parts['host']);
+    $baseHost = defined('BASE_URL') ? parse_url(BASE_URL, PHP_URL_HOST) : '';
+    $baseHost = is_string($baseHost) ? strtolower($baseHost) : '';
+
+    if ($host === 'metadata.google.internal' || $host === 'metadata' || $host === 'instance-data') {
+        return false;
+    }
+    if ($host === '::1' || preg_match('/^127\./', $host)) {
+        return $host === $baseHost;
+    }
+
+    $ip = filter_var($host, FILTER_VALIDATE_IP) ? $host : gethostbyname($host);
+    if ($ip !== $host && filter_var($ip, FILTER_VALIDATE_IP)) {
+        if (preg_match('/^169\.254\./', $ip) || $ip === '0.0.0.0') {
+            return false;
+        }
+    } elseif (preg_match('/^169\.254\./', $host) || $host === '0.0.0.0') {
+        return false;
+    }
+    return true;
+}
+
+function mjRequestAuthorized($path)
+{
+    if (isset($_GET['no_session'])) {
+        return function_exists('mjInternalVerify') && mjInternalVerify($path, $_GET);
+    }
+    global $session;
+    if (isset($session) && is_object($session) && !empty($session->data['AUTHORIZED'])) {
+        return true;
+    }
+    $key = '';
+    if (isset($_SERVER['HTTP_X_API_KEY'])) {
+        $key = (string)$_SERVER['HTTP_X_API_KEY'];
+    } elseif (isset($_GET['api_key'])) {
+        $key = (string)$_GET['api_key'];
+    }
+    if ($key === '') return false;
+    return hash_equals(mjInternalSecret(), $key);
+}
+
+function mjInternalVerify($path, $params)
+{
+    $params = is_array($params) ? $params : array();
+    $sig = isset($params['_sig']) ? (string)$params['_sig'] : '';
+    $ts = isset($params['_ts']) ? (int)$params['_ts'] : 0;
+    if ($sig === '' || $ts <= 0 || abs(time() - $ts) > 300) return false;
+    unset($params['_sig'], $params['_ts']);
+    $expected = mjInternalSign($path, $params);
+    return $expected !== '' && hash_equals($expected, $sig);
+}
+
 function resetRebootRequired()
 {
     $path_to_flag = ROOT . 'reboot';
@@ -535,6 +641,10 @@ function getURLBackground($url, $cache = 0, $username = '', $password = '')
  */
 function getURL($url, $cache = 0, $username = '', $password = '', $background = false, $curl_options = 0)
 {
+    if (!mjEgressAllowed($url)) {
+        DebMes("Blocked egress URL: $url", 'egress');
+        return '';
+    }
     startMeasure('getURL');
     $filename_part = preg_replace('/\W/is', '_', str_replace('http://', '', $url));
     if (strlen($filename_part) > 200) {
@@ -549,6 +659,10 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
             startMeasure('curl_prepare');
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
+            if (defined('CURLPROTO_HTTP')) {
+                @curl_setopt($ch, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+                @curl_setopt($ch, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+            }
             // Referer = origin of the target URL; some devices/sites reject requests without it
             curl_setopt($ch, CURLOPT_REFERER, preg_replace("|(https?://[^/]+).*$|i", "$1", $url));
             // fixed modern User-Agent (old Firefox/32 UA is blocked by some services); the browser's UA is not passed:
@@ -620,7 +734,9 @@ function getURL($url, $cache = 0, $username = '', $password = '', $background = 
             startMeasure('curl_exec');
 
             if (is_array($curl_options)) {
+                $blocked_curl_options = array(CURLOPT_URL, CURLOPT_SSL_VERIFYPEER, CURLOPT_SSL_VERIFYHOST, CURLOPT_FOLLOWLOCATION, CURLOPT_PROXY, CURLOPT_PROXYUSERPWD);
                 foreach ($curl_options as $k => $v) {
+                    if (in_array($k, $blocked_curl_options, true)) continue;
                     curl_setopt($ch, $k, $v);
                 }
             }
@@ -681,6 +797,10 @@ function postURLBackground($url, $query = array(), $cache = 0, $username = '', $
  */
 function postURL($url, $query = array(), $cache = 0, $username = '', $password = '', $background = false)
 {
+    if (!mjEgressAllowed($url)) {
+        DebMes("Blocked egress URL: $url", 'egress');
+        return '';
+    }
     startMeasure('postURL');
     // DebMes($url,'urls');
     $filename_part = preg_replace('/\W/is', '_', str_replace('http://', '', $url));
@@ -696,6 +816,10 @@ function postURL($url, $query = array(), $cache = 0, $username = '', $password =
             startMeasure('curl_prepare');
             $ch = curl_init();
             @curl_setopt($ch, CURLOPT_URL, $url);
+            if (defined('CURLPROTO_HTTP')) {
+                @curl_setopt($ch, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+                @curl_setopt($ch, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+            }
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
             curl_setopt($ch, CURLOPT_REFERER, preg_replace("|(https?://[^/]+).*$|i", "$1", $url));

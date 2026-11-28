@@ -2,6 +2,21 @@
 
 error_reporting(0); // Set E_ALL for debuging
 
+// MajorDoMo compatibility fix: the connector is web-accessible, so require
+// an authenticated admin session before exposing any file operations.
+$mjdRootDir = dirname(__DIR__, 3);
+chdir($mjdRootDir);
+require_once($mjdRootDir . '/config.php');
+require_once($mjdRootDir . '/lib/perfmonitor.class.php');
+startMeasure('elFinder');
+require_once($mjdRootDir . '/lib/loader.php');
+require_once($mjdRootDir . '/load_settings.php');
+$mjdSession = new session('prj');
+if (empty($mjdSession->data['AUTHORIZED'])) {
+    http_response_code(403);
+    exit('Forbidden');
+}
+
 // // Optional exec path settings (Default is called with command name only)
 // define('ELFINDER_TAR_PATH',      '/PATH/TO/tar');
 // define('ELFINDER_GZIP_PATH',     '/PATH/TO/gzip');

@@ -507,6 +507,19 @@ class saverestore extends module
     }
 
 
+    /** Only trusted HTTPS hosts may serve system updates. */
+    function isAllowedUpdateUrl($url)
+    {
+        $parts = parse_url($url);
+        if (!$parts || !isset($parts['scheme'], $parts['host'])) {
+            return false;
+        }
+        if (strtolower($parts['scheme']) !== 'https') {
+            return false;
+        }
+        $host = strtolower($parts['host']);
+        return in_array($host, array('github.com', 'codeload.github.com', 'api.github.com', 'raw.githubusercontent.com', 'connect.majordomohome.com'), true);
+    }
     function getUpdateURL($link = '')
     {
         $this->getConfig();
@@ -526,6 +539,9 @@ class saverestore extends module
                 $update_url = preg_replace('/archive\/\w+?\./', 'archive/' . $commit . '.', $update_url);
             }
         }
+        if (!$this->isAllowedUpdateUrl($update_url)) {
+            return '';
+        }
         return $update_url;
     }
 
@@ -539,6 +555,10 @@ class saverestore extends module
     function getLatest(&$out, $iframe = 0, $with_backup = 1, $link = '')
     {
         $url = $this->getUpdateURL($link);
+        if ($url === '') {
+            $this->redirect('?err_msg=' . urlencode('Unsafe update URL rejected'));
+            return;
+        }
         $this->url = $url;
 
         set_time_limit(0);
@@ -566,9 +586,7 @@ class saverestore extends module
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_TIMEOUT, 600);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-        curl_setopt($ch, CURLOPT_FILE, $f);
+                curl_setopt($ch, CURLOPT_FILE, $f);
         if (defined('USE_PROXY') && USE_PROXY != '') {
             curl_setopt($ch, CURLOPT_PROXY, USE_PROXY);
             if (defined('USE_PROXY_AUTH') && USE_PROXY_AUTH != '') {
@@ -709,7 +727,7 @@ class saverestore extends module
 
         mjdCurlClose($ch);
 
-        $result = unserialize($incoming);
+        $result = unserialize($incoming, array('allowed_classes' => false));
 
         $ok_msg = 'Error sending files to repository! ';//.$incoming
         if ($result['MESSAGE']) {
@@ -772,7 +790,7 @@ class saverestore extends module
         //echo $incoming;exit;
 
 
-        $result = unserialize($incoming);
+        $result = unserialize($incoming, array('allowed_classes' => false));
 
         //echo $repository_url;
         //echo($result);exit;
@@ -838,7 +856,7 @@ class saverestore extends module
         $incoming = curl_exec($ch);
         mjdCurlClose($ch);
 
-        $res = unserialize($incoming);
+        $res = unserialize($incoming, array('allowed_classes' => false));
 
         if ($res['STATUS'] == 'OK' && $res['DOWNLOAD_FILE'] != '') {
             // downloading update
@@ -915,7 +933,7 @@ class saverestore extends module
 
         //echo $incoming;exit;
 
-        $res = unserialize($incoming);
+        $res = unserialize($incoming, array('allowed_classes' => false));
 
         if ($res['STATUS'] == 'OK' && $res['DOWNLOAD_FILE'] != '') {
             // downloading update
@@ -1009,7 +1027,7 @@ class saverestore extends module
 
         //echo $incoming;exit;
 
-        $result = unserialize($incoming);
+        $result = unserialize($incoming, array('allowed_classes' => false));
 
         if ($result['STATUS'] != 'OK') {
 
@@ -1175,7 +1193,7 @@ class saverestore extends module
         //echo $incoming;exit;
 
 
-        $result = unserialize($incoming);
+        $result = unserialize($incoming, array('allowed_classes' => false));
 
         //echo $repository_url;
         //echo($result);exit;
@@ -1324,12 +1342,17 @@ class saverestore extends module
             $folder = '/' . $folder;
 
         if ($restore != '') {
-            //$file=ROOT.'cms/saverestore/'.$restore;
-            $file = $restore;
-            $file_name = basename($file);
+            $file = basename($restore);
+            $file_name = $file;
         } elseif ($file != '') {
-            move_uploaded_file($file, DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/' . $file_name);
+            $tmp_file = $file;
+            $file_name = basename($file_name);
             $file = $file_name;
+            move_uploaded_file($tmp_file, DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/' . $file_name);
+        }
+        if ($file_name !== '' && !preg_match('/^[A-Za-z0-9_.-]{1,128}$/', $file_name)) {
+            $this->redirect('?err_msg=' . urlencode('Unsafe archive name rejected'));
+            return;
         }
 
         if ($iframe) {
@@ -1386,10 +1409,10 @@ class saverestore extends module
                 echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> ' . LANG_UPDATEBACKUP_UNPACKEGE . ' ' . $file . '</div>');
             }
             if (IsWindowsOS()) {
-                $result = exec(DOC_ROOT . DIRECTORY_SEPARATOR . 'gunzip ..' . DIRECTORY_SEPARATOR . $file, $output, $res);
-                $result = exec(DOC_ROOT . DIRECTORY_SEPARATOR . 'tar -xvf ..' . DIRECTORY_SEPARATOR . str_replace('.tgz', '.tar', $file), $output, $res);
+                $result = exec(DOC_ROOT . DIRECTORY_SEPARATOR . 'gunzip ' . escapeshellarg('..' . DIRECTORY_SEPARATOR . $file), $output, $res);
+                $result = exec(DOC_ROOT . DIRECTORY_SEPARATOR . 'tar -xvf ' . escapeshellarg('..' . DIRECTORY_SEPARATOR . str_replace('.tgz', '.tar', $file)), $output, $res);
             } else {
-                $result = exec('tar xzvf ../' . $file, $output, $res);
+                $result = exec('tar xzvf ' . escapeshellarg('../' . $file), $output, $res);
             }
 
             if (!$result) {
