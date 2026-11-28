@@ -494,7 +494,7 @@ $(document).ready(function() {
 		dynamicContentRefresh();
 	}
 
-    localStorage.clear();
+    // Keep the partLoad cache: page reloads must not discard cached panel content.
     ajaxManager.run();
 });
 </script>
