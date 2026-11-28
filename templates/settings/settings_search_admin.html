@@ -1,5 +1,6 @@
 <script language="javascript">
 function saveSettingInline(el) {
+	if (el.dataset.saved === undefined) el.dataset.saved = el.value;
 	var data = new FormData();
 	data.append('id', el.dataset.id);
 	data.append('value', el.value);
@@ -9,9 +10,11 @@ function saveSettingInline(el) {
 		credentials: 'same-origin'
 	}).then(function (r) { return r.json(); }).then(function (result) {
 		if (!result || result.status !== 'ok') {
+			el.value = el.dataset.saved;
 			if ($.toast) $.toast({ text: '<#LANG_SETTINGS_ERROR#>', position: 'top-right', bgColor: '#b52b27', textColor: '#fff', hideAfter: 3000, stack: 1 });
 			return;
 		}
+		el.dataset.saved = el.value;
 		if ($.toast) $.toast({ text: '<#LANG_SETTINGS_UPDATED#>', position: 'top-right', bgColor: '#3c763d', textColor: '#fff', hideAfter: 3000, stack: 1 });
 	}).catch(function () {
 		if ($.toast) $.toast({ text: '<#LANG_SETTINGS_ERROR#>', position: 'top-right', bgColor: '#b52b27', textColor: '#fff', hideAfter: 3000, stack: 1 });
