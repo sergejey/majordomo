@@ -35,6 +35,9 @@ function sayReply($ph, $level = 0, $replyto = '')
     } else {
         $terminal_rec = SQLSelectOne("SELECT * FROM terminals WHERE LATEST_REQUEST_TIME>=(NOW() - INTERVAL 5 SECOND) ORDER BY LATEST_REQUEST_TIME DESC LIMIT 1");
     }
+    if (!$terminal_rec && preg_match('/^terminal(\d+)$/i', (string)$source, $m)) {
+        $terminal_rec = SQLSelectOne("SELECT * FROM terminals WHERE ID=" . (int)$m[1]);
+    }
     if (!$terminal_rec) {
         $source = 'terminal_not_found';
         say($ph, $level);
