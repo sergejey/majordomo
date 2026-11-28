@@ -360,7 +360,6 @@ class mysql
         if (!$this->dbh) return false;
         $err_no = $this->lastErrorNo ? $this->lastErrorNo : mysqli_errno($this->dbh);
         $err_details = $this->lastErrorDetails ? $this->lastErrorDetails : mysqli_error($this->dbh);
-        $stop = 1;
         if (preg_match('/You have an error in your SQL syntax/is', $err_details)) {
             $stop = 0;
         } elseif (preg_match('/unknown column/is', $err_details)) {
