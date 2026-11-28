@@ -82,7 +82,7 @@ function processSubscriptionsSafe($event_name, $details = '')
     return 1;
 }
 
-function processSubscriptionByModule($module_name, $event_name, &$details)
+function processSubscriptionByModule($module_name, $event_name, &$details, $filter = '')
 {
     $modulePath = DIR_MODULES . $module_name . '/' . $module_name . '.class.php';
     $output = '';
@@ -93,7 +93,7 @@ function processSubscriptionByModule($module_name, $event_name, &$details)
             //DebMes("$module_name.processSubscription ($event_name)",'process_subscription');
             verbose_log("Processing subscription to [" . $event_name . "] by [" . $module_name . "] (" . (is_array($details) ? json_encode($details) : '') . ")");
             try {
-                $output = $module_object->processSubscription($event_name, $details);
+                $output = $module_object->processSubscription($event_name, $details, $filter);
             } catch (Exception $e) {
                 //DebMes('Error in processing "%s": ' . $e->getMessage(), 'process_subscription');
             }
@@ -142,7 +142,7 @@ function processSubscriptions($event_name, $details = '', $return_output = false
         for ($i = 0; $i < $total; $i++) {
             $module_name = $data2[$i]['module'];
             $filter_details = $data2[$i]['filter'];
-            $output .= processSubscriptionByModule($module_name, $event_name, $details);
+            $output .= processSubscriptionByModule($module_name, $event_name, $details, $filter_details);
             if (!isset($details['BREAK'])) {
                 $details['BREAK'] = false;
             }
