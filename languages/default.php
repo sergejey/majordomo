@@ -296,6 +296,9 @@ $dictionary = array(
 
 
     'SETTINGS_UPDATED' => 'Settings updated!',
+'DEVICE_WIDGET_STYLE' => 'Device widget style',
+'DEVICE_WIDGET_STYLE_LEGACY' => 'Legacy (classic)',
+'DEVICE_WIDGET_STYLE_MODERN' => 'MJ Modern',
     'SETTINGS_ERROR' => 'Settings save failed',
 
 

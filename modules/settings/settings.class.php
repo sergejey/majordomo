@@ -210,6 +210,9 @@ parent::dbInstall($data);
    $to_remove[$i]="'".$to_remove[$i]."'";
   }
   SQLExec("DELETE FROM settings WHERE `NAME` IN (".implode(',',$to_remove).")");
+  if (!SQLSelectOne("SELECT ID FROM settings WHERE NAME='DEVICE_WIDGET_STYLE'")) {
+   SQLExec("INSERT INTO settings (`ID`, `PRIORITY`, `HR`, `TITLE`, `NAME`, `TYPE`, `NOTES`, `VALUE`, `DEFAULTVALUE`, `URL`, `URL_TITLE`, `DATA`) VALUES (101, 0, 0, 'Device widget style', 'DEVICE_WIDGET_STYLE', 'select', '', 'legacy', 'legacy', '', '', 'legacy=Legacy (classic)|modern=MJ Modern')");
+  }
 
  }
 // --------------------------------------------------------------------
