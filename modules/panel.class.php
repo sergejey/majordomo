@@ -98,14 +98,21 @@ class panel extends module
                 $session->data['SITE_USERNAME'] = $users[0]['USERNAME'];
                 $session->data['SITE_USER_ID'] = $users[0]['ID'];
             } else {
+                $hostUser = null;
+                $defaultUser = null;
                 for ($i = 0; $i < $total; $i++) {
                     if ($users[$i]['HOST'] && $users[$i]['HOST'] == $_SERVER['REMOTE_ADDR']) {
-                        $session->data['SITE_USERNAME'] = $users[$i]['USERNAME'];
-                        $session->data['SITE_USER_ID'] = $users[$i]['ID'];
-                    } elseif ($users[$i]['IS_DEFAULT']) {
-                        $session->data['SITE_USERNAME'] = $users[$i]['USERNAME'];
-                        $session->data['SITE_USER_ID'] = $users[$i]['ID'];
+                        $hostUser = $users[$i];
+                        break;
                     }
+                    if ($users[$i]['IS_DEFAULT'] && $defaultUser === null) {
+                        $defaultUser = $users[$i];
+                    }
+                }
+                $selectedUser = $hostUser ? $hostUser : $defaultUser;
+                if ($selectedUser) {
+                    $session->data['SITE_USERNAME'] = $selectedUser['USERNAME'];
+                    $session->data['SITE_USER_ID'] = $selectedUser['ID'];
                 }
             }
         }
