@@ -30,12 +30,13 @@ function mjApplyWidgetHTML(container, html) {
     var $newIcon = $new.find('.device-icon').first();
     var $oldIcon = $old.find('.device-icon').first();
     if ($newIcon.length && $oldIcon.length) {
-        $oldIcon.attr('class', $newIcon.attr('class') || '');
-        $oldIcon.attr('style', $newIcon.attr('style') || '');
+        $oldIcon.replaceWith($newIcon.clone());
     }
-    $('.device-header, .device-details', $new).each(function() {
+    $('.device-header, .device-details, .status_text, .label', $new).each(function() {
         var $source = $(this);
-        var selector = '.' + $source.attr('class').split(/\s+/).join('.');
+        var classes = ($source.attr('class') || '').split(/\s+/).filter(function(c) { return c; });
+        if (!classes.length) return;
+        var selector = '.' + classes.join('.');
         $old.find(selector).first().html($source.html());
     });
     $old.addClass('updated');
