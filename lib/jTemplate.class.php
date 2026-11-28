@@ -611,11 +611,12 @@ class jTemplate
 
                     // setting other module parameters
                     // if current request is to this module, then run get params otherwise get params from encoded query
-                    if (($md != $module_data["name"])
+                    $activeModule = ($md == $module_data["name"]) || ($md == '' && gr('action') == $module_data["name"]);
+                    if (!$activeModule
                         || (isset($module_data["instance"]) && ($module_data["instance"] != '') && ($module_data["instance"] != $instance) && ($instance != ''))) {
                         // restoring module params from coded string (module should not overwrite this method)
                         $code .= $obj . "->restoreParams();\n";
-                    } elseif (($module_data["name"] == $md)
+                    } elseif ($activeModule
                         && (!isset($module_data["instance"]) || ($module_data["instance"] == '') || ($module_data["instance"] == $instance) || ($instance == ''))) {
                         // getting module params from query string (every module should handle this method)
                         $code .= $obj . "->getParams();\n";
