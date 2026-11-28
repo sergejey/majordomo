@@ -2138,6 +2138,10 @@ if (!defined('LANG_CODEEDITOR_SAVE_ERROR')) define('LANG_CODEEDITOR_SAVE_ERROR',
 if (!defined('LANG_CODEEDITOR_SAVING')) define('LANG_CODEEDITOR_SAVING', 'Сохранение...');
 
 if (!defined('LANG_CODEEDITOR_CHECKING')) define('LANG_CODEEDITOR_CHECKING', 'Проверка кода...');
+if (!defined('LANG_BLOCKLY_XML_LOAD_ERROR')) define('LANG_BLOCKLY_XML_LOAD_ERROR', 'Не удалось загрузить сохранённые блоки. Текущая схема сохранена.');
+if (!defined('LANG_BLOCKLY_CLEANUP')) define('LANG_BLOCKLY_CLEANUP', 'Выровнять блоки');
+if (!defined('LANG_UNDO')) define('LANG_UNDO', 'Отменить');
+if (!defined('LANG_REDO')) define('LANG_REDO', 'Повторить');
 
 if (!defined('LANG_CODEEDITOR_AUDIT')) define('LANG_CODEEDITOR_AUDIT', 'AI-аудит');
 if (!defined('LANG_CODEEDITOR_AUDIT_RUNNING')) define('LANG_CODEEDITOR_AUDIT_RUNNING', 'Аудит кода...');

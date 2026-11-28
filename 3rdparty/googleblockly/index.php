@@ -14,9 +14,14 @@ $ctl = new control_modules();
 
 ?>
 <!DOCTYPE html>
-<html>
+<?php
+$mjBlocklyTheme = defined('MJ_THEME') ? MJ_THEME : (defined('SETTINGS_THEME') ? SETTINGS_THEME : 'light');
+?>
+<html lang="<?php echo defined('SETTINGS_SITE_LANGUAGE') ? SETTINGS_SITE_LANGUAGE : 'en'; ?>" data-theme="<?php echo htmlspecialchars((string)$mjBlocklyTheme, ENT_QUOTES, 'UTF-8'); ?>">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="<?php echo ROOTHTML;?>css/theme-tokens.css" type="text/css">
 
     <script type="text/javascript"  src="<?php echo ROOTHTML;?>3rdparty/jquery/jquery-3.3.1.min.js"></script>
     <script type="text/javascript"  src="<?php echo ROOTHTML;?>3rdparty/jquery/jquery-migrate-3.0.0.min.js"></script>
@@ -38,7 +43,16 @@ $ctl = new control_modules();
       echo '<script type="text/javascript" src="blocks/majordomo_devices.js.php?2020-01-29-1"></script>';
     }
     ?>
-    <script type="text/javascript" src="msg/js/<?php echo SETTINGS_SITE_LANGUAGE;?>.js"></script>
+    <?php
+    $blocklyLang = defined('SETTINGS_SITE_LANGUAGE') ? SETTINGS_SITE_LANGUAGE : 'en';
+    if ($blocklyLang === 'zh') {
+        $blocklyLang = 'zh-hans';
+    }
+    if (!file_exists(__DIR__ . '/msg/js/' . $blocklyLang . '.js')) {
+        $blocklyLang = 'en';
+    }
+    ?>
+    <script type="text/javascript" src="msg/js/<?php echo $blocklyLang;?>.js"></script>
     <?php
     if (SETTINGS_SITE_LANGUAGE=='ru') {
       ?>
@@ -72,11 +86,47 @@ $ctl = new control_modules();
     ?>
     <style>
       html, body {
-        background-color: #fff;
+        background-color: var(--mj-color-bg, #fff);
+        color: var(--mj-color-fg, #333);
         margin: 0;
         padding: 0;
         overflow: hidden;
         height: 100%;
+      }
+      /* Панель управления не перекрывает блоки: она занимает отдельную строку. */
+      #custom_controls {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        box-sizing: border-box;
+        background: var(--mj-color-surface, #f5f5f5);
+        border-bottom: 1px solid var(--mj-color-border, #ddd);
+      }
+      /* WCAG 2.2 SC 2.5.5 / Material: цель касания не менее 44x44 px. */
+      #custom_controls .btn {
+        margin: 0;
+        min-height: 44px;
+        min-width: 44px;
+        padding: 10px 12px;
+        line-height: 22px;
+        white-space: nowrap;
+        touch-action: manipulation;
+      }
+      /* Высота обновляется из JS: на телефоне панель может занять две строки. */
+      #blocklyDiv {
+        position: absolute;
+        top: 52px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
       }
       .blocklySvg {
         height: 100%;
@@ -125,16 +175,35 @@ $ctl = new control_modules();
 
 
 
+      /* Рабочая область занимает место под панелью; при повороте телефона
+         высота пересчитывается заново. */
+      function layoutBlockly() {
+        var bar = document.getElementById('custom_controls');
+        var area = document.getElementById('blocklyDiv');
+        if (!bar || !area) return;
+        area.style.top = bar.offsetHeight + 'px';
+        if (Blockly.mainWorkspace && typeof Blockly.svgResize === 'function') {
+          Blockly.svgResize(Blockly.mainWorkspace);
+        }
+      }
+      window.addEventListener('resize', layoutBlockly);
+
       function init() {
-        Blockly.inject(document.body,
+        Blockly.inject(document.getElementById('blocklyDiv'),
             {path: './', toolbox: document.getElementById('toolbox'),
+              // На узком экране панель блоков занимает нижнюю строку:
+              // рабочая область получает всю ширину телефона.
+              horizontalLayout: window.innerWidth < 700,
+              toolboxPosition: window.innerWidth < 700 ? 'end' : 'start',
+              move: {scrollbars: true, wheel: true, drag: true},
               zoom:
               {controls: true,
                 wheel: false,
-                startScale: 1.0,
+                startScale: window.innerWidth < 700 ? 0.75 : 1.0,
                 maxScale: 3,
-                minScale: 0.3,
+                minScale: 0.2,
                 scaleSpeed: 1.2}});
+        layoutBlockly();
         // Let the top-level application know that Blockly is ready.
     //    window.parent.blocklyLoaded(Blockly);
 
@@ -165,8 +234,12 @@ $ctl = new control_modules();
       try {
        Blockly.Xml.domToWorkspace(xmlDom,Blockly.mainWorkspace);
       } catch (e) {
-        Blockly.mainWorkspace.clear();
-        alert('Error loading script: ' + e);
+        // Keep the blocks that were loaded successfully: clearing here can silently destroy a saved diagram.
+        <?php if (defined('LANG_BLOCKLY_XML_LOAD_ERROR')) { ?>
+        alert(<?php echo json_encode(LANG_BLOCKLY_XML_LOAD_ERROR, JSON_UNESCAPED_UNICODE); ?>);
+        <?php } else { ?>
+        alert('Failed to load saved blocks. The existing workspace was kept.');
+        <?php } ?>
       }
     }
 
@@ -180,14 +253,15 @@ $ctl = new control_modules();
           $('#btnSaveRun').show();
         }
 
-        $('#custom_controls').css('left',(document.body.clientWidth-$('#custom_controls').width()-10)+'px');
-
       }
     </script>
   </head>
   <body onload="init()">
 
-  <div id="custom_controls" style="position:absolute;top:10px;left:10px;z-index:1000;">
+  <div id="custom_controls">
+    <a href="#" onClick="Blockly.mainWorkspace.undo(false);return false;" class="btn btn-default" title="<?php echo defined('LANG_UNDO') ? LANG_UNDO : 'Undo'; ?>" aria-label="<?php echo defined('LANG_UNDO') ? LANG_UNDO : 'Undo'; ?>"><i class="glyphicon glyphicon-undo"></i> <?php echo defined('LANG_UNDO') ? LANG_UNDO : 'Undo'; ?></a>
+    <a href="#" onClick="Blockly.mainWorkspace.undo(true);return false;" class="btn btn-default" title="<?php echo defined('LANG_REDO') ? LANG_REDO : 'Redo'; ?>" aria-label="<?php echo defined('LANG_REDO') ? LANG_REDO : 'Redo'; ?>"><i class="glyphicon glyphicon-repeat"></i> <?php echo defined('LANG_REDO') ? LANG_REDO : 'Redo'; ?></a>
+    <a href="#" onClick="Blockly.mainWorkspace.cleanUp();return false;" class="btn btn-default" title="<?php echo defined('LANG_BLOCKLY_CLEANUP') ? LANG_BLOCKLY_CLEANUP : 'Clean up'; ?>" aria-label="<?php echo defined('LANG_BLOCKLY_CLEANUP') ? LANG_BLOCKLY_CLEANUP : 'Clean up'; ?>"><i class="glyphicon glyphicon-th-list"></i> <?php echo defined('LANG_BLOCKLY_CLEANUP') ? LANG_BLOCKLY_CLEANUP : 'Clean up'; ?></a>
     <a href="#"  onClick="return SaveAndClose();" class="btn btn-default btn-primary">
       <i class="glyphicon glyphicon-floppy-disk"></i>
       <?php echo LANG_SUBMIT;?></a>
@@ -196,6 +270,8 @@ $ctl = new control_modules();
       <?php echo LANG_RUN_SCRIPT;?></a>
     <a href="#"  onClick="return window.close();" class="btn btn-default"><?php echo LANG_CANCEL;?></a>
   </div>
+
+  <div id="blocklyDiv"></div>
 
 
 
