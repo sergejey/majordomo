@@ -1532,6 +1532,7 @@ class saverestore extends module
                 copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'templates', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/templates');
                 copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'img', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/img');
                 copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'js', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/js');
+                copyTree(DOC_ROOT . DIRECTORY_SEPARATOR . 'css', DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/temp/css');
 
 
                 $pt = array('\.css');
