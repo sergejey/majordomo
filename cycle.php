@@ -458,6 +458,7 @@ $last_cycles_control_check = time();
 $auto_restarts = array();
 $to_start = array();
 $to_stop = array();
+$stop_requested_flags = array();
 $started_when = array();
 $is_running = array();
 
@@ -496,6 +497,7 @@ while (false !== ($result = $threads->iteration())) {
                 DebMes("Got control command '$control' for " . $title, 'boot');
                 if ($control == 'stop') {
                     $to_stop[$title] = time();
+                    $stop_requested_flags[$title] = time();
                     // Explicit stop must cancel any delayed start/restart requests.
                     unset($to_start[$title]);
                     $key = array_search($title, $auto_restarts);
@@ -505,6 +507,7 @@ while (false !== ($result = $threads->iteration())) {
                     }
                 } elseif ($control == 'restart' || $control == 'start') {
                     $to_stop[$title] = time();
+                    $stop_requested_flags[$title] = time();
                     $to_start[$title] = time() + 30;
                 }
                 setGlobal($title . 'Control', '');
@@ -608,8 +611,9 @@ while (false !== ($result = $threads->iteration())) {
                         $last_error = '';
                     }
                     DebMes("Thread closed: " . $cycle_title, 'boot');
-                    $stop_requested = isset($to_stop[$cycle_title]);
+                    $stop_requested = isset($to_stop[$cycle_title]) || isset($stop_requested_flags[$cycle_title]);
                     unset($to_stop[$cycle_title]);
+                    unset($stop_requested_flags[$cycle_title]);
                     setGlobal($cycle_title . 'Run', '');
                     if (!$stop_requested) {
                         $key = array_search($cycle_title, $auto_restarts);
