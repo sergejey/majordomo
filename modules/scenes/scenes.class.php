@@ -1266,7 +1266,7 @@ class scenes extends module
                         $total_o = count($objects);
                         for ($io = 0; $io < $total_o; $io++) {
                             $rec = $elements[$ie];
-                            $rec['ID'] = $elements[$ie] . '_' . $objects[$io]['ID'];
+                            $rec['ID'] = $elements[$ie]['ID'] . '_' . $objects[$io]['ID'];
                             $new_states = array();
                             $total_s = count($states);
                             for ($is = 0; $is < $total_s; $is++) {
