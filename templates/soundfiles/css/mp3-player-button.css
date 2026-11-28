@@ -117,3 +117,44 @@ a.sm2_button.sm2_paused,
 a.sm2_button.sm2_paused:hover {
  background-color:#666;
 }
+/* Sharp local icon-font buttons with comfortable touch targets. */
+a.sm2_button,
+a.sm2_button.sm2_paused:hover {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    margin: 0 4px;
+    text-indent: 0;
+    overflow: visible;
+    border-radius: 5px;
+    background-image: none !important;
+    background-color: var(--mj-color-link, #26648f) !important;
+    transition: background-color .16s ease, box-shadow .16s ease;
+}
+a.sm2_button::before {
+    content: "\f04b";
+    font-family: "Font Awesome 7 Free";
+    font-weight: 900;
+    font-size: 14px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+a.sm2_button:hover,
+a.sm2_button:focus { outline: none; box-shadow: 0 0 0 2px var(--mj-ui-focus, rgba(71,146,209,.25)); }
+a.sm2_button:hover,
+a.sm2_button.sm2_playing,
+a.sm2_button.sm2_playing:hover { background-color: var(--mj-color-accent, #4a7c0f) !important; }
+a.sm2_button.sm2_playing::before { content: "\f04c"; }
+a.sm2_button.sm2_paused,
+a.sm2_button.sm2_paused:hover { background-color: var(--mj-color-muted, #6a6a6a) !important; }
+a.sm2_button.sm2_paused::before { content: "\f04b"; }
+a.sm2_button.sm2_playing,
+a.sm2_button.sm2_playing:hover { -moz-transform: none; -webkit-transform: none; -ms-transform: none; transform: none; }
+@media (max-width: 767px) {
+    a.sm2_button { width: 44px; height: 44px; }
+}
