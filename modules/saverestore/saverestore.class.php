@@ -1653,10 +1653,10 @@ class saverestore extends module
 
 
             if (defined('SETTINGS_BACKUP_PATH') && SETTINGS_BACKUP_PATH != '' && file_exists(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/' . $tar_name)) {
+                $dest = rtrim(SETTINGS_BACKUP_PATH, '/\\') . DIRECTORY_SEPARATOR;
                 if ($iframe) {
                     echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> ' . LANG_UPDATEBACKUP_COPY_TO . ' ' . $dest . $tar_name . '</div>');
                 }
-                $dest = SETTINGS_BACKUP_PATH;
                 @copy(DOC_ROOT . DIRECTORY_SEPARATOR . 'cms/saverestore/' . $tar_name, $dest . $tar_name);
                 if ($iframe) {
                     echonow('<div><i style="font-size: 7pt;" class="glyphicon glyphicon-usd"></i> ' . LANG_UPDATEBACKUP_DONE . '</div>');
