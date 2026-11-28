@@ -2123,6 +2123,7 @@ if (!defined('LANG_CODEEDITOR_SAVING')) define('LANG_CODEEDITOR_SAVING', 'Saving
 
 if (!defined('LANG_CODEEDITOR_CHECKING')) define('LANG_CODEEDITOR_CHECKING', 'Checking code...');
 if (!defined('LANG_BLOCKLY_XML_LOAD_ERROR')) define('LANG_BLOCKLY_XML_LOAD_ERROR', 'Failed to load the saved blocks. The existing workspace was kept.');
+if (!defined('LANG_BLOCKLY_CLEANUP')) define('LANG_BLOCKLY_CLEANUP', 'Clean up');
 if (!defined('LANG_UNDO')) define('LANG_UNDO', 'Undo');
 if (!defined('LANG_REDO')) define('LANG_REDO', 'Redo');
 

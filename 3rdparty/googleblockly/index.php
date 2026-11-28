@@ -103,15 +103,21 @@ $mjBlocklyTheme = defined('MJ_THEME') ? MJ_THEME : (defined('SETTINGS_THEME') ? 
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        gap: 4px;
+        gap: 8px;
         padding: 6px 10px;
         box-sizing: border-box;
         background: var(--mj-color-surface, #f5f5f5);
         border-bottom: 1px solid var(--mj-color-border, #ddd);
       }
+      /* WCAG 2.2 SC 2.5.5 / Material: цель касания не менее 44x44 px. */
       #custom_controls .btn {
         margin: 0;
+        min-height: 44px;
+        min-width: 44px;
+        padding: 10px 12px;
+        line-height: 22px;
         white-space: nowrap;
+        touch-action: manipulation;
       }
       /* Высота обновляется из JS: на телефоне панель может занять две строки. */
       #blocklyDiv {
@@ -185,6 +191,10 @@ $mjBlocklyTheme = defined('MJ_THEME') ? MJ_THEME : (defined('SETTINGS_THEME') ? 
       function init() {
         Blockly.inject(document.getElementById('blocklyDiv'),
             {path: './', toolbox: document.getElementById('toolbox'),
+              // На узком экране панель блоков занимает нижнюю строку:
+              // рабочая область получает всю ширину телефона.
+              horizontalLayout: window.innerWidth < 700,
+              toolboxPosition: window.innerWidth < 700 ? 'end' : 'start',
               move: {scrollbars: true, wheel: true, drag: true},
               zoom:
               {controls: true,
@@ -251,6 +261,7 @@ $mjBlocklyTheme = defined('MJ_THEME') ? MJ_THEME : (defined('SETTINGS_THEME') ? 
   <div id="custom_controls">
     <a href="#" onClick="Blockly.mainWorkspace.undo(false);return false;" class="btn btn-default" title="<?php echo defined('LANG_UNDO') ? LANG_UNDO : 'Undo'; ?>" aria-label="<?php echo defined('LANG_UNDO') ? LANG_UNDO : 'Undo'; ?>"><i class="glyphicon glyphicon-undo"></i> <?php echo defined('LANG_UNDO') ? LANG_UNDO : 'Undo'; ?></a>
     <a href="#" onClick="Blockly.mainWorkspace.undo(true);return false;" class="btn btn-default" title="<?php echo defined('LANG_REDO') ? LANG_REDO : 'Redo'; ?>" aria-label="<?php echo defined('LANG_REDO') ? LANG_REDO : 'Redo'; ?>"><i class="glyphicon glyphicon-repeat"></i> <?php echo defined('LANG_REDO') ? LANG_REDO : 'Redo'; ?></a>
+    <a href="#" onClick="Blockly.mainWorkspace.cleanUp();return false;" class="btn btn-default" title="<?php echo defined('LANG_BLOCKLY_CLEANUP') ? LANG_BLOCKLY_CLEANUP : 'Clean up'; ?>" aria-label="<?php echo defined('LANG_BLOCKLY_CLEANUP') ? LANG_BLOCKLY_CLEANUP : 'Clean up'; ?>"><i class="glyphicon glyphicon-th-list"></i> <?php echo defined('LANG_BLOCKLY_CLEANUP') ? LANG_BLOCKLY_CLEANUP : 'Clean up'; ?></a>
     <a href="#"  onClick="return SaveAndClose();" class="btn btn-default btn-primary">
       <i class="glyphicon glyphicon-floppy-disk"></i>
       <?php echo LANG_SUBMIT;?></a>

@@ -2034,6 +2034,7 @@ if (!defined('LANG_CODEEDITOR_SAVING')) define('LANG_CODEEDITOR_SAVING', 'Збе
 
 if (!defined('LANG_CODEEDITOR_CHECKING')) define('LANG_CODEEDITOR_CHECKING', 'Перевірка коду...');
 if (!defined('LANG_BLOCKLY_XML_LOAD_ERROR')) define('LANG_BLOCKLY_XML_LOAD_ERROR', 'Не вдалося завантажити збережені блоки. Поточну схему збережено.');
+if (!defined('LANG_BLOCKLY_CLEANUP')) define('LANG_BLOCKLY_CLEANUP', 'Вирівняти блоки');
 if (!defined('LANG_UNDO')) define('LANG_UNDO', 'Скасувати');
 if (!defined('LANG_REDO')) define('LANG_REDO', 'Повторити');
 
