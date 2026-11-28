@@ -567,6 +567,7 @@ while (false !== ($result = $threads->iteration())) {
                 $id = $is_running[$title];
                 DebMes("Force closing service " . $title . " (id: " . $id . ")", 'boot');
                 $threads->closeThread($id);
+                unset($is_running[$title]);
             }
             unset($to_stop[$title]);
         }
@@ -610,6 +611,7 @@ while (false !== ($result = $threads->iteration())) {
                     DebMes("Thread closed: " . $cycle_title, 'boot');
                     $stop_requested = isset($to_stop[$cycle_title]);
                     unset($to_stop[$cycle_title]);
+                    unset($is_running[$cycle_title]);
                     setGlobal($cycle_title . 'Run', '');
                     if (!$stop_requested) {
                         $key = array_search($cycle_title, $auto_restarts);
