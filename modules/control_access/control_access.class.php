@@ -97,7 +97,9 @@ function getParams() {
      $session->data['USER_LEVEL']=$user['PRIVATE'];
      $session->data['USER_ID']=$user['ID'];
 
-     
+     if (session_status() === PHP_SESSION_ACTIVE) {
+      session_regenerate_id(true);
+     }
 
      if (!$session->data["cp_requested_url"]) {
       if (file_exists(DIR_MODULES.'dashboard/dashboard.class.php')) {
