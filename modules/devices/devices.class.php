@@ -1117,6 +1117,7 @@ class devices extends module
         if (!is_array($options)) {
             $options = array();
         }
+        $rec = array();
         if (!is_array($this->device_types[$device_type])) {
             return 0;
         }
@@ -1134,7 +1135,6 @@ class devices extends module
             $rec['LINKED_OBJECT'] = $options['LINKED_OBJECT'];
         }
 
-        $rec = array();
         $rec['TYPE'] = $device_type;
         if (isset($options['TITLE'])) {
             $rec['TITLE'] = $options['TITLE'];
