@@ -111,7 +111,7 @@ if ($this->action != 'admin') {
 
 if ($res[0]['ID']) {
 
-    $this->processMenuElements($res);
+    $this->processMenuElements($res, $out);
     if ($this->action == 'admin') {
         $res = $this->buildTree_commands($res);
     }

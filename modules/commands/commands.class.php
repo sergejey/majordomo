@@ -680,7 +680,7 @@ class commands extends module
     }
 
 
-    function processMenuElements(&$res)
+    function processMenuElements(&$res, &$out)
     {
 
         startMeasure('processMenuElements');
@@ -881,7 +881,7 @@ class commands extends module
             if ($res[$i]['SUB_PRELOAD'] && $this->action != 'admin') {
                 $children = $this->getDynamicElements("PARENT_ID='" . $res[$i]['ID'] . "'");
                 if ($children[0]['ID']) {
-                    $this->processMenuElements($children);
+                    $this->processMenuElements($children, $out);
                     if ($children[0]['ID']) {
                         $res[$i]['RESULT'] = $children;
                     }
