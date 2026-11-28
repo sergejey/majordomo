@@ -680,7 +680,7 @@ class commands extends module
     }
 
 
-    function processMenuElements(&$res, &$out)
+    function processMenuElements(&$res, &$out = null)
     {
 
         startMeasure('processMenuElements');
