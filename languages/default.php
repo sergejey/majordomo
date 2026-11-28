@@ -1023,6 +1023,7 @@ $dictionary = array(
     'LOOPS' => 'Loops',
     'MATH' => 'Math',
     'TEXT' => 'Text',
+    'EMOJI' => 'Emoji',
     'LISTS' => 'Lists',
     'VARIABLES' => 'Variables',
     'FUNCTIONS' => 'Functions',

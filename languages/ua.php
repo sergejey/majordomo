@@ -1010,6 +1010,7 @@ $dictionary = array (
     'LOOPS' => 'Цикли',
     'MATH' => 'Математика',
     'TEXT' => 'Текст',
+    'EMOJI' => 'Емодзі',
     'LISTS' => 'Списки',
     'VARIABLES' => 'Змінні',
     'FUNCTIONS' => 'Функції',
