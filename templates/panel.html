@@ -178,7 +178,7 @@
 				<select class="form-control" id="currModuleName" style="display:none;margin-top: 10px;" onchange="insertModuleInConsole($(this).val());">
 					<option value="0"><#LANG_NEWDASH_CONSOLE_CHOOSE_MODULE#></option>
 					[#begin SUB_MODULES#]
-						[#if NAME#]<option value="[#NAME#]">[#TITLE#]</option>[#endif#]
+						[#if NAME && !DENIED#]<option value="[#NAME#]">[#TITLE#]</option>[#endif#]
 					[#end SUB_MODULES#]
 				</select>
 			</div>
