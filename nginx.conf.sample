@@ -1,5 +1,7 @@
 server {
-    listen 127.0.0.1:80;
+    # Public interface: must be reachable from any device on the network.
+    # Use 127.0.0.1 only for a local-only test instance.
+    listen 0.0.0.0:80;
     server_name example.com www.example.com localhost;
 
     # Current layout (legacy):
