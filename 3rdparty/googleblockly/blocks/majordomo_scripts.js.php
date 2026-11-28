@@ -22,45 +22,35 @@ $ctl = new control_modules();
 $scripts=SQLSelect("SELECT * FROM scripts");
 $total=count($scripts);
 for($i=0;$i<$total;$i++) {
-
+  $variants = array(
+    array('suffix' => '', 'colour' => 275, 'output' => 'false', 'previous' => 'true', 'next' => 'true'),
+    array('suffix' => '_return', 'colour' => 175, 'output' => 'true', 'previous' => 'false', 'next' => 'false'),
+  );
+  foreach ($variants as $variant) {
 ?>
-Blockly.Blocks['majordomo_script_<?php echo $scripts[$i]['ID'];?>'] = {
+Blockly.Blocks['majordomo_script<?php echo $variant['suffix'];?>_<?php echo $scripts[$i]['ID'];?>'] = {
   /**
-   * Block for null data type.
+   * Block for calling a MajorDoMo script.
    * @this Blockly.Block
    */
   init: function() {
-    // Assign 'this' to a variable for use in the closure below.
-    var thisBlock = this;
-
-
     this.appendDummyInput()
         .appendField('<?php echo $scripts[$i]['TITLE'];?>');
     this.appendValueInput("PARAMS")
         .setCheck("Array");
     this.setInputsInline(true);
 
-    <?php 
-    $tmp=explode("\n", $scripts[$i]['CODE']);
-    $last_line=$tmp[count($tmp)-1];
-    if (preg_match('/return/is', $last_line)) {?>
-    this.setColour(175);
-    this.setOutput(true);
-    this.setPreviousStatement(false);
-    this.setNextStatement(false);
-    <?php } else {?>
-    this.setColour(275);
-    this.setOutput(false);
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    <?php }?>
+    this.setColour(<?php echo $variant['colour'];?>);
+    this.setOutput(<?php echo $variant['output'];?>);
+    this.setPreviousStatement(<?php echo $variant['previous'];?>);
+    this.setNextStatement(<?php echo $variant['next'];?>);
 
     this.setTooltip('<?php echo addcslashes(preg_replace("/[\n\r]/is", '', $scripts[$i]['DESCRIPTION']), "'");?>');
   }
 };
 
 <?php
- 
+  }
 }
 
 $session->save();

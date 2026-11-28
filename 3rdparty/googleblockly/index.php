@@ -600,6 +600,9 @@ $ctl = new control_modules();
     }
 
     echo '<block type="majordomo_script_'.$res[$i]['ID'].'"></block>'."\n";
+    if (script_returns_value($res[$i]['CODE'])) {
+      echo '<block type="majordomo_script_return_'.$res[$i]['ID'].'"></block>'."\n";
+    }
 
     if ($i==$total-1) {
      $res[$i]['LAST']=1;
