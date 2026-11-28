@@ -183,6 +183,7 @@ class panel extends module
                 }
             }
 
+            $last_allow = 0;
             for ($i = 0; $i < $modulesCnt; $i++) {
                 if ($modules[$i]['NAME'] == $this->action) {
                     $modules[$i]['SELECTED'] = 1;
@@ -192,8 +193,7 @@ class panel extends module
                     $modules[$i]['NEW_CATEGORY'] = 1;
                     $old_cat = $modules[$i]['CATEGORY'];
                     if ($i > 0) {
-                        //echo $last_allow."<br>";
-                        $modules[$last_allow]['LAST_IN_CATEGORY'] = 1;
+                        $modules[$i - 1]['LAST_IN_CATEGORY'] = 1;
                     }
                 }
 
@@ -252,7 +252,9 @@ class panel extends module
                     }
                 }
             }
-            $modules[$last_allow]['LAST_IN_CATEGORY'] = 1;
+            if ($modulesCnt > 0) {
+                $modules[$modulesCnt - 1]['LAST_IN_CATEGORY'] = 1;
+            }
             $out["SUB_MODULES"] = $modules;
         }
 
