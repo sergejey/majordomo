@@ -460,6 +460,7 @@
             $('#preloader').hide('fast');
             if (seqNumber!=requestCounter) {
                 //console.log('Ignoring response');
+                return false;
             }
             clearTimeout(loaderTimer);
             var obj;
