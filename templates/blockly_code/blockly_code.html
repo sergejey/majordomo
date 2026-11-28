@@ -158,12 +158,12 @@ $(function() {
 	.mj-run-btn:hover { text-decoration: underline; }
 	#mj-audit-fab { display: none; position: fixed; bottom: 72px; right: 14px; z-index: 10001; padding: 10px 14px; background: #6a3da0; color: #fff; border-radius: 22px; box-shadow: 0 2px 8px rgba(0,0,0,.25); text-decoration: none; }
 	#mj-run-fab { display: none; position: fixed; bottom: 14px; right: 14px; z-index: 10001; padding: 10px 14px; background: #26648f; color: #fff; border-radius: 22px; box-shadow: 0 2px 8px rgba(0,0,0,.25); text-decoration: none; }
-	#mj-run-popup { position: fixed; z-index: 10002; top: 50%; left: 50%; transform: translate(-50%,-50%); width: min(720px, calc(100vw - 32px)); max-height: 70vh; display: flex; flex-direction: column; background: var(--mj-color-bg,#fff); color: var(--mj-color-fg,#333); border: 1px solid var(--mj-color-border,#ddd); border-radius: 8px; box-shadow: 0 12px 40px rgba(0,0,0,.3); opacity: 1; transition: opacity .18s ease, transform .18s ease; }
-	#mj-run-popup.hiding { opacity: 0; transform: translate(-50%,-48%); }
-	#mj-run-popup .mj-run-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--mj-color-border,#ddd); font-weight: bold; }
-	#mj-run-popup .mj-run-close { cursor: pointer; border: 0; background: transparent; font-size: 20px; line-height: 1; color: inherit; }
-	#mj-run-popup pre { margin: 0; padding: 12px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; }
-	#mj-run-popup.mj-error { border-color: #b52b27; }
+	.mj-run-popup { position: fixed; z-index: 10002; top: 50%; left: 50%; transform: translate(-50%,-50%); width: min(720px, calc(100vw - 32px)); max-height: 70vh; display: flex; flex-direction: column; background: var(--mj-color-bg,#fff); color: var(--mj-color-fg,#333); border: 1px solid var(--mj-color-border,#ddd); border-radius: 8px; box-shadow: 0 12px 40px rgba(0,0,0,.3); opacity: 1; transition: opacity .18s ease, transform .18s ease; }
+	.mj-run-popup.hiding { opacity: 0; transform: translate(-50%,-48%); }
+	.mj-run-popup .mj-run-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--mj-color-border,#ddd); font-weight: bold; }
+	.mj-run-popup .mj-run-close { cursor: pointer; border: 0; background: transparent; font-size: 20px; line-height: 1; color: inherit; }
+	.mj-run-popup pre { margin: 0; padding: 12px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; }
+	.mj-run-popup.mj-error { border-color: #b52b27; }
 	@media (max-width: 767px) { #mj-run-fab { display: block; } #mj-audit-fab { display: block; } }
 </style>
 
@@ -188,11 +188,15 @@ $(function() {
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/searchcursor.js"></script>
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/display/panel.js"></script>
 
-<a href="#" id="mj-audit-fab" onclick="return auditCodeAjax();">✦ <#LANG_CODEEDITOR_AUDIT#></a>
-<a href="#" id="mj-run-fab" onclick="return runCodeQuick();">▶ <#LANG_CODEEDITOR_RUN#></a>
+<a href="#" id="mj-audit-fab" onclick="return <#CODE_FIELD#>_auditCodeAjax();">✦ <#LANG_CODEEDITOR_AUDIT#></a>
+<a href="#" id="mj-run-fab" onclick="return <#CODE_FIELD#>_runCodeQuick();">▶ <#LANG_CODEEDITOR_RUN#></a>
 
 <script language="javascript">
+(function () {
 var editor;
+var popupId = 'mj-run-popup-<#CODE_FIELD#>';
+window['<#CODE_FIELD#>_runCodeQuick'] = function () { return runCodeQuick(); };
+window['<#CODE_FIELD#>_auditCodeAjax'] = function () { return auditCodeAjax(); };
 var myTextArea[#CODE_FIELD#];
 
 var numPanels = 0;
@@ -214,7 +218,7 @@ function makePanel(where) {
 		panels[node.id].clear();
 	});
 	label = node.appendChild(document.createElement("span"));
-	label.innerHTML = "<a href='#' id='mj-audit-link' class='mj-audit-btn' onclick='return auditCodeAjax();'>✦ <#LANG_CODEEDITOR_AUDIT#></a> <a href='#' id='mj-run-link' class='mj-run-btn' onclick='return runCodeQuick();'>▶ <#LANG_CODEEDITOR_RUN#></a> <#LANG_CODEEDITOR_TIPS#>";
+	label.innerHTML = "<a href='#' id='mj-audit-link' class='mj-audit-btn' onclick='return <#CODE_FIELD#>_auditCodeAjax();'>✦ <#LANG_CODEEDITOR_AUDIT#></a> <a href='#' id='mj-run-link' class='mj-run-btn' onclick='return <#CODE_FIELD#>_runCodeQuick();'>▶ <#LANG_CODEEDITOR_RUN#></a> <#LANG_CODEEDITOR_TIPS#>";
 	return node;
 }
 function addPanel(where) {
@@ -236,10 +240,10 @@ function switchFullscreen() {
 }
 
 function showRunPopup(text, isError, loading) {
-	var popup = document.getElementById('mj-run-popup');
+	var popup = document.getElementById(popupId);
 	if (!popup) {
 		popup = document.createElement('div');
-		popup.id = 'mj-run-popup';
+		popup.id = popupId;
 		var head = document.createElement('div');
 		head.className = 'mj-run-head';
 		var title = document.createElement('span');
@@ -258,18 +262,18 @@ function showRunPopup(text, isError, loading) {
 		popup.appendChild(pre);
 		document.body.appendChild(popup);
 	}
-	popup.className = isError ? 'mj-error' : '';
+	popup.className = 'mj-run-popup' + (isError ? ' mj-error' : '');
 	var pre = popup.querySelector('.mj-run-output');
 	pre.textContent = text || '<#LANG_CODEEDITOR_NO_OUTPUT#>';
 	popup.setAttribute('data-loading', loading ? '1' : '0');
 }
 function closeRunPopup(immediate) {
-	var popup = document.getElementById('mj-run-popup');
+	var popup = document.getElementById(popupId);
 	if (!popup) return;
 	if (immediate) { document.body.removeChild(popup); return; }
 	popup.classList.add('hiding');
 	setTimeout(function () {
-		var current = document.getElementById('mj-run-popup');
+		var current = document.getElementById(popupId);
 		if (current && current.classList.contains('hiding')) document.body.removeChild(current);
 	}, 180);
 }
@@ -302,7 +306,7 @@ function runCodeQuick() {
 	return false;
 }
 document.addEventListener('keydown', function (e) {
-	if (e.keyCode === 27 && document.getElementById('mj-run-popup')) {
+	if (e.keyCode === 27 && document.getElementById(popupId)) {
 		e.preventDefault();
 		e.stopPropagation();
 		closeRunPopup();
@@ -384,7 +388,11 @@ function saveEditorAjax() {
 		$("[name='subm']").click();
 		return false;
 	}
+	// CodeMirror keeps the current text in the editor, not in the textarea.
+	// A fetch request does not fire the form's submit event, so synchronize it explicitly.
+	editor.save();
 	var data = new FormData(form[0]);
+	data.set('code', editor.getValue());
 	data.append('subm', 'Submit');
 	if (!data.get('mode')) data.append('mode', 'update');
 	var submitForm = function () {
@@ -397,7 +405,15 @@ function saveEditorAjax() {
 	}).then(function (response) {
 		return response.text();
 	}).then(function (html) {
-		var failed = html.indexOf('error_noty') >= 0 || html.indexOf('alert-danger') >= 0;
+		var doc = new DOMParser().parseFromString(html, 'text/html');
+		var errorNodes = doc.querySelectorAll('.error_noty, .alert-danger');
+		var failed = false;
+		for (var i = 0; i < errorNodes.length; i++) {
+			var node = errorNodes[i];
+			if (node.hasAttribute('hidden') || /(?:^|;)\s*display\s*:\s*none/i.test(node.getAttribute('style') || '')) continue;
+			failed = true;
+			break;
+		}
 		showSaveToast(failed ? '<#LANG_CODEEDITOR_SAVE_ERROR#>' : '<#LANG_CODEEDITOR_SAVED#>', failed);
 		restoreEditorState();
 	}).catch(function () {
@@ -817,6 +833,7 @@ function modalRestoreCode() {
 	ajaxAutosave('restore');
 	$('#showAutosaveModal').modal('show')
 }
+})();
 </script>
 [#endif CODE_TYPE#]
 
