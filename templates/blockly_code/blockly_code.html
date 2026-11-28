@@ -42,9 +42,9 @@
 [#if ONLYCODE != 1#]
 <div style="margin-top: 3px;" id="blockyTypeForCoding">
 	<#LANG_CODE_TYPE#>:
-	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="0"[#if CODE_TYPE="0"#] checked[#endif#]> <#LANG_CODE#>&nbsp;<#LANG_HCB#>codePhp<#LANG_HCE#>
-	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="1"[#if CODE_TYPE="1"#] checked[#endif#]> Blockly<#LANG_HCB#>codeBlockly<#LANG_HCE#>
-	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="2"[#if CODE_TYPE="2"#] checked[#endif#]> <#LANG_DEVICES#><#LANG_HCB#>codeDevices<#LANG_HCE#>
+	<label><input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="0"[#if CODE_TYPE="0"#] checked[#endif#]> <#LANG_CODE#>&nbsp;<#LANG_HCB#>codePhp<#LANG_HCE#></label>
+	<label><input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="1"[#if CODE_TYPE="1"#] checked[#endif#]> Blockly<#LANG_HCB#>codeBlockly<#LANG_HCE#></label>
+	<label><input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="2"[#if CODE_TYPE="2"#] checked[#endif#]> <#LANG_DEVICES#><#LANG_HCB#>codeDevices<#LANG_HCE#></label>
 	[#if HISTORY_AVAILABLE#]
 	(<a href="#" onclick="return [#CODE_FIELD#]_showCodeHistory();"><#LANG_HISTORY#></a>)
 	[#endif HISTORY_AVAILABLE#]
@@ -115,7 +115,8 @@ $(function() {
 
 <style>
 	.cm_panel {
-		background: #f7f7f7;
+		background: var(--mj-color-surface, #f7f7f7);
+		color: var(--mj-color-fg, #333);
 		padding: 3px 7px;
 		font-size: 0.85em;
 	}
@@ -130,17 +131,18 @@ $(function() {
 		}
 	}
 	.cm_panel.top, .cm_panel.after-top {
-		border-bottom: 1px solid #ddd;
+		border-bottom: 1px solid var(--mj-color-border, #ddd);
 	}
 	.cm_panel.bottom, .cm_panel.before-bottom {
-		border-top: 1px solid #ddd;
+		border-top: 1px solid var(--mj-color-border, #ddd);
 	}
 
 	.cm_panel.top.cm_panel_fullscreen {
 		position: fixed;
 		z-index: 10;
 		top: 0; left: 50%;
-		width: 50%;
+		transform: translateX(-50%);
+		width: min(720px, calc(100vw - 24px));
 	}
 
 	.remove-panel {
@@ -154,17 +156,20 @@ $(function() {
 		height: auto !important;
 	}
 [#endif#]
-	.mj-run-btn { color: #26648f; text-decoration: none; font-weight: bold; margin-right: 8px; }
-	.mj-run-btn:hover { text-decoration: underline; }
-	#mj-audit-fab { display: none; position: fixed; bottom: 72px; right: 14px; z-index: 10001; padding: 10px 14px; background: #6a3da0; color: #fff; border-radius: 22px; box-shadow: 0 2px 8px rgba(0,0,0,.25); text-decoration: none; }
-	#mj-run-fab { display: none; position: fixed; bottom: 14px; right: 14px; z-index: 10001; padding: 10px 14px; background: #26648f; color: #fff; border-radius: 22px; box-shadow: 0 2px 8px rgba(0,0,0,.25); text-decoration: none; }
+	.mj-run-btn, .mj-audit-btn { color: var(--mj-color-link, #26648f); text-decoration: none; font-weight: bold; margin-right: 8px; display: inline-block; min-height: 44px; line-height: 44px; padding: 0 8px; }
+	.mj-run-btn:hover, .mj-audit-btn:hover { text-decoration: underline; }
+	#mj-audit-fab { display: none; position: fixed; bottom: 72px; right: 14px; z-index: 10001; padding: 10px 14px; min-height: 44px; min-width: 44px; align-items: center; justify-content: center; background: #6a3da0; color: #fff; border-radius: 22px; box-shadow: 0 2px 8px rgba(0,0,0,.25); text-decoration: none; }
+	#mj-run-fab { display: none; position: fixed; bottom: 14px; right: 14px; z-index: 10001; padding: 10px 14px; min-height: 44px; min-width: 44px; align-items: center; justify-content: center; background: #26648f; color: #fff; border-radius: 22px; box-shadow: 0 2px 8px rgba(0,0,0,.25); text-decoration: none; }
+	#mj-audit-fab:focus-visible, #mj-run-fab:focus-visible, .mj-run-btn:focus-visible, .mj-audit-btn:focus-visible, .mj-run-popup .mj-run-close:focus-visible, .remove-panel:focus-visible { outline: 2px solid var(--mj-color-link, #26648f); outline-offset: 2px; }
+	body.mj-fullscreen #mj-audit-fab, body.mj-fullscreen #mj-run-fab { display: none !important; }
+	@media (max-width: 767px) { body { padding-bottom: 96px; } }
 	.mj-run-popup { position: fixed; z-index: 10002; top: 50%; left: 50%; transform: translate(-50%,-50%); width: min(720px, calc(100vw - 32px)); max-height: 70vh; display: flex; flex-direction: column; background: var(--mj-color-bg,#fff); color: var(--mj-color-fg,#333); border: 1px solid var(--mj-color-border,#ddd); border-radius: 8px; box-shadow: 0 12px 40px rgba(0,0,0,.3); opacity: 1; transition: opacity .18s ease, transform .18s ease; }
 	.mj-run-popup.hiding { opacity: 0; transform: translate(-50%,-48%); }
 	.mj-run-popup .mj-run-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--mj-color-border,#ddd); font-weight: bold; }
-	.mj-run-popup .mj-run-close { cursor: pointer; border: 0; background: transparent; font-size: 20px; line-height: 1; color: inherit; }
+	.mj-run-popup .mj-run-close { cursor: pointer; border: 0; background: transparent; font-size: 24px; line-height: 1; width: 44px; height: 44px; color: inherit; }
 	.mj-run-popup pre { margin: 0; padding: 12px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; }
 	.mj-run-popup.mj-error { border-color: #b52b27; }
-	@media (max-width: 767px) { #mj-run-fab { display: block; } #mj-audit-fab { display: block; } }
+	@media (max-width: 767px) { #mj-run-fab, #mj-audit-fab { display: inline-flex; } }
 </style>
 
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/edit/matchbrackets.js"></script>
@@ -209,12 +214,14 @@ function makePanel(where) {
 
 	node.id = "panel-" + id;
 	node.className = "cm_panel " + where;
-	close = node.appendChild(document.createElement("a"));
+	close = node.appendChild(document.createElement("button"));
+	close.type = "button";
 	close.setAttribute("title", "<#LANG_CODEEDITOR_REMOVE_ME#>");
+	close.setAttribute("aria-label", "<#LANG_CODEEDITOR_REMOVE_ME#>");
 	close.setAttribute("class", "remove-panel");
 	close.textContent = "✖";
-	CodeMirror.on(close, "mousedown", function(e) {
-		e.preventDefault()
+	close.addEventListener("click", function (e) {
+		e.preventDefault();
 		panels[node.id].clear();
 	});
 	label = node.appendChild(document.createElement("span"));
@@ -232,11 +239,14 @@ function switchFullscreen() {
 		$('nav').hide();
 		setTimeout('$(\'nav\').hide();',1000);
 		$('.cm_panel').addClass('cm_panel_fullscreen');
+		document.body.classList.add('mj-fullscreen');
 	} else {
 		$('nav').show();
 		$('.cm_panel').removeClass('cm_panel_fullscreen');
+		document.body.classList.remove('mj-fullscreen');
 	}
 	editor.setOption("fullScreen", !editor.getOption("fullScreen"));
+	return false;
 }
 
 function showRunPopup(text, isError, loading) {
@@ -247,6 +257,7 @@ function showRunPopup(text, isError, loading) {
 		var head = document.createElement('div');
 		head.className = 'mj-run-head';
 		var title = document.createElement('span');
+		title.id = popupId + '-title';
 		title.textContent = '<#LANG_CODEEDITOR_RESULT#>';
 		var close = document.createElement('button');
 		close.type = 'button';
@@ -258,6 +269,10 @@ function showRunPopup(text, isError, loading) {
 		head.appendChild(close);
 		var pre = document.createElement('pre');
 		pre.className = 'mj-run-output';
+		pre.setAttribute('aria-live', 'polite');
+		popup.setAttribute('role', 'dialog');
+		popup.setAttribute('aria-modal', 'true');
+		popup.setAttribute('aria-labelledby', title.id);
 		popup.appendChild(head);
 		popup.appendChild(pre);
 		document.body.appendChild(popup);
@@ -266,16 +281,22 @@ function showRunPopup(text, isError, loading) {
 	var pre = popup.querySelector('.mj-run-output');
 	pre.textContent = text || '<#LANG_CODEEDITOR_NO_OUTPUT#>';
 	popup.setAttribute('data-loading', loading ? '1' : '0');
+	if (document.activeElement && !popup.contains(document.activeElement)) popup._opener = document.activeElement;
+	var closeButton = popup.querySelector('.mj-run-close');
+	if (closeButton) closeButton.focus();
 }
 function closeRunPopup(immediate) {
 	var popup = document.getElementById(popupId);
 	if (!popup) return;
-	if (immediate) { document.body.removeChild(popup); return; }
-	popup.classList.add('hiding');
-	setTimeout(function () {
+	var opener = popup._opener;
+	var remove = function () {
 		var current = document.getElementById(popupId);
 		if (current && current.classList.contains('hiding')) document.body.removeChild(current);
-	}, 180);
+		if (opener && document.contains(opener)) opener.focus();
+	};
+	if (immediate) { document.body.removeChild(popup); if (opener && document.contains(opener)) opener.focus(); return; }
+	popup.classList.add('hiding');
+	setTimeout(remove, 180);
 }
 function runCodeQuick() {
 	if (typeof editor === 'undefined') return false;
@@ -485,7 +506,7 @@ $(document).ready(function(){
 		undoDelay: 400,
 		lineWrapping: [#if SETTINGS_CODEEDITOR_WRAPLINES == 1#]true[#else#]wrapMobile[#endif#],
 		scrollbarStyle: 'native',
-		autofocus: [#if AUTOFOCUS == '0'#]false[#else#]true[#endif#],
+		autofocus: [#if AUTOFOCUS == '0'#]false[#else#]window.innerWidth >= 768[#endif#],
 		[#if SETTINGS_CODEEDITOR_THEME != 'codemirror' && SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]theme: "[#SETTINGS_CODEEDITOR_THEME#]",[#endif#]
 		[#endif#]
 		
@@ -533,8 +554,7 @@ $(document).ready(function(){
 			"Ctrl-F": "findPersistent",
 			"Esc": function(cm) {
 				if (cm.getOption("fullScreen")) {
-					cm.setOption("fullScreen", false);
-					$('nav').show();
+					switchFullscreen();
 				}
 			},
 			[#if SETTINGS_CODEEDITOR_TURNONSETTINGS == 1 && SETTINGS_CODEEDITOR_AUTOCOMPLETE == 1#]
@@ -807,7 +827,7 @@ function ajaxAutosave(action) {
 				
 				$("#restoreCodeList").html('');
 				while (i <= responseArray.length) {
-					$("#restoreCodeList").append('<tr><th scope="row" style="vertical-align: middle;">'+responseArray[i].name+'</th><td style="vertical-align: middle;">'+responseArray[i].create+'</td><td style="cursor:pointer;vertical-align: middle;"><a href="javascript://" onclick="seeCodeFunc(\''+responseArray[i].code+'\')"><i class="glyphicon glyphicon-eye-open" style="font-size: 1.5rem;"></i></a></td><td style="vertical-align: middle;"><button type="button" class="btn btn-default btn-xs" onclick="if(confirm(\'<#LANG_ARE_YOU_SURE#>\')) setValueEditor(\''+responseArray[i].code+'\');"><#LANG_CODEEDITOR_RESTORE#></button></td></tr>');
+					$("#restoreCodeList").append('<tr><th scope="row" style="vertical-align: middle;">'+responseArray[i].name+'</th><td style="vertical-align: middle;">'+responseArray[i].create+'</td><td style="cursor:pointer;vertical-align: middle;"><a href="javascript://" title="<#LANG_PREVIEW#>" aria-label="<#LANG_PREVIEW#>" onclick="seeCodeFunc(\''+responseArray[i].code+'\')"><i class="glyphicon glyphicon-eye-open" style="font-size: 1.5rem;"></i></a></td><td style="vertical-align: middle;"><button type="button" class="btn btn-default btn-xs" onclick="if(confirm(\'<#LANG_ARE_YOU_SURE#>\')) setValueEditor(\''+responseArray[i].code+'\');"><#LANG_CODEEDITOR_RESTORE#></button></td></tr>');
 					i++;
 				}
 			}
@@ -963,7 +983,7 @@ function modalRestoreCode() {
                 td_content+="</td>";
 
                 row.append($(td_content));
-                row.append($("<td><a href='#' class='btn btn-default' onclick='deleteDevice("+devices_data[i].id+");return false;'><i class='glyphicon glyphicon-trash'></i></a></td>"));
+                row.append($("<td><a href='#' class='btn btn-default' title='<#LANG_DELETE#>' aria-label='<#LANG_DELETE#>' onclick='deleteDevice("+devices_data[i].id+");return false;'><i class='glyphicon glyphicon-trash'></i></a></td>"));
             }
         }
         function deviceUpdated(device_id) {
