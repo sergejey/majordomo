@@ -38,6 +38,13 @@
 						<input type="number" name="keep_history" value="[#KEEP_HISTORY#]" size="10" placeholder="0 = <#LANG_DO_NOT_KEEP#>" class="form-control"> 
 					</div>
 				</div>
+
+				<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
+					<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_TRANSIENT#>:<#LANG_HCB#>transient<#LANG_HCE#></label>
+					<div class="col-lg-10 col-md-8">
+						<label class="checkbox"><input type="checkbox" name="transient" value="1"[#if TRANSIENT="1"#] checked[#endif#]> <#LANG_TRANSIENT_HINT#></label>
+					</div>
+				</div>
 				
 				<div class="form-group " style="margin-right: 0px;margin-left: 0px;">
 					<label class="col-lg-2 col-md-4" style="max-width: 240px;float: left;padding: 5px 10px 0px 0px;text-align: right;"><#LANG_DATA_TYPE#>:<#LANG_HCB#>datatype<#LANG_HCE#></label>

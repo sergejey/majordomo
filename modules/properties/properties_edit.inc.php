@@ -48,6 +48,13 @@
    global $keep_history;
    $rec['KEEP_HISTORY']=(int)$keep_history;
 
+   $was_transient=!empty($rec['TRANSIENT']);
+   global $transient;
+   $rec['TRANSIENT']=(int)$transient;
+   if ($rec['TRANSIENT']) {
+    $rec['KEEP_HISTORY']=0;
+   }
+
    global $onchange;
    $rec['ONCHANGE']=trim($onchange);
 
@@ -92,6 +99,12 @@
     if ($rec['ID']) {
      SQLUpdate($table_name, $rec); // update
      cleanUpPropertyHistory($rec['ID'], $rec['KEEP_HISTORY']);
+     if ((int)$rec['TRANSIENT'] !== ($was_transient?1:0)) {
+      include_once(DIR_MODULES.'objects/objects.class.php');
+      $objects_module=new objects();
+      $objects_module->migrateTransientFlag($rec['ID'], (int)$rec['TRANSIENT']);
+      clearCacheData();
+     }
     } else {
      $new_rec=1;
      $rec['ID']=SQLInsert($table_name, $rec); // adding new record

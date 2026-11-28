@@ -568,7 +568,7 @@ class xray extends module
                 header("HTTP/1.0: 200 OK\n");
                 header('Content-Type: text/html; charset=utf-8');
                 if ($this->view_mode == 'properties') {
-                    $qry = "1";
+                    $qry = "properties.TRANSIENT=0";
                     if ($filter) {
                         $qry .= " AND (objects.TITLE LIKE '%" . DBSafe($filter) . "%' OR properties.TITLE LIKE '%" . DBSafe($filter) . "%' OR objects.DESCRIPTION LIKE '%" . DBSafe($filter) . "%')";
                     }
@@ -911,7 +911,7 @@ class xray extends module
 
                 if ($this->view_mode == 'dead') {
                     $qry .= " AND ((objects.TITLE LIKE '%" . DBSafe($filter) . "%')" . " or (objects.DESCRIPTION LIKE '%" . DBSafe($filter) . "%'))";
-                    $pRecs = SQLSelect("SELECT ID FROM properties WHERE TITLE = 'alive'");
+                    $pRecs = SQLSelect("SELECT ID FROM properties WHERE TITLE = 'alive' AND TRANSIENT=0");
                     $total = count($pRecs);
                     if (!$total) {
                         return 0;
