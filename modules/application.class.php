@@ -194,7 +194,7 @@ class application extends module
             SQLInsert('terminals', $new_terminal);
             $out['TERMINAL_TITLE'] = $new_terminal['TITLE'];
             $new_terminal['SELECTED'] = 1;
-            $out['TERMINALS'][] = $new_terminal;
+            $terminals[] = $new_terminal;
         }
 
         $out['TERMINALS'] = $terminals;
