@@ -45,6 +45,20 @@ if (!$sortby) {
     $session->data['classes_sort'] = $sortby;
 }
 if (!$sortby) $sortby = "TITLE";
+$allowedSortFields = array('ID', 'TITLE', 'PARENT_ID', 'NOLOG', 'DESCRIPTION');
+$sortParts = array();
+foreach (explode(',', $sortby) as $part) {
+    $part = trim($part);
+    $direction = '';
+    if (preg_match('/^(\w+)\s+(ASC|DESC)$/i', $part, $m)) {
+        $part = $m[1];
+        $direction = ' ' . strtoupper($m[2]);
+    }
+    if (in_array($part, $allowedSortFields, true)) {
+        $sortParts[] = $part . $direction;
+    }
+}
+$sortby = $sortParts ? implode(', ', $sortParts) : 'TITLE';
 $out['SORTBY'] = $sortby;
 // SEARCH RESULTS
 
