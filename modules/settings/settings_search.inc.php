@@ -75,7 +75,7 @@ if ($this->filter_name == '') {
 }
 
 foreach ($options as $k => $v) {
-    $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME LIKE '" . $k . "'");
+    $tmp = SQLSelectOne("SELECT ID FROM settings WHERE NAME='" . DBSafe($k) . "'");
     if (!$tmp['ID']) {
         $tmp = array();
         $tmp['NAME'] = $k;
