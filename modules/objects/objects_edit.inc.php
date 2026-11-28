@@ -144,7 +144,7 @@ if ($this->tab == 'properties') {
 		$new_history = gr('new_history', 'trim');
 		$onchange = gr('onchange', 'trim');
         $new_value = gr('new_value');
-		$prop_id = gr('prop_id');
+		$prop_id = gr('prop_id', 'int');
 		
 		$tmp = SQLSelectOne("SELECT * FROM properties WHERE ID='" . $prop_id . "'");
         if ($new_property != '') {
@@ -155,7 +155,7 @@ if ($this->tab == 'properties') {
             $tmp['ONCHANGE'] = $onchange;
 			if(empty($tmp['ID'])){
 				//проверяем, есть ли свойство в объекте с таким же именем
-				$prop = SQLSelectOne("SELECT * FROM properties WHERE OBJECT_ID='" . $rec['ID'] . "' AND TITLE='" . $new_property . "'");
+				$prop = SQLSelectOne("SELECT * FROM properties WHERE OBJECT_ID='" . $rec['ID'] . "' AND TITLE='" . DBSafe($new_property) . "'");
 				if(empty($prop['ID'])){
 					$tmp['ID'] = SQLInsert('properties', $tmp);
 					clearCacheData('P:');
