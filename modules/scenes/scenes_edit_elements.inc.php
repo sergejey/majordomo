@@ -69,7 +69,9 @@ if ($this->mode == 'update') {
         || $element['TYPE'] == 'informer'
         || $element['TYPE'] == 'warning'
         || $element['TYPE'] == 'menuitem'
-        || $element['TYPE'] == 'object') {
+        || $element['TYPE'] == 'object'
+        || $element['TYPE'] == 'button'
+        || $element['TYPE'] == 'mode') {
         $element['EASY_CONFIG'] = (int)$easy_config;
     } else {
         $element['EASY_CONFIG'] = 0;
