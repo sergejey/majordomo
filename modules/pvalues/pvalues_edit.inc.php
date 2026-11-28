@@ -39,6 +39,8 @@
      $new_rec=1;
      $rec['ID']=SQLInsert($table_name, $rec); // adding new record
     }
+    clearCacheData('P:');
+    clearCacheData('MJD:');
     $out['OK']=1;
    } else {
     $out['ERR']=1;

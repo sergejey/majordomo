@@ -165,9 +165,14 @@ function usual(&$out) {
 * @access public
 */
  function delete_pvalues($id) {
-  $rec=SQLSelectOne("SELECT * FROM pvalues WHERE ID='$id'");
-  // some action for related tables
-  SQLExec("DELETE FROM pvalues WHERE ID='".$rec['ID']."'");
+  $rec=SQLSelectOne("SELECT * FROM pvalues WHERE ID=".(int)$id);
+  if (!$rec['ID']) return;
+  $prop=SQLSelectOne("SELECT DATA_TYPE FROM properties WHERE ID=".(int)$rec['PROPERTY_ID']);
+  cleanUpValueHistory($rec['ID'], 0, isset($prop['DATA_TYPE']) ? $prop['DATA_TYPE'] : 0);
+  SQLExec("DELETE FROM phistory_queue WHERE VALUE_ID=".(int)$rec['ID']);
+  SQLExec("DELETE FROM pvalues WHERE ID=".(int)$rec['ID']);
+  clearCacheData('P:');
+  clearCacheData('MJD:');
  }
 /**
 * Install
