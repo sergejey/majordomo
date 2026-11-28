@@ -1,4 +1,13 @@
-<!--#
+<style>
+@media (max-width: 767px) {
+	.users-table thead { display: none; }
+	.users-table, .users-table tbody, .users-table tr, .users-table td { display: block; width: 100%; }
+	.users-table tr { border: 1px solid var(--mj-color-border, #ddd); border-radius: 8px; margin-bottom: 10px; padding: 8px; box-sizing: border-box; }
+	.users-table td { border: 0; padding: 4px 8px; }
+	.users-table td::before { content: attr(data-label); display: block; font-size: 12px; font-weight: bold; color: var(--mj-color-muted, #777); }
+	.users-table .users-actions { text-align: left; }
+}
+</style><!--#
  @version 0.2 (auto-set)
 #-->
 
@@ -30,7 +39,7 @@
 <!-- / paging -->
 <!-- search results (list) -->
 <form action="?" method="post" name="frmList_users" style="padding:0px">
-<table class="table table-striped">
+<table class="table table-striped users-table">
 <thead>
         <tr>
             <th>&nbsp;</th>
@@ -49,30 +58,27 @@
 <tbody>
 [#begin RESULT#]
 <tr class="hover_btn2">
- <td>
-   [#if AVATAR!=""#]
+ <td data-label="<#LANG_PHOTO#>">
+    [#if AVATAR!=""#]
    <a href="#" onClick="return switchTo('[#USERNAME#]');"><img src="<#ROOTHTML#>cms/avatars/[#AVATAR#]" border="0" height="30"></a>
    [#else#]
    <a href="#" onClick="return switchTo('[#USERNAME#]');"><img src="<#ROOTHTML#>img/icons/user.png" border="0" height="30"></a>
    [#endif#] 
  </td>
-    <td>
-        [#USERNAME#]
+    <td data-label="<#LANG_USERNAME#>">
+         [#USERNAME#]
         [#if IS_DEFAULT="1"#](<#LANG_USE_DEFAULT#>)[#endif#]
         [#if PASSWORD!=""#]+ <#LANG_PASSWORD#>[#endif#]
     </td>
- <td
-   >
-  <b>
+ <td data-label="<#LANG_NAME#>">
+   <b>
    [#NAME#][#if COLOR!=""#] <span class="badge" style="background-color:[#COLOR#];"> </span>[#endif#] 
   </a></b>
  </td>
- <td
-  
-   >
-   [#EMAIL#]
+ <td data-label="<#LANG_EMAIL#>">
+    [#EMAIL#]
  </td>
- <td  width="100">
+ <td class="users-actions" width="100">
  
   [#if "<#ACTION#>"=="admin"#]
    
