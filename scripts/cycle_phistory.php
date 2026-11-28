@@ -65,6 +65,15 @@ while (1) {
     $tmp = SQLSelectOne("SELECT COUNT(*) as TOTAL FROM phistory_queue;");
     $count_queue = (int)$tmp['TOTAL'];
 
+    if ($count_queue > $limit && !$queue_error_status) {
+        sg('phistory_queue_problem', 1);
+        $txt = 'Properties history queue is too long (' . $count_queue . ')';
+        echo date("H:i:s") . " " . $txt . "\n";
+        registerError('phistory_queue', $txt);
+    } elseif ($count_queue <= $limit && $queue_error_status) {
+        sg('phistory_queue_problem', 0);
+    }
+
     $queue = SQLSelect("SELECT * FROM phistory_queue ORDER BY ID LIMIT " . $limit);
     if (isset($queue[0]['ID'])) {
         if ((time() - $processed_cleanup_time) > 60 * 60) {
@@ -74,15 +83,6 @@ while (1) {
                     unset($processed[$value_id]);
                 }
             }
-        }
-
-        if ($count_queue > $limit && !$queue_error_status) {
-            sg('phistory_queue_problem', 1);
-            $txt = 'Properties history queue is too long (' . $count_queue . ')';
-            echo date("H:i:s") . " " . $txt . "\n";
-            registerError('phistory_queue', $txt);
-        } elseif ($count_queue <= $limit && $queue_error_status) {
-            sg('phistory_queue_problem', 0);
         }
 
         $total = count($queue);
