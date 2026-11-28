@@ -340,7 +340,7 @@ class events extends module
             if ($param_rec['LINKED_OBJECT'] && $param_rec['LINKED_METHOD']) {
                 $method_params = array();
                 $method_params['VALUE'] = $v;
-                $method_params['EVENT'] = $rec['TITLE'];
+                $method_params['EVENT'] = $rec['EVENT_NAME'];
                 callMethodSafe($param_rec['LINKED_OBJECT'] . '.' . $param_rec['LINKED_METHOD'], $method_params);
             }
         }
