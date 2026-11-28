@@ -20,9 +20,11 @@ if (preg_match_all('/<!--placecut (\w+?)-->/is', $result, $matches))
 // BEGIN: filter output
 if (isset($filterblock) && $filterblock != '')
 {
-   $matchPattern = '/<!--begin_data \[' . $filterblock . '\]-->(.*?)<!--end_data \[' . $filterblock . '\]-->/is';
-   preg_match($matchPattern, $result, $match);
-   $result = $match[1];
+   $escapedBlock = preg_quote($filterblock, '/');
+   $matchPattern = '/<!-- begin_data \[' . $escapedBlock . '\] -->(.*?)<!-- end_data \[' . $escapedBlock . '\] -->/is';
+   if (preg_match($matchPattern, $result, $match) && isset($match[1])) {
+      $result = $match[1];
+   }
 }
 // END: filter output
 
