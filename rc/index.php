@@ -5,6 +5,15 @@ include_once('./config.php');
 include_once('./lib/loader.php');
 include_once('./load_settings.php');
 
+$session = new session('prj');
+$remoteAddr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+$isLocal = $remoteAddr === '127.0.0.1' || $remoteAddr === '::1'
+    || preg_match('/^(?:10\.|172\.(?:1[6-9]|2\d|3[01])\.|192\.168\.)/', $remoteAddr);
+if (empty($session->data['AUTHORIZED']) && !$isLocal) {
+    http_response_code(403);
+    exit('Forbidden');
+}
+
 /*
 DebMes($_SERVER['REQUEST_URI']);
 
