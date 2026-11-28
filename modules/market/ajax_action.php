@@ -15,7 +15,8 @@ if (!$access->checkAccess('market')) {
 }
 $op = isset($_POST['op']) ? (string)$_POST['op'] : '';
 $name = preg_replace('/[^A-Za-z0-9_-]/', '', (string)(isset($_POST['name']) ? $_POST['name'] : ''));
-$value = preg_replace('/[^A-Za-z0-9_.-]/', '', (string)(isset($_POST['value']) ? $_POST['value'] : ''));
+// Version strings may contain dates and times (e.g. 2026-11-27 10:30:00).
+$value = preg_replace('/[^\x20-\x7E]/', '', (string)(isset($_POST['value']) ? $_POST['value'] : ''));
 if ($op !== 'dontupdate' || !$name || !$value) {
     echo json_encode(array('status' => 'error', 'msg' => 'Invalid parameters'));
     exit;
