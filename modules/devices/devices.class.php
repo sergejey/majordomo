@@ -299,6 +299,7 @@ class devices extends module
 
     function getWatchedProperties($device_id = 0)
     {
+        $device_id = (int)$device_id;
         $this->setDictionary();
         $properties = array();
         $qry = 1;
