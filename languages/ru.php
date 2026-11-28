@@ -294,6 +294,7 @@ $dictionary = array(
 
 
     'SETTINGS_UPDATED' => 'Настройки сохранены!',
+'UPDATES_STATS_TITLE' => 'Статистика обновлений',
     'SETTINGS_ERROR' => 'Не удалось сохранить настройку',
 
 

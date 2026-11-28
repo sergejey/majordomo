@@ -1,3 +1,17 @@
+<<<<<<< HEAD
+<script type="text/javascript">
+function saveSaverestoreSettings(form) {
+	var data = new FormData(form);
+	fetch('/modules/saverestore/ajax_settings.php', {method:'POST', body:data, credentials:'same-origin'})
+	.then(function(r){return r.json();})
+	.then(function(res){
+		if ($.toast) $.toast({text:res.msg, position:'top-right', bgColor:res.status==='ok'?'#3c763d':'#b52b27', textColor:'#fff', hideAfter:3000, stack:1});
+	}).catch(function(){
+		if ($.toast) $.toast({text:'<#LANG_ERROR#>', position:'top-right', bgColor:'#b52b27', textColor:'#fff', hideAfter:3000, stack:1});
+	});
+	return false;
+}
+</script>
 [#if CLEAR_FIRST!="1"#]
 <div class="row">
 	[#if ERR_MSG!=""#]
@@ -118,7 +132,7 @@
 				<ul class="list-group" id="">
 					<li class="list-group-item">
 						<span style="float: right;">
-							<select name="set_update_url" id="set_update_url" style="border: 0px;" onchange="this.form.submit();">
+							<select name="set_update_url" id="set_update_url" style="border: 0px;" onchange="return saveSaverestoreSettings(this.form);">
 								<option value="<#GIT_URL#>archive/master.tar.gz"[#if UPDATE_URL="<#GIT_URL#>archive/master.tar.gz" AND CURRENT_BRANCH!="ALPHA"#] selected[#endif#]><#LANG_UPDATES_SOURCE_MASTER#></option>
 								<option value="<#GIT_URL#>archive/alpha.tar.gz"[#if UPDATE_URL="<#GIT_URL#>archive/alpha.tar.gz" OR CURRENT_BRANCH="ALPHA"#] selected[#endif#]><#LANG_UPDATES_SOURCE_ALPHA#></option>
 								[#if ADITIONAL_GIT_URLS#]
@@ -414,3 +428,20 @@
         <input type="hidden" name="mode" value="clear">
     </form>
     [#endif CLEAR_FIRST#]
+
+<div class="panel panel-default" style="margin-top:10px;">
+ <div class="panel-heading"><#LANG_UPDATES_STATS_TITLE#></div>
+ <div class="panel-body" id="updates_stats"><#LANG_NEWDASH_LOADING#></div>
+</div>
+<script type="text/javascript">
+function loadUpdateStats() {
+ fetch('/modules/market/stats_ajax.php', {credentials:'same-origin'})
+ .then(function(r){return r.json();})
+ .then(function(res){
+  if (!res || res.status !== 'ok') return;
+  var s = res.stats;
+  $('#updates_stats').html('<p><#LANG_UPDATES_STATS_CORE#>: ' + s.core_updates + ' (' + s.core_last + ')</p><p><#LANG_UPDATES_STATS_MODULES#>: ' + s.module_updates + ' / <#LANG_UPDATES_STATS_SKIPS#>: ' + s.module_skips + '</p>');
+ });
+}
+$(document).ready(function(){ loadUpdateStats(); });
+</script>
