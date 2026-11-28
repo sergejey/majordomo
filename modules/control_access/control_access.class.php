@@ -83,7 +83,10 @@ function getParams() {
     global $login;
     global $psw;
 //    $user=SQLSelectOne("SELECT * FROM admin_users WHERE LOGIN='$login' AND PASSWORD='".($psw)."'");
-    $user=SQLSelectOne("SELECT * FROM admin_users WHERE LOGIN='".DBSafe($login)."' AND PASSWORD='".DBSafe(md5($psw))."'");
+    $user=SQLSelectOne("SELECT * FROM admin_users WHERE LOGIN='".DBSafe($login)."'");
+    if (IsSet($user['ID']) && !hash_equals((string)$user['PASSWORD'], md5($psw))) {
+        $user = array();
+    }
 
 //    $user=SQLSelectOne("SELECT * FROM admin_users WHERE 1");
 
