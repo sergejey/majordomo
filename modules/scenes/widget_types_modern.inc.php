@@ -68,13 +68,23 @@ $this->widget_types['progress'] = array(
             'DEFAULT_VALUE' => '', '_CONFIG_TYPE' => 'text')
     ),
     'RENDER_FUNCTION' => function ($data) {
+        $objectTitle = function ($id) {
+            if ($id === '' || $id === null) {
+                return '';
+            }
+            if (!ctype_digit((string)$id)) {
+                return (string)$id;
+            }
+            $rec = SQLSelectOne("SELECT TITLE FROM objects WHERE ID=" . (int)$id);
+            return isset($rec['TITLE']) ? $rec['TITLE'] : '';
+        };
         $value = 0;
         if (!empty($data['object']) && !empty($data['property'])) {
-            $value = (float)getGlobal($data['object'] . '.' . $data['property']);
+            $value = (float)getGlobal($objectTitle($data['object']) . '.' . $data['property']);
         }
         $max = 100;
         if (!empty($data['max_object']) && !empty($data['max_property'])) {
-            $max = (float)getGlobal($data['max_object'] . '.' . $data['max_property']);
+            $max = (float)getGlobal($objectTitle($data['max_object']) . '.' . $data['max_property']);
         } elseif (isset($data['max_constant']) && $data['max_constant'] !== '') {
             $max = (float)$data['max_constant'];
         }
