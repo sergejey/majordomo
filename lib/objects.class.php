@@ -590,9 +590,9 @@ function getKeyData($object_id)
 function returnTypedValue($value)
 {
     if (is_numeric($value) && preg_match('/^-?[0-9]+(\.[0-9]+)?$/', $value)) {
-        if (strpos($value, '.') !== false && filter_var($value, FILTER_VALIDATE_FLOAT)) {
+        if (strpos($value, '.') !== false && filter_var($value, FILTER_VALIDATE_FLOAT) !== false) {
             return floatval($value);
-        } elseif (!preg_match('/^0/', $value) && filter_var($value, FILTER_VALIDATE_INT)) {
+        } elseif (($value === '0' || !preg_match('/^0\d/', $value)) && filter_var($value, FILTER_VALIDATE_INT) !== false) {
             return (int)$value;
         }
     }
