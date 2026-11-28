@@ -14,9 +14,14 @@ $ctl = new control_modules();
 
 ?>
 <!DOCTYPE html>
-<html>
+<?php
+$mjBlocklyTheme = defined('MJ_THEME') ? MJ_THEME : (defined('SETTINGS_THEME') ? SETTINGS_THEME : 'light');
+?>
+<html lang="<?php echo defined('SETTINGS_SITE_LANGUAGE') ? SETTINGS_SITE_LANGUAGE : 'en'; ?>" data-theme="<?php echo htmlspecialchars((string)$mjBlocklyTheme, ENT_QUOTES, 'UTF-8'); ?>">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="<?php echo ROOTHTML;?>css/theme-tokens.css" type="text/css">
 
     <script type="text/javascript"  src="<?php echo ROOTHTML;?>3rdparty/jquery/jquery-3.3.1.min.js"></script>
     <script type="text/javascript"  src="<?php echo ROOTHTML;?>3rdparty/jquery/jquery-migrate-3.0.0.min.js"></script>
@@ -38,7 +43,16 @@ $ctl = new control_modules();
       echo '<script type="text/javascript" src="blocks/majordomo_devices.js.php?2020-01-29-1"></script>';
     }
     ?>
-    <script type="text/javascript" src="msg/js/<?php echo SETTINGS_SITE_LANGUAGE;?>.js"></script>
+    <?php
+    $blocklyLang = defined('SETTINGS_SITE_LANGUAGE') ? SETTINGS_SITE_LANGUAGE : 'en';
+    if ($blocklyLang === 'zh') {
+        $blocklyLang = 'zh-hans';
+    }
+    if (!file_exists(__DIR__ . '/msg/js/' . $blocklyLang . '.js')) {
+        $blocklyLang = 'en';
+    }
+    ?>
+    <script type="text/javascript" src="msg/js/<?php echo $blocklyLang;?>.js"></script>
     <?php
     if (SETTINGS_SITE_LANGUAGE=='ru') {
       ?>
@@ -72,7 +86,8 @@ $ctl = new control_modules();
     ?>
     <style>
       html, body {
-        background-color: #fff;
+        background-color: var(--mj-color-bg, #fff);
+        color: var(--mj-color-fg, #333);
         margin: 0;
         padding: 0;
         overflow: hidden;
@@ -128,6 +143,7 @@ $ctl = new control_modules();
       function init() {
         Blockly.inject(document.body,
             {path: './', toolbox: document.getElementById('toolbox'),
+              move: {scrollbars: true, wheel: true, drag: true},
               zoom:
               {controls: true,
                 wheel: false,
@@ -165,8 +181,12 @@ $ctl = new control_modules();
       try {
        Blockly.Xml.domToWorkspace(xmlDom,Blockly.mainWorkspace);
       } catch (e) {
-        Blockly.mainWorkspace.clear();
-        alert('Error loading script: ' + e);
+        // Keep the blocks that were loaded successfully: clearing here can silently destroy a saved diagram.
+        <?php if (defined('LANG_BLOCKLY_XML_LOAD_ERROR')) { ?>
+        alert(<?php echo json_encode(LANG_BLOCKLY_XML_LOAD_ERROR, JSON_UNESCAPED_UNICODE); ?>);
+        <?php } else { ?>
+        alert('Failed to load saved blocks. The existing workspace was kept.');
+        <?php } ?>
       }
     }
 
@@ -180,14 +200,14 @@ $ctl = new control_modules();
           $('#btnSaveRun').show();
         }
 
-        $('#custom_controls').css('left',(document.body.clientWidth-$('#custom_controls').width()-10)+'px');
-
       }
     </script>
   </head>
   <body onload="init()">
 
-  <div id="custom_controls" style="position:absolute;top:10px;left:10px;z-index:1000;">
+  <div id="custom_controls" style="position:absolute;top:10px;right:10px;z-index:1000;">
+    <a href="#" onClick="Blockly.mainWorkspace.undo(false);return false;" class="btn btn-default" title="<?php echo defined('LANG_UNDO') ? LANG_UNDO : 'Undo'; ?>" aria-label="<?php echo defined('LANG_UNDO') ? LANG_UNDO : 'Undo'; ?>"><i class="glyphicon glyphicon-undo"></i></a>
+    <a href="#" onClick="Blockly.mainWorkspace.undo(true);return false;" class="btn btn-default" title="<?php echo defined('LANG_REDO') ? LANG_REDO : 'Redo'; ?>" aria-label="<?php echo defined('LANG_REDO') ? LANG_REDO : 'Redo'; ?>"><i class="glyphicon glyphicon-repeat"></i></a>
     <a href="#"  onClick="return SaveAndClose();" class="btn btn-default btn-primary">
       <i class="glyphicon glyphicon-floppy-disk"></i>
       <?php echo LANG_SUBMIT;?></a>
