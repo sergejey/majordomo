@@ -12,6 +12,7 @@ server {
 
     # Sensitive files
     location = /config.php { deny all; }
+    location = /config.php.sample { deny all; }
     location = /debmes.txt { deny all; }
     location ~ /\. { deny all; }
     location ~* \.(htaccess|htpasswd|ini|phps|fla|sql|log|sh|py)$ { deny all; }

@@ -34,6 +34,10 @@ RewriteRule .* /nf.php
 deny from all
 </FILES>
 
+<FILES config.php.sample>
+deny from all
+</FILES>
+
 <FILES debmes.txt>
 deny from all
 </FILES>
