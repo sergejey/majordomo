@@ -192,7 +192,7 @@ class module
         $global_params = array();
 
         $pd = gr('pd');
-        if (strpos($pd, 'm' . STRING_DELIMITER)) {
+        if (strpos($pd, 'm' . STRING_DELIMITER) !== false) {
             $this->restoreParamsOld();
             return;
         }
