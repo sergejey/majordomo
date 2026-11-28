@@ -158,7 +158,8 @@ if ($this->mode == 'update') {
         if ($rec['LINKED_OBJECT'] && $rec['LINKED_PROPERTY']) {
             addLinkedProperty($rec['LINKED_OBJECT'], $rec['LINKED_PROPERTY'], $this->name);
         }
-        if ($old_linked_object && $old_linked_object != $rec['LINKED_OBJECT'] && $old_linked_property && $old_linked_property != $rec['LINKED_PROPERTY']) {
+        if ($old_linked_object && $old_linked_property
+            && ($old_linked_object != $rec['LINKED_OBJECT'] || $old_linked_property != $rec['LINKED_PROPERTY'])) {
             removeLinkedProperty($old_linked_object, $old_linked_property, $this->name);
         }
 
