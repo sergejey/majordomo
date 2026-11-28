@@ -20,7 +20,7 @@
 
     {if !isset($item.DENIED)}
         {if isset($item.LINKS)}
-            <li class="[#if SELECTED#]active[#endif#] category{$item.CATEGORY_ID} menu-item dropdown dropdown-submenu"
+            <li class="{if $item.SELECTED}active{/if} category{$item.CATEGORY_ID} menu-item dropdown dropdown-submenu"
                 id="module_{$item.NAME}_link"><a href='{$smarty.const.ROOTHTML}admin.php?action={$item.NAME}'
                                                  class="top-menu dropdown-toggle"><img src="{$item.ICON_SM}" width="24"
                                                                                        height="24">&nbsp;{$item.TITLE}
@@ -36,8 +36,8 @@
                 </ul>
             </li>
         {else}
-            <li class="[#if SELECTED#]active[#endif#] category{$item.CATEGORY_ID}" id="module_{$item.NAME}_link">
-                <a href='<#ROOTHTML#>admin.php?action={$item.NAME}' class="top-menu"><img src="{$item.ICON_SM}"
+            <li class="{if $item.SELECTED}active{/if} category{$item.CATEGORY_ID}" id="module_{$item.NAME}_link">
+                <a href='{$smarty.const.ROOTHTML}admin.php?action={$item.NAME}' class="top-menu"><img src="{$item.ICON_SM}"
                                                                                           width="24"
                                                                                           height="24">&nbsp;{$item.TITLE}
                     {if $item.NOTIFICATIONS_COUNT != 0}
