@@ -130,14 +130,14 @@ class jTemplate
     public function parse($res, &$hash, $dir)
     {
         // COMMENTS
-        if (is_integer(strpos($res, '<!--#'))) {
+        if (strpos($res, '<!--#') !== false) {
             $res = preg_replace("/<!--#.+?#-->/is", "", $res);
         }
 
         //NOTE: compiler should be perfect for this template engine (����)
 
         // METHODS
-        if (is_integer(strpos($res, '[#method '))) {
+        if (strpos($res, '[#method ') !== false) {
             $this->parseMethods($res, $hash);
         }
 
@@ -145,17 +145,17 @@ class jTemplate
         $this->parseGlobals($res, $hash);
 
         // BLOCKS
-        if (is_integer(strpos($res, '[#block '))) {
+        if (strpos($res, '[#block ') !== false) {
             $this->parseBlocks($res, $hash, $dir);
         }
 
         // DYN LINKS
-        if (isset($this->ajax) && $this->ajax && (is_integer(strpos($res, 'dnlnk')) || is_integer(strpos($res, 'dnfrm')))) {
+        if (isset($this->ajax) && $this->ajax && (strpos($res, 'dnlnk') !== false || strpos($res, 'dnfrm') !== false)) {
             $this->parseDynLinks($res);
         }
 
         // ARRAYS
-        if (is_integer(strpos($res, '[#begin '))) {
+        if (strpos($res, '[#begin ') !== false) {
             //startMeasure('parsingArrays'.$this->template);
             $this->parseArrays($res, $hash, $dir);
             //endMeasure('parsingArrays'.$this->template);
@@ -165,28 +165,28 @@ class jTemplate
         $this->parseHashes($res, $hash);
 
         // CONDITIONS
-        if (is_integer(strpos($res, '[#if '))) {
+        if (strpos($res, '[#if ') !== false) {
             //startMeasure('parsingIfs'.$this->template);
             $this->parseIf($res, $hash);
             //endMeasure('parsingIfs'.$this->template);
         }
 
         // MODULES
-        if (is_integer(strpos($res, '[#module '))) {
+        if (strpos($res, '[#module ') !== false) {
             //startMeasure('parsingModules'.$this->template);
             $this->parseModules($res, $hash, $dir);
             //endMeasure('parsingModules'.$this->template);
         }
 
         // INCLUDE FILES
-        if (is_integer(strpos($res, '[#inc '))) {
+        if (strpos($res, '[#inc ') !== false) {
             //startMeasure('parsingIncludes'.$this->template);
             $this->parseIncludes($res, $hash, $dir);
             //endMeasure('parsingIncludes'.$this->template);
         }
 
         // VARIABLES
-        if (is_integer(strpos($res, '[#'))) {
+        if (strpos($res, '[#') !== false) {
             //startMeasure('parsingVariables'.$this->template);
             $this->parseVariables($res, $hash);
             //endMeasure('parsingVariables'.$this->template);
