@@ -70,6 +70,13 @@ class application extends module
         }
 
         if ($this->action == 'ajaxsetglobal') {
+            $selfHost = isset($_SERVER['HTTP_HOST']) ? parse_url('http://' . $_SERVER['HTTP_HOST'], PHP_URL_HOST) : '';
+            $originHost = isset($_SERVER['HTTP_ORIGIN']) ? parse_url($_SERVER['HTTP_ORIGIN'], PHP_URL_HOST) : '';
+            $refererHost = isset($_SERVER['HTTP_REFERER']) ? parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) : '';
+            if (($originHost !== '' && $originHost !== $selfHost) || ($refererHost !== '' && $refererHost !== $selfHost)) {
+                http_response_code(403);
+                exit('Forbidden');
+            }
             header("HTTP/1.0: 200 OK\n");
             header('Content-Type: text/html; charset=utf-8');
             $var = gr('var');
