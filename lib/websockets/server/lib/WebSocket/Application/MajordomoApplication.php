@@ -369,6 +369,7 @@ class MajordomoApplication extends Application
             foreach ($this->_clients as $client) {
                 $tmp = explode('.', $property_name_lc);
                 if (IsSet($client->watchedProperties[$property_name_lc]) || IsSet($client->watchedProperties[$tmp[0]])) {
+                    $found_subscribers = 1;
                     //scenes
                     if (isset($client->watchedProperties[$property_name_lc]['states'])) {
                         $send_states = array();
