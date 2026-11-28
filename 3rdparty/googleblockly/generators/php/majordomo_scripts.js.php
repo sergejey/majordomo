@@ -24,18 +24,18 @@ $total=count($scripts);
 for($i=0;$i<$total;$i++) {
 
 ?>
+// Statement call: safe for XML saved before a script was converted to a function.
 Blockly.PHP['majordomo_script_<?php echo $scripts[$i]['ID'];?>'] = function(block) {
   var params = Blockly.PHP.valueToCode(block, 'PARAMS',Blockly.PHP.ORDER_NONE) || 'array()';
-  <?php 
-  $tmp=explode("\n", $scripts[$i]['CODE']);
-  $last_line=$tmp[count($tmp)-1];
-  if (preg_match('/return/is', $last_line)) {?>  
-  var code = 'runScript(\'<?php echo $scripts[$i]['TITLE'];?>\','+params+')';
-  return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
-  <?php } else {?>
   var code = 'runScript(\'<?php echo $scripts[$i]['TITLE'];?>\', '+params+');\n';
   return code;
-  <?php }?>
+};
+
+// Value call: used for scripts that return a result.
+Blockly.PHP['majordomo_script_return_<?php echo $scripts[$i]['ID'];?>'] = function(block) {
+  var params = Blockly.PHP.valueToCode(block, 'PARAMS',Blockly.PHP.ORDER_NONE) || 'array()';
+  var code = 'runScript(\'<?php echo $scripts[$i]['TITLE'];?>\','+params+')';
+  return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
 };
 <?php
  

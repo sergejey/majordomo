@@ -279,6 +279,18 @@ class blockly_code extends module
             }
         }
 
+        // Older XML used one block name for both procedures and functions.
+        // Move value-context calls to the dedicated value block so saved scenes keep loading.
+        if (isset($rec['XML'])) {
+            $rec['XML'] = preg_replace_callback(
+                '/(<value[^>]*>\s*<block type=")majordomo_script_(\d+)(")/is',
+                function ($m) {
+                    return $m[1] . 'majordomo_script_return_' . $m[2] . $m[3];
+                },
+                $rec['XML']
+            );
+        }
+
         if (!isset($rec['ID']) && !$this->type) {
             $rec['CODE_TYPE'] = 0;
             $rec['CODE_TYPE_UNKNOWN'] = 1;
