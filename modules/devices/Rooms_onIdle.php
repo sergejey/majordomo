@@ -1,7 +1,5 @@
 <?php
 
-$this->callMethod("updateActivityStatus");
-
 if ($this->getProperty('turnOffLightsOnIdle')) {
     $turnedOff = array();
     $objects = getObjectsByProperty('linkedRoom', $this->object_title);
@@ -13,3 +11,6 @@ if ($this->getProperty('turnOffLightsOnIdle')) {
     }
     $this->setProperty('turnedOffAutomatically', implode(',', $turnedOff));
 }
+
+$this->setProperty('SomebodyHere', 0);
+$this->callMethod('updateActivityStatus');
