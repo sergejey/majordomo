@@ -17,12 +17,17 @@
 
  function [#CODE_FIELD#]_showCode(history_id) {
 	 var history_code = $('#history_'+history_id).html();
-	 alert(history_code);
+	 var show = window['<#CODE_FIELD#>_showResult']; 
+
+
+if (show) show(history_code, false, false); else alert(history_code);
 	 return false;
  }
 
  function [#CODE_FIELD#]_useCode(history_id) {
 	 var history_code = $('#history_'+history_id).html();
+
+	 if (!confirm('<#LANG_CODEEDITOR_RESTORE#> ' + history_id + '?')) return false;
 	 var history_code_xml = $('#history_'+history_id+'_xml').text();
 	 var code_type = $('.[#CODE_FIELD#]_code_type:checked').val();
 
@@ -42,9 +47,9 @@
 [#if ONLYCODE != 1#]
 <div style="margin-top: 3px;" id="blockyTypeForCoding">
 	<#LANG_CODE_TYPE#>:
-	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="0"[#if CODE_TYPE="0"#] checked[#endif#]> <#LANG_CODE#>&nbsp;<#LANG_HCB#>codePhp<#LANG_HCE#>
-	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="1"[#if CODE_TYPE="1"#] checked[#endif#]> Blockly<#LANG_HCB#>codeBlockly<#LANG_HCE#>
-	<input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="2"[#if CODE_TYPE="2"#] checked[#endif#]> <#LANG_DEVICES#><#LANG_HCB#>codeDevices<#LANG_HCE#>
+	<label><input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="0"[#if CODE_TYPE="0"#] checked[#endif#]> <#LANG_CODE#>&nbsp;<#LANG_HCB#>codePhp<#LANG_HCE#></label>
+	<label><input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="1"[#if CODE_TYPE="1"#] checked[#endif#]> Blockly<#LANG_HCB#>codeBlockly<#LANG_HCE#></label>
+	<label><input type="radio" name="[#CODE_FIELD#]_code_type" class="[#CODE_FIELD#]_code_type" value="2"[#if CODE_TYPE="2"#] checked[#endif#]> <#LANG_DEVICES#><#LANG_HCB#>codeDevices<#LANG_HCE#></label>
 	[#if HISTORY_AVAILABLE#]
 	(<a href="#" onclick="return [#CODE_FIELD#]_showCodeHistory();"><#LANG_HISTORY#></a>)
 	[#endif HISTORY_AVAILABLE#]
@@ -115,7 +120,8 @@ $(function() {
 
 <style>
 	.cm_panel {
-		background: #f7f7f7;
+		background: var(--mj-color-surface, #f7f7f7);
+		color: var(--mj-color-fg, #333);
 		padding: 3px 7px;
 		font-size: 0.85em;
 	}
@@ -130,17 +136,18 @@ $(function() {
 		}
 	}
 	.cm_panel.top, .cm_panel.after-top {
-		border-bottom: 1px solid #ddd;
+		border-bottom: 1px solid var(--mj-color-border, #ddd);
 	}
 	.cm_panel.bottom, .cm_panel.before-bottom {
-		border-top: 1px solid #ddd;
+		border-top: 1px solid var(--mj-color-border, #ddd);
 	}
 
 	.cm_panel.top.cm_panel_fullscreen {
 		position: fixed;
 		z-index: 10;
 		top: 0; left: 50%;
-		width: 50%;
+		transform: translateX(-50%);
+		width: min(720px, calc(100vw - 24px));
 	}
 
 	.remove-panel {
@@ -154,17 +161,20 @@ $(function() {
 		height: auto !important;
 	}
 [#endif#]
-	.mj-run-btn { color: #26648f; text-decoration: none; font-weight: bold; margin-right: 8px; }
-	.mj-run-btn:hover { text-decoration: underline; }
-	#mj-audit-fab { display: none; position: fixed; bottom: 72px; right: 14px; z-index: 10001; padding: 10px 14px; background: #6a3da0; color: #fff; border-radius: 22px; box-shadow: 0 2px 8px rgba(0,0,0,.25); text-decoration: none; }
-	#mj-run-fab { display: none; position: fixed; bottom: 14px; right: 14px; z-index: 10001; padding: 10px 14px; background: #26648f; color: #fff; border-radius: 22px; box-shadow: 0 2px 8px rgba(0,0,0,.25); text-decoration: none; }
-	#mj-run-popup { position: fixed; z-index: 10002; top: 50%; left: 50%; transform: translate(-50%,-50%); width: min(720px, calc(100vw - 32px)); max-height: 70vh; display: flex; flex-direction: column; background: var(--mj-color-bg,#fff); color: var(--mj-color-fg,#333); border: 1px solid var(--mj-color-border,#ddd); border-radius: 8px; box-shadow: 0 12px 40px rgba(0,0,0,.3); opacity: 1; transition: opacity .18s ease, transform .18s ease; }
-	#mj-run-popup.hiding { opacity: 0; transform: translate(-50%,-48%); }
-	#mj-run-popup .mj-run-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--mj-color-border,#ddd); font-weight: bold; }
-	#mj-run-popup .mj-run-close { cursor: pointer; border: 0; background: transparent; font-size: 20px; line-height: 1; color: inherit; }
-	#mj-run-popup pre { margin: 0; padding: 12px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; }
-	#mj-run-popup.mj-error { border-color: #b52b27; }
-	@media (max-width: 767px) { #mj-run-fab { display: block; } #mj-audit-fab { display: block; } }
+	.mj-run-btn, .mj-audit-btn { color: var(--mj-color-link, #26648f); text-decoration: none; font-weight: bold; margin-right: 8px; display: inline-block; min-height: 44px; line-height: 44px; padding: 0 8px; }
+	.mj-run-btn:hover, .mj-audit-btn:hover { text-decoration: underline; }
+	#mj-audit-fab { display: none; position: fixed; bottom: 72px; right: 14px; z-index: 10001; padding: 10px 14px; min-height: 44px; min-width: 44px; align-items: center; justify-content: center; background: #6a3da0; color: #fff; border-radius: 22px; box-shadow: 0 2px 8px rgba(0,0,0,.25); text-decoration: none; }
+	#mj-run-fab { display: none; position: fixed; bottom: 14px; right: 14px; z-index: 10001; padding: 10px 14px; min-height: 44px; min-width: 44px; align-items: center; justify-content: center; background: #26648f; color: #fff; border-radius: 22px; box-shadow: 0 2px 8px rgba(0,0,0,.25); text-decoration: none; }
+	#mj-audit-fab:focus-visible, #mj-run-fab:focus-visible, .mj-run-btn:focus-visible, .mj-audit-btn:focus-visible, .mj-run-popup .mj-run-close:focus-visible, .remove-panel:focus-visible { outline: 2px solid var(--mj-color-link, #26648f); outline-offset: 2px; }
+	body.mj-fullscreen #mj-audit-fab, body.mj-fullscreen #mj-run-fab { display: none !important; }
+	@media (max-width: 767px) { body { padding-bottom: 96px; } }
+	.mj-run-popup { position: fixed; z-index: 10002; top: 50%; left: 50%; transform: translate(-50%,-50%); width: min(720px, calc(100vw - 32px)); max-height: 70vh; display: flex; flex-direction: column; background: var(--mj-color-bg,#fff); color: var(--mj-color-fg,#333); border: 1px solid var(--mj-color-border,#ddd); border-radius: 8px; box-shadow: 0 12px 40px rgba(0,0,0,.3); opacity: 1; transition: opacity .18s ease, transform .18s ease; }
+	.mj-run-popup.hiding { opacity: 0; transform: translate(-50%,-48%); }
+	.mj-run-popup .mj-run-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--mj-color-border,#ddd); font-weight: bold; }
+	.mj-run-popup .mj-run-close { cursor: pointer; border: 0; background: transparent; font-size: 24px; line-height: 1; width: 44px; height: 44px; color: inherit; }
+	.mj-run-popup pre { margin: 0; padding: 12px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; }
+	.mj-run-popup.mj-error { border-color: #b52b27; }
+	@media (max-width: 767px) { #mj-run-fab, #mj-audit-fab { display: inline-flex; } }
 </style>
 
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/edit/matchbrackets.js"></script>
@@ -188,11 +198,17 @@ $(function() {
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/search/searchcursor.js"></script>
 <script src="<#ROOTHTML#>3rdparty/codemirror/addon/display/panel.js"></script>
 
-<a href="#" id="mj-audit-fab" onclick="return auditCodeAjax();">✦ <#LANG_CODEEDITOR_AUDIT#></a>
-<a href="#" id="mj-run-fab" onclick="return runCodeQuick();">▶ <#LANG_CODEEDITOR_RUN#></a>
+<a href="#" id="mj-audit-fab" onclick="return <#CODE_FIELD#>_auditCodeAjax();">✦ <#LANG_CODEEDITOR_AUDIT#></a>
+<a href="#" id="mj-run-fab" onclick="return <#CODE_FIELD#>_runCodeQuick();">▶ <#LANG_CODEEDITOR_RUN#></a>
 
 <script language="javascript">
+(function () {
 var editor;
+var popupId = 'mj-run-popup-<#CODE_FIELD#>';
+window['<#CODE_FIELD#>_runCodeQuick'] = function () { return runCodeQuick(); };
+window['<#CODE_FIELD#>_auditCodeAjax'] = function () { return auditCodeAjax(); };
+window['<#CODE_FIELD#>_showResult'] = showRunPopup;
+window['<#CODE_FIELD#>_toast'] = showSaveToast;
 var myTextArea[#CODE_FIELD#];
 
 var numPanels = 0;
@@ -205,16 +221,18 @@ function makePanel(where) {
 
 	node.id = "panel-" + id;
 	node.className = "cm_panel " + where;
-	close = node.appendChild(document.createElement("a"));
+	close = node.appendChild(document.createElement("button"));
+	close.type = "button";
 	close.setAttribute("title", "<#LANG_CODEEDITOR_REMOVE_ME#>");
+	close.setAttribute("aria-label", "<#LANG_CODEEDITOR_REMOVE_ME#>");
 	close.setAttribute("class", "remove-panel");
 	close.textContent = "✖";
-	CodeMirror.on(close, "mousedown", function(e) {
-		e.preventDefault()
+	close.addEventListener("click", function (e) {
+		e.preventDefault();
 		panels[node.id].clear();
 	});
 	label = node.appendChild(document.createElement("span"));
-	label.innerHTML = "<a href='#' id='mj-audit-link' class='mj-audit-btn' onclick='return auditCodeAjax();'>✦ <#LANG_CODEEDITOR_AUDIT#></a> <a href='#' id='mj-run-link' class='mj-run-btn' onclick='return runCodeQuick();'>▶ <#LANG_CODEEDITOR_RUN#></a> <#LANG_CODEEDITOR_TIPS#>";
+	label.innerHTML = "<a href='#' id='mj-audit-link' class='mj-audit-btn' onclick='return <#CODE_FIELD#>_auditCodeAjax();'>✦ <#LANG_CODEEDITOR_AUDIT#></a> <a href='#' id='mj-run-link' class='mj-run-btn' onclick='return <#CODE_FIELD#>_runCodeQuick();'>▶ <#LANG_CODEEDITOR_RUN#></a> <#LANG_CODEEDITOR_TIPS#>";
 	return node;
 }
 function addPanel(where) {
@@ -228,21 +246,25 @@ function switchFullscreen() {
 		$('nav').hide();
 		setTimeout('$(\'nav\').hide();',1000);
 		$('.cm_panel').addClass('cm_panel_fullscreen');
+		document.body.classList.add('mj-fullscreen');
 	} else {
 		$('nav').show();
 		$('.cm_panel').removeClass('cm_panel_fullscreen');
+		document.body.classList.remove('mj-fullscreen');
 	}
 	editor.setOption("fullScreen", !editor.getOption("fullScreen"));
+	return false;
 }
 
 function showRunPopup(text, isError, loading) {
-	var popup = document.getElementById('mj-run-popup');
+	var popup = document.getElementById(popupId);
 	if (!popup) {
 		popup = document.createElement('div');
-		popup.id = 'mj-run-popup';
+		popup.id = popupId;
 		var head = document.createElement('div');
 		head.className = 'mj-run-head';
 		var title = document.createElement('span');
+		title.id = popupId + '-title';
 		title.textContent = '<#LANG_CODEEDITOR_RESULT#>';
 		var close = document.createElement('button');
 		close.type = 'button';
@@ -254,24 +276,34 @@ function showRunPopup(text, isError, loading) {
 		head.appendChild(close);
 		var pre = document.createElement('pre');
 		pre.className = 'mj-run-output';
+		pre.setAttribute('aria-live', 'polite');
+		popup.setAttribute('role', 'dialog');
+		popup.setAttribute('aria-modal', 'true');
+		popup.setAttribute('aria-labelledby', title.id);
 		popup.appendChild(head);
 		popup.appendChild(pre);
 		document.body.appendChild(popup);
 	}
-	popup.className = isError ? 'mj-error' : '';
+	popup.className = 'mj-run-popup' + (isError ? ' mj-error' : '');
 	var pre = popup.querySelector('.mj-run-output');
 	pre.textContent = text || '<#LANG_CODEEDITOR_NO_OUTPUT#>';
 	popup.setAttribute('data-loading', loading ? '1' : '0');
+	if (document.activeElement && !popup.contains(document.activeElement)) popup._opener = document.activeElement;
+	var closeButton = popup.querySelector('.mj-run-close');
+	if (closeButton) closeButton.focus();
 }
 function closeRunPopup(immediate) {
-	var popup = document.getElementById('mj-run-popup');
+	var popup = document.getElementById(popupId);
 	if (!popup) return;
-	if (immediate) { document.body.removeChild(popup); return; }
-	popup.classList.add('hiding');
-	setTimeout(function () {
-		var current = document.getElementById('mj-run-popup');
+	var opener = popup._opener;
+	var remove = function () {
+		var current = document.getElementById(popupId);
 		if (current && current.classList.contains('hiding')) document.body.removeChild(current);
-	}, 180);
+		if (opener && document.contains(opener)) opener.focus();
+	};
+	if (immediate) { document.body.removeChild(popup); if (opener && document.contains(opener)) opener.focus(); return; }
+	popup.classList.add('hiding');
+	setTimeout(remove, 180);
 }
 function runCodeQuick() {
 	if (typeof editor === 'undefined') return false;
@@ -302,7 +334,7 @@ function runCodeQuick() {
 	return false;
 }
 document.addEventListener('keydown', function (e) {
-	if (e.keyCode === 27 && document.getElementById('mj-run-popup')) {
+	if (e.keyCode === 27 && document.getElementById(popupId)) {
 		e.preventDefault();
 		e.stopPropagation();
 		closeRunPopup();
@@ -364,7 +396,7 @@ function checkCodeAjax() {
 	var data = new FormData();
 	data.append('id', $('input[name*="id"]').first().val() || '');
 	data.append('md', $('input[name*="md"]:eq(2)').val() || 'scripts');
-	data.append('code', editor.getValue());
+	data.append('code', escapeHtml(editor.getValue()));
 	data.append('action', 'checkcode');
 	return fetch('/modules/blockly_code/autosave.php', {
 		method: 'POST',
@@ -384,7 +416,11 @@ function saveEditorAjax() {
 		$("[name='subm']").click();
 		return false;
 	}
+	// CodeMirror keeps the current text in the editor, not in the textarea.
+	// A fetch request does not fire the form's submit event, so synchronize it explicitly.
+	editor.save();
 	var data = new FormData(form[0]);
+	data.set('code', editor.getValue());
 	data.append('subm', 'Submit');
 	if (!data.get('mode')) data.append('mode', 'update');
 	var submitForm = function () {
@@ -397,7 +433,15 @@ function saveEditorAjax() {
 	}).then(function (response) {
 		return response.text();
 	}).then(function (html) {
-		var failed = html.indexOf('error_noty') >= 0 || html.indexOf('alert-danger') >= 0;
+		var doc = new DOMParser().parseFromString(html, 'text/html');
+		var errorNodes = doc.querySelectorAll('.error_noty, .alert-danger');
+		var failed = false;
+		for (var i = 0; i < errorNodes.length; i++) {
+			var node = errorNodes[i];
+			if (node.hasAttribute('hidden') || /(?:^|;)\s*display\s*:\s*none/i.test(node.getAttribute('style') || '')) continue;
+			failed = true;
+			break;
+		}
 		showSaveToast(failed ? '<#LANG_CODEEDITOR_SAVE_ERROR#>' : '<#LANG_CODEEDITOR_SAVED#>', failed);
 		restoreEditorState();
 	}).catch(function () {
@@ -469,7 +513,7 @@ $(document).ready(function(){
 		undoDelay: 400,
 		lineWrapping: [#if SETTINGS_CODEEDITOR_WRAPLINES == 1#]true[#else#]wrapMobile[#endif#],
 		scrollbarStyle: 'native',
-		autofocus: [#if AUTOFOCUS == '0'#]false[#else#]true[#endif#],
+		autofocus: [#if AUTOFOCUS == '0'#]false[#else#]window.innerWidth >= 768[#endif#],
 		[#if SETTINGS_CODEEDITOR_THEME != 'codemirror' && SETTINGS_CODEEDITOR_TURNONSETTINGS == '1'#]theme: "[#SETTINGS_CODEEDITOR_THEME#]",[#endif#]
 		[#endif#]
 		
@@ -517,8 +561,7 @@ $(document).ready(function(){
 			"Ctrl-F": "findPersistent",
 			"Esc": function(cm) {
 				if (cm.getOption("fullScreen")) {
-					cm.setOption("fullScreen", false);
-					$('nav').show();
+					switchFullscreen();
 				}
 			},
 			[#if SETTINGS_CODEEDITOR_TURNONSETTINGS == 1 && SETTINGS_CODEEDITOR_AUTOCOMPLETE == 1#]
@@ -700,13 +743,13 @@ $(document).ready(function(){
 		editor.on('dblclick', editor => {
 			editor.setOption('highlightSelectionMatches', {showToken: false, wordsOnly: false, annotateScrollbar: false});
 		});
-		[#if SETTINGS_CODEEDITOR_AUTOSAVE != '0'#]
-		editor.on('change', editor => {
-			clearInterval(getCookie('autosavetimerid'));
-			document.cookie = 'autosavetimerid='+setTimeout(function() { ajaxAutosave('save'); }, [#SETTINGS_CODEEDITOR_AUTOSAVE#]000);
-		});
-		[#endif#]
 		[#endif#]	
+	[#endif#]
+	[#if SETTINGS_CODEEDITOR_AUTOSAVE != '0'#]
+	editor.on('change', editor => {
+		clearTimeout(getCookie('autosavetimerid'));
+		document.cookie = 'autosavetimerid='+setTimeout(function() { ajaxAutosave('save'); }, [#SETTINGS_CODEEDITOR_AUTOSAVE#]000);
+	});
 	[#endif#]
 });
 
@@ -758,7 +801,7 @@ function escapeHtml(text, type='scape') {
 	}
 }
 
-function ajaxAutosave(action) {
+function ajaxAutosave(action, onSuccess) {
 	//Отправляем код POST
 	id = $('input[name*="id"]').val();
 	md = $('input[name*="md"]:eq(2)').val();
@@ -771,15 +814,13 @@ function ajaxAutosave(action) {
 		data: "id="+id+"&md="+md+"&code="+code+"&action="+action,
 		success: function(responce){
 			responce = JSON.parse(responce);
+			if (typeof onSuccess === 'function') onSuccess(responce);
 			if(responce.status != 'ok') return;
 			
 			if(action == 'checkcode') {
-				$('#autosave_check_code_div').show('slow');
-				if(responce.msg) {
-					alert('<#LANG_CODEEDITOR_ERROR_IN_CODE#>: '+responce.msg);
-				} else {
-					alert('<#LANG_CODEEDITOR_NO_ERRORS#>');
-				}
+				showRunPopup(responce.msg
+					? '<#LANG_CODEEDITOR_ERROR_IN_CODE#>: ' + responce.msg
+					: '<#LANG_CODEEDITOR_NO_ERRORS#>', Boolean(responce.msg), false);
 			}
 			if(action == 'save') {
 				$('#autosave_code_in_time_div').show('slow');
@@ -790,8 +831,8 @@ function ajaxAutosave(action) {
 				responseArray = responce.msg;
 				
 				$("#restoreCodeList").html('');
-				while (i <= responseArray.length) {
-					$("#restoreCodeList").append('<tr><th scope="row" style="vertical-align: middle;">'+responseArray[i].name+'</th><td style="vertical-align: middle;">'+responseArray[i].create+'</td><td style="cursor:pointer;vertical-align: middle;"><a href="javascript://" onclick="seeCodeFunc(\''+responseArray[i].code+'\')"><i class="glyphicon glyphicon-eye-open" style="font-size: 1.5rem;"></i></a></td><td style="vertical-align: middle;"><button type="button" class="btn btn-default btn-xs" onclick="if(confirm(\'<#LANG_ARE_YOU_SURE#>\')) setValueEditor(\''+responseArray[i].code+'\');"><#LANG_CODEEDITOR_RESTORE#></button></td></tr>');
+				while (i < responseArray.length) {
+					$("#restoreCodeList").append('<tr><th scope="row" style="vertical-align: middle;">'+responseArray[i].name+'</th><td style="vertical-align: middle;">'+responseArray[i].create+'</td><td style="cursor:pointer;vertical-align: middle;"><a href="javascript://" title="<#LANG_PREVIEW#>" aria-label="<#LANG_PREVIEW#>" onclick="seeCodeFunc(\''+responseArray[i].code+'\')"><i class="glyphicon glyphicon-eye-open" style="font-size: 1.5rem;"></i></a></td><td style="vertical-align: middle;"><button type="button" class="btn btn-default btn-xs" onclick="if(confirm(\'<#LANG_CODEEDITOR_RESTORE#> \'+responseArray[i].create+\'?\')) setValueEditor(\''+responseArray[i].code+'\');"><#LANG_CODEEDITOR_RESTORE#></button></td></tr>');
 					i++;
 				}
 			}
@@ -814,9 +855,15 @@ function seeCodeFunc(code) {
 }
 
 function modalRestoreCode() {
-	ajaxAutosave('restore');
-	$('#showAutosaveModal').modal('show')
+	ajaxAutosave('restore', function (responce) {
+		if (responce.status !== 'ok') {
+			showSaveToast(responce.msg || '<#LANG_CODEEDITOR_SAVE_ERROR#>', true);
+			return;
+		}
+		$('#showAutosaveModal').modal('show');
+	});
 }
+})();
 </script>
 [#endif CODE_TYPE#]
 
@@ -946,7 +993,7 @@ function modalRestoreCode() {
                 td_content+="</td>";
 
                 row.append($(td_content));
-                row.append($("<td><a href='#' class='btn btn-default' onclick='deleteDevice("+devices_data[i].id+");return false;'><i class='glyphicon glyphicon-trash'></i></a></td>"));
+                row.append($("<td><a href='#' class='btn btn-default' title='<#LANG_DELETE#>' aria-label='<#LANG_DELETE#>' onclick='deleteDevice("+devices_data[i].id+");return false;'><i class='glyphicon glyphicon-trash'></i></a></td>"));
             }
         }
         function deviceUpdated(device_id) {

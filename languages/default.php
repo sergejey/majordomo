@@ -2121,7 +2121,7 @@ if (!defined('LANG_CODEEDITOR_SAVED')) define('LANG_CODEEDITOR_SAVED', 'Saved');
 if (!defined('LANG_CODEEDITOR_SAVE_ERROR')) define('LANG_CODEEDITOR_SAVE_ERROR', 'Save failed. Check the code and try again.');
 if (!defined('LANG_CODEEDITOR_SAVING')) define('LANG_CODEEDITOR_SAVING', 'Saving...');
 
-if (!defined('LANG_CODEEDITOR_CHECKING')) define('LANG_CODEEDITOR_CHECKING', 'Перевірка коду...');
+if (!defined('LANG_CODEEDITOR_CHECKING')) define('LANG_CODEEDITOR_CHECKING', 'Checking code...');
 
 if (!defined('LANG_CODEEDITOR_AUDIT')) define('LANG_CODEEDITOR_AUDIT', 'AI audit');
 if (!defined('LANG_CODEEDITOR_AUDIT_RUNNING')) define('LANG_CODEEDITOR_AUDIT_RUNNING', 'Auditing code...');
