@@ -17,7 +17,7 @@ if (!$access->checkAccess('settings')) {
 
 $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
 $value = isset($_POST['value']) ? trim((string)$_POST['value']) : '';
-if (!$id || $value === '') {
+if (!$id) {
     echo json_encode(array('status' => 'error', 'msg' => 'Invalid parameters'));
     exit;
 }
