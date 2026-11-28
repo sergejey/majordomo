@@ -29,25 +29,25 @@
 							$('#tab li').removeClass();
 							$('#tab li').hide();
 							$('#li_search').remove();
+							$('#li_search_hint').remove();
 							//Вставляем вкладку
 							$('#tab').prepend('<li id="li_search_hint"><a data-toggle="tab" href="javascript://" onclick="$(\'#filter\').val(\'\');filterPlugins();"><#LANG_NEWMARKET_CLOSE_SEACRH#></a></li>');
 							
 							$('#tab').prepend('<li id="li_search" class="active"><a data-toggle="tab" href="#panel_installed" id="panel_installed" onclick="refreshPluginsList(\'installed\',\'\');" class="active"><#LANG_NEWMARKET_SEARCH#></a></li>');
 							
 							refreshPluginsList(0,str);
-							$('#filter').removeAttr('style');
 						} else {
 							//Удаляем поиск
 							$('#li_search').remove();
 							$('#li_search_hint').remove();
-							$('#filter').removeAttr('style');
+							$('#filter').css('background', '');
 							$('#tab li').show();
 							$('#panel_installed').click();
 						}
 					}
 					
 					function searchKeyUp() {
-						$('#filter').attr('style', 'background-image: url(<#ROOTHTML#>img/ajax-loader.gif);background-repeat: no-repeat;background-position: 10px;padding-left: 40px;');
+						$('#filter').css({'background-image': 'url(<#ROOTHTML#>img/ajax-loader.gif)', 'background-repeat': 'no-repeat', 'background-position': 'right 10px center'});
 						clearTimeout(upTimer);
 						upTimer=setTimeout('filterPlugins();',1000);
 					}
@@ -98,7 +98,7 @@
 			[#if CATEGORIES#]
 				<script type="text/javascript">
 					function refreshPluginsList(category_id,search_text) {
-						$('#search_result').html('<div class="text-center" style="margin-top: 20px;margin-bottom: 20px;"><img src="<#ROOTHTML#>img/ajax-loader.gif" border="0"> <#LANG_NEWDASH_LOADING#></div>');
+						if(!search_text) $('#search_result').html('<div class="text-center" style="margin-top: 20px;margin-bottom: 20px;"><img src="<#ROOTHTML#>img/ajax-loader.gif" border="0"> <#LANG_NEWDASH_LOADING#></div>');
 						if(!search_text) $('#li_search').remove();
 						
 						
@@ -118,6 +118,7 @@
 								url: url
 							}).done(function(data) {
 								$('#search_result').html(data);
+								$('#filter').css('background', '');
 								if (category_id=='owned') {
 									$('#connect_sync_note').show();
 								} else {
