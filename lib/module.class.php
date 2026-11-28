@@ -788,9 +788,8 @@ class module
                         $replaceString .= '&md=' . $this->name . '&inst=' . $this->instance . '&' . $link . '"';
 
                         $result = str_replace($matches[0][$i], $replaceString, $result); // links
-                    } else {
-                        $result = str_replace('action="?', 'action="' . $_SERVER['PHP_SELF'] . '"', $result); // forms
                     }
+                    // Links starting with md= already contain the module state; leave them as is.
                 } else {
                     // remove modified param
                     $link = str_replace('<!-- modified -->', '', $link);
