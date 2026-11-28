@@ -122,10 +122,10 @@ if ($this->mobile) {
     $out['MOBILE'] = 1;
 }
 
-if (isset($session->data['SHOUT_ROOM_ID']) && $session->data['SHOUT_ROOM_ID'] && defined('LOGGED_USER') && LOGGED_USER) {
+if (isset($session->data['SHOUT_ROOM_ID']) && $session->data['SHOUT_ROOM_ID'] && !empty($session->data['SITE_USER_ID'])) {
     $room = SQLSelectOne("SELECT * FROM shoutrooms WHERE ID='" . (int)$session->data['SHOUT_ROOM_ID'] . "'");
     //print_r($room);
-    if ($room['ADDED_BY'] == LOGGED_USER_ID) {
+    if ((int)$room['ADDED_BY'] === (int)$session->data['SITE_USER_ID']) {
         $txtdata .= "<small>[ <a href='/chat.html?delete_room=" . $room['ID'] . "' onClick=\"return confirm('" . LANG_STRING_DELETE_CONFIRM . "')\">" . LANG_STRING_DELETE . "</a> ]</small>&nbsp;&nbsp;&nbsp;";
         $roomType = $room['IS_PUBLIC'] ? LANG_SHOUTROOMS_STRING_PRIVATE : LANG_SHOUTROOMS_STRING_PUBLIC;
         $txtdata .= "<small>[ <a href='/chat.html?change_visibility=" . $room['ID'] . "' onClick=\"return confirm('" . LANG_STRING_OPERATION_CONFIRM . "')\">$roomType</a> ]</small><br><br>";
@@ -176,10 +176,7 @@ if ($res[0]['ID']) {
 if (!isset($session->data['SHOUT_ROOM_ID'])) {
     $session->data['SHOUT_ROOM_ID'] = 0;
 }
-if (!isset($session->data['logged_user'])) {
-    $session->data['logged_user'] = 0;
-}
-$rooms = SQLSelect("SELECT * FROM shoutrooms WHERE (IS_PUBLIC=1) OR (IS_PUBLIC=0 AND ADDED_BY=" . (int)$session->data['logged_user'] . ") OR (IS_PUBLIC=0 AND ID=" . (int)$session->data['SHOUT_ROOM_ID'] . ") ORDER BY PRIORITY DESC, TITLE");
+$rooms = SQLSelect("SELECT * FROM shoutrooms WHERE (IS_PUBLIC=1) OR (IS_PUBLIC=0 AND ADDED_BY=" . (int)$session->data['SITE_USER_ID'] . ") OR (IS_PUBLIC=0 AND ID=" . (int)$session->data['SHOUT_ROOM_ID'] . ") ORDER BY PRIORITY DESC, TITLE");
 if (isset($rooms[0])) {
     $rooms[0]['FIRST'] = 1;
     $out['ROOMS'] = $rooms;
