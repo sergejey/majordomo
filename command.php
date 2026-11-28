@@ -76,28 +76,30 @@ if ($qry != '') { // && $qry != $lastest_word
     $username = gr('username');
     if ($username) {
         $user=SQLSelectOne("SELECT * FROM users WHERE USERNAME LIKE '".DBSafe($username)."'");
-        if (!$user['PASSWORD']) {
-            $session->data['SITE_USERNAME']=$user['USERNAME'];
-            $session->data['SITE_USER_ID']=$user['ID'];
-        } else {
-            if (!isset($_SERVER['PHP_AUTH_USER'])) {
-                header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
-                header('HTTP/1.0 401 Unauthorized');
-                echo 'Password required!';
-                exit;
+        if ($user['ID']) {
+            if (!$user['PASSWORD']) {
+                $session->data['SITE_USERNAME']=$user['USERNAME'];
+                $session->data['SITE_USER_ID']=$user['ID'];
             } else {
-                if ($_SERVER['PHP_AUTH_USER'] == $user['USERNAME'] && hash('sha512', $_SERVER['PHP_AUTH_PW']) == $user['PASSWORD']) {
-                    $session->data['SITE_USERNAME'] = $user['USERNAME'];
-                    $session->data['SITE_USER_ID'] = $user['ID'];
-                } else {
+                if (!isset($_SERVER['PHP_AUTH_USER'])) {
                     header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
                     header('HTTP/1.0 401 Unauthorized');
-                    echo 'Incorrect username/password!';
+                    echo 'Password required!';
                     exit;
+                } else {
+                    if ($_SERVER['PHP_AUTH_USER'] == $user['USERNAME'] && hash('sha512', $_SERVER['PHP_AUTH_PW']) == $user['PASSWORD']) {
+                        $session->data['SITE_USERNAME'] = $user['USERNAME'];
+                        $session->data['SITE_USER_ID'] = $user['ID'];
+                    } else {
+                        header("WWW-Authenticate: Basic realm=\"" . PROJECT_TITLE . "\"");
+                        header('HTTP/1.0 401 Unauthorized');
+                        echo 'Incorrect username/password!';
+                        exit;
+                    }
                 }
             }
+            $user_id = (int)$user['ID'];
         }
-        $user_id = (int)$user['ID'];
     }
 
     if (!$user_id) {
